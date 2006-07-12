@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="SWT_CONTAINER/JFACE/PDE"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.2.0.v20060602.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/com.ibm.icu_3.4.4.1.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.2.0.v20060601.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

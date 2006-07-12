@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mindquarry.client</groupId>
+  <artifactId>mindclient</artifactId>
+  <version>0.0.1</version>
+  <description>Mindquarry Client GUI</description>
+  <dependencies>
+    <dependency>
+      <groupId>swt</groupId>
+      <artifactId>jface</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+  </dependencies>
+</project>
