@@ -14,6 +14,8 @@ package com.mindquarry.client;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -333,25 +335,29 @@ public class BalloonWindow
       {
         //Color closeFG = shell.getForeground(), closeBG = shell.getBackground();
         //Color closeFG = shell.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY), closeBG = shell.getBackground();
-        Color closeFG = shell.getDisplay().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND), closeBG = shell.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+        Color closeFG = shell.getDisplay().getSystemColor(SWT.COLOR_WIDGET_FOREGROUND), closeBG = shell.getBackground();
         final Image closeImage = createCloseImage(shell.getDisplay(), closeBG, closeFG);
         shell.addListener(SWT.Dispose, new Listener()
         {
           public void handleEvent(Event event) { closeImage.dispose(); }
         });
         systemControlsBar = new ToolBar(shell, SWT.FLAT);
+        addSelectionControl(systemControlsBar);
         systemControlsBar.setBackground(closeBG);
         systemControlsBar.setForeground(closeFG);
         ToolItem closeItem = new ToolItem(systemControlsBar, SWT.PUSH);
         closeItem.setImage(closeImage);
-        closeItem.addListener(SWT.Selection, new Listener()
+        Listener listener = new Listener()
         {
-          public void handleEvent(Event event)
-          {
-            shell.close();
-          }
-        });
+            public void handleEvent(Event event)
+            {
+          	  System.out.println("foobar");
+              shell.close();
+            }
+          };
+        closeItem.addListener(SWT.SELECTED, listener);
         systemControlsBar.pack();
+        systemControlsBar.addListener(SWT.SELECTED, listener);
         Point closeSize = systemControlsBar.getSize();
         titleSize.x += closeSize.x + titleWidgetSpacing;
         if(closeSize.y > titleSize.y) titleSize.y = closeSize.y;

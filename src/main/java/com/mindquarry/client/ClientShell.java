@@ -12,6 +12,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -27,6 +29,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Tray;
+import org.eclipse.swt.widgets.TrayItem;
 
 /**
  * @author <a href="mailto:lars@trieloff.net">Lars Trieloff</a>
@@ -57,37 +61,58 @@ public class ClientShell {
 	private TableViewer taskTableViewer = null;
 	private Button moreButton = null;
 	private Button button = null;
+	private Image mindquarryIcon = new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/16x16/mindquarry.png"));;
 	
 	public static void main(String[] args) {
-	      ClientShell test = new ClientShell();
-	      Display display = new Display();
+	      final ClientShell test = new ClientShell();
+	      final Display display = Display.getCurrent();
+	      Tray tray = display.getSystemTray();
 	      
-	      test.createSShell();
-	      
-	      Rectangle diSize = display.getBounds();
-	      Point curPos = display.getCursorLocation();
-	      
-	      Point position = new Point(0,0);
-	      int anchor = 0;
-	      if (diSize.height/2>curPos.y) {
-	    	  position.y = curPos.y;
-	    	  anchor |= SWT.TOP;
+	      if (tray!=null) {
+	    	TrayItem ti = new TrayItem(tray, SWT.NONE);
+	    	ti.setImage(test.mindquarryIcon);
+	    	ti.addSelectionListener(new SelectionListener() {
+
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
+
+				public void widgetSelected(SelectionEvent e) {
+					if (test.sShell==null||test.sShell.isDisposed()) {
+						test.createSShell();
+						Rectangle diSize = display.getBounds();
+						Point curPos = display.getCursorLocation();
+	
+						Point position = new Point(0, 0);
+						int anchor = 0;
+						if (diSize.height / 2 > curPos.y) {
+							position.y = curPos.y;
+							anchor |= SWT.TOP;
+						} else {
+							position.y = curPos.y;
+							anchor |= SWT.BOTTOM;
+						}
+						if (diSize.width / 2 > curPos.x) {
+							anchor |= SWT.LEFT;
+						} else {
+							anchor |= SWT.RIGHT;
+						}
+						test.balloon.setLocation(curPos);
+						test.balloon.setAnchor(anchor);
+	
+						test.balloon.open();
+					} else {
+						test.balloon.close();
+					}
+
+				}
+			});
 	      } else {
-	    	  position.y = curPos.y;
-	    	  anchor |= SWT.BOTTOM;
+	    	  // there must be a tray
+	    	  System.exit(1);
 	      }
-	      if (diSize.width/2>curPos.x) {
-	    	  anchor |= SWT.LEFT;
-	      } else {
-	    	  anchor |= SWT.RIGHT;
-	      }
-	      test.balloon.setLocation(curPos);
-	      test.balloon.setAnchor(anchor);
-	      //test.sShell.setLocation(position);
 	      
-	      //test.sShell.open();
-	      test.balloon.open();
-	      while (!test.sShell.isDisposed()) {
+	      
+	      while (!tray.isDisposed()) {
 	         if (!display.readAndDispatch())
 	            display.sleep();
 	      }
@@ -99,7 +124,7 @@ public class ClientShell {
 	 * This method initializes sShell
 	 */
 	private void createSShell() {
-		balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE| SWT.CLOSE | SWT.TOOL);
+		balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE| SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
 		
 		sShell = balloon.getContents();
 		//sShell.getParent().setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
@@ -108,7 +133,7 @@ public class ClientShell {
 		balloon.setText("Mindquarry Client");
 		sShell.setLayout(new GridLayout());
 		//balloon.setTitleSpacing(-20);
-		balloon.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/16x16/mindquarry.png")));
+		balloon.setImage(mindquarryIcon);
 		//sShell.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/24x24/logo-red-gradient-24x24.png")));		
 		createWorkspacesGroup();
 		createTasksGroup();
