@@ -15,7 +15,7 @@ public class TaskManager {
 	private List<Task> tasks = new Vector<Task>();
 	private List<TaskListChangeListener> listeners = new Vector<TaskListChangeListener>();
 	
-	private void startTask(Task t) {
+	public void startTask(Task t) {
 		for (Task task : tasks) {
 			task.setActive(false);
 		}
@@ -24,6 +24,7 @@ public class TaskManager {
 	
 	public void addTask(Task t) {
 		tasks.add(t);
+		startTask(t);
 	}
 
 	/**
