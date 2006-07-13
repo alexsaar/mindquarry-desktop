@@ -120,18 +120,20 @@ public class ClientShell {
 		gridData22.grabExcessVerticalSpace = true;
 		gridData22.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
 		gridData22.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
+		gridData22.horizontalSpan = 2;
 		gridData22.grabExcessHorizontalSpace = true;
 		GridData gridData12 = new GridData();
 		gridData12.grabExcessHorizontalSpace = true;
 		gridData12.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
 		gridData12.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
+		gridData12.horizontalSpan = 2;
 		gridData12.grabExcessVerticalSpace = true;
 		GridData gridData21 = new GridData();
-		gridData21.grabExcessVerticalSpace = true;
+		gridData21.grabExcessVerticalSpace = false;
 		gridData21.verticalAlignment = org.eclipse.swt.layout.GridData.END;
-		gridData21.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
+		gridData21.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
 		GridData gridData11 = new GridData();
-		gridData11.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
+		gridData11.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
 		gridData11.verticalAlignment = org.eclipse.swt.layout.GridData.END;
 		gridData11.grabExcessHorizontalSpace = true;
 		GridLayout gridLayout = new GridLayout();
@@ -146,17 +148,17 @@ public class ClientShell {
 		shareLink = new Link(workspacesGroup, SWT.NONE);
 		shareLink.setText("Share your local work on following workspaces with your team: <a>Mindquarry</a> and <a>Goshaky</a>");
 		shareLink.setLayoutData(gridData22);
-		shareButton = new Button(workspacesGroup, SWT.NONE);
-		shareButton.setText("Share");
-		shareButton.setLayoutData(gridData11);
-		shareButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/24x24/actions/up.png")));
 		syncLink = new Link(workspacesGroup, SWT.NONE);
 		syncLink.setText("Synchronize your team's work to your local workspaces: <a>cyclr.com</a> and <a>Damagecontrol</a>.");
 		syncLink.setLayoutData(gridData12);
+		shareButton = new Button(workspacesGroup, SWT.NONE);
+		shareButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/24x24/actions/up.png")));
+		shareButton.setLayoutData(gridData11);
+		shareButton.setText("Share");
 		syncButton = new Button(workspacesGroup, SWT.PUSH);
 		syncButton.setText("Synchronize");
-		syncButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/24x24/actions/down.png")));
 		syncButton.setLayoutData(gridData21);
+		syncButton.setImage(new Image(Display.getCurrent(), getClass().getResourceAsStream("/icons/24x24/actions/down.png")));
 	}
 	/**
 	 * This method initializes tasksGroup	
