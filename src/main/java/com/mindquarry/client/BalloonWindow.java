@@ -108,6 +108,9 @@ public class BalloonWindow
       public void handleEvent(Event event)
       {
         Widget w = event.widget;
+        if (w==systemControlsBar) {
+        	shell.close();
+        }
         for(int i=selectionControls.size()-1; i>= 0; i--)
         {
           if(selectionControls.get(i) == w)
