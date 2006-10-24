@@ -29,11 +29,18 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
+import com.mindquarry.client.ballon.BalloonWindow;
+import com.mindquarry.client.task.Task;
+import com.mindquarry.client.task.TaskManager;
+import com.mindquarry.client.task.TaskTableCellModifier;
+import com.mindquarry.client.task.TaskTableContentProvider;
+import com.mindquarry.client.task.TaskTableLabelProvider;
+
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class ClientShell {
+public class Shell {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
     public static final String ACTIVITY_COLUMN = "activity";
@@ -78,7 +85,7 @@ public class ClientShell {
             .getResourceAsStream("/icons/16x16/mindquarry.png"));;
 
     public static void main(String[] args) {
-        final ClientShell test = new ClientShell();
+        final Shell test = new Shell();
         final Display display = Display.getCurrent();
         Tray tray = display.getSystemTray();
 
@@ -138,10 +145,10 @@ public class ClientShell {
                 | SWT.TOOL | SWT.ON_TOP);
         balloon.setText("Mindquarry Client");
         balloon.setImage(mindquarryIcon);
-        
+
         sShell = balloon.getContents();
         sShell.setLayout(new GridLayout());
-        
+
         createWorkspacesGroup();
         createTasksGroup();
         createWikiGroup();
@@ -217,31 +224,31 @@ public class ClientShell {
         GridData gridData = new GridData();
         gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
-        
+
         workspacesGroup = new Group(sShell, SWT.SHADOW_NONE);
         workspacesGroup.setBackground(sShell.getBackground());
         workspacesGroup.setText("Workspaces");
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
-        
+
         shareLink = new Link(workspacesGroup, SWT.NONE);
         shareLink.setBackground(sShell.getBackground());
         shareLink
                 .setText("Share your local work on following workspaces with your team: <a>Mindquarry</a> and <a>Goshaky</a>");
         shareLink.setLayoutData(gridData22);
-        
+
         syncLink = new Link(workspacesGroup, SWT.NONE);
         syncLink.setBackground(sShell.getBackground());
         syncLink
                 .setText("Synchronize your team's work to your local workspaces: <a>cyclr.com</a> and <a>Damagecontrol</a>.");
         syncLink.setLayoutData(gridData12);
-        
+
         shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/up.png")));
         shareButton.setLayoutData(gridData11);
         shareButton.setText("Share");
-        
+
         syncButton = new Button(workspacesGroup, SWT.PUSH);
         syncButton.setText("Synchronize");
         syncButton.setLayoutData(gridData21);
@@ -269,24 +276,24 @@ public class ClientShell {
         GridData gridData1 = new GridData();
         gridData1.grabExcessHorizontalSpace = true;
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
-        
+
         tasksGroup = new Group(sShell, SWT.BORDER);
         tasksGroup.setBackground(sShell.getBackground());
         tasksGroup.setLayoutData(gridData1);
         tasksGroup.setLayout(gridLayout2);
         tasksGroup.setText("Tasks");
-        
+
         taskTable = new Table(tasksGroup, SWT.BORDER);
         taskTable.setHeaderVisible(false);
         taskTable.setLayoutData(gridData7);
         taskTable.setLinesVisible(false);
         taskTableViewer = new TableViewer(taskTable);
-        
+
         TableColumn activityColumn = new TableColumn(taskTable, SWT.NONE);
         activityColumn.setResizable(false);
         activityColumn.setWidth(100);
         activityColumn.setText("Task");
-        
+
         moreButton = new Button(tasksGroup, SWT.NONE);
         moreButton.setText("Other");
         moreButton.setLayoutData(gridData4);
@@ -294,7 +301,7 @@ public class ClientShell {
                 .setImage(new Image(Display.getCurrent(), getClass()
                         .getResourceAsStream(
                                 "/icons/24x24/actions/system-search.png")));
-        
+
         button = new Button(tasksGroup, SWT.NONE);
         button.setText("Done");
         button.setLayoutData(gridData8);
@@ -325,24 +332,24 @@ public class ClientShell {
         gridData2.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData2.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData2.grabExcessVerticalSpace = true;
-        
+
         wikiGroup = new Group(sShell, SWT.NONE);
         wikiGroup.setBackground(sShell.getBackground());
         wikiGroup.setLayoutData(gridData2);
         wikiGroup.setLayout(gridLayout1);
         wikiGroup.setText("Wiki");
-        
+
         wikiTextArea = new Text(wikiGroup, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL
                 | SWT.BORDER);
         wikiTextArea.setLayoutData(gridData3);
-        
+
         clearButton = new Button(wikiGroup, SWT.NONE);
         clearButton.setText("Clear");
         clearButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/edit-clear.png")));
         clearButton.setEnabled(false);
         clearButton.setLayoutData(gridData6);
-        
+
         postButton = new Button(wikiGroup, SWT.NONE);
         postButton.setText("Post");
         postButton.setImage(new Image(Display.getCurrent(), getClass()
