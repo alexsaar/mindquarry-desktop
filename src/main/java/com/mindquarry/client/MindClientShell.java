@@ -5,10 +5,6 @@ package com.mindquarry.client;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,8 +17,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -32,15 +33,17 @@ import org.eclipse.swt.widgets.TrayItem;
 import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.task.Task;
 import com.mindquarry.client.task.TaskManager;
+import com.mindquarry.client.task.TaskSelectionChangedListener;
 import com.mindquarry.client.task.TaskTableCellModifier;
 import com.mindquarry.client.task.TaskTableContentProvider;
 import com.mindquarry.client.task.TaskTableLabelProvider;
+import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class Shell {
+public class MindClientShell {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
     public static final String ACTIVITY_COLUMN = "activity";
@@ -49,9 +52,11 @@ public class Shell {
 
     public static final String STATUS_COLUMN = "status";
 
+    private static Shell shell;
+
     private BalloonWindow balloon;
 
-    private Composite sShell = null; // @jve:decl-index=0:visual-constraint="10,10"
+    private Composite container = null;
 
     private Group workspacesGroup = null;
 
@@ -85,21 +90,28 @@ public class Shell {
             .getResourceAsStream("/icons/16x16/mindquarry.png"));;
 
     public static void main(String[] args) {
-        final Shell test = new Shell();
+        final MindClientShell mcShell = new MindClientShell();
         final Display display = Display.getCurrent();
+        shell = new Shell(SWT.NONE);
         Tray tray = display.getSystemTray();
 
         if (tray != null) {
             TrayItem ti = new TrayItem(tray, SWT.NONE);
-            ti.setImage(test.mindquarryIcon);
+            ti.setImage(mcShell.mindquarryIcon);
             ti.addSelectionListener(new SelectionListener() {
-
+                /**
+                 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+                 */
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
 
+                /**
+                 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+                 */
                 public void widgetSelected(SelectionEvent e) {
-                    if (test.sShell == null || test.sShell.isDisposed()) {
-                        test.createSShell();
+                    if (mcShell.container == null
+                            || mcShell.container.isDisposed()) {
+                        mcShell.createContainer();
                         Rectangle diSize = display.getBounds();
                         Point curPos = display.getCursorLocation();
 
@@ -117,19 +129,40 @@ public class Shell {
                         } else {
                             anchor |= SWT.RIGHT;
                         }
-                        test.balloon.setLocation(curPos);
-                        test.balloon.setAnchor(anchor);
-                        test.balloon.open();
+                        mcShell.balloon.setLocation(curPos);
+                        mcShell.balloon.setAnchor(anchor);
+                        mcShell.balloon.open();
                     } else {
-                        test.balloon.close();
+                        mcShell.balloon.close();
                     }
+                }
+
+            });
+            final Menu menu = new Menu(shell, SWT.POP_UP);
+            ti.addListener(SWT.MenuDetect, new Listener() {
+                public void handleEvent(Event event) {
+                    menu.setVisible(true);
+                }
+            });
+            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+            menuItem.setText("Options...");
+
+            menuItem = new MenuItem(menu, SWT.SEPARATOR);
+
+            menuItem = new MenuItem(menu, SWT.PUSH);
+            menuItem.setText("Close");
+            menuItem.addListener(SWT.Selection, new Listener() {
+                /**
+                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+                 */
+                public void handleEvent(Event event) {
+                    System.exit(1);
                 }
             });
         } else {
             // there must be a tray
             System.exit(1);
         }
-
         while (!tray.isDisposed()) {
             if (!display.readAndDispatch())
                 display.sleep();
@@ -140,22 +173,22 @@ public class Shell {
     /**
      * This method initializes sShell
      */
-    private void createSShell() {
+    private void createContainer() {
         balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE | SWT.CLOSE
                 | SWT.TOOL | SWT.ON_TOP);
         balloon.setText("Mindquarry Client");
         balloon.setImage(mindquarryIcon);
 
-        sShell = balloon.getContents();
-        sShell.setLayout(new GridLayout());
+        container = balloon.getContents();
+        container.setLayout(new GridLayout());
 
         createWorkspacesGroup();
         createTasksGroup();
         createWikiGroup();
         createTableViewer();
 
-        sShell.pack();
-        sShell.setSize(BALLOON_SIZE);
+        container.pack();
+        container.setSize(BALLOON_SIZE);
     }
 
     private void createTableViewer() {
@@ -163,7 +196,6 @@ public class Shell {
         tman.addTask(new Task("Write User-centric-design memo"));
         tman.addTask(new Task("Transform website SVG mockup to XHTML+CSS"));
         tman.addTask(new Task("Write XSLT Stylesheets for Lenya navigation"));
-        // tman.addTask(new Task("Huppa"));
 
         CellEditor[] editors = new CellEditor[taskTable.getColumnCount()];
         editors[0] = new CheckboxCellEditor(taskTable.getParent());
@@ -176,22 +208,8 @@ public class Shell {
         taskTableViewer.setCellModifier(new TaskTableCellModifier(
                 taskTableViewer));
         taskTableViewer
-                .addSelectionChangedListener(new ISelectionChangedListener() {
-                    /**
-                     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-                     */
-                    public void selectionChanged(SelectionChangedEvent event) {
-                        ISelection selection = event.getSelection();
-                        if (selection instanceof StructuredSelection) {
-                            StructuredSelection structsel = (StructuredSelection) selection;
-                            Object element = structsel.getFirstElement();
-                            if (element instanceof Task) {
-                                tman.startTask((Task) element);
-                                taskTableViewer.refresh();
-                            }
-                        }
-                    }
-                });
+                .addSelectionChangedListener(new TaskSelectionChangedListener(
+                        tman, taskTableViewer));
         taskTableViewer.setInput(tman);
     }
 
@@ -225,24 +243,23 @@ public class Shell {
         gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
 
-        workspacesGroup = new Group(sShell, SWT.SHADOW_NONE);
-        workspacesGroup.setBackground(sShell.getBackground());
+        workspacesGroup = new Group(container, SWT.SHADOW_NONE);
+        workspacesGroup.setBackground(container.getBackground());
         workspacesGroup.setText("Workspaces");
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
 
-        shareLink = new Link(workspacesGroup, SWT.NONE);
-        shareLink.setBackground(sShell.getBackground());
-        shareLink
-                .setText("Share your local work on following workspaces with your team: <a>Mindquarry</a> and <a>Goshaky</a>");
-        shareLink.setLayoutData(gridData22);
-
-        syncLink = new Link(workspacesGroup, SWT.NONE);
-        syncLink.setBackground(sShell.getBackground());
-        syncLink
-                .setText("Synchronize your team's work to your local workspaces: <a>cyclr.com</a> and <a>Damagecontrol</a>.");
-        syncLink.setLayoutData(gridData12);
-
+//        shareLink = new Link(workspacesGroup, SWT.NONE);
+//        shareLink.setBackground(container.getBackground());
+//        shareLink
+//                .setText("Share your local work on following workspaces with your team: <a>Mindquarry</a> and <a>Goshaky</a>");
+//        shareLink.setLayoutData(gridData22);
+//
+//        syncLink = new Link(workspacesGroup, SWT.NONE);
+//        syncLink.setBackground(container.getBackground());
+//        syncLink
+//                .setText("Synchronize your team's work to your local workspaces: <a>cyclr.com</a> and <a>Damagecontrol</a>.");
+//        syncLink.setLayoutData(gridData12);
         shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/up.png")));
@@ -254,6 +271,7 @@ public class Shell {
         syncButton.setLayoutData(gridData21);
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png")));
+        syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener());
     }
 
     /**
@@ -277,8 +295,8 @@ public class Shell {
         gridData1.grabExcessHorizontalSpace = true;
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
 
-        tasksGroup = new Group(sShell, SWT.BORDER);
-        tasksGroup.setBackground(sShell.getBackground());
+        tasksGroup = new Group(container, SWT.NONE);
+        tasksGroup.setBackground(container.getBackground());
         tasksGroup.setLayoutData(gridData1);
         tasksGroup.setLayout(gridLayout2);
         tasksGroup.setText("Tasks");
@@ -295,6 +313,7 @@ public class Shell {
         activityColumn.setText("Task");
 
         moreButton = new Button(tasksGroup, SWT.NONE);
+        moreButton.setEnabled(false);
         moreButton.setText("Other");
         moreButton.setLayoutData(gridData4);
         moreButton
@@ -303,6 +322,7 @@ public class Shell {
                                 "/icons/24x24/actions/system-search.png")));
 
         button = new Button(tasksGroup, SWT.NONE);
+        button.setEnabled(false);
         button.setText("Done");
         button.setLayoutData(gridData8);
         button.setImage(new Image(Display.getCurrent(), getClass()
@@ -333,8 +353,8 @@ public class Shell {
         gridData2.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData2.grabExcessVerticalSpace = true;
 
-        wikiGroup = new Group(sShell, SWT.NONE);
-        wikiGroup.setBackground(sShell.getBackground());
+        wikiGroup = new Group(container, SWT.NONE);
+        wikiGroup.setBackground(container.getBackground());
         wikiGroup.setLayoutData(gridData2);
         wikiGroup.setLayout(gridLayout1);
         wikiGroup.setText("Wiki");

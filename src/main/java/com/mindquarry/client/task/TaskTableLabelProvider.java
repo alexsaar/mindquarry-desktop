@@ -46,14 +46,12 @@ public class TaskTableLabelProvider implements ITableLabelProvider {
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
      */
     public void addListener(ILabelProviderListener listener) {
-
     }
 
     /**
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
      */
     public void dispose() {
-
     }
 
     /**
@@ -68,6 +66,5 @@ public class TaskTableLabelProvider implements ITableLabelProvider {
      * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
      */
     public void removeListener(ILabelProviderListener listener) {
-
     }
 }
