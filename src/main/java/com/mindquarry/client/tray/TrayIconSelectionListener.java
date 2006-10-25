@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2005 MindQuarry GmbH, All Rights Reserved
  */
-package com.mindquarry.client;
+package com.mindquarry.client.tray;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -17,19 +17,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Tray;
-import org.eclipse.swt.widgets.TrayItem;
 
+import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.task.Task;
 import com.mindquarry.client.task.TaskManager;
@@ -40,19 +33,17 @@ import com.mindquarry.client.task.TaskTableLabelProvider;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
- * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
- *         Trieloff</a>
+ * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
+ *         Saar</a>
  */
-public class MindClientShell {
+public class TrayIconSelectionListener implements SelectionListener {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
-    public static final String ACTIVITY_COLUMN = "activity";
-
     public static final String TITLE_COLUMN = "title";
-
-    public static final String STATUS_COLUMN = "status";
-
-    private static Shell shell;
+    
+    private final Display display;
+    
+    private final MindClient client;
 
     private BalloonWindow balloon;
 
@@ -76,108 +67,62 @@ public class MindClientShell {
 
     private Table taskTable = null;
 
-    private Link shareLink = null;
-
-    private Link syncLink = null;
-
     private TableViewer taskTableViewer = null;
 
     private Button moreButton = null;
 
     private Button button = null;
 
-    private Image mindquarryIcon = new Image(Display.getCurrent(), getClass()
-            .getResourceAsStream("/icons/16x16/mindquarry.png"));;
+    public TrayIconSelectionListener(Display display, MindClient client) {
+        this.display = display;
+        this.client = client;
+    }
 
-    public static void main(String[] args) {
-        final MindClientShell mcShell = new MindClientShell();
-        final Display display = Display.getCurrent();
-        shell = new Shell(SWT.NONE);
-        Tray tray = display.getSystemTray();
+    /**
+     * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+     */
+    public void widgetDefaultSelected(SelectionEvent e) {
+    }
 
-        if (tray != null) {
-            TrayItem ti = new TrayItem(tray, SWT.NONE);
-            ti.setImage(mcShell.mindquarryIcon);
-            ti.addSelectionListener(new SelectionListener() {
-                /**
-                 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-                 */
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
+    /**
+     * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+     */
+    public void widgetSelected(SelectionEvent e) {
+        if (container == null || container.isDisposed()) {
+            createContainer();
+            Rectangle diSize = display.getBounds();
+            Point curPos = display.getCursorLocation();
 
-                /**
-                 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-                 */
-                public void widgetSelected(SelectionEvent e) {
-                    if (mcShell.container == null
-                            || mcShell.container.isDisposed()) {
-                        mcShell.createContainer();
-                        Rectangle diSize = display.getBounds();
-                        Point curPos = display.getCursorLocation();
-
-                        Point position = new Point(0, 0);
-                        int anchor = 0;
-                        if (diSize.height / 2 > curPos.y) {
-                            position.y = curPos.y;
-                            anchor |= SWT.TOP;
-                        } else {
-                            position.y = curPos.y;
-                            anchor |= SWT.BOTTOM;
-                        }
-                        if (diSize.width / 2 > curPos.x) {
-                            anchor |= SWT.LEFT;
-                        } else {
-                            anchor |= SWT.RIGHT;
-                        }
-                        mcShell.balloon.setLocation(curPos);
-                        mcShell.balloon.setAnchor(anchor);
-                        mcShell.balloon.open();
-                    } else {
-                        mcShell.balloon.close();
-                    }
-                }
-
-            });
-            final Menu menu = new Menu(shell, SWT.POP_UP);
-            ti.addListener(SWT.MenuDetect, new Listener() {
-                public void handleEvent(Event event) {
-                    menu.setVisible(true);
-                }
-            });
-            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Options...");
-
-            menuItem = new MenuItem(menu, SWT.SEPARATOR);
-
-            menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Close");
-            menuItem.addListener(SWT.Selection, new Listener() {
-                /**
-                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                 */
-                public void handleEvent(Event event) {
-                    System.exit(1);
-                }
-            });
+            Point position = new Point(0, 0);
+            int anchor = 0;
+            if (diSize.height / 2 > curPos.y) {
+                position.y = curPos.y;
+                anchor |= SWT.TOP;
+            } else {
+                position.y = curPos.y;
+                anchor |= SWT.BOTTOM;
+            }
+            if (diSize.width / 2 > curPos.x) {
+                anchor |= SWT.LEFT;
+            } else {
+                anchor |= SWT.RIGHT;
+            }
+            balloon.setLocation(curPos);
+            balloon.setAnchor(anchor);
+            balloon.open();
         } else {
-            // there must be a tray
-            System.exit(1);
+            balloon.close();
         }
-        while (!tray.isDisposed()) {
-            if (!display.readAndDispatch())
-                display.sleep();
-        }
-        display.dispose();
     }
 
     /**
      * This method initializes sShell
      */
-    private void createContainer() {
+    public void createContainer() {
         balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE | SWT.CLOSE
                 | SWT.TOOL | SWT.ON_TOP);
         balloon.setText("Mindquarry Client");
-        balloon.setImage(mindquarryIcon);
+        balloon.setImage(client.getIcon());
 
         container = balloon.getContents();
         container.setLayout(new GridLayout());
@@ -249,17 +194,6 @@ public class MindClientShell {
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
 
-//        shareLink = new Link(workspacesGroup, SWT.NONE);
-//        shareLink.setBackground(container.getBackground());
-//        shareLink
-//                .setText("Share your local work on following workspaces with your team: <a>Mindquarry</a> and <a>Goshaky</a>");
-//        shareLink.setLayoutData(gridData22);
-//
-//        syncLink = new Link(workspacesGroup, SWT.NONE);
-//        syncLink.setBackground(container.getBackground());
-//        syncLink
-//                .setText("Synchronize your team's work to your local workspaces: <a>cyclr.com</a> and <a>Damagecontrol</a>.");
-//        syncLink.setLayoutData(gridData12);
         shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/up.png")));
@@ -271,7 +205,8 @@ public class MindClientShell {
         syncButton.setLayoutData(gridData21);
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png")));
-        syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener());
+        syncButton.addListener(SWT.Selection,
+                new WorkspaceSynchronizeListener(client));
     }
 
     /**

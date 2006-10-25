@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.xml.sax.InputSource;
 
+import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.RegUtil;
 import com.mindquarry.client.xml.TeamlistContentHandler;
 
@@ -28,6 +29,12 @@ import com.mindquarry.client.xml.TeamlistContentHandler;
  *         Saar</a>
  */
 public class WorkspaceSynchronizeListener implements Listener {
+    private MindClient client;
+
+    public WorkspaceSynchronizeListener(MindClient client) {
+        this.client = client;
+    }
+
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
@@ -58,7 +65,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         Set<String> keys = workspaces.keySet();
         for (String key : keys) {
             File newWorkspaceDir = new File(workspacesDir.getAbsolutePath()
-                    + "/" + key);
+                    + "/" + key); //$NON-NLS-1$
             if (newWorkspaceDir.exists()) {
                 // TODO not sure what to do here, maybe we need to overwrite
                 // these dirs
@@ -70,17 +77,21 @@ public class WorkspaceSynchronizeListener implements Listener {
     }
 
     private void getTeamspaceList(HashMap<String, String> workspaces) {
-        HttpClient client = new HttpClient();
-        client.getState().setCredentials(
+        HttpClient httpClient = new HttpClient();
+        httpClient.getState().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
                         AuthScope.ANY_REALM),
-                new UsernamePasswordCredentials("alexs", "alexs"));
-        GetMethod get = new GetMethod(
-                "http://172.16.5.142:8888/teamspace/teamlist.xml");
+                new UsernamePasswordCredentials(client.getOptions()
+                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
+                        .getProperty(MindClient.PASSWORD_KEY)));
+        
+        GetMethod get = new GetMethod(client.getOptions().getProperty(
+                MindClient.ENDPOINT_KEY)
+                + "/teamspace/teamlist.xml"); //$NON-NLS-1$
         get.setDoAuthentication(true);
 
         try {
-            client.executeMethod(get);
+            httpClient.executeMethod(get);
             String teamlistXML = get.getResponseBodyAsString();
             InputStream is = new ByteArrayInputStream(teamlistXML.getBytes());
             get.releaseConnection();
