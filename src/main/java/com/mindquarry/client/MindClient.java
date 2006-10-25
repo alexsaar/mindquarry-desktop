@@ -154,4 +154,8 @@ public class MindClient {
     public Properties getOptions() {
         return options;
     }
+
+    public static Shell getShell() {
+        return shell;
+    }
 }

@@ -206,7 +206,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png")));
         syncButton.addListener(SWT.Selection,
-                new WorkspaceSynchronizeListener(client));
+                new WorkspaceSynchronizeListener(client, syncButton));
     }
 
     /**

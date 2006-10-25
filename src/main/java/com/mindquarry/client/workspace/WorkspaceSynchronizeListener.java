@@ -6,6 +6,7 @@ package com.mindquarry.client.workspace;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -16,8 +17,21 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.tmatesoft.svn.core.wc.SVNUpdateClient;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.xml.sax.InputSource;
 
 import com.mindquarry.client.MindClient;
@@ -29,80 +43,172 @@ import com.mindquarry.client.xml.TeamlistContentHandler;
  *         Saar</a>
  */
 public class WorkspaceSynchronizeListener implements Listener {
-    private MindClient client;
+    private final MindClient client;
 
-    public WorkspaceSynchronizeListener(MindClient client) {
+    private final Button button;
+
+    public WorkspaceSynchronizeListener(MindClient client, Button button) {
         this.client = client;
+        this.button = button;
     }
 
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
-        HashMap<String, String> workspaces = new HashMap<String, String>();
-
-        getTeamspaceList(workspaces);
-        updateWorkspaces(workspaces);
-    }
-
-    private void updateWorkspaces(HashMap<String, String> workspaces) {
-        // get directory for workspaces
-        File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
-        if (!workspacesDir.exists()) {
-            workspacesDir.mkdir();
-        }
-        // loop existing workspace directories
-        for (String workspace : workspacesDir.list()) {
-            // loop received workspace items
-            if (workspaces.containsKey(workspace)) {
-                // TODO update workspace
-
-                // remove entry from workspace list
-                workspaces.remove(workspace);
-            }
-        }
-        // add additional workspace directories
-        Set<String> keys = workspaces.keySet();
-        for (String key : keys) {
-            File newWorkspaceDir = new File(workspacesDir.getAbsolutePath()
-                    + "/" + key); //$NON-NLS-1$
-            if (newWorkspaceDir.exists()) {
-                // TODO not sure what to do here, maybe we need to overwrite
-                // these dirs
-                continue;
-            } else {
-                newWorkspaceDir.mkdir();
-            }
-        }
-    }
-
-    private void getTeamspaceList(HashMap<String, String> workspaces) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.getState().setCredentials(
-                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
-                        AuthScope.ANY_REALM),
-                new UsernamePasswordCredentials(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
-                        .getProperty(MindClient.PASSWORD_KEY)));
-        
-        GetMethod get = new GetMethod(client.getOptions().getProperty(
-                MindClient.ENDPOINT_KEY)
-                + "/teamspace/teamlist.xml"); //$NON-NLS-1$
-        get.setDoAuthentication(true);
-
         try {
-            httpClient.executeMethod(get);
-            String teamlistXML = get.getResponseBodyAsString();
-            InputStream is = new ByteArrayInputStream(teamlistXML.getBytes());
-            get.releaseConnection();
-
-            // parse teamspace list
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new InputSource(is), new TeamlistContentHandler(
-                    workspaces));
+            button.setEnabled(false);
+            new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
+                    new SynchronizeOperation());
+            button.setEnabled(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            MessageDialog.openError(MindClient.getShell(),
+                    "Synchronzation Error",
+                    "Error during workspaces synchronization.");
+        }
+    }
+
+    class SynchronizeOperation implements IRunnableWithProgress {
+        /**
+         * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+         */
+        public void run(IProgressMonitor monitor)
+                throws InvocationTargetException, InterruptedException {
+            monitor.beginTask("Synchronizing workspaces ...",
+                    IProgressMonitor.UNKNOWN);
+
+            HashMap<String, String> workspaces = new HashMap<String, String>();
+            getTeamspaceList(workspaces, monitor);
+
+            if (monitor.isCanceled()) {
+                return;
+            }
+            updateWorkspaces(workspaces, monitor);
+            monitor.done();
+        }
+
+        private void getTeamspaceList(HashMap<String, String> workspaces,
+                IProgressMonitor monitor) {
+            HttpClient httpClient = new HttpClient();
+            httpClient.getState()
+                    .setCredentials(
+                            new AuthScope(AuthScope.ANY_HOST,
+                                    AuthScope.ANY_PORT, AuthScope.ANY_REALM),
+                            new UsernamePasswordCredentials(client.getOptions()
+                                    .getProperty(MindClient.LOGIN_KEY), client
+                                    .getOptions().getProperty(
+                                            MindClient.PASSWORD_KEY)));
+
+            GetMethod get = new GetMethod(client.getOptions().getProperty(
+                    MindClient.ENDPOINT_KEY)
+                    + "/teamspace/teamlist.xml"); //$NON-NLS-1$
+            get.setDoAuthentication(true);
+
+            try {
+                monitor.setTaskName("Retrieving teamspace list ...");
+
+                httpClient.executeMethod(get);
+                String teamlistXML = get.getResponseBodyAsString();
+                InputStream is = new ByteArrayInputStream(teamlistXML
+                        .getBytes());
+                get.releaseConnection();
+
+                if (monitor.isCanceled()) {
+                    return;
+                }
+
+                // parse teamspace list
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                SAXParser parser = factory.newSAXParser();
+                parser.parse(new InputSource(is), new TeamlistContentHandler(
+                        workspaces));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateWorkspaces(HashMap<String, String> workspaces,
+                IProgressMonitor monitor) {
+            monitor.setTaskName("Synchronizing workspaces ...");
+
+            // for http & https
+            DAVRepositoryFactory.setup();
+            // for SVN (over svn and svn+ssh)
+            SVNRepositoryFactoryImpl.setup();
+
+            // init SVN types
+            ISVNAuthenticationManager authManager = SVNWCUtil
+                    .createDefaultAuthenticationManager(client.getOptions()
+                            .getProperty(MindClient.LOGIN_KEY), client
+                            .getOptions().getProperty(MindClient.PASSWORD_KEY));
+            SVNUpdateClient svnClient = new SVNUpdateClient(authManager,
+                    SVNWCUtil.createDefaultOptions(true));
+
+            // get directory for workspaces
+            File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
+            if (!workspacesDir.exists()) {
+                workspacesDir.mkdir();
+            }
+            // loop existing workspace directories
+            for (String wsID : workspacesDir.list()) {
+                if (monitor.isCanceled()) {
+                    return;
+                }
+                // loop received workspace items
+                if (workspaces.containsKey(wsID)) {
+                    // remove entry from workspace list
+                    workspaces.remove(wsID);
+
+                    // TODO check if folder is under version control
+
+                    // update workspace
+                    monitor.setTaskName("Synchronizing workspace " + wsID
+                            + " ..."); //$NON-NLS-1$
+                    updateWorkspace(svnClient, new File(workspacesDir
+                            .getAbsolutePath()
+                            + "/" + wsID)); //$NON-NLS-1$
+                }
+            }
+            // add additional workspace directories
+            Set<String> wsIDs = workspaces.keySet();
+            for (String wsID : wsIDs) {
+                if (monitor.isCanceled()) {
+                    return;
+                }
+                // create directory for the new workspace
+                File newWorkspaceDir = new File(workspacesDir.getAbsolutePath()
+                        + "/" + wsID); //$NON-NLS-1$
+                SVNURL url = null;
+                try {
+                    url = SVNURL.parseURIEncoded(workspaces.get(wsID));
+                } catch (SVNException e) {
+                    MessageDialog.openError(MindClient.getShell(),
+                            "Synchronization Error",
+                            "Malformed workspace location.");
+                    continue;
+                }
+                newWorkspaceDir.mkdir();
+                monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-1$
+                checkoutWorkspace(svnClient, url, newWorkspaceDir);
+            }
+        }
+
+        private void checkoutWorkspace(SVNUpdateClient svnClient, SVNURL url,
+                File dir) {
+            try {
+                svnClient.doCheckout(url, dir, SVNRevision.HEAD,
+                        SVNRevision.HEAD, true);
+            } catch (SVNException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateWorkspace(SVNUpdateClient svnClient, File dir) {
+            try {
+                svnClient.doUpdate(dir, SVNRevision.HEAD, true);
+            } catch (SVNException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
