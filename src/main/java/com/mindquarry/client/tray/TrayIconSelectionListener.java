@@ -30,6 +30,7 @@ import com.mindquarry.client.task.TaskSelectionChangedListener;
 import com.mindquarry.client.task.TaskTableCellModifier;
 import com.mindquarry.client.task.TaskTableContentProvider;
 import com.mindquarry.client.task.TaskTableLabelProvider;
+import com.mindquarry.client.workspace.WorkspaceShareListener;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
@@ -40,9 +41,9 @@ public class TrayIconSelectionListener implements SelectionListener {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
     public static final String TITLE_COLUMN = "title";
-    
+
     private final Display display;
-    
+
     private final MindClient client;
 
     private BalloonWindow balloon;
@@ -199,14 +200,16 @@ public class TrayIconSelectionListener implements SelectionListener {
                 .getResourceAsStream("/icons/24x24/actions/up.png")));
         shareButton.setLayoutData(gridData11);
         shareButton.setText("Share");
+        shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
+                client, shareButton));
 
         syncButton = new Button(workspacesGroup, SWT.PUSH);
         syncButton.setText("Synchronize");
         syncButton.setLayoutData(gridData21);
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png")));
-        syncButton.addListener(SWT.Selection,
-                new WorkspaceSynchronizeListener(client, syncButton));
+        syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener(
+                client, syncButton));
     }
 
     /**

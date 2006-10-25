@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
+import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
@@ -50,6 +52,7 @@ public class MindClient {
         final MindClient mindclient = new MindClient();
         mindclient.loadOptions();
 
+        // init tray icon
         final Display display = Display.getCurrent();
         shell = new Shell(SWT.NONE);
         Tray tray = display.getSystemTray();
@@ -96,6 +99,11 @@ public class MindClient {
             // there must be a tray
             System.exit(1);
         }
+        // init javaSVN for http & https
+        DAVRepositoryFactory.setup();
+        // init javaSVN for SVN (over svn and svn+ssh)
+        SVNRepositoryFactoryImpl.setup();
+        
         while (!tray.isDisposed()) {
             if (!display.readAndDispatch())
                 display.sleep();

@@ -15,12 +15,12 @@ import com.mindquarry.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class WorkspaceSynchronizeListener implements Listener {
+public class WorkspaceShareListener implements Listener {
     private final MindClient client;
 
     private final Button button;
 
-    public WorkspaceSynchronizeListener(MindClient client, Button button) {
+    public WorkspaceShareListener(MindClient client, Button button) {
         this.client = client;
         this.button = button;
     }
@@ -30,8 +30,10 @@ public class WorkspaceSynchronizeListener implements Listener {
      */
     public void handleEvent(Event event) {
         button.setEnabled(false);
-
+        
         try {
+            // need to sync workspaces first (for merging, up-to-date working
+            // copies and so on)
             SynchronizeOperation syncOp = new SynchronizeOperation(client);
             new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
                     syncOp);
@@ -39,6 +41,15 @@ public class WorkspaceSynchronizeListener implements Listener {
             MessageDialog.openError(MindClient.getShell(),
                     "Synchronzation Error",
                     "Error during workspaces synchronization.");
+        }
+        try {
+            // share workspace changes
+            ShareOperation shareOp = new ShareOperation(client);
+            new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
+                    shareOp);
+        } catch (Exception e) {
+            MessageDialog.openError(MindClient.getShell(), "Sharing Error",
+                    "Error while sharing workspace changes.");
         }
         button.setEnabled(true);
     }
