@@ -3,7 +3,7 @@
 <!-- 
 	Copyright (C) 2005 MindQuarry GmbH, All Rights Reserved
 -->
-<jnlp spec="1.5+" codebase="http://localhost:8888/client"
+<jnlp spec="1.5+" codebase="http://localhost:8888/resources/client"
 	href="MindClient.jnlp">
 
 	<information>
@@ -16,7 +16,7 @@
 			The Mindquarry Desktop client ...
 		</description>
 
-		<icon href="icons/logo43.png" />
+		<icon href="../images/mq-logo.png" />
 		<!--icon kind="splash" href="images/splash.gif" /-->
 
 		<offline-allowed />
@@ -36,8 +36,8 @@
 			href="http://java.sun.com/products/autodl/j2se"
 			initial-heap-size="32m" max-heap-size="64m" />
 
-		<jar href="dist/MindClient.jar" />
-		<nativelib href="swt-native-win32.jar" />
+		<jar href="dist/win32/MindClient-win32.jar" />
+		<nativelib href="dist/win32/swt-native-win32.jar" />
 	</resources>
 
 	<application-desc main-class="com.mindquarry.client.MindClient">
