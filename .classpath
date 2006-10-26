@@ -19,7 +19,6 @@
 	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-aspects.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-src.zip"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-context.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-core.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-dao.jar"/>
