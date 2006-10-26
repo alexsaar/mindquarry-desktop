@@ -6,8 +6,13 @@ package com.mindquarry.client;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -20,6 +25,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 
@@ -41,16 +48,36 @@ public class MindClient {
 
     private static Shell shell;
 
-    private Image icon = new Image(Display.getCurrent(), getClass()
-            .getResourceAsStream("/icons/16x16/mindquarry.png")); //$NON-NLS-1$
+    private final Image icon;
+
+    private final BeanFactory factory;
 
     private Properties options;
 
     private File optionsFile;
 
+    private Log log;
+
+    public MindClient() {
+        log = LogFactory.getLog(MindClient.class);
+
+        factory = new ClassPathXmlApplicationContext(
+                new String[] { "applicationContext.xml" }); //$NON-NLS-1$
+
+        icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
+                "/icons/16x16/mindquarry.png")); //$NON-NLS-1$
+    }
+
     public static void main(String[] args) {
         final MindClient mindclient = new MindClient();
         mindclient.loadOptions();
+
+        RuntimeMXBean rtBean = ManagementFactory.getRuntimeMXBean();
+        if (rtBean.getVmVersion().startsWith("1.5")) { //$NON-NLS-1$
+            mindclient.log.info("Using Java 5");
+        } else {
+            mindclient.log.info("Using Java Version " + rtBean.getVmVersion());
+        }
 
         // init tray icon
         final Display display = Display.getCurrent();
@@ -70,6 +97,27 @@ public class MindClient {
                 }
             });
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+            menuItem.setText("Goto quarry...");
+            menuItem.addListener(SWT.Selection, new Listener() {
+                /**
+                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+                 */
+                public void handleEvent(Event event) {
+                    try {
+                        // TODO add implementation for lunix & unix based
+                        // systems here
+                        Runtime.getRuntime().exec(
+                                "start " //$NON-NLS-1$
+                                        + mindclient.getOptions().getProperty(
+                                                MindClient.ENDPOINT_KEY));
+                    } catch (IOException e) {
+                        MessageDialog.openError(MindClient.getShell(),
+                                "Runtime Error",
+                                "Could not open quarry installation.");
+                    }
+                }
+            });
+            menuItem = new MenuItem(menu, SWT.PUSH);
             menuItem.setText("Options...");
             menuItem.addListener(SWT.Selection, new Listener() {
                 /**
@@ -103,7 +151,7 @@ public class MindClient {
         DAVRepositoryFactory.setup();
         // init javaSVN for SVN (over svn and svn+ssh)
         SVNRepositoryFactoryImpl.setup();
-        
+
         while (!tray.isDisposed()) {
             if (!display.readAndDispatch())
                 display.sleep();
@@ -165,5 +213,9 @@ public class MindClient {
 
     public static Shell getShell() {
         return shell;
+    }
+
+    public BeanFactory getFactory() {
+        return factory;
     }
 }

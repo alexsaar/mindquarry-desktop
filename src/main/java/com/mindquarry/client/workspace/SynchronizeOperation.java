@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.Set;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -18,14 +17,11 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
-import org.tmatesoft.svn.core.wc.SVNRevision;
-import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.springframework.beans.factory.BeanFactory;
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Revision;
+import org.tigris.subversion.javahl.SVNClientInterface;
 import org.xml.sax.InputSource;
 
 import com.mindquarry.client.MindClient;
@@ -39,8 +35,15 @@ import com.mindquarry.client.xml.TeamlistContentHandler;
 public class SynchronizeOperation implements IRunnableWithProgress {
     private final MindClient client;
 
+    private final SVNClientInterface svnClient;
+
     public SynchronizeOperation(MindClient client) {
         this.client = client;
+
+        // get SVN client interface component
+        BeanFactory factory = client.getFactory();
+        svnClient = (SVNClientInterface) factory
+                .getBean(SVNClientInterface.class.getName());
     }
 
     /**
@@ -103,12 +106,10 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         monitor.setTaskName("Synchronizing workspaces ...");
 
         // init SVN types
-        ISVNAuthenticationManager authManager = SVNWCUtil
-                .createDefaultAuthenticationManager(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
-                        .getProperty(MindClient.PASSWORD_KEY));
-        SVNUpdateClient svnClient = new SVNUpdateClient(authManager, SVNWCUtil
-                .createDefaultOptions(true));
+        svnClient.username(client.getOptions()
+                .getProperty(MindClient.LOGIN_KEY));
+        svnClient.password(client.getOptions().getProperty(
+                MindClient.PASSWORD_KEY));
 
         // get directory for workspaces
         File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
@@ -128,9 +129,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 // TODO check if folder is under version control
 
                 // update workspace
-                monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-1$
-                updateWorkspace(svnClient, new File(workspacesDir
-                        .getAbsolutePath()
+                monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-2$
+                updateWorkspace(new File(workspacesDir.getAbsolutePath()
                         + "/" + wsID)); //$NON-NLS-1$
             }
         }
@@ -142,35 +142,25 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             // create directory for the new workspace
             File newWorkspaceDir = new File(workspacesDir.getAbsolutePath()
                     + "/" + wsID); //$NON-NLS-1$
-            SVNURL url = null;
-            try {
-                url = SVNURL.parseURIEncoded(workspaces.get(wsID));
-            } catch (SVNException e) {
-                MessageDialog.openError(MindClient.getShell(),
-                        "Synchronization Error",
-                        "Malformed workspace location.");
-                continue;
-            }
             newWorkspaceDir.mkdir();
-            monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-1$
-            checkoutWorkspace(svnClient, url, newWorkspaceDir);
+
+            monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-2$
+            checkoutWorkspace(workspaces.get(wsID), newWorkspaceDir);
         }
     }
 
-    private void checkoutWorkspace(SVNUpdateClient svnClient, SVNURL url,
-            File dir) {
+    private void checkoutWorkspace(String url, File dir) {
         try {
-            svnClient.doCheckout(url, dir, SVNRevision.HEAD, SVNRevision.HEAD,
-                    true);
-        } catch (SVNException e) {
+            svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
+        } catch (ClientException e) {
             e.printStackTrace();
         }
     }
 
-    private void updateWorkspace(SVNUpdateClient svnClient, File dir) {
+    private void updateWorkspace(File dir) {
         try {
-            svnClient.doUpdate(dir, SVNRevision.HEAD, true);
-        } catch (SVNException e) {
+            svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
+        } catch (ClientException e) {
             e.printStackTrace();
         }
     }

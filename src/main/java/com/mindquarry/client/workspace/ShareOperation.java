@@ -7,15 +7,11 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.window.Window;
-import org.tmatesoft.svn.core.SVNException;
-import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
-import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
-import org.tmatesoft.svn.core.wc.SVNCommitClient;
-import org.tmatesoft.svn.core.wc.SVNWCClient;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.springframework.beans.factory.BeanFactory;
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.SVNClientInterface;
+import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.RegUtil;
@@ -27,8 +23,15 @@ import com.mindquarry.client.util.RegUtil;
 public class ShareOperation implements IRunnableWithProgress {
     private final MindClient client;
 
+    private final SVNClientInterface svnClient;
+
     public ShareOperation(MindClient client) {
         this.client = client;
+
+        // get SVN client interface component
+        BeanFactory factory = client.getFactory();
+        svnClient = (SVNClientInterface) factory
+                .getBean(SVNClientInterface.class.getName());
     }
 
     /**
@@ -39,14 +42,10 @@ public class ShareOperation implements IRunnableWithProgress {
         monitor.beginTask("Sharing workspaces ...", IProgressMonitor.UNKNOWN);
 
         // init SVN types
-        ISVNAuthenticationManager authManager = SVNWCUtil
-                .createDefaultAuthenticationManager(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
-                        .getProperty(MindClient.PASSWORD_KEY));
-        SVNCommitClient svnClient = new SVNCommitClient(authManager, SVNWCUtil
-                .createDefaultOptions(true));
-        SVNWCClient wcClient = new SVNWCClient(authManager, SVNWCUtil
-                .createDefaultOptions(true));
+        svnClient.username(client.getOptions()
+                .getProperty(MindClient.LOGIN_KEY));
+        svnClient.password(client.getOptions().getProperty(
+                MindClient.PASSWORD_KEY));
 
         // get directory for workspaces
         File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
@@ -59,10 +58,10 @@ public class ShareOperation implements IRunnableWithProgress {
             if (monitor.isCanceled()) {
                 return;
             }
-            checkStatus(wsDir, wcClient);
-            // retrieve commit message
+            checkStatus(wsDir);
+            // TODO fix invalid thread access for this dialog
 
-            // TODO fix invalid thread access
+            // retrieve commit message
             // InputDialog dlg = new InputDialog(MindClient.getShell(),
             // "Changes Description",
             // "Please provide a short description of the changes you have made
@@ -70,10 +69,12 @@ public class ShareOperation implements IRunnableWithProgress {
             // + wsDir.getName() + ".",
             // "Description of your changes.", null);
             // if (dlg.open() == Window.OK) {
+
+            // commit changes
             try {
-                svnClient.doCommit(new File[] { wsDir }, false,
-                        "sharing changes", true, true);
-            } catch (SVNException e) {
+                svnClient.commit(new String[] { wsDir.getAbsolutePath() },
+                        "shared changes", true);
+            } catch (ClientException e) {
                 e.printStackTrace();
                 continue;
             }
@@ -82,16 +83,26 @@ public class ShareOperation implements IRunnableWithProgress {
         monitor.done();
     }
 
-    private void checkStatus(File wsDir, SVNWCClient wcClient) {
-        for (File item : wsDir.listFiles()) {
-            if ((!SVNWCUtil.isVersionedDirectory(item))
-                    && (!item.getName().equals(".svn")) //$NON-NLS-1$ 
-                    && (item.isDirectory())) {
-                try {
-                    wcClient.doAdd(item, true, false, false, true);
-                } catch (SVNException e) {
-                    e.printStackTrace();
+    private void checkStatus(File item) {
+        for (File child : item.listFiles()) {
+            if (child.getName().equals(".svn")) { //$NON-NLS-1$
+                continue;
+            }
+            try {
+                // retrieve local status
+                Status status = svnClient.singleStatus(child.getAbsolutePath(),
+                        false);
+
+                // check if the item is managed by SVN, if it is a directory
+                // check also child for finding not managed items in the
+                // subdirectories
+                if (!status.isManaged()) {
+                    svnClient.add(child.getAbsolutePath(), true);
+                } else if (child.isDirectory()) {
+                    checkStatus(child);
                 }
+            } catch (ClientException e) {
+                e.printStackTrace();
             }
         }
     }
