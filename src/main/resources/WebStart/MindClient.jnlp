@@ -31,17 +31,13 @@
 		<all-permissions />
 	</security>
 
-	<resources>
+	<resources os="Windows" arch="x86">
 		<j2se version="1.5.0+"
 			href="http://java.sun.com/products/autodl/j2se"
-			initial-heap-size="64m" max-heap-size="128m" />
-		<jar href="dist/MindClient.jar" />
-		<nativelib href="swt-lib.jar" />
-	</resources>
+			initial-heap-size="32m" max-heap-size="64m" />
 
-	<resources os="Windows" arch="x86">
+		<jar href="dist/MindClient.jar" />
 		<nativelib href="swt-native-win32.jar" />
-		<jar href="swt-win32.jar" />
 	</resources>
 
 	<application-desc main-class="com.mindquarry.client.MindClient">
