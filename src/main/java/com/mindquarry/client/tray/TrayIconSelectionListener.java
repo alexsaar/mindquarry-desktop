@@ -40,7 +40,7 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 public class TrayIconSelectionListener implements SelectionListener {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
-    public static final String TITLE_COLUMN = "title";
+    public static final String TITLE_COLUMN = "title"; //$NON-NLS-1$
 
     private final Display display;
 
@@ -50,29 +50,11 @@ public class TrayIconSelectionListener implements SelectionListener {
 
     private Composite container = null;
 
-    private Group workspacesGroup = null;
-
-    private Group tasksGroup = null;
-
-    private Group wikiGroup = null;
-
-    private Button syncButton = null;
-
-    private Button shareButton = null;
-
     private Text wikiTextArea = null;
-
-    private Button postButton = null;
-
-    private Button clearButton = null;
 
     private Table taskTable = null;
 
     private TableViewer taskTableViewer = null;
-
-    private Button moreButton = null;
-
-    private Button button = null;
 
     public TrayIconSelectionListener(Display display, MindClient client) {
         this.display = display;
@@ -189,13 +171,13 @@ public class TrayIconSelectionListener implements SelectionListener {
         gridData.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData.grabExcessHorizontalSpace = true;
 
-        workspacesGroup = new Group(container, SWT.SHADOW_NONE);
+        Group workspacesGroup = new Group(container, SWT.SHADOW_NONE);
         workspacesGroup.setBackground(container.getBackground());
         workspacesGroup.setText("Workspaces");
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
 
-        shareButton = new Button(workspacesGroup, SWT.NONE);
+        Button shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/up.png")));
         shareButton.setLayoutData(gridData11);
@@ -203,7 +185,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
                 client, shareButton));
 
-        syncButton = new Button(workspacesGroup, SWT.PUSH);
+        Button syncButton = new Button(workspacesGroup, SWT.PUSH);
         syncButton.setText("Synchronize");
         syncButton.setLayoutData(gridData21);
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
@@ -233,7 +215,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         gridData1.grabExcessHorizontalSpace = true;
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
 
-        tasksGroup = new Group(container, SWT.NONE);
+        Group tasksGroup = new Group(container, SWT.NONE);
         tasksGroup.setBackground(container.getBackground());
         tasksGroup.setLayoutData(gridData1);
         tasksGroup.setLayout(gridLayout2);
@@ -250,7 +232,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         activityColumn.setWidth(100);
         activityColumn.setText("Task");
 
-        moreButton = new Button(tasksGroup, SWT.NONE);
+        Button moreButton = new Button(tasksGroup, SWT.NONE);
         moreButton.setEnabled(false);
         moreButton.setText("Other");
         moreButton.setLayoutData(gridData4);
@@ -259,7 +241,7 @@ public class TrayIconSelectionListener implements SelectionListener {
                         .getResourceAsStream(
                                 "/icons/24x24/actions/system-search.png")));
 
-        button = new Button(tasksGroup, SWT.NONE);
+        Button button = new Button(tasksGroup, SWT.NONE);
         button.setEnabled(false);
         button.setText("Done");
         button.setLayoutData(gridData8);
@@ -291,7 +273,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         gridData2.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData2.grabExcessVerticalSpace = true;
 
-        wikiGroup = new Group(container, SWT.NONE);
+        Group wikiGroup = new Group(container, SWT.NONE);
         wikiGroup.setBackground(container.getBackground());
         wikiGroup.setLayoutData(gridData2);
         wikiGroup.setLayout(gridLayout1);
@@ -301,14 +283,14 @@ public class TrayIconSelectionListener implements SelectionListener {
                 | SWT.BORDER);
         wikiTextArea.setLayoutData(gridData3);
 
-        clearButton = new Button(wikiGroup, SWT.NONE);
+        Button clearButton = new Button(wikiGroup, SWT.NONE);
         clearButton.setText("Clear");
         clearButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/edit-clear.png")));
         clearButton.setEnabled(false);
         clearButton.setLayoutData(gridData6);
 
-        postButton = new Button(wikiGroup, SWT.NONE);
+        Button postButton = new Button(wikiGroup, SWT.NONE);
         postButton.setText("Post");
         postButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/document-new.png")));

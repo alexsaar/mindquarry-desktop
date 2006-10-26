@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
-import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
@@ -66,11 +64,27 @@ public class MindClient {
 
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 "/icons/16x16/mindquarry.png")); //$NON-NLS-1$
+
+        options = new Properties();
+        optionsFile = new File(MINDCLIENT_SETTINGS);
     }
 
     public static void main(String[] args) {
         final MindClient mindclient = new MindClient();
-        mindclient.loadOptions();
+
+        // init display & shell
+        final Display display = Display.getCurrent();
+        shell = new Shell(SWT.NONE);
+
+        // check arguments
+        if (args.length == 3) {
+            mindclient.options.put(LOGIN_KEY, args[0]);
+            mindclient.options.put(PASSWORD_KEY, args[1]);
+            mindclient.options.put(ENDPOINT_KEY, args[2]);
+            mindclient.saveOptions();
+        } else {
+            mindclient.loadOptions();
+        }
 
         RuntimeMXBean rtBean = ManagementFactory.getRuntimeMXBean();
         if (rtBean.getVmVersion().startsWith("1.5")) { //$NON-NLS-1$
@@ -80,8 +94,6 @@ public class MindClient {
         }
 
         // init tray icon
-        final Display display = Display.getCurrent();
-        shell = new Shell(SWT.NONE);
         Tray tray = display.getSystemTray();
 
         if (tray != null) {
@@ -147,11 +159,6 @@ public class MindClient {
             // there must be a tray
             System.exit(1);
         }
-        // init javaSVN for http & https
-        DAVRepositoryFactory.setup();
-        // init javaSVN for SVN (over svn and svn+ssh)
-        SVNRepositoryFactoryImpl.setup();
-
         while (!tray.isDisposed()) {
             if (!display.readAndDispatch())
                 display.sleep();
@@ -160,13 +167,22 @@ public class MindClient {
     }
 
     private void loadOptions() {
-        options = new Properties();
-
-        optionsFile = new File(MINDCLIENT_SETTINGS);
         try {
             if (!optionsFile.exists()) {
+                // init options with dummy values
+                options.put(LOGIN_KEY,
+                        "Your login for your quarry installation");
+                options.put(PASSWORD_KEY, "password");
+                options.put(ENDPOINT_KEY,
+                        "The location of your quarry installation.");
+
+                // request option values from user
+                OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
+                        icon, options);
+                if (dlg.open() == Window.OK) {
+                    saveOptions();
+                }
                 optionsFile.createNewFile();
-                initOptions(options);
                 saveOptions();
             } else {
                 FileInputStream fis = new FileInputStream(optionsFile);
@@ -177,12 +193,6 @@ public class MindClient {
             MessageDialog.openError(shell, "Error",
                     "Could not load MindClient settings.");
         }
-    }
-
-    private void initOptions(Properties props) {
-        props.put(LOGIN_KEY, "Your login for your quarry installation.");
-        props.put(PASSWORD_KEY, "password");
-        props.put(ENDPOINT_KEY, "The location of your quarry installation.");
     }
 
     private void saveOptions() {
