@@ -25,7 +25,8 @@ import org.tigris.subversion.javahl.SVNClientInterface;
 import org.xml.sax.InputSource;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.RegUtil;
+import com.mindquarry.client.util.HomeUtil;
+import com.mindquarry.client.util.OperatingSystem;
 import com.mindquarry.client.xml.TeamlistContentHandler;
 
 /**
@@ -112,26 +113,32 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 MindClient.PASSWORD_KEY));
 
         // get directory for workspaces
-        File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
-        if (!workspacesDir.exists()) {
-            workspacesDir.mkdir();
+        File teamspacesDir;
+        if (client.getOS() == OperatingSystem.WINDOWS) {
+            teamspacesDir = new File(HomeUtil.getTeamspaceFolderWindows());
+        } else {
+            teamspacesDir = new File(HomeUtil.getTeamspaceFolder());
+        }
+        // check if teamspace dir already exists, if not create it
+        if (!teamspacesDir.exists()) {
+            teamspacesDir.mkdirs();
         }
         // loop existing workspace directories
-        for (String wsID : workspacesDir.list()) {
+        for (String tsID : teamspacesDir.list()) {
             if (monitor.isCanceled()) {
                 return;
             }
             // loop received workspace items
-            if (workspaces.containsKey(wsID)) {
+            if (workspaces.containsKey(tsID)) {
                 // remove entry from workspace list
-                workspaces.remove(wsID);
+                workspaces.remove(tsID);
 
                 // TODO check if folder is under version control
 
                 // update workspace
-                monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-2$
-                updateWorkspace(new File(workspacesDir.getAbsolutePath()
-                        + "/" + wsID)); //$NON-NLS-1$
+                monitor.setTaskName("Synchronizing workspace " + tsID + " ..."); //$NON-NLS-2$
+                updateWorkspace(new File(teamspacesDir.getAbsolutePath()
+                        + "/" + tsID)); //$NON-NLS-1$
             }
         }
         // add additional workspace directories
@@ -140,7 +147,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 return;
             }
             // create directory for the new workspace
-            File newWorkspaceDir = new File(workspacesDir.getAbsolutePath()
+            File newWorkspaceDir = new File(teamspacesDir.getAbsolutePath()
                     + "/" + wsID); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
 

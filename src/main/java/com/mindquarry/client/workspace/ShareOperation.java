@@ -14,7 +14,8 @@ import org.tigris.subversion.javahl.SVNClientInterface;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.RegUtil;
+import com.mindquarry.client.util.HomeUtil;
+import com.mindquarry.client.util.OperatingSystem;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -48,17 +49,18 @@ public class ShareOperation implements IRunnableWithProgress {
                 MindClient.PASSWORD_KEY));
 
         // get directory for workspaces
-        File workspacesDir = new File(RegUtil.getMyDocumentsFolder());
-        if (!workspacesDir.exists()) {
-            // TODO check if this is right
-            return;
+        File teamspacesDir;
+        if(client.getOS() == OperatingSystem.WINDOWS) {
+            teamspacesDir = new File(HomeUtil.getTeamspaceFolderWindows());
+        } else {
+            teamspacesDir = new File(HomeUtil.getTeamspaceFolder());
         }
         // loop existing workspace directories
-        for (File wsDir : workspacesDir.listFiles()) {
+        for (File tsDir : teamspacesDir.listFiles()) {
             if (monitor.isCanceled()) {
                 return;
             }
-            checkStatus(wsDir);
+            checkStatus(tsDir);
             // TODO fix invalid thread access for this dialog
 
             // retrieve commit message
@@ -72,7 +74,7 @@ public class ShareOperation implements IRunnableWithProgress {
 
             // commit changes
             try {
-                svnClient.commit(new String[] { wsDir.getAbsolutePath() },
+                svnClient.commit(new String[] { tsDir.getAbsolutePath() },
                         "shared changes", true);
             } catch (ClientException e) {
                 e.printStackTrace();

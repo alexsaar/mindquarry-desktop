@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.util.Properties;
 
@@ -30,10 +31,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
+import com.mindquarry.client.util.HomeUtil;
+import com.mindquarry.client.util.OperatingSystem;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
+ * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
+ *         Saar</a>
  */
 public class MindClient {
     public static final String ENDPOINT_KEY = "endpoint"; //$NON-NLS-1$
@@ -42,7 +47,11 @@ public class MindClient {
 
     public static final String LOGIN_KEY = "login"; //$NON-NLS-1$
 
-    public static final String MINDCLIENT_SETTINGS = "mindclient.settings"; //$NON-NLS-1$
+    public static final String MINDCLIENT_SETTINGS = HomeUtil
+            .getSettingsFolder()
+            + "/mindclient.settings"; //$NON-NLS-1$
+
+    private final OperatingSystem OS;
 
     private static Shell shell;
 
@@ -65,8 +74,18 @@ public class MindClient {
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 "/icons/16x16/mindquarry.png")); //$NON-NLS-1$
 
+        // init settings file & name
         options = new Properties();
         optionsFile = new File(MINDCLIENT_SETTINGS);
+
+        // check underlying OS version
+        OperatingSystemMXBean rtBean = ManagementFactory
+                .getOperatingSystemMXBean();
+        if (rtBean.getName().startsWith("Windows")) { //$NON-NLS-1$
+            OS = OperatingSystem.WINDOWS;
+        } else {
+            OS = OperatingSystem.OTHER;
+        }
     }
 
     public static void main(String[] args) {
@@ -86,6 +105,7 @@ public class MindClient {
             mindclient.loadOptions();
         }
 
+        // check Java version
         RuntimeMXBean rtBean = ManagementFactory.getRuntimeMXBean();
         if (rtBean.getVmVersion().startsWith("1.5")) { //$NON-NLS-1$
             mindclient.log.info("Using Java 5");
@@ -180,10 +200,10 @@ public class MindClient {
                 OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
                         icon, options);
                 if (dlg.open() == Window.OK) {
+                    optionsFile.getParentFile().mkdirs();
+                    optionsFile.createNewFile();
                     saveOptions();
                 }
-                optionsFile.createNewFile();
-                saveOptions();
             } else {
                 FileInputStream fis = new FileInputStream(optionsFile);
                 options.loadFromXML(fis);
@@ -227,5 +247,9 @@ public class MindClient {
 
     public BeanFactory getFactory() {
         return factory;
+    }
+
+    public OperatingSystem getOS() {
+        return OS;
     }
 }
