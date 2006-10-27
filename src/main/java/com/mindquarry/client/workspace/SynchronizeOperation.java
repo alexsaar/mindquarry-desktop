@@ -17,6 +17,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
@@ -56,8 +57,20 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 IProgressMonitor.UNKNOWN);
 
         HashMap<String, String> workspaces = new HashMap<String, String>();
-        getTeamspaceList(workspaces, monitor);
-
+        if (!getTeamspaceList(workspaces, monitor)) {
+            // show (asynchronously) error dialog
+            MindClient.getShell().getDisplay().syncExec(new Runnable() {
+                /**
+                 * @see java.lang.Runnable#run()
+                 */
+                public void run() {
+                    MessageDialog.openError(MindClient.getShell(), "Error",
+                            "Could not retrieve list of teamspaces.");
+                }
+            });
+            return;
+        }
+        // check cancel state
         if (monitor.isCanceled()) {
             return;
         }
@@ -65,7 +78,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         monitor.done();
     }
 
-    private void getTeamspaceList(HashMap<String, String> workspaces,
+    private boolean getTeamspaceList(HashMap<String, String> workspaces,
             IProgressMonitor monitor) {
         HttpClient httpClient = new HttpClient();
         httpClient.getState().setCredentials(
@@ -82,16 +95,18 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         try {
             monitor.setTaskName("Retrieving teamspace list ...");
-
             httpClient.executeMethod(get);
+
+            if (get.getStatusCode() != 200) {
+                return false;
+            }
             String teamlistXML = get.getResponseBodyAsString();
             InputStream is = new ByteArrayInputStream(teamlistXML.getBytes());
             get.releaseConnection();
 
             if (monitor.isCanceled()) {
-                return;
+                return true;
             }
-
             // parse teamspace list
             SAXParserFactory factory = SAXParserFactory.newInstance();
             SAXParser parser = factory.newSAXParser();
@@ -99,7 +114,9 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                     workspaces));
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     private void updateWorkspaces(HashMap<String, String> workspaces,

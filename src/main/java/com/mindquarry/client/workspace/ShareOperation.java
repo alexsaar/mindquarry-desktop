@@ -7,6 +7,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
@@ -50,37 +51,40 @@ public class ShareOperation implements IRunnableWithProgress {
 
         // get directory for workspaces
         File teamspacesDir;
-        if(client.getOS() == OperatingSystem.WINDOWS) {
+        if (client.getOS() == OperatingSystem.WINDOWS) {
             teamspacesDir = new File(HomeUtil.getTeamspaceFolderWindows());
         } else {
             teamspacesDir = new File(HomeUtil.getTeamspaceFolder());
         }
         // loop existing workspace directories
-        for (File tsDir : teamspacesDir.listFiles()) {
+        for (final File tsDir : teamspacesDir.listFiles()) {
             if (monitor.isCanceled()) {
                 return;
             }
             checkStatus(tsDir);
-            // TODO fix invalid thread access for this dialog
 
-            // retrieve commit message
-            // InputDialog dlg = new InputDialog(MindClient.getShell(),
-            // "Changes Description",
-            // "Please provide a short description of the changes you have made
-            // to workspace "
-            // + wsDir.getName() + ".",
-            // "Description of your changes.", null);
-            // if (dlg.open() == Window.OK) {
-
+            // retrieve (asynchronously) commit message
+            final InputDialog dlg = new InputDialog(MindClient.getShell(),
+                    "Change Description",
+                    "Please provide a short description of the changes you have made to workspace "
+                            + tsDir.getName() + ".",
+                    "Description of your changes.", null);
+            MindClient.getShell().getDisplay().syncExec(new Runnable() {
+                /**
+                 * @see java.lang.Runnable#run()
+                 */
+                public void run() {
+                    dlg.open();
+                }
+            });
             // commit changes
             try {
-                svnClient.commit(new String[] { tsDir.getAbsolutePath() },
-                        "shared changes", true);
+                svnClient.commit(new String[] { tsDir.getAbsolutePath() }, dlg
+                        .getValue(), true);
             } catch (ClientException e) {
                 e.printStackTrace();
                 continue;
             }
-            // }
         }
         monitor.done();
     }
