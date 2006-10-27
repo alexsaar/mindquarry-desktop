@@ -88,7 +88,7 @@ public class MindClient {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final MindClient mindclient = new MindClient();
 
         // init display & shell
@@ -96,10 +96,36 @@ public class MindClient {
         shell = new Shell(SWT.NONE);
 
         // check arguments
-        if (args.length == 3) {
-            mindclient.options.put(LOGIN_KEY, args[0]);
-            mindclient.options.put(PASSWORD_KEY, args[1]);
-            mindclient.options.put(ENDPOINT_KEY, args[2]);
+        if(mindclient.optionsFile.exists()) {
+            mindclient.loadOptions();
+        } else if (args.length == 1) {
+            mindclient.options.put(ENDPOINT_KEY, args[0]);
+            mindclient.options.put(LOGIN_KEY, ""); //$NON-NLS-1$
+            mindclient.options.put(PASSWORD_KEY, ""); //$NON-NLS-1$
+            
+            OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
+                    mindclient.icon, mindclient.options);
+            if (dlg.open() == Window.OK) {
+                mindclient.optionsFile.getParentFile().mkdirs();
+                mindclient.optionsFile.createNewFile();
+            }
+            mindclient.saveOptions();
+        } else if (args.length == 2) {
+            mindclient.options.put(ENDPOINT_KEY, args[0]);
+            mindclient.options.put(LOGIN_KEY, args[1]);
+            mindclient.options.put(PASSWORD_KEY, ""); //$NON-NLS-1$
+            
+            OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
+                    mindclient.icon, mindclient.options);
+            if (dlg.open() == Window.OK) {
+                mindclient.optionsFile.getParentFile().mkdirs();
+                mindclient.optionsFile.createNewFile();
+            }
+            mindclient.saveOptions();
+        } else if (args.length == 3) {
+            mindclient.options.put(ENDPOINT_KEY, args[0]);
+            mindclient.options.put(LOGIN_KEY, args[1]);
+            mindclient.options.put(PASSWORD_KEY, args[2]);
             mindclient.saveOptions();
         } else {
             mindclient.loadOptions();
@@ -218,6 +244,10 @@ public class MindClient {
     private void saveOptions() {
         FileOutputStream fos;
         try {
+            if(!optionsFile.exists()) {
+                optionsFile.getParentFile().mkdirs();
+                optionsFile.createNewFile();
+            }
             fos = new FileOutputStream(optionsFile);
             options.storeToXML(fos, "MindCLient Settings");
         } catch (Exception e) {
