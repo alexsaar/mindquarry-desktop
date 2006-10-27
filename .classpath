@@ -13,31 +13,11 @@
 	<classpathentry kind="lib" path="lib/javasvn/ganymed.jar"/>
 	<classpathentry kind="lib" path="lib/javasvn/javasvn.jar"/>
 	<classpathentry kind="lib" path="lib/javasvn/javasvn-javahl.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-aop.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-beans.jar"/>
-	<classpathentry kind="lib" path="lib/spring/weavers/spring-agent.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
-	<classpathentry kind="lib" path="lib/spring/spring-aspects.jar"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-context.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-core.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-dao.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-hibernate2.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-hibernate3.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-ibatis.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jca.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jdbc.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jdo.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jms.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jmx.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-jpa.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-portlet.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-remoting.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-struts.jar"/>
 	<classpathentry kind="lib" path="lib/spring/modules/spring-support.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-toplink.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-web.jar"/>
-	<classpathentry kind="lib" path="lib/spring/modules/spring-webmvc.jar"/>
-	<classpathentry kind="lib" path="lib/spring/weavers/spring-tomcat-weaver.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
