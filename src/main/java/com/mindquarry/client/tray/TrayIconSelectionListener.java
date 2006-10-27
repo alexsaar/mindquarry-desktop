@@ -151,16 +151,19 @@ public class TrayIconSelectionListener implements SelectionListener {
         gridData22.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData22.horizontalSpan = 2;
         gridData22.grabExcessHorizontalSpace = true;
+        
         GridData gridData12 = new GridData();
         gridData12.grabExcessHorizontalSpace = true;
         gridData12.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData12.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData12.horizontalSpan = 2;
         gridData12.grabExcessVerticalSpace = true;
+        
         GridData gridData21 = new GridData();
         gridData21.grabExcessVerticalSpace = false;
         gridData21.verticalAlignment = org.eclipse.swt.layout.GridData.END;
         gridData21.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
+        
         GridData gridData11 = new GridData();
         gridData11.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
         gridData11.verticalAlignment = org.eclipse.swt.layout.GridData.END;
@@ -200,17 +203,20 @@ public class TrayIconSelectionListener implements SelectionListener {
     private void createTasksGroup() {
         GridData gridData8 = new GridData();
         gridData8.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
+        
         GridData gridData4 = new GridData();
         gridData4.grabExcessHorizontalSpace = true;
         gridData4.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
         GridLayout gridLayout2 = new GridLayout();
         gridLayout2.numColumns = 2;
+        
         GridData gridData7 = new GridData();
         gridData7.grabExcessHorizontalSpace = true;
         gridData7.grabExcessVerticalSpace = true;
         gridData7.heightHint = 100;
         gridData7.horizontalSpan = 2;
         gridData7.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
+        
         GridData gridData1 = new GridData();
         gridData1.grabExcessHorizontalSpace = true;
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
