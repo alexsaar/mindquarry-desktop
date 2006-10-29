@@ -1,12 +1,10 @@
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -20,63 +18,39 @@ public class TeamlistSample {
             /**
              * @see org.eclipse.jface.window.Window#createContents(org.eclipse.swt.widgets.Composite)
              */
+            @Override
             protected Control createContents(Composite parent) {
-                GridLayout layout = new GridLayout(1, true);
-                parent.setLayout(layout);
+                parent.setLayout(new FillLayout());
 
-                // ScrolledComposite scroller = new ScrolledComposite(parent,
-                // SWT.BORDER | SWT.V_SCROLL);
-                // scroller.setLayout(layout);
-                // scroller.setLayoutData(new GridData(GridData.FILL_BOTH));
+                // Create the ScrolledComposite to scroll horizontally and
+                // vertically
+                ScrolledComposite sc = new ScrolledComposite(parent,
+                        SWT.H_SCROLL | SWT.V_SCROLL);
 
-                layout = new GridLayout(3, true);
+                // Create a child composite to hold the controls
+                Composite child = new Composite(sc, SWT.NONE);
+                child.setLayout(new FillLayout());
 
-                Composite group = new Composite(parent, SWT.BORDER);
+                Composite group = new Composite(child, SWT.BORDER);
                 group.setBackground(getShell().getDisplay().getSystemColor(
                         SWT.COLOR_WHITE));
-                group.setLayout(layout);
-                group.setLayoutData(new GridData(GridData.FILL_BOTH));
+                group.setLayout(new GridLayout(3, true));
 
-                final Image img = new Image(Display.getCurrent(), getClass()
+                Image img = new Image(Display.getCurrent(), getClass()
                         .getResourceAsStream("/images/options.png")); //$NON-NLS-1$
 
-                Canvas canvas = new Canvas(group, SWT.NONE);
-                canvas.setBackground(getShell().getDisplay().getSystemColor(
-                        SWT.COLOR_WHITE));
-                canvas.addPaintListener(new PaintListener() {
-                    public void paintControl(PaintEvent e) {
-                        e.gc.drawImage(img, 0, 0, 60, 50, 0, 0, 60, 50);
-                    }
-                });
-                canvas = new Canvas(group, SWT.NONE);
-                canvas.setBackground(getShell().getDisplay().getSystemColor(
-                        SWT.COLOR_WHITE));
-                canvas.addPaintListener(new PaintListener() {
-                    public void paintControl(PaintEvent e) {
-                        e.gc.drawImage(img, 0, 0, 60, 50, 0, 0, 60, 50);
-                    }
-                });
-                canvas = new Canvas(group, SWT.NONE);
-                canvas.setBackground(getShell().getDisplay().getSystemColor(
-                        SWT.COLOR_WHITE));
-                canvas.addPaintListener(new PaintListener() {
-                    public void paintControl(PaintEvent e) {
-                        e.gc.drawImage(img, 0, 0, 60, 50, 0, 0, 60, 50);
-                    }
-                });
-                canvas = new Canvas(group, SWT.NONE);
-                canvas.setBackground(getShell().getDisplay().getSystemColor(
-                        SWT.COLOR_WHITE));
-                canvas.addPaintListener(new PaintListener() {
-                    public void paintControl(PaintEvent e) {
-                        e.gc.drawImage(img, 0, 0, 60, 50, 0, 0, 60, 50);
-                    }
-                });
+                final ImageDescriptor imgDesc = ImageDescriptor
+                        .createFromImage(img);
+
+                new TeamspaceItem(group, "test", "first test item", imgDesc);
+                new TeamspaceItem(group, "test2", "second test item", imgDesc);
+                new TeamspaceItem(group, "test3", "thirt test item", imgDesc);
+                new TeamspaceItem(group, "test4", "fourth test item", imgDesc);
                 
-                Button button = new Button(group, SWT.TOGGLE);
-                button.setBackground(group.getBackground());
-                button.setText("Synchronize");
-                button.setImage(img);
+                sc.setContent(child);
+                sc.setMinSize(200, 200);
+                sc.setExpandHorizontal(true);
+                sc.setExpandVertical(true);
                 return parent;
             }
         };
