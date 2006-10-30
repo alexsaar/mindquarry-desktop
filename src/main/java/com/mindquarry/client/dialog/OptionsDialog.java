@@ -12,6 +12,8 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
@@ -42,7 +44,7 @@ public class OptionsDialog extends TitleAreaDialog {
     private CLabel quarryEndpointLabel = null;
 
     private Text quarryEndpointText = null;
-    
+
     private FieldValidator validator = null;
 
     private final Image icon;
@@ -110,7 +112,7 @@ public class OptionsDialog extends TitleAreaDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         validator = new FieldValidator();
-        
+
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 1;
         gridLayout.makeColumnsEqualWidth = true;
@@ -126,7 +128,8 @@ public class OptionsDialog extends TitleAreaDialog {
         loginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         loginText.setText(options.getProperty(MindClient.LOGIN_KEY));
         loginText.addModifyListener(validator);
-        
+        loginText.addFocusListener(new TextFocusListener(loginText));
+
         pwdLabel = new CLabel(composite, SWT.LEFT);
         pwdLabel.setText("Your Password:");
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -135,7 +138,8 @@ public class OptionsDialog extends TitleAreaDialog {
         pwdText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         pwdText.setText(options.getProperty(MindClient.PASSWORD_KEY));
         pwdText.addModifyListener(validator);
-        
+        pwdText.addFocusListener(new TextFocusListener(pwdText));
+
         quarryEndpointLabel = new CLabel(composite, SWT.LEFT);
         quarryEndpointLabel.setText("Location of your Quarry:");
         quarryEndpointLabel
@@ -147,6 +151,8 @@ public class OptionsDialog extends TitleAreaDialog {
         quarryEndpointText
                 .setText(options.getProperty(MindClient.ENDPOINT_KEY));
         quarryEndpointText.addModifyListener(validator);
+        quarryEndpointText.addFocusListener(new TextFocusListener(
+                quarryEndpointText));
 
         return composite;
     }
@@ -162,7 +168,7 @@ public class OptionsDialog extends TitleAreaDialog {
                 true);
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
-        
+
         validator.init();
     }
 
@@ -175,10 +181,33 @@ public class OptionsDialog extends TitleAreaDialog {
         super.okPressed();
     }
 
+    private class TextFocusListener implements FocusListener {
+        private Text text;
+
+        public TextFocusListener(Text text) {
+            this.text = text;
+        }
+
+        /**
+         * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
+         */
+        public void focusGained(FocusEvent e) {
+            text.setSelection(0, text.getText().length());
+        }
+
+        /**
+         * @see org.eclipse.swt.events.FocusListener#focusLost(org.eclipse.swt.events.FocusEvent)
+         */
+        public void focusLost(FocusEvent e) {
+            // nothing to do here
+        }
+    }
+
     /**
-     * Field validator for the OptionsDialog. 
+     * Field validator for the OptionsDialog.
      * 
-     * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
+     * @author <a
+     *         href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
      *         Saar</a>
      */
     class FieldValidator implements ModifyListener {
@@ -186,15 +215,15 @@ public class OptionsDialog extends TitleAreaDialog {
          * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
          */
         public void modifyText(ModifyEvent event) {
-            if(loginText.getText().equals("")) { //$NON-NLS-1$
+            if (loginText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage("Login ID can not be empty.");
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
-            } else if(pwdText.getText().equals("")) { //$NON-NLS-1$
+            } else if (pwdText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage("Password can not be empty.");
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
-            } else if(quarryEndpointText.getText().equals("")) { //$NON-NLS-1$
+            } else if (quarryEndpointText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage("Quarry location can not be empty.");
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
@@ -210,7 +239,7 @@ public class OptionsDialog extends TitleAreaDialog {
             setErrorMessage(null);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
         }
-        
+
         public void init() {
             modifyText(null);
         }

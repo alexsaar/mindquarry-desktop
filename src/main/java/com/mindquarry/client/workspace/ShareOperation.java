@@ -27,7 +27,7 @@ public class ShareOperation implements IRunnableWithProgress {
 
     private final SVNClientInterface svnClient;
 
-    public ShareOperation(MindClient client) {
+    public ShareOperation(final MindClient client) {
         this.client = client;
 
         // get SVN client interface component

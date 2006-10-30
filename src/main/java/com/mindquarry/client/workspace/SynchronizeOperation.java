@@ -3,32 +3,27 @@
  */
 package com.mindquarry.client.workspace;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.SVNClientInterface;
-import org.xml.sax.InputSource;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.HomeUtil;
+import com.mindquarry.client.util.HttpUtil;
+import com.mindquarry.client.util.MessageDialogUtil;
 import com.mindquarry.client.util.OperatingSystem;
-import com.mindquarry.client.xml.TeamlistContentHandler;
+import com.mindquarry.client.xml.TeamListTransformer;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -39,7 +34,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
     private final SVNClientInterface svnClient;
 
-    public SynchronizeOperation(MindClient client) {
+    public SynchronizeOperation(final MindClient client) {
         this.client = client;
 
         // get SVN client interface component
@@ -56,66 +51,56 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         monitor.beginTask("Synchronizing workspaces ...",
                 IProgressMonitor.UNKNOWN);
 
-        HashMap<String, String> workspaces = new HashMap<String, String>();
-        if (!getTeamspaceList(workspaces, monitor)) {
-            // show (asynchronously) error dialog
-            MindClient.getShell().getDisplay().syncExec(new Runnable() {
-                /**
-                 * @see java.lang.Runnable#run()
-                 */
-                public void run() {
-                    MessageDialog.openError(MindClient.getShell(), "Error",
-                            "Could not retrieve list of teamspaces.");
-                }
-            });
+        HashMap<String, String> teamspaces = new HashMap<String, String>();
+        if (!getTeamspaceList(teamspaces, monitor)) {
             return;
         }
         // check cancel state
         if (monitor.isCanceled()) {
             return;
         }
-        updateWorkspaces(workspaces, monitor);
+        updateWorkspaces(teamspaces, monitor);
         monitor.done();
     }
 
-    private boolean getTeamspaceList(HashMap<String, String> workspaces,
+    private boolean getTeamspaceList(HashMap<String, String> teamspaces,
             IProgressMonitor monitor) {
-        HttpClient httpClient = new HttpClient();
-        httpClient.getState().setCredentials(
-                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
-                        AuthScope.ANY_REALM),
-                new UsernamePasswordCredentials(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
-                        .getProperty(MindClient.PASSWORD_KEY)));
+        monitor.setTaskName("Retrieving teamspace list ...");
 
-        GetMethod get = new GetMethod(client.getOptions().getProperty(
-                MindClient.ENDPOINT_KEY)
-                + "/teamspace/teamlist.xml"); //$NON-NLS-1$
-        get.setDoAuthentication(true);
-
+        String content = null;
         try {
-            monitor.setTaskName("Retrieving teamspace list ...");
-            httpClient.executeMethod(get);
-
-            if (get.getStatusCode() != 200) {
-                return false;
-            }
-            String teamlistXML = get.getResponseBodyAsString();
-            InputStream is = new ByteArrayInputStream(teamlistXML.getBytes());
-            get.releaseConnection();
-
-            if (monitor.isCanceled()) {
-                return true;
-            }
-            // parse teamspace list
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser parser = factory.newSAXParser();
-            parser.parse(new InputSource(is), new TeamlistContentHandler(
-                    workspaces));
+            content = HttpUtil.getContent(client.getOptions().getProperty(
+                    MindClient.LOGIN_KEY), client.getOptions().getProperty(
+                    MindClient.PASSWORD_KEY), client.getOptions().getProperty(
+                    MindClient.ENDPOINT_KEY)
+                    + "/teamspace/teamlist.xml"); //$NON-NLS-1$
         } catch (Exception e) {
+            MessageDialogUtil
+                    .displaySyncErrorMsg("Could not retrieve list of teamspaces due to unexpected connection errors.");
+            return false;
+        }
+        // check if some contant was received
+        if (content == null) {
+            return false;
+        }
+        // check if the operation was canceled
+        if (monitor.isCanceled()) {
+            return true;
+        }
+        // parse teamspace list
+        SAXReader reader = new SAXReader();
+        Document doc;
+        try {
+            doc = reader.read(new StringReader(content));
+        } catch (DocumentException e) {
             e.printStackTrace();
             return false;
         }
+        // create a transformer
+        TeamListTransformer t = new TeamListTransformer(teamspaces);
+
+        // perform the transform
+        t.execute(doc);
         return true;
     }
 
@@ -141,51 +126,53 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             teamspacesDir.mkdirs();
         }
         // loop existing workspace directories
-        for (String tsID : teamspacesDir.list()) {
+        for (String id : teamspacesDir.list()) {
             if (monitor.isCanceled()) {
                 return;
             }
             // loop received workspace items
-            if (workspaces.containsKey(tsID)) {
+            if (workspaces.containsKey(id)) {
                 // remove entry from workspace list
-                workspaces.remove(tsID);
+                workspaces.remove(id);
 
                 // TODO check if folder is under version control
 
                 // update workspace
-                monitor.setTaskName("Synchronizing workspace " + tsID + " ..."); //$NON-NLS-2$
+                monitor.setTaskName("Synchronizing workspace " + id + " ..."); //$NON-NLS-2$
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
-                        + "/" + tsID)); //$NON-NLS-1$
+                        + "/" + id), id); //$NON-NLS-1$
             }
         }
         // add additional workspace directories
-        for (String wsID : workspaces.keySet()) {
+        for (String id : workspaces.keySet()) {
             if (monitor.isCanceled()) {
                 return;
             }
             // create directory for the new workspace
             File newWorkspaceDir = new File(teamspacesDir.getAbsolutePath()
-                    + "/" + wsID); //$NON-NLS-1$
+                    + "/" + id); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
 
-            monitor.setTaskName("Synchronizing workspace " + wsID + " ..."); //$NON-NLS-2$
-            checkoutWorkspace(workspaces.get(wsID), newWorkspaceDir);
+            monitor.setTaskName("Synchronizing workspace " + id + " ..."); //$NON-NLS-2$
+            checkoutWorkspace(workspaces.get(id), newWorkspaceDir, id);
         }
     }
 
-    private void checkoutWorkspace(String url, File dir) {
+    private void checkoutWorkspace(String url, File dir, String id) {
         try {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            e.printStackTrace();
+            MessageDialogUtil
+                    .displaySyncErrorMsg("Could not synchronize workspace" + id);
         }
     }
 
-    private void updateWorkspace(File dir) {
+    private void updateWorkspace(File dir, String id) {
         try {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            e.printStackTrace();
+            MessageDialogUtil
+                    .displaySyncErrorMsg("Could not synchronize workspace" + id);
         }
     }
 }

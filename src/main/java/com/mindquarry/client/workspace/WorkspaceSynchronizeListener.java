@@ -20,7 +20,7 @@ public class WorkspaceSynchronizeListener implements Listener {
 
     private final Button button;
 
-    public WorkspaceSynchronizeListener(MindClient client, Button button) {
+    public WorkspaceSynchronizeListener(final MindClient client, Button button) {
         this.client = client;
         this.button = button;
     }

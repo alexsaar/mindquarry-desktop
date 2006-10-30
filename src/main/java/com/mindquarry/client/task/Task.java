@@ -8,19 +8,30 @@ package com.mindquarry.client.task;
  *         Trieloff</a>
  */
 public class Task {
+    private String id;
+
+    private String teamspace;
+
     private String title;
+    
+    private String status;
 
     private boolean done;
 
     private boolean active;
 
-    /**
-     * @param string
-     */
-    public Task(String string) {
-        this.title = string;
-        this.done = false;
-        this.active = false;
+    public Task() {
+        done = false;
+        active = false;
+    }
+
+    public Task(String id, String teamspace, String title, String status) {
+        this.id = id;
+        this.teamspace = teamspace;
+        this.title = title;
+        this.status = status;
+        done = false;
+        active = false;
     }
 
     public boolean isActive() {
@@ -45,5 +56,29 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTeamspace() {
+        return teamspace;
+    }
+
+    public void setTeamspace(String teamspace) {
+        this.teamspace = teamspace;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

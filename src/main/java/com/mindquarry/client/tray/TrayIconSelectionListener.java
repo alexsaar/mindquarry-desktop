@@ -18,13 +18,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
-import com.mindquarry.client.task.Task;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskSelectionChangedListener;
 import com.mindquarry.client.task.TaskTableCellModifier;
@@ -40,8 +42,6 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 public class TrayIconSelectionListener implements SelectionListener {
     private static final Point BALLOON_SIZE = new Point(356, 557);
 
-    public static final String TITLE_COLUMN = "title"; //$NON-NLS-1$
-
     private final Display display;
 
     private final MindClient client;
@@ -56,7 +56,7 @@ public class TrayIconSelectionListener implements SelectionListener {
 
     private TableViewer taskTableViewer = null;
 
-    public TrayIconSelectionListener(Display display, MindClient client) {
+    public TrayIconSelectionListener(Display display, final MindClient client) {
         this.display = display;
         this.client = client;
     }
@@ -120,17 +120,17 @@ public class TrayIconSelectionListener implements SelectionListener {
     }
 
     private void createTableViewer() {
-        final TaskManager tman = new TaskManager();
-        tman.addTask(new Task("Write User-centric-design memo"));
-        tman.addTask(new Task("Transform website SVG mockup to XHTML+CSS"));
-        tman.addTask(new Task("Write XSLT Stylesheets for Lenya navigation"));
+        TaskManager tman = new TaskManager(client);
+        tman.refresh();
 
         CellEditor[] editors = new CellEditor[taskTable.getColumnCount()];
         editors[0] = new CheckboxCellEditor(taskTable.getParent());
 
         taskTableViewer.setCellEditors(editors);
-        taskTableViewer.setColumnProperties(new String[] { TITLE_COLUMN });
-
+        taskTableViewer
+                .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
+        taskTableViewer.getTable().getColumn(0).setWidth(300);
+        
         taskTableViewer.setLabelProvider(new TaskTableLabelProvider());
         taskTableViewer.setContentProvider(new TaskTableContentProvider());
         taskTableViewer.setCellModifier(new TaskTableCellModifier(
@@ -151,19 +151,19 @@ public class TrayIconSelectionListener implements SelectionListener {
         gridData22.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData22.horizontalSpan = 2;
         gridData22.grabExcessHorizontalSpace = true;
-        
+
         GridData gridData12 = new GridData();
         gridData12.grabExcessHorizontalSpace = true;
         gridData12.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData12.verticalAlignment = org.eclipse.swt.layout.GridData.FILL;
         gridData12.horizontalSpan = 2;
         gridData12.grabExcessVerticalSpace = true;
-        
+
         GridData gridData21 = new GridData();
         gridData21.grabExcessVerticalSpace = false;
         gridData21.verticalAlignment = org.eclipse.swt.layout.GridData.END;
         gridData21.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
-        
+
         GridData gridData11 = new GridData();
         gridData11.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
         gridData11.verticalAlignment = org.eclipse.swt.layout.GridData.END;
@@ -179,6 +179,11 @@ public class TrayIconSelectionListener implements SelectionListener {
         workspacesGroup.setText("Workspaces");
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
+        
+        Link label = new Link(workspacesGroup, SWT.NONE);
+        label.setBackground(workspacesGroup.getBackground());
+        label.setText("Share and synchronize your local documents with your team by using the buttons below.");
+        label.setLayoutData(gridData22);
 
         Button shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
@@ -203,20 +208,20 @@ public class TrayIconSelectionListener implements SelectionListener {
     private void createTasksGroup() {
         GridData gridData8 = new GridData();
         gridData8.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
-        
+
         GridData gridData4 = new GridData();
         gridData4.grabExcessHorizontalSpace = true;
         gridData4.horizontalAlignment = org.eclipse.swt.layout.GridData.END;
         GridLayout gridLayout2 = new GridLayout();
         gridLayout2.numColumns = 2;
-        
+
         GridData gridData7 = new GridData();
         gridData7.grabExcessHorizontalSpace = true;
         gridData7.grabExcessVerticalSpace = true;
         gridData7.heightHint = 100;
         gridData7.horizontalSpan = 2;
         gridData7.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
-        
+
         GridData gridData1 = new GridData();
         gridData1.grabExcessHorizontalSpace = true;
         gridData1.horizontalAlignment = org.eclipse.swt.layout.GridData.FILL;
@@ -227,7 +232,14 @@ public class TrayIconSelectionListener implements SelectionListener {
         tasksGroup.setLayout(gridLayout2);
         tasksGroup.setText("Tasks");
 
+        Menu menu = new Menu(tasksGroup);
+        MenuItem item = new MenuItem(menu, SWT.PUSH);
+        item.setText("Done");
+        item = new MenuItem(menu, SWT.PUSH);
+        item.setText("Reject");
+        
         taskTable = new Table(tasksGroup, SWT.BORDER);
+        taskTable.setMenu(menu);
         taskTable.setHeaderVisible(false);
         taskTable.setLayoutData(gridData7);
         taskTable.setLinesVisible(false);

@@ -20,7 +20,7 @@ public class WorkspaceShareListener implements Listener {
 
     private final Button button;
 
-    public WorkspaceShareListener(MindClient client, Button button) {
+    public WorkspaceShareListener(final MindClient client, Button button) {
         this.client = client;
         this.button = button;
     }
