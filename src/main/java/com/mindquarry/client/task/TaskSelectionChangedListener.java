@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.widgets.Button;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -20,8 +21,11 @@ public class TaskSelectionChangedListener implements ISelectionChangedListener {
 
     private final TableViewer taskTableViewer;
 
-    public TaskSelectionChangedListener(TaskManager tman,
-            TableViewer taskTableViewer) {
+    private final Button button;
+
+    public TaskSelectionChangedListener(final TaskManager tman,
+            final TableViewer taskTableViewer, final Button button) {
+        this.button = button;
         this.tman = tman;
         this.taskTableViewer = taskTableViewer;
     }
@@ -37,7 +41,14 @@ public class TaskSelectionChangedListener implements ISelectionChangedListener {
             Object element = structsel.getFirstElement();
 
             if (element instanceof Task) {
-                tman.startTask((Task) element);
+                Task task = (Task) element;
+                if (task.isActive()) {
+                    tman.stopTask((Task) element);
+                    button.setEnabled(false);
+                } else {
+                    tman.startTask((Task) element);
+                    button.setEnabled(true);
+                }
                 taskTableViewer.refresh();
             }
         }

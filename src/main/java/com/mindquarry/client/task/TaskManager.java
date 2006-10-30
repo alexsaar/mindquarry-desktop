@@ -40,6 +40,14 @@ public class TaskManager {
         }
         t.setActive(true);
     }
+    
+    public void stopTask(Task t) {
+        t.setActive(false);
+    }
+    
+    public void setDone(Task task) {
+        tasks.remove(task);
+    }
 
     public void removeChangeListener(TaskListChangeListener provider) {
         this.listeners.remove(provider);

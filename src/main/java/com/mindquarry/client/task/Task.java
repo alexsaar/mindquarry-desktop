@@ -16,12 +16,9 @@ public class Task {
     
     private String status;
 
-    private boolean done;
-
     private boolean active;
 
     public Task() {
-        done = false;
         active = false;
     }
 
@@ -30,7 +27,6 @@ public class Task {
         this.teamspace = teamspace;
         this.title = title;
         this.status = status;
-        done = false;
         active = false;
     }
 
@@ -40,14 +36,6 @@ public class Task {
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public boolean isDone() {
-        return done;
-    }
-
-    public void setDone(boolean done) {
-        this.done = done;
     }
 
     public String getTitle() {

@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
+import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskSelectionChangedListener;
 import com.mindquarry.client.task.TaskTableCellModifier;
@@ -113,32 +114,9 @@ public class TrayIconSelectionListener implements SelectionListener {
         createWorkspacesGroup();
         createTasksGroup();
         createWikiGroup();
-        createTableViewer();
 
         container.pack();
         container.setSize(BALLOON_SIZE);
-    }
-
-    private void createTableViewer() {
-        TaskManager tman = new TaskManager(client);
-        tman.refresh();
-
-        CellEditor[] editors = new CellEditor[taskTable.getColumnCount()];
-        editors[0] = new CheckboxCellEditor(taskTable.getParent());
-
-        taskTableViewer.setCellEditors(editors);
-        taskTableViewer
-                .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
-        taskTableViewer.getTable().getColumn(0).setWidth(300);
-        
-        taskTableViewer.setLabelProvider(new TaskTableLabelProvider());
-        taskTableViewer.setContentProvider(new TaskTableContentProvider());
-        taskTableViewer.setCellModifier(new TaskTableCellModifier(
-                taskTableViewer));
-        taskTableViewer
-                .addSelectionChangedListener(new TaskSelectionChangedListener(
-                        tman, taskTableViewer));
-        taskTableViewer.setInput(tman);
     }
 
     /**
@@ -179,10 +157,11 @@ public class TrayIconSelectionListener implements SelectionListener {
         workspacesGroup.setText("Workspaces");
         workspacesGroup.setLayout(gridLayout);
         workspacesGroup.setLayoutData(gridData);
-        
+
         Link label = new Link(workspacesGroup, SWT.NONE);
         label.setBackground(workspacesGroup.getBackground());
-        label.setText("Share and synchronize your local documents with your team by using the buttons below.");
+        label
+                .setText("Share and synchronize your local documents with your team by using the buttons below.");
         label.setLayoutData(gridData22);
 
         Button shareButton = new Button(workspacesGroup, SWT.NONE);
@@ -237,6 +216,9 @@ public class TrayIconSelectionListener implements SelectionListener {
         item.setText("Done");
         item = new MenuItem(menu, SWT.PUSH);
         item.setText("Reject");
+
+        TaskManager tman = new TaskManager(client);
+        tman.refresh();
         
         taskTable = new Table(tasksGroup, SWT.BORDER);
         taskTable.setMenu(menu);
@@ -250,21 +232,41 @@ public class TrayIconSelectionListener implements SelectionListener {
         activityColumn.setWidth(100);
         activityColumn.setText("Task");
 
-        Button moreButton = new Button(tasksGroup, SWT.NONE);
-        moreButton.setEnabled(false);
-        moreButton.setText("Other");
-        moreButton.setLayoutData(gridData4);
-        moreButton
-                .setImage(new Image(Display.getCurrent(), getClass()
-                        .getResourceAsStream(
-                                "/icons/24x24/actions/system-search.png")));
+//        Button moreButton = new Button(tasksGroup, SWT.NONE);
+//        moreButton.setEnabled(false);
+//        moreButton.setText("Other");
+//        moreButton.setLayoutData(gridData4);
+//        moreButton
+//                .setImage(new Image(Display.getCurrent(), getClass()
+//                        .getResourceAsStream(
+//                                "/icons/24x24/actions/system-search.png")));
 
-        Button button = new Button(tasksGroup, SWT.NONE);
-        button.setEnabled(false);
-        button.setText("Done");
-        button.setLayoutData(gridData8);
-        button.setImage(new Image(Display.getCurrent(), getClass()
+        Button doneButton = new Button(tasksGroup, SWT.NONE);
+        doneButton.setEnabled(false);
+        doneButton.setText("Done");
+        doneButton.setLayoutData(gridData4);
+        doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png")));
+        doneButton.addListener(SWT.Selection, new TaskDoneListener(client,
+                doneButton, taskTableViewer, tman));
+
+        // create task list
+        CellEditor[] editors = new CellEditor[taskTable.getColumnCount()];
+        editors[0] = new CheckboxCellEditor(taskTable.getParent());
+
+        taskTableViewer.setCellEditors(editors);
+        taskTableViewer
+                .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
+        taskTableViewer.getTable().getColumn(0).setWidth(300);
+
+        taskTableViewer.setLabelProvider(new TaskTableLabelProvider());
+        taskTableViewer.setContentProvider(new TaskTableContentProvider());
+        taskTableViewer.setCellModifier(new TaskTableCellModifier(
+                taskTableViewer));
+        taskTableViewer
+                .addSelectionChangedListener(new TaskSelectionChangedListener(
+                        tman, taskTableViewer, doneButton));
+        taskTableViewer.setInput(tman);
     }
 
     /**

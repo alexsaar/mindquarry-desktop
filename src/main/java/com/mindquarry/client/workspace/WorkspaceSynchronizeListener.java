@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.util.MessageDialogUtil;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -37,7 +38,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     syncOp);
         } catch (Exception e) {
             MessageDialog.openError(MindClient.getShell(),
-                    "Synchronzation Error",
+                    "Synchronization Error",
                     "Error during workspaces synchronization.");
         }
         button.setEnabled(true);
