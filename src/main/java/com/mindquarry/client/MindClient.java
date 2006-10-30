@@ -41,6 +41,8 @@ import com.mindquarry.client.util.OperatingSystem;
  *         Saar</a>
  */
 public class MindClient {
+    public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
+
     public static final String ENDPOINT_KEY = "endpoint"; //$NON-NLS-1$
 
     public static final String PASSWORD_KEY = "password"; //$NON-NLS-1$
@@ -96,13 +98,13 @@ public class MindClient {
         shell = new Shell(SWT.NONE);
 
         // check arguments
-        if(mindclient.optionsFile.exists()) {
+        if (mindclient.optionsFile.exists()) {
             mindclient.loadOptions();
         } else if (args.length == 1) {
             mindclient.options.put(ENDPOINT_KEY, args[0]);
             mindclient.options.put(LOGIN_KEY, ""); //$NON-NLS-1$
             mindclient.options.put(PASSWORD_KEY, ""); //$NON-NLS-1$
-            
+
             OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
                     mindclient.icon, mindclient.options);
             if (dlg.open() == Window.OK) {
@@ -114,7 +116,7 @@ public class MindClient {
             mindclient.options.put(ENDPOINT_KEY, args[0]);
             mindclient.options.put(LOGIN_KEY, args[1]);
             mindclient.options.put(PASSWORD_KEY, ""); //$NON-NLS-1$
-            
+
             OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
                     mindclient.icon, mindclient.options);
             if (dlg.open() == Window.OK) {
@@ -130,7 +132,7 @@ public class MindClient {
         } else {
             mindclient.loadOptions();
         }
-
+        
         // check Java version
         RuntimeMXBean rtBean = ManagementFactory.getRuntimeMXBean();
         if (rtBean.getVmVersion().startsWith("1.5")) { //$NON-NLS-1$
@@ -138,15 +140,15 @@ public class MindClient {
         } else {
             mindclient.log.info("Using Java Version " + rtBean.getVmVersion());
         }
-
+        
         // init tray icon
         Tray tray = display.getSystemTray();
-
         if (tray != null) {
             TrayItem ti = new TrayItem(tray, SWT.NONE);
             ti.setImage(mindclient.icon);
             ti.addSelectionListener(new TrayIconSelectionListener(display,
                     mindclient));
+            ti.setToolTipText(APPLICATION_NAME);
 
             final Menu menu = new Menu(shell, SWT.POP_UP);
             ti.addListener(SWT.MenuDetect, new Listener() {
@@ -244,7 +246,7 @@ public class MindClient {
     private void saveOptions() {
         FileOutputStream fos;
         try {
-            if(!optionsFile.exists()) {
+            if (!optionsFile.exists()) {
                 optionsFile.getParentFile().mkdirs();
                 optionsFile.createNewFile();
             }
