@@ -43,11 +43,11 @@ import com.mindquarry.client.util.OperatingSystem;
 public class MindClient {
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
 
-    public static final String ENDPOINT_KEY = "endpoint"; //$NON-NLS-1$
-
     public static final String PASSWORD_KEY = "password"; //$NON-NLS-1$
 
     public static final String LOGIN_KEY = "login"; //$NON-NLS-1$
+    
+    public static final String ENDPOINT_KEY = "endpoint"; //$NON-NLS-1$
 
     public static final String MINDCLIENT_SETTINGS = HomeUtil
             .getSettingsFolder()

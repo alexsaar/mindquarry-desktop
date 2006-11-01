@@ -64,7 +64,7 @@ public class TaskManager {
     public void refresh() {
         String content = null;
         try {
-            content = HttpUtil.getContent(client.getOptions().getProperty(
+            content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
                     MindClient.LOGIN_KEY), client.getOptions().getProperty(
                     MindClient.PASSWORD_KEY), client.getOptions().getProperty(
                     MindClient.ENDPOINT_KEY)

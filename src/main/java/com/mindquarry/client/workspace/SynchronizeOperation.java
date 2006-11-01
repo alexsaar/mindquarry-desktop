@@ -24,6 +24,7 @@ import com.mindquarry.client.util.HttpUtil;
 import com.mindquarry.client.util.MessageDialogUtil;
 import com.mindquarry.client.util.OperatingSystem;
 import com.mindquarry.client.xml.TeamListTransformer;
+import com.mindquarry.client.xml.TeamspaceTransformer;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -69,11 +70,11 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         String content = null;
         try {
-            content = HttpUtil.getContent(client.getOptions().getProperty(
+            content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
                     MindClient.LOGIN_KEY), client.getOptions().getProperty(
                     MindClient.PASSWORD_KEY), client.getOptions().getProperty(
                     MindClient.ENDPOINT_KEY)
-                    + "/teamspace/teamlist.xml"); //$NON-NLS-1$
+                    + "/teamspace"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil
                     .displaySyncErrorMsg("Could not retrieve list of teamspaces due to unexpected connection errors.");
@@ -88,19 +89,54 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             return true;
         }
         // parse teamspace list
+        monitor.setTaskName("Checking teamspace list ...");
         SAXReader reader = new SAXReader();
         Document doc;
         try {
             doc = reader.read(new StringReader(content));
         } catch (DocumentException e) {
-            e.printStackTrace();
+            MessageDialogUtil
+                    .displaySyncErrorMsg("An error occured while reading list of teamspaces.");
             return false;
         }
-        // create a transformer
-        TeamListTransformer t = new TeamListTransformer(teamspaces);
+        // create a transformer for teamspace list
+        TeamListTransformer listTrans = new TeamListTransformer();
+        listTrans.execute(doc);
 
-        // perform the transform
-        t.execute(doc);
+        // loop teamspace descriptions
+        for (String tsID : listTrans.getTeamspaces()) {
+            monitor.setTaskName("Retrieving description for teamspace '" + tsID
+                    + "'...");
+
+            content = null;
+            try {
+                content = HttpUtil.getContentAsXML(client.getOptions()
+                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
+                        .getProperty(MindClient.PASSWORD_KEY), client
+                        .getOptions().getProperty(MindClient.ENDPOINT_KEY)
+                        + "/teamspace/" + tsID); //$NON-NLS-1$
+            } catch (Exception e) {
+                MessageDialogUtil
+                        .displaySyncErrorMsg("Could not retrieve teamspace '"
+                                + tsID
+                                + "' due to unexpected connection errors.");
+                return false;
+            }
+            // parse teamspace description
+            monitor.setTaskName("Checking description for teamspace '" + tsID
+                    + "'...");
+            try {
+                doc = reader.read(new StringReader(content));
+            } catch (DocumentException e) {
+                e.printStackTrace();
+                return false;
+            }
+            // create a transformer for teamspace description
+            TeamspaceTransformer tsTrans = new TeamspaceTransformer();
+            tsTrans.execute(doc);
+
+            teamspaces.put(tsID, tsTrans.getWorkspace());
+        }
         return true;
     }
 
@@ -163,7 +199,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not synchronize workspace" + id);
+                    .displaySyncErrorMsg("Could not synchronize workspace "
+                            + id);
         }
     }
 
@@ -172,7 +209,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not synchronize workspace" + id);
+                    .displaySyncErrorMsg("Could not synchronize workspace "
+                            + id);
         }
     }
 }

@@ -9,6 +9,6 @@ package com.mindquarry.client.util;
  */
 public enum OperatingSystem {
     WINDOWS,
-    
+
     OTHER
 }

@@ -16,8 +16,8 @@ import org.apache.commons.httpclient.methods.GetMethod;
  *         Saar</a>
  */
 public class HttpUtil {
-    public static String getContent(String login, String pwd, String address)
-            throws HttpException, IOException {
+    public static String getContentAsXML(String login, String pwd,
+            String address) throws HttpException, IOException {
         HttpClient httpClient = new HttpClient();
         httpClient.getState().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
@@ -26,6 +26,7 @@ public class HttpUtil {
 
         GetMethod get = new GetMethod(address);
         get.setDoAuthentication(true);
+        get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
         httpClient.executeMethod(get);
 
         if (get.getStatusCode() == 200) {

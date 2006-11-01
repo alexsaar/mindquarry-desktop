@@ -3,8 +3,10 @@
  */
 package com.mindquarry.client.xml;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.dom4j.Element;
 import org.dom4j.Node;
 
 import dax.Path;
@@ -15,13 +17,7 @@ import dax.Transformer;
  *         Saar</a>
  */
 public class TeamListTransformer extends Transformer {
-    private HashMap<String, String> teamspaces;
-
-    private String id = null;
-
-    public TeamListTransformer(HashMap<String, String> teamspaces) {
-        this.teamspaces = teamspaces;
-    }
+    private List<String> teamspaces = new ArrayList<String>();
 
     @Override
     public void init() {
@@ -31,15 +27,13 @@ public class TeamListTransformer extends Transformer {
     @Path("//teamspace")
     public void teamspace(Node node) {
         applyTemplates(node);
+        if (node instanceof Element) {
+            Element element = (Element) node;
+            teamspaces.add(element.attribute("href").getStringValue());
+        }
     }
 
-    @Path("id")
-    public void id(Node node) {
-        id = node.getStringValue().trim();
-    }
-
-    @Path("workspace")
-    public void workspace(Node node) {
-        teamspaces.put(id, node.getStringValue().trim());
+    public List<String> getTeamspaces() {
+        return teamspaces;
     }
 }
