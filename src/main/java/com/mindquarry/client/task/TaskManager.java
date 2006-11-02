@@ -68,7 +68,7 @@ public class TaskManager {
                     MindClient.LOGIN_KEY), client.getOptions().getProperty(
                     MindClient.PASSWORD_KEY), client.getOptions().getProperty(
                     MindClient.ENDPOINT_KEY)
-                    + "/tasks/tasklist.xml"); //$NON-NLS-1$
+                    + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil
                     .displaySyncErrorMsg("Could not retrieve list of tasks due to unexpected connection errors.");
