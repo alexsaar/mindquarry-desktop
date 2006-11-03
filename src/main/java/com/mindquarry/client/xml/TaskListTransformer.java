@@ -3,11 +3,11 @@
  */
 package com.mindquarry.client.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.dom4j.Element;
 import org.dom4j.Node;
-
-import com.mindquarry.client.task.Task;
 
 import dax.Path;
 import dax.Transformer;
@@ -17,52 +17,22 @@ import dax.Transformer;
  *         Saar</a>
  */
 public class TaskListTransformer extends Transformer {
-    private List<Task> tasks;
-    
-    private String teamspaceID = null;
-    
-    private Task last = null;
-    
-    public TaskListTransformer(List<Task> tasks) {
-        this.tasks = tasks;
-    }
+    private List<String> taskURIs = new ArrayList<String>();
 
     @Override
     public void init() {
-        tasks.clear();
+        taskURIs.clear();
     }
 
-    @Path("//teamspace/id")
-    public void teamspaceID(Node node) {
-        teamspaceID = node.getStringValue().trim();
-    }
-    
     @Path("//task")
     public void task(Node node) {
-        last = new Task();
-        last.setTeamspace(teamspaceID);
-        
-        applyTemplates(node);
-        
-        tasks.add(last);
+        if (node instanceof Element) {
+            Element element = (Element) node;
+            taskURIs.add(element.attribute("href").getStringValue());
+        }
     }
 
-    @Path("task/id")
-    public void taskID(Node node) {
-        last.setId(node.getStringValue().trim());
-    }
-    
-    @Path("task/title")
-    public void taskTitle(Node node) {
-        last.setTitle(node.getStringValue().trim());
-    }
-    
-    @Path("task/status")
-    public void taskStatus(Node node) {
-        last.setStatus(node.getStringValue());
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
+    public List<String> getTaskURIs() {
+        return taskURIs;
     }
 }

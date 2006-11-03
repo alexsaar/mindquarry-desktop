@@ -4,6 +4,12 @@
 package com.mindquarry.client.tray;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -17,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
@@ -80,7 +87,7 @@ public class TrayIconSelectionListener implements SelectionListener {
             balloon.setLocation(curPos);
             balloon.setAnchor(anchor);
             balloon.open();
-            
+
             // run task update in separate thread, so that GUI can continue
             // processing
             new Thread(new Runnable() {
@@ -92,7 +99,6 @@ public class TrayIconSelectionListener implements SelectionListener {
             balloon.close();
         }
     }
-    
 
     /**
      * This method initializes sShell
@@ -113,7 +119,6 @@ public class TrayIconSelectionListener implements SelectionListener {
         container.pack();
         container.setSize(BALLOON_SIZE);
     }
-    
 
     /**
      * This method initializes workspacesGroup
@@ -182,7 +187,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
-                
+
         tman = new TaskManager(client, taskContainer, doneButton);
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
@@ -197,7 +202,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         wikiGroup.setLayout(new GridLayout(2, false));
         wikiGroup.setText("Wiki");
 
-        Text wikiTextArea = new Text(wikiGroup, SWT.MULTI | SWT.WRAP
+        final Text wikiTextArea = new Text(wikiGroup, SWT.MULTI | SWT.WRAP
                 | SWT.V_SCROLL | SWT.BORDER);
         wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
                 2, 2));

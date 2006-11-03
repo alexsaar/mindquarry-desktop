@@ -10,10 +10,10 @@ package com.mindquarry.client.task;
 public class Task {
     private String id;
 
-    private String teamspace;
+    private String content;
 
     private String title;
-    
+
     private String status;
 
     private boolean active;
@@ -22,9 +22,9 @@ public class Task {
         active = false;
     }
 
-    public Task(String id, String teamspace, String title, String status) {
+    public Task(String id, String content, String title, String status) {
         this.id = id;
-        this.teamspace = teamspace;
+        this.content = content;
         this.title = title;
         this.status = status;
         active = false;
@@ -46,12 +46,12 @@ public class Task {
         this.title = title;
     }
 
-    public String getTeamspace() {
-        return teamspace;
+    public String getContent() {
+        return content;
     }
 
-    public void setTeamspace(String teamspace) {
-        this.teamspace = teamspace;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getId() {
@@ -68,5 +68,20 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Task are equal if there IDs are equal.
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Task) {
+            if (((Task) obj).id.equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
