@@ -1,7 +1,7 @@
 /**
  * Copyright (C) 2005 MindQuarry GmbH, All Rights Reserved
  */
-package com.mindquarry.client.util;
+package com.mindquarry.client.util.os;
 
 import org.apache.commons.io.IOUtils;
 

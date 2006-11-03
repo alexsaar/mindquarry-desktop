@@ -15,8 +15,8 @@ import org.tigris.subversion.javahl.SVNClientInterface;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.HomeUtil;
-import com.mindquarry.client.util.OperatingSystem;
+import com.mindquarry.client.util.os.HomeUtil;
+import com.mindquarry.client.util.os.OperatingSystem;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander

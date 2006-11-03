@@ -9,6 +9,8 @@ import org.eclipse.jface.viewers.Viewer;
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
+ * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
+ *         Saar</a>
  */
 public class TaskTableContentProvider implements IStructuredContentProvider,
         TaskListChangeListener {

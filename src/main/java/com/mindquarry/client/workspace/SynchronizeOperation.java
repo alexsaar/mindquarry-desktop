@@ -19,10 +19,10 @@ import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.SVNClientInterface;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.HomeUtil;
-import com.mindquarry.client.util.HttpUtil;
-import com.mindquarry.client.util.MessageDialogUtil;
-import com.mindquarry.client.util.OperatingSystem;
+import com.mindquarry.client.util.network.HttpUtil;
+import com.mindquarry.client.util.os.HomeUtil;
+import com.mindquarry.client.util.os.OperatingSystem;
+import com.mindquarry.client.util.widgets.MessageDialogUtil;
 import com.mindquarry.client.xml.TeamListTransformer;
 import com.mindquarry.client.xml.TeamspaceTransformer;
 

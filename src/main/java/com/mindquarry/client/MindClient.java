@@ -31,8 +31,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
-import com.mindquarry.client.util.HomeUtil;
-import com.mindquarry.client.util.OperatingSystem;
+import com.mindquarry.client.util.os.HomeUtil;
+import com.mindquarry.client.util.os.OperatingSystem;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars

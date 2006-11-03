@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.MessageDialogUtil;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
