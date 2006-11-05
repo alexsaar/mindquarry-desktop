@@ -123,7 +123,20 @@ public class TaskManager {
         return tasks.toArray(new Task[] {});
     }
 
-    public void refresh() {
+    /**
+     * Runs task update in a separate thread, so that GUI can continue
+     * processing. Thus this method returns immediatly. While updating tasks the
+     * Task Manager will show an update widget instead of the task table.
+     */
+    public void asyncRefresh() {
+        new Thread(new Runnable() {
+            public void run() {
+                refresh();
+            }
+        }).start();
+    }
+
+    private void refresh() {
         setRefreshing(true);
 
         try {
@@ -229,7 +242,8 @@ public class TaskManager {
                     taskTable.setHeaderVisible(false);
                     taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
                             true, true));
-                    ((GridData) taskTable.getLayoutData()).heightHint = 150;
+                    ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
+                            .getParent().getLayoutData()).heightHint;
                     taskTable.setLinesVisible(false);
                     taskTableViewer = new TableViewer(taskTable);
 

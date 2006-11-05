@@ -17,22 +17,24 @@ import org.eclipse.swt.widgets.ProgressBar;
 public class UpdateComposite extends Composite {
     public UpdateComposite(Composite parent, String text) {
         super(parent, SWT.BORDER);
-        
+
         setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true, 2, 2));
         setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         setLayout(new GridLayout(1, true));
-        ((GridData)getLayoutData()).heightHint = 150;
-        
+        ((GridData) getLayoutData()).heightHint = ((GridData) getParent()
+                .getLayoutData()).heightHint;
+
         Composite internalComp = new Composite(this, SWT.NONE);
         internalComp.setBackground(internalComp.getParent().getBackground());
         internalComp.setLayout(new GridLayout(1, true));
-        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-        
-        ProgressBar bar = new ProgressBar(internalComp, SWT.HORIZONTAL | 
-                SWT.INDETERMINATE);
+        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+                true));
+
+        ProgressBar bar = new ProgressBar(internalComp, SWT.HORIZONTAL
+                | SWT.INDETERMINATE);
         bar.setSize(200, 16);
         bar.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        
+
         Label label = new Label(internalComp, SWT.CENTER);
         label.setText(text);
         label.setBackground(label.getParent().getBackground());

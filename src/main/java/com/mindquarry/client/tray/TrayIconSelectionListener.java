@@ -4,12 +4,6 @@
 package com.mindquarry.client.tray;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetAdapter;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -23,7 +17,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
@@ -58,6 +51,7 @@ public class TrayIconSelectionListener implements SelectionListener {
      * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
      */
     public void widgetDefaultSelected(SelectionEvent e) {
+        // nothing to do here
     }
 
     /**
@@ -88,13 +82,8 @@ public class TrayIconSelectionListener implements SelectionListener {
             balloon.setAnchor(anchor);
             balloon.open();
 
-            // run task update in separate thread, so that GUI can continue
-            // processing
-            new Thread(new Runnable() {
-                public void run() {
-                    tman.refresh();
-                }
-            }).start();
+            // task update
+            tman.asyncRefresh();
         } else {
             balloon.close();
         }
