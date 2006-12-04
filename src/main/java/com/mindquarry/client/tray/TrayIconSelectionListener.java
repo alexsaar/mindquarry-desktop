@@ -30,7 +30,7 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
  *         Saar</a>
  */
 public class TrayIconSelectionListener implements SelectionListener {
-    private static final Point BALLOON_SIZE = new Point(356, 557);
+    private static final Point BALLOON_SIZE = new Point(356, 317);
 
     private final Display display;
 
@@ -103,7 +103,7 @@ public class TrayIconSelectionListener implements SelectionListener {
 
         createWorkspacesGroup();
         createTasksGroup();
-        createWikiGroup();
+        //createWikiGroup();
 
         container.pack();
         container.setSize(BALLOON_SIZE);
