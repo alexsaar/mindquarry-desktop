@@ -40,12 +40,19 @@ public class TrayIconMouseListener implements MouseListener {
     private final Shell shell;
     
     private final TrayIcon ti;
+    
+    private final Frame frame;
+
+	private final PopupMenu menu;
 
     public TrayIconMouseListener(Display display, MindClient mindclient, Shell shell, TrayIcon ti) {
         this.display = display;
         this.mindclient = mindclient;
         this.shell = shell;
         this.ti = ti;
+        
+        this.menu = createPopupMenu();
+        this.frame = createDummyFrame(this.menu);
     }
 
     /**
@@ -77,55 +84,9 @@ public class TrayIconMouseListener implements MouseListener {
         System.out.println("Pressed " + e);
         if (((e.getButton() == MouseEvent.BUTTON2)||((e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == MouseEvent.CTRL_DOWN_MASK))
                 && (e.getSource() instanceof TrayIcon)) {
-        	PopupMenu menu = new PopupMenu();
-            java.awt.MenuItem mi = new java.awt.MenuItem(Messages
-                    .getString("MindClient.0")); //$NON-NLS-1$
-            mi.addActionListener(new ActionListener() {
-                /**
-                 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-                 */
-                public void actionPerformed(ActionEvent e) {
-                	
-                	shell.getDisplay().syncExec(new Runnable() {
-                        /**
-                         * @see java.lang.Runnable#run()
-                         */
-                        public void run() {
-                        	System.out.println("Show options");
-                            OptionsDialog dlg = new OptionsDialog(shell,
-                                    mindclient.getIcon(), mindclient.getOptions());
-                            if (dlg.open() == Window.OK) {
-                                mindclient.saveOptions();
-                            }
-                        }
-                    });
-                }
-            });
-            menu.add(mi);
-            mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
-            menu.add(mi);
-            mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
-            mi.addActionListener(new ActionListener() {
-                /**
-                 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-                 */
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(1);
-                }
-            });
-            menu.add(mi);
-            
-            Frame frame = new Frame();
-            frame.add(menu);
-            //frame.setBounds(e.getXOnScreen(), e.getYOnScreen(), 0, 0);
-            frame.setUndecorated(true);
             frame.setVisible(true);
-            try {
-            	menu.show(frame, e.getXOnScreen(), e.getYOnScreen());
-            } catch (Exception ex) {
-            	System.err.println("Heulsuse sagt:");
-            	ex.printStackTrace();
-            }
+            menu.show(frame, e.getXOnScreen(), e.getYOnScreen());
+            frame.setVisible(false);
         } else if ((e.getButton() == MouseEvent.BUTTON1)
                 && (e.getSource() instanceof TrayIcon)) {
             shell.getDisplay().asyncExec(new Runnable() {
@@ -143,6 +104,53 @@ public class TrayIconMouseListener implements MouseListener {
             });
         }
     }
+
+	private Frame createDummyFrame(PopupMenu menu) {
+		Frame frame = new Frame();
+		frame.add(menu);
+		frame.setUndecorated(true);
+		return frame;
+	}
+
+	private PopupMenu createPopupMenu() {
+		PopupMenu menu = new PopupMenu();
+		java.awt.MenuItem mi = new java.awt.MenuItem(Messages
+		        .getString("MindClient.0")); //$NON-NLS-1$
+		mi.addActionListener(new ActionListener() {
+		    /**
+		     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		     */
+		    public void actionPerformed(ActionEvent e) {
+		    	shell.getDisplay().asyncExec(new Runnable() {
+		            /**
+		             * @see java.lang.Runnable#run()
+		             */
+		            public void run() {
+		            	System.out.println("Show options");
+		                OptionsDialog dlg = new OptionsDialog(shell,
+		                        mindclient.getIcon(), mindclient.getOptions());
+		                if (dlg.open() == Window.OK) {
+		                    mindclient.saveOptions();
+		                }
+		            }
+		        });
+		    }
+		});
+		menu.add(mi);
+		mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
+		menu.add(mi);
+		mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
+		mi.addActionListener(new ActionListener() {
+		    /**
+		     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+		     */
+		    public void actionPerformed(ActionEvent e) {
+		        System.exit(0);
+		    }
+		});
+		menu.add(mi);
+		return menu;
+	}
 
     /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
