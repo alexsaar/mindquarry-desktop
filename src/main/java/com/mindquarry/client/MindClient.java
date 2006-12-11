@@ -145,7 +145,7 @@ public class MindClient {
         } else {
             createAWTTrayIcon(mindclient, display, tray);
         }
-        while (!tray.isDisposed()) {
+        while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
             }
@@ -203,47 +203,11 @@ public class MindClient {
     private static void createAWTTrayIcon(final MindClient mindclient,
             final Display display, final Tray tray) throws IOException {
         // create AWT popup menu
-        PopupMenu menu = new PopupMenu();
-        java.awt.MenuItem mi = new java.awt.MenuItem(Messages
-                .getString("MindClient.0")); //$NON-NLS-1$
-        mi.addActionListener(new ActionListener() {
-            /**
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            public void actionPerformed(ActionEvent e) {
-                shell.getDisplay().syncExec(new Runnable() {
-                    /**
-                     * @see java.lang.Runnable#run()
-                     */
-                    public void run() {
-                        OptionsDialog dlg = new OptionsDialog(shell,
-                                mindclient.icon, mindclient.options);
-                        if (dlg.open() == Window.OK) {
-                            mindclient.saveOptions();
-                        }
-                    }
-                });
-            }
-        });
-        menu.add(mi);
-        mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
-        menu.add(mi);
-        mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
-        mi.addActionListener(new ActionListener() {
-            /**
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            public void actionPerformed(ActionEvent e) {
-                System.exit(1);
-            }
-        });
-        menu.add(mi);
-
-        // create AWT tray icon
+                // create AWT tray icon
         TrayIcon ti = new TrayIcon(ImageIO.read(MindClient.class
-                .getResourceAsStream(MINDCLIENT_ICON)), APPLICATION_NAME, menu);
+                .getResourceAsStream(MINDCLIENT_ICON)), APPLICATION_NAME);
         ti.addMouseListener(new TrayIconMouseListener(display, mindclient,
-                tray, shell));
+                 shell, ti));
         try {
             SystemTray.getSystemTray().add(ti);
         } catch (AWTException e1) {
@@ -280,7 +244,7 @@ public class MindClient {
         }
     }
 
-    private void saveOptions() {
+    public void saveOptions() {
         FileOutputStream fos;
         try {
             if (!optionsFile.exists()) {
