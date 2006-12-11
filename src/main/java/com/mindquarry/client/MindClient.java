@@ -9,11 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.RuntimeMXBean;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -46,12 +43,14 @@ public class MindClient {
     public static final String PASSWORD_KEY = "password"; //$NON-NLS-1$
 
     public static final String LOGIN_KEY = "login"; //$NON-NLS-1$
-    
+
     public static final String ENDPOINT_KEY = "endpoint"; //$NON-NLS-1$
 
     public static final String MINDCLIENT_SETTINGS = HomeUtil
             .getSettingsFolder()
             + "/mindclient.settings"; //$NON-NLS-1$
+
+    public static final String MINDCLIENT_ICON = "/icons/16x16/mindquarry.png"; //$NON-NLS-1$
 
     private final OperatingSystem OS;
 
@@ -65,16 +64,12 @@ public class MindClient {
 
     private File optionsFile;
 
-    private Log log;
-
     public MindClient() {
-        log = LogFactory.getLog(MindClient.class);
-
         factory = new ClassPathXmlApplicationContext(
                 new String[] { "applicationContext.xml" }); //$NON-NLS-1$
 
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
-                "/icons/16x16/mindquarry.png")); //$NON-NLS-1$
+                MINDCLIENT_ICON));
 
         // init settings file & name
         options = new Properties();
@@ -97,7 +92,7 @@ public class MindClient {
         final Display display = Display.getCurrent();
         shell = new Shell(SWT.NONE);
 
-        // check arguments
+        // check CLI arguments
         if (mindclient.optionsFile.exists()) {
             mindclient.loadOptions();
         } else if (args.length == 1) {
@@ -132,16 +127,6 @@ public class MindClient {
         } else {
             mindclient.loadOptions();
         }
-        
-        // check Java version
-        RuntimeMXBean rtBean = ManagementFactory.getRuntimeMXBean();
-        if (rtBean.getVmVersion().startsWith("1.5")) { //$NON-NLS-1$
-            mindclient.log.info("Using Java 5");
-        } else {
-            mindclient.log.info("Using Java Version " + rtBean.getVmVersion());
-        }
-        
-        // init tray icon
         Tray tray = display.getSystemTray();
         if (tray != null) {
             TrayItem ti = new TrayItem(tray, SWT.NONE);
@@ -157,28 +142,7 @@ public class MindClient {
                 }
             });
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Goto quarry...");
-            menuItem.addListener(SWT.Selection, new Listener() {
-                /**
-                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                 */
-                public void handleEvent(Event event) {
-                    try {
-                        // TODO add implementation for lunix & unix based
-                        // systems here
-                        Runtime.getRuntime().exec(
-                                "start " //$NON-NLS-1$
-                                        + mindclient.getOptions().getProperty(
-                                                MindClient.ENDPOINT_KEY));
-                    } catch (IOException e) {
-                        MessageDialog.openError(MindClient.getShell(),
-                                "Runtime Error",
-                                "Could not open quarry installation.");
-                    }
-                }
-            });
-            menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Options...");
+            menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
             menuItem.addListener(SWT.Selection, new Listener() {
                 /**
                  * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -194,7 +158,7 @@ public class MindClient {
             menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
             menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Close");
+            menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
             menuItem.addListener(SWT.Selection, new Listener() {
                 /**
                  * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -205,11 +169,12 @@ public class MindClient {
             });
         } else {
             // there must be a tray
-            System.exit(1);
+            System.exit(-1);
         }
         while (!tray.isDisposed()) {
-            if (!display.readAndDispatch())
+            if (!display.readAndDispatch()) {
                 display.sleep();
+            }
         }
         display.dispose();
     }
@@ -218,11 +183,9 @@ public class MindClient {
         try {
             if (!optionsFile.exists()) {
                 // init options with dummy values
-                options.put(LOGIN_KEY,
-                        "Your login for your quarry installation");
-                options.put(PASSWORD_KEY, "password");
-                options.put(ENDPOINT_KEY,
-                        "The location of your quarry installation.");
+                options.put(LOGIN_KEY, Messages.getString("MindClient.2")); //$NON-NLS-1$
+                options.put(PASSWORD_KEY, "password"); //$NON-NLS-1$
+                options.put(ENDPOINT_KEY, Messages.getString("MindClient.3")); //$NON-NLS-1$
 
                 // request option values from user
                 OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
@@ -238,8 +201,8 @@ public class MindClient {
                 fis.close();
             }
         } catch (Exception e) {
-            MessageDialog.openError(shell, "Error",
-                    "Could not load MindClient settings.");
+            MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
+                    Messages.getString("MindClient.5")); //$NON-NLS-1$
         }
     }
 
@@ -251,10 +214,10 @@ public class MindClient {
                 optionsFile.createNewFile();
             }
             fos = new FileOutputStream(optionsFile);
-            options.storeToXML(fos, "MindCLient Settings");
+            options.storeToXML(fos, Messages.getString("MindClient.6")); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialog.openError(shell, "Error",
-                    "Could not save MindClient settings.");
+            MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
+                    Messages.getString("MindClient.7")); //$NON-NLS-1$
         }
     }
 
