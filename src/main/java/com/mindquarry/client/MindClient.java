@@ -3,6 +3,12 @@
  */
 package com.mindquarry.client;
 
+import java.awt.AWTException;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,6 +16,8 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.Properties;
+
+import javax.imageio.ImageIO;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -28,6 +36,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
+import com.mindquarry.client.tray.awt.TrayIconMouseListener;
 import com.mindquarry.client.util.os.HomeUtil;
 import com.mindquarry.client.util.os.OperatingSystem;
 
@@ -127,7 +136,25 @@ public class MindClient {
         } else {
             mindclient.loadOptions();
         }
-        Tray tray = display.getSystemTray();
+        final Tray tray = display.getSystemTray();
+
+        // check Java version
+        if (!ManagementFactory.getRuntimeMXBean().getVmVersion().startsWith(
+                "1.6")) { //$NON-NLS-1$
+            createSWTTrayIcon(mindclient, display, tray);
+        } else {
+            createAWTTrayIcon(mindclient, display, tray);
+        }
+        while (!tray.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        display.dispose();
+    }
+
+    private static void createSWTTrayIcon(final MindClient mindclient,
+            final Display display, final Tray tray) {
         if (tray != null) {
             TrayItem ti = new TrayItem(tray, SWT.NONE);
             ti.setImage(mindclient.icon);
@@ -171,12 +198,59 @@ public class MindClient {
             // there must be a tray
             System.exit(-1);
         }
-        while (!tray.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
+    }
+
+    private static void createAWTTrayIcon(final MindClient mindclient,
+            final Display display, final Tray tray) throws IOException {
+        // create AWT popup menu
+        PopupMenu menu = new PopupMenu();
+        java.awt.MenuItem mi = new java.awt.MenuItem(Messages
+                .getString("MindClient.0")); //$NON-NLS-1$
+        mi.addActionListener(new ActionListener() {
+            /**
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(ActionEvent e) {
+                shell.getDisplay().syncExec(new Runnable() {
+                    /**
+                     * @see java.lang.Runnable#run()
+                     */
+                    public void run() {
+                        OptionsDialog dlg = new OptionsDialog(shell,
+                                mindclient.icon, mindclient.options);
+                        if (dlg.open() == Window.OK) {
+                            mindclient.saveOptions();
+                        }
+                    }
+                });
             }
+        });
+        menu.add(mi);
+        mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
+        menu.add(mi);
+        mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
+        mi.addActionListener(new ActionListener() {
+            /**
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+            }
+        });
+        menu.add(mi);
+
+        // create AWT tray icon
+        TrayIcon ti = new TrayIcon(ImageIO.read(MindClient.class
+                .getResourceAsStream(MINDCLIENT_ICON)), APPLICATION_NAME, menu);
+        ti.addMouseListener(new TrayIconMouseListener(display, mindclient,
+                tray, shell));
+        try {
+            SystemTray.getSystemTray().add(ti);
+        } catch (AWTException e1) {
+            // there must be a tray
+            e1.printStackTrace();
+            System.exit(-1);
         }
-        display.dispose();
     }
 
     private void loadOptions() {
