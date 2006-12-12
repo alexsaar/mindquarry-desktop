@@ -99,7 +99,7 @@ public class MindClient {
 
         // init display & shell
         final Display display = Display.getCurrent();
-        shell = new Shell(SWT.NONE | SWT.ON_TOP);
+        shell = new Shell(SWT.NONE);
 
         // check CLI arguments
         if (mindclient.optionsFile.exists()) {
