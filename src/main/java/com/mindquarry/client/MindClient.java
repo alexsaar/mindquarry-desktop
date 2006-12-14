@@ -203,11 +203,11 @@ public class MindClient {
     private static void createAWTTrayIcon(final MindClient mindclient,
             final Display display, final Tray tray) throws IOException {
         // create AWT popup menu
-                // create AWT tray icon
+        // create AWT tray icon
         TrayIcon ti = new TrayIcon(ImageIO.read(MindClient.class
                 .getResourceAsStream(MINDCLIENT_ICON)), APPLICATION_NAME);
         ti.addMouseListener(new TrayIconMouseListener(display, mindclient,
-                 shell, ti));
+                shell));
         try {
             SystemTray.getSystemTray().add(ti);
         } catch (AWTException e1) {

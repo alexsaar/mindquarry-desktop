@@ -3,12 +3,8 @@
  */
 package com.mindquarry.client.tray.awt;
 
-import java.awt.Button;
-import java.awt.Component;
 import java.awt.Frame;
-import java.awt.Menu;
 import java.awt.PopupMenu;
-import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,26 +29,26 @@ import com.mindquarry.client.tray.TrayIconSelectionListener;
  *         Saar</a>
  */
 public class TrayIconMouseListener implements MouseListener {
-    private final Display display;
-
     private final MindClient mindclient;
 
     private final Shell shell;
-    
-    private final TrayIcon ti;
-    
+
     private final Frame frame;
 
-	private final PopupMenu menu;
+    private final PopupMenu menu;
 
-    public TrayIconMouseListener(Display display, MindClient mindclient, Shell shell, TrayIcon ti) {
-        this.display = display;
+    private final TrayIconSelectionListener selectionListener;
+
+    public TrayIconMouseListener(Display display, MindClient mindclient,
+            Shell shell) {
         this.mindclient = mindclient;
         this.shell = shell;
-        this.ti = ti;
-        
+
         this.menu = createPopupMenu();
         this.frame = createDummyFrame(this.menu);
+
+        this.selectionListener = new TrayIconSelectionListener(display,
+                mindclient);
     }
 
     /**
@@ -60,8 +56,6 @@ public class TrayIconMouseListener implements MouseListener {
      */
     public void mouseClicked(MouseEvent e) {
     }
-    
-    
 
     /**
      * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
@@ -81,8 +75,9 @@ public class TrayIconMouseListener implements MouseListener {
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
     public void mousePressed(MouseEvent e) {
-        System.out.println("Pressed " + e);
-        if (((e.getButton() == MouseEvent.BUTTON2)||((e.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == MouseEvent.CTRL_DOWN_MASK))
+        if (((e.getButton() == MouseEvent.BUTTON2)
+                || (e.getButton() == MouseEvent.BUTTON3) || ((e
+                .getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == MouseEvent.CTRL_DOWN_MASK))
                 && (e.getSource() instanceof TrayIcon)) {
             frame.setVisible(true);
             menu.show(frame, e.getXOnScreen(), e.getYOnScreen());
@@ -95,69 +90,65 @@ public class TrayIconMouseListener implements MouseListener {
                  */
                 public void run() {
                     Event event = new Event();
-                    //event.widget = new TrayItem(tray, SWT.NONE);
+                    // event.widget = new TrayItem(tray, SWT.NONE);
                     event.widget = shell;
-                    
-                    new TrayIconSelectionListener(display, mindclient)
-                            .widgetSelected(new SelectionEvent(event));
+
+                    selectionListener.widgetSelected(new SelectionEvent(event));
                 }
             });
         }
     }
 
-	private Frame createDummyFrame(PopupMenu menu) {
-		Frame frame = new Frame();
-		frame.add(menu);
-		frame.setUndecorated(true);
-		return frame;
-	}
+    private Frame createDummyFrame(PopupMenu menu) {
+        Frame frame = new Frame();
+        frame.add(menu);
+        frame.setUndecorated(true);
+        return frame;
+    }
 
-	private PopupMenu createPopupMenu() {
-		PopupMenu menu = new PopupMenu();
-		java.awt.MenuItem mi = new java.awt.MenuItem(Messages
-		        .getString("MindClient.0")); //$NON-NLS-1$
-		mi.addActionListener(new ActionListener() {
-		    /**
-		     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-		     */
-		    public void actionPerformed(ActionEvent e) {
-		    	shell.getDisplay().asyncExec(new Runnable() {
-		            /**
-		             * @see java.lang.Runnable#run()
-		             */
-		            public void run() {
-		            	System.out.println("Show options");
-		                OptionsDialog dlg = new OptionsDialog(shell,
-		                        mindclient.getIcon(), mindclient.getOptions());
-		                if (dlg.open() == Window.OK) {
-		                    mindclient.saveOptions();
-		                }
-		            }
-		        });
-		    }
-		});
-		menu.add(mi);
-		mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
-		menu.add(mi);
-		mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
-		mi.addActionListener(new ActionListener() {
-		    /**
-		     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-		     */
-		    public void actionPerformed(ActionEvent e) {
-		        System.exit(0);
-		    }
-		});
-		menu.add(mi);
-		return menu;
-	}
+    private PopupMenu createPopupMenu() {
+        PopupMenu menu = new PopupMenu();
+        java.awt.MenuItem mi = new java.awt.MenuItem(Messages
+                .getString("MindClient.0")); //$NON-NLS-1$
+        mi.addActionListener(new ActionListener() {
+            /**
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(ActionEvent e) {
+                shell.getDisplay().asyncExec(new Runnable() {
+                    /**
+                     * @see java.lang.Runnable#run()
+                     */
+                    public void run() {
+                        OptionsDialog dlg = new OptionsDialog(shell, mindclient
+                                .getIcon(), mindclient.getOptions());
+                        if (dlg.open() == Window.OK) {
+                            mindclient.saveOptions();
+                        }
+                    }
+                });
+            }
+        });
+        menu.add(mi);
+        mi = new java.awt.MenuItem("-"); //$NON-NLS-1$
+        menu.add(mi);
+        mi = new java.awt.MenuItem(Messages.getString("MindClient.1")); //$NON-NLS-1$
+        mi.addActionListener(new ActionListener() {
+            /**
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        menu.add(mi);
+        return menu;
+    }
 
     /**
      * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
      */
     public void mouseReleased(MouseEvent e) {
-
-        System.out.println("Released " + e);
         // not used
     }
 }
