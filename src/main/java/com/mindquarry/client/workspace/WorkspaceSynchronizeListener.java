@@ -37,8 +37,8 @@ public class WorkspaceSynchronizeListener implements Listener {
                     syncOp);
         } catch (Exception e) {
             MessageDialog.openError(MindClient.getShell(),
-                    "Synchronization Error",
-                    "Error during workspaces synchronization.");
+                    Messages.getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
+                    Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
         }
         button.setEnabled(true);
     }

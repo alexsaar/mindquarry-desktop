@@ -49,7 +49,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
-        monitor.beginTask("Synchronizing workspaces ...",
+        monitor.beginTask(Messages.getString("SynchronizeOperation.0"), //$NON-NLS-1$
                 IProgressMonitor.UNKNOWN);
 
         HashMap<String, String> teamspaces = new HashMap<String, String>();
@@ -66,7 +66,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces,
             IProgressMonitor monitor) {
-        monitor.setTaskName("Retrieving teamspace list ...");
+        monitor.setTaskName(Messages.getString("SynchronizeOperation.1")); //$NON-NLS-1$
 
         String content = null;
         try {
@@ -77,7 +77,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                     + "/teamspace"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not retrieve list of teamspaces due to unexpected connection errors.");
+                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.2")); //$NON-NLS-1$
             return false;
         }
         // check if some contant was received
@@ -89,14 +89,14 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             return true;
         }
         // parse teamspace list
-        monitor.setTaskName("Checking teamspace list ...");
+        monitor.setTaskName(Messages.getString("SynchronizeOperation.3")); //$NON-NLS-1$
         SAXReader reader = new SAXReader();
         Document doc;
         try {
             doc = reader.read(new StringReader(content));
         } catch (DocumentException e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("An error occured while reading list of teamspaces.");
+                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.4")); //$NON-NLS-1$
             return false;
         }
         // create a transformer for teamspace list
@@ -105,8 +105,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
-            monitor.setTaskName("Retrieving description for teamspace '" + tsID
-                    + "'...");
+            monitor.setTaskName(Messages.getString("SynchronizeOperation.5") + tsID //$NON-NLS-1$
+                    + "'..."); //$NON-NLS-1$
 
             content = null;
             try {
@@ -117,14 +117,14 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                         + "/teamspace/" + tsID); //$NON-NLS-1$
             } catch (Exception e) {
                 MessageDialogUtil
-                        .displaySyncErrorMsg("Could not retrieve teamspace '"
+                        .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.6") //$NON-NLS-1$
                                 + tsID
-                                + "' due to unexpected connection errors.");
+                                + Messages.getString("SynchronizeOperation.7")); //$NON-NLS-1$
                 return false;
             }
             // parse teamspace description
-            monitor.setTaskName("Checking description for teamspace '" + tsID
-                    + "'...");
+            monitor.setTaskName(Messages.getString("SynchronizeOperation.8") + tsID //$NON-NLS-1$
+                    + "'..."); //$NON-NLS-1$
             try {
                 doc = reader.read(new StringReader(content));
             } catch (DocumentException e) {
@@ -142,7 +142,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
     private void updateWorkspaces(HashMap<String, String> workspaces,
             IProgressMonitor monitor) {
-        monitor.setTaskName("Synchronizing workspaces ...");
+        monitor.setTaskName(Messages.getString("SynchronizeOperation.9")); //$NON-NLS-1$
 
         // init SVN types
         svnClient.username(client.getOptions()
@@ -174,7 +174,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 // TODO check if folder is under version control
 
                 // update workspace
-                monitor.setTaskName("Synchronizing workspace " + id + " ..."); //$NON-NLS-2$
+                monitor.setTaskName(Messages.getString("SynchronizeOperation.10") + id + " ...");  //$NON-NLS-1$//$NON-NLS-2$
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
                         + "/" + id), id); //$NON-NLS-1$
             }
@@ -189,7 +189,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                     + "/" + id); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
 
-            monitor.setTaskName("Synchronizing workspace " + id + " ..."); //$NON-NLS-2$
+            monitor.setTaskName(Messages.getString("SynchronizeOperation.10") + id + " ...");  //$NON-NLS-1$//$NON-NLS-2$
             checkoutWorkspace(workspaces.get(id), newWorkspaceDir, id);
         }
     }
@@ -199,7 +199,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not synchronize workspace "
+                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.11") //$NON-NLS-1$
                             + id);
         }
     }
@@ -209,7 +209,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not synchronize workspace "
+                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.11") //$NON-NLS-1$
                             + id);
         }
     }

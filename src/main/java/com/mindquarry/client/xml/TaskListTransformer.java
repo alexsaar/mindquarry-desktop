@@ -28,7 +28,7 @@ public class TaskListTransformer extends Transformer {
     public void task(Node node) {
         if (node instanceof Element) {
             Element element = (Element) node;
-            taskURIs.add(element.attribute("href").getStringValue());
+            taskURIs.add(element.attribute("href").getStringValue()); //$NON-NLS-1$
         }
     }
 

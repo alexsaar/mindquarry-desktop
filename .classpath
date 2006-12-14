@@ -5,7 +5,6 @@
 	<classpathentry kind="lib" path="lib/dax/jaxen-1.1-beta-4.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-logging-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/dax/dax.jar"/>
-	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="lib" path="lib/spring/spring.jar"/>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="lib" path="lib/spring/spring-mock.jar"/>

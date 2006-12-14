@@ -76,11 +76,11 @@ public class BalloonWindow {
 
     private ToolBar systemControlsBar;
 
-    private ArrayList selectionControls = new ArrayList();
+    private ArrayList<Control> selectionControls = new ArrayList<Control>();
 
     private boolean addedGlobalListener;
 
-    private ArrayList selectionListeners = new ArrayList();
+    private ArrayList<Listener> selectionListeners = new ArrayList<Listener>();
 
     public BalloonWindow(Shell parent, int style) {
         this(null, parent, style);
@@ -182,7 +182,7 @@ public class BalloonWindow {
         case SWT.RIGHT | SWT.BOTTOM:
             break;
         default:
-            throw new IllegalArgumentException("Illegal anchor value " + anchor);
+            throw new IllegalArgumentException("Illegal anchor value " + anchor); //$NON-NLS-1$
         }
         this.preferredAnchor = anchor;
     }
@@ -265,7 +265,7 @@ public class BalloonWindow {
                 selectionControls.add(titleLabel);
             }
             String titleText = shell.getText();
-            titleLabel.setText(titleText == null ? "" : titleText);
+            titleLabel.setText(titleText == null ? "" : titleText); //$NON-NLS-1$
             titleLabel.pack();
             titleSize = titleLabel.getSize();
 
@@ -306,7 +306,6 @@ public class BalloonWindow {
                 closeItem.setImage(closeImage);
                 Listener listener = new Listener() {
                     public void handleEvent(Event event) {
-                        System.out.println("foobar");
                         shell.close();
                     }
                 };

@@ -4,19 +4,12 @@
 package com.mindquarry.client.task;
 
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.TableViewer;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
 public class TaskTableCellModifier implements ICellModifier {
-    private TableViewer table;
-
-    public TaskTableCellModifier(TableViewer taskTableViewer) {
-        this.table = taskTableViewer;
-    }
-
     /**
      * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object,
      *      java.lang.String)

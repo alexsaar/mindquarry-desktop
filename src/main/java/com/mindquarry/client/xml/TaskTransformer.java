@@ -27,7 +27,7 @@ public class TaskTransformer extends Transformer {
     public void task(Node node) {
         if (node instanceof Element) {
             Element element = (Element) node;
-            task.setId(element.attribute("base").getStringValue());
+            task.setId(element.attribute("base").getStringValue()); //$NON-NLS-1$
         }
         applyTemplates(node);
     }

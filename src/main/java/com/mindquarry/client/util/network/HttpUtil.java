@@ -38,10 +38,10 @@ public class HttpUtil {
             result = get.getResponseBodyAsString();
         } else if (get.getStatusCode() == 401) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Authorization has been refused. Please check your login ID and password!");
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.0")); //$NON-NLS-1$
         } else {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Unknown connection Error. Status Code "
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.1") //$NON-NLS-1$
                             + get.getStatusCode());
         }
         get.releaseConnection();
@@ -64,10 +64,10 @@ public class HttpUtil {
 
         if (put.getStatusCode() == 401) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Authorization has been refused. Please check your login ID and password!");
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.0")); //$NON-NLS-1$
         } else if (put.getStatusCode() != 200) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Unknown connection Error. Status Code "
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.1") //$NON-NLS-1$
                             + put.getStatusCode());
         }
         put.releaseConnection();

@@ -39,8 +39,8 @@ public class WorkspaceShareListener implements Listener {
                     syncOp);
         } catch (Exception e) {
             MessageDialog.openError(MindClient.getShell(),
-                    "Synchronzation Error",
-                    "Error during workspaces synchronization.");
+                    Messages.getString("WorkspaceShareListener.0"), //$NON-NLS-1$
+                    Messages.getString("WorkspaceShareListener.1")); //$NON-NLS-1$
         }
         try {
             // share workspace changes
@@ -48,8 +48,8 @@ public class WorkspaceShareListener implements Listener {
             new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
                     shareOp);
         } catch (Exception e) {
-            MessageDialog.openError(MindClient.getShell(), "Sharing Error",
-                    "Error while sharing workspace changes.");
+            MessageDialog.openError(MindClient.getShell(), Messages.getString("WorkspaceShareListener.2"), //$NON-NLS-1$
+                    Messages.getString("WorkspaceShareListener.3")); //$NON-NLS-1$
         }
         button.setEnabled(true);
     }

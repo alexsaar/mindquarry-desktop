@@ -41,7 +41,7 @@ public class ShareOperation implements IRunnableWithProgress {
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
-        monitor.beginTask("Sharing workspaces ...", IProgressMonitor.UNKNOWN);
+        monitor.beginTask(Messages.getString("ShareOperation.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
         // init SVN types
         svnClient.username(client.getOptions()
@@ -65,10 +65,10 @@ public class ShareOperation implements IRunnableWithProgress {
 
             // retrieve (asynchronously) commit message
             final InputDialog dlg = new InputDialog(MindClient.getShell(),
-                    "Change Description",
-                    "Please provide a short description of the changes you have made to workspace "
-                            + tsDir.getName() + ".",
-                    "Description of your changes.", null);
+                    Messages.getString("ShareOperation.1"), //$NON-NLS-1$
+                    Messages.getString("ShareOperation.2") //$NON-NLS-1$
+                            + tsDir.getName() + ".", //$NON-NLS-1$
+                    Messages.getString("ShareOperation.3"), null); //$NON-NLS-1$
             MindClient.getShell().getDisplay().syncExec(new Runnable() {
                 /**
                  * @see java.lang.Runnable#run()

@@ -12,7 +12,6 @@ import java.util.Vector;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -154,7 +153,7 @@ public class TaskManager {
                     + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil
-                    .displaySyncErrorMsg("Could not retrieve list of tasks due to unexpected connection errors.");
+                    .displaySyncErrorMsg(Messages.getString("TaskManager.0")); //$NON-NLS-1$
         }
         // check if some contant was received
         if (content == null) {
@@ -183,7 +182,7 @@ public class TaskManager {
                         + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 MessageDialogUtil
-                        .displaySyncErrorMsg("Could not retrieve task due to unexpected connection errors.");
+                        .displaySyncErrorMsg(Messages.getString("TaskManager.1")); //$NON-NLS-1$
             }
             // check if some contant was received
             if (content == null) {
@@ -204,7 +203,7 @@ public class TaskManager {
 
             // add task to internal list of tasks, if not yet exist
             if ((!tasks.contains(newTask))
-                    && (!newTask.getStatus().equals("done"))) {
+                    && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
                 tasks.add(newTask);
             }
         }
@@ -232,7 +231,7 @@ public class TaskManager {
                         taskTable = null;
                     }
                     refreshWidget = new UpdateComposite(taskContainer,
-                            "Updating task list...");
+                            Messages.getString("TaskManager.2")); //$NON-NLS-1$
                 } else {
                     if (refreshWidget != null) {
                         refreshWidget.dispose();
@@ -251,7 +250,7 @@ public class TaskManager {
                             SWT.NONE);
                     activityColumn.setResizable(false);
                     activityColumn.setWidth(100);
-                    activityColumn.setText("Task");
+                    activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
 
                     // create task list
                     CellEditor[] editors = new CellEditor[taskTable
@@ -267,8 +266,6 @@ public class TaskManager {
                             .setLabelProvider(new TaskTableLabelProvider());
                     taskTableViewer
                             .setContentProvider(new TaskTableContentProvider());
-                    taskTableViewer.setCellModifier(new TaskTableCellModifier(
-                            taskTableViewer));
                     taskTableViewer
                             .addSelectionChangedListener(new TaskSelectionChangedListener(
                                     myself, taskTableViewer, doneButton));

@@ -78,11 +78,11 @@ public class OptionsDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle("MindClient Options");
-        setMessage("Configure your MindClient seetings.",
+        setTitle(Messages.getString("OptionsDialog.0")); //$NON-NLS-1$
+        setMessage(Messages.getString("OptionsDialog.1"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
 
-        getShell().setText("MindClient Options");
+        getShell().setText(Messages.getString("OptionsDialog.0")); //$NON-NLS-1$
         getShell().setImage(icon);
 
         // Set the logo
@@ -121,7 +121,7 @@ public class OptionsDialog extends TitleAreaDialog {
         composite.setLayout(gridLayout);
 
         loginLabel = new CLabel(composite, SWT.LEFT);
-        loginLabel.setText("Your Login ID:");
+        loginLabel.setText(Messages.getString("OptionsDialog.3")); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         loginText = new Text(composite, SWT.SINGLE | SWT.BORDER);
@@ -131,7 +131,7 @@ public class OptionsDialog extends TitleAreaDialog {
         loginText.addFocusListener(new TextFocusListener(loginText));
 
         pwdLabel = new CLabel(composite, SWT.LEFT);
-        pwdLabel.setText("Your Password:");
+        pwdLabel.setText(Messages.getString("OptionsDialog.4")); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         pwdText = new Text(composite, SWT.PASSWORD | SWT.BORDER);
@@ -141,7 +141,7 @@ public class OptionsDialog extends TitleAreaDialog {
         pwdText.addFocusListener(new TextFocusListener(pwdText));
 
         quarryEndpointLabel = new CLabel(composite, SWT.LEFT);
-        quarryEndpointLabel.setText("Location of your Quarry:");
+        quarryEndpointLabel.setText(Messages.getString("OptionsDialog.5")); //$NON-NLS-1$
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -216,22 +216,22 @@ public class OptionsDialog extends TitleAreaDialog {
          */
         public void modifyText(ModifyEvent event) {
             if (loginText.getText().equals("")) { //$NON-NLS-1$
-                setErrorMessage("Login ID can not be empty.");
+                setErrorMessage(Messages.getString("OptionsDialog.6")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             } else if (pwdText.getText().equals("")) { //$NON-NLS-1$
-                setErrorMessage("Password can not be empty.");
+                setErrorMessage(Messages.getString("OptionsDialog.7")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             } else if (quarryEndpointText.getText().equals("")) { //$NON-NLS-1$
-                setErrorMessage("Quarry location can not be empty.");
+                setErrorMessage(Messages.getString("OptionsDialog.8")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             } else {
                 try {
                     new URL(quarryEndpointText.getText());
                 } catch (MalformedURLException e) {
-                    setErrorMessage("Quarry location is malformed.");
+                    setErrorMessage(Messages.getString("OptionsDialog.9")); //$NON-NLS-1$
                     getButton(IDialogConstants.OK_ID).setEnabled(false);
                     return;
                 }

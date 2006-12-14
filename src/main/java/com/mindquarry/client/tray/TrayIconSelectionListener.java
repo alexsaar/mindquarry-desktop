@@ -115,7 +115,7 @@ public class TrayIconSelectionListener implements SelectionListener {
     private void createWorkspacesGroup() {
         Group workspacesGroup = new Group(container, SWT.SHADOW_NONE);
         workspacesGroup.setBackground(container.getBackground());
-        workspacesGroup.setText("Workspaces");
+        workspacesGroup.setText(Messages.getString("TrayIconSelectionListener.0")); //$NON-NLS-1$
         workspacesGroup.setLayout(new GridLayout(2, false));
         workspacesGroup.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
                 false));
@@ -123,23 +123,23 @@ public class TrayIconSelectionListener implements SelectionListener {
         Link label = new Link(workspacesGroup, SWT.NONE);
         label.setBackground(workspacesGroup.getBackground());
         label
-                .setText("Share and synchronize your local documents with your team by using the buttons below.");
+                .setText(Messages.getString("TrayIconSelectionListener.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
         Button shareButton = new Button(workspacesGroup, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/up.png"))); //$NON-NLS-1$
         shareButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
-        shareButton.setText("Share");
+        shareButton.setText(Messages.getString("TrayIconSelectionListener.2")); //$NON-NLS-1$
         shareButton
-                .setToolTipText("Use this button to share your local workspace changes with the other teams members.");
+                .setToolTipText(Messages.getString("TrayIconSelectionListener.3")); //$NON-NLS-1$
         shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
                 client, shareButton));
 
         Button syncButton = new Button(workspacesGroup, SWT.PUSH);
-        syncButton.setText("Synchronize");
+        syncButton.setText(Messages.getString("TrayIconSelectionListener.4")); //$NON-NLS-1$
         syncButton
-                .setToolTipText("Use this button to synchronize your local workspaces.");
+                .setToolTipText(Messages.getString("TrayIconSelectionListener.5")); //$NON-NLS-1$
         syncButton.setLayoutData(new GridData(SWT.END, SWT.END, false, false));
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png"))); //$NON-NLS-1$
@@ -155,7 +155,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         tasksGroup.setBackground(container.getBackground());
         tasksGroup.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
         tasksGroup.setLayout(new GridLayout(1, false));
-        tasksGroup.setText("Tasks");
+        tasksGroup.setText(Messages.getString("TrayIconSelectionListener.6")); //$NON-NLS-1$
 
         Composite taskContainer = new Composite(tasksGroup, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
@@ -171,8 +171,8 @@ public class TrayIconSelectionListener implements SelectionListener {
 
         Button doneButton = new Button(tasksGroup, SWT.NONE);
         doneButton.setEnabled(false);
-        doneButton.setText("Done");
-        doneButton.setToolTipText("Use this button to finish a running task.");
+        doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
+        doneButton.setToolTipText(Messages.getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
@@ -189,7 +189,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         wikiGroup.setBackground(container.getBackground());
         wikiGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         wikiGroup.setLayout(new GridLayout(2, false));
-        wikiGroup.setText("Wiki");
+        wikiGroup.setText(Messages.getString("TrayIconSelectionListener.9")); //$NON-NLS-1$
 
         final Text wikiTextArea = new Text(wikiGroup, SWT.MULTI | SWT.WRAP
                 | SWT.V_SCROLL | SWT.BORDER);
@@ -199,18 +199,18 @@ public class TrayIconSelectionListener implements SelectionListener {
         wikiTextArea.setEnabled(false);
 
         Button clearButton = new Button(wikiGroup, SWT.NONE);
-        clearButton.setText("Clear");
+        clearButton.setText(Messages.getString("TrayIconSelectionListener.10")); //$NON-NLS-1$
         clearButton
-                .setToolTipText("Use this button to clear the text in the Wiki textbox.");
+                .setToolTipText(Messages.getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
         clearButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/edit-clear.png"))); //$NON-NLS-1$
         clearButton.setEnabled(false);
         clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
 
         Button postButton = new Button(wikiGroup, SWT.NONE);
-        postButton.setText("Post");
+        postButton.setText(Messages.getString("TrayIconSelectionListener.12")); //$NON-NLS-1$
         postButton
-                .setToolTipText("Use this button for posting the content of the Wiki textbox to your personal Wiki page.");
+                .setToolTipText(Messages.getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
         postButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/document-new.png"))); //$NON-NLS-1$
         postButton.setEnabled(false);

@@ -29,7 +29,7 @@ public class TeamListTransformer extends Transformer {
         applyTemplates(node);
         if (node instanceof Element) {
             Element element = (Element) node;
-            teamspaces.add(element.attribute("href").getStringValue());
+            teamspaces.add(element.attribute("href").getStringValue()); //$NON-NLS-1$
         }
     }
 
