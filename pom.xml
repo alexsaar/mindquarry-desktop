@@ -70,6 +70,11 @@
 			<artifactId>commands</artifactId>
 			<version>3.3.0.I20061114</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.equinox</groupId>
+			<artifactId>common</artifactId>
+			<version>3.3.0.v20061117</version>
+		</dependency>
 	</dependencies>
 	
 	<profiles>
