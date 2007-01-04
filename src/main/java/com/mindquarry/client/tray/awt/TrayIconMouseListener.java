@@ -5,11 +5,11 @@ package com.mindquarry.client.tray.awt;
 
 import java.awt.Frame;
 import java.awt.PopupMenu;
-import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.Method;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.events.SelectionEvent;
@@ -74,28 +74,44 @@ public class TrayIconMouseListener implements MouseListener {
     /**
      * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
      */
-    public void mousePressed(MouseEvent e) {
-        if (((e.getButton() == MouseEvent.BUTTON2)
-                || (e.getButton() == MouseEvent.BUTTON3) || ((e
-                .getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == MouseEvent.CTRL_DOWN_MASK))
-                && (e.getSource() instanceof TrayIcon)) {
-            frame.setVisible(true);
-            menu.show(frame, e.getXOnScreen(), e.getYOnScreen());
-            frame.setVisible(false);
-        } else if ((e.getButton() == MouseEvent.BUTTON1)
-                && (e.getSource() instanceof TrayIcon)) {
-            shell.getDisplay().asyncExec(new Runnable() {
-                /**
-                 * @see java.lang.Runnable#run()
-                 */
-                public void run() {
-                    Event event = new Event();
-                    // event.widget = new TrayItem(tray, SWT.NONE);
-                    event.widget = shell;
+    public void mousePressed(MouseEvent event) {
+        try {
+            Class tiClass = Class.forName("java.awt.TrayIcon"); //$NON-NLS-1$
 
-                    selectionListener.widgetSelected(new SelectionEvent(event));
-                }
-            });
+            if (((event.getButton() == MouseEvent.BUTTON2)
+                    || (event.getButton() == MouseEvent.BUTTON3) || ((event
+                    .getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) == MouseEvent.CTRL_DOWN_MASK))
+                    && (event.getSource().getClass().equals(tiClass))) {
+                // get methods by reflection for java 5 compliance
+                Method xOnScreen = MouseEvent.class.getMethod("getXOnScreen", //$NON-NLS-1$
+                        new Class[0]);
+                Method yOnScreen = MouseEvent.class.getMethod("getYOnScreen", //$NON-NLS-1$
+                        new Class[0]);
+
+                frame.setVisible(true);
+                menu.show(frame, (Integer) xOnScreen.invoke(event,
+                        new Object[0]), (Integer) yOnScreen.invoke(event,
+                        new Object[0]));
+                frame.setVisible(false);
+            } else if ((event.getButton() == MouseEvent.BUTTON1)
+                    && (event.getSource().getClass().equals(tiClass))) {
+                shell.getDisplay().asyncExec(new Runnable() {
+                    /**
+                     * @see java.lang.Runnable#run()
+                     */
+                    public void run() {
+                        Event event = new Event();
+                        // event.widget = new TrayItem(tray, SWT.NONE);
+                        event.widget = shell;
+
+                        selectionListener.widgetSelected(new SelectionEvent(
+                                event));
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(-1);
         }
     }
 

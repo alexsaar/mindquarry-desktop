@@ -3,15 +3,15 @@
  */
 package com.mindquarry.client;
 
-import java.awt.AWTException;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
@@ -197,19 +197,38 @@ public class MindClient {
         }
     }
 
+    /**
+     * Creates AWT tray icon with a popup menu.
+     */
     private static void createAWTTrayIcon(final MindClient mindclient,
             final Display display, final Tray tray) throws IOException {
-        // create AWT popup menu
-        // create AWT tray icon
-        TrayIcon ti = new TrayIcon(ImageIO.read(MindClient.class
-                .getResourceAsStream(MINDCLIENT_ICON)), APPLICATION_NAME);
-        ti.addMouseListener(new TrayIconMouseListener(display, mindclient,
-                shell));
+        // we use Class.forName here to prevent compiler clashes with Java 5
+        // compiler
         try {
-            SystemTray.getSystemTray().add(ti);
-        } catch (AWTException e1) {
-            // there must be a tray
-            e1.printStackTrace();
+            // create new instance of tray icon
+            Class tiClazz = Class.forName("java.awt.TrayIcon", true, //$NON-NLS-1$
+                    MindClient.class.getClassLoader());
+            Constructor tiConst = tiClazz
+                    .getConstructor(new Class[] { java.awt.Image.class });
+            Object tiInstance = tiConst
+                    .newInstance(new Object[] { ImageIO.read(MindClient.class
+                            .getResourceAsStream(MINDCLIENT_ICON)) });
+
+            // init mouse listener
+            Method m = tiClazz.getMethod("addMouseListener",
+                    new Class[] { MouseListener.class });
+            m.invoke(tiInstance, new TrayIconMouseListener(display, mindclient,
+                    shell));
+            // get system tray
+            Class stClazz = Class.forName("java.awt.SystemTray", true, //$NON-NLS-1$
+                    MindClient.class.getClassLoader());
+            m = stClazz.getMethod("getSystemTray", new Class[0]);
+
+            Object stInstance = m.invoke(null, new Object[0]);
+            m = stClazz.getMethod("add", new Class[] { tiClazz });
+            m.invoke(stInstance, new Object[] { tiInstance });
+        } catch (Exception e) {
+            e.printStackTrace();
             System.exit(-1);
         }
     }
