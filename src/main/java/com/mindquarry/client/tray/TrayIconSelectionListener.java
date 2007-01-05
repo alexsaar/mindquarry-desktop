@@ -14,8 +14,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
@@ -29,7 +31,7 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TrayIconSelectionListener implements SelectionListener {
+public class TrayIconSelectionListener implements SelectionListener, Listener {
     private static final Point BALLOON_SIZE = new Point(356, 317);
 
     private final Display display;
@@ -58,7 +60,11 @@ public class TrayIconSelectionListener implements SelectionListener {
      * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
     public void widgetSelected(SelectionEvent e) {
-        if (container == null || container.isDisposed()) {
+        toggleBalloon();
+    }
+
+	private void toggleBalloon() {
+		if (container == null || container.isDisposed()) {
             createContainer();
             Rectangle diSize = display.getBounds();
             Point curPos = display.getCursorLocation();
@@ -87,7 +93,7 @@ public class TrayIconSelectionListener implements SelectionListener {
         } else {
             balloon.close();
         }
-    }
+	}
 
     /**
      * This method initializes sShell
@@ -216,4 +222,8 @@ public class TrayIconSelectionListener implements SelectionListener {
         postButton.setEnabled(false);
         postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     }
+
+	public void handleEvent(Event event) {
+		this.toggleBalloon();
+	}
 }

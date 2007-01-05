@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -128,8 +129,72 @@ public class MindClient {
             mindclient.loadOptions();
         }
         final Tray tray = display.getSystemTray();
+        final TrayIconSelectionListener trayListener = new TrayIconSelectionListener(display, mindclient);
+        
+        final TrayItem item = new TrayItem (tray, SWT.NONE);
+		item.setToolTipText("SWT TrayItem");
+		item.setImage(mindclient.icon);
+		item.addListener (SWT.Show, new Listener () {
+			public void handleEvent (Event event) {
+				System.out.println("show");
+			}
+		});
+		item.addListener (SWT.Hide, new Listener () {
+			public void handleEvent (Event event) {
+				System.out.println("hide");
+			}
+		});
+		item.addListener (SWT.Selection, new Listener () {
+			public void handleEvent (Event event) {
+				System.out.println("selection ");
+				System.out.println(trayListener);
+				trayListener.handleEvent(event);
+				System.out.println("hahaha");
+				//trayListener.handleEvent(event);
+				
+			}
+		});
+		item.addListener (SWT.DefaultSelection, new Listener () {
+			public void handleEvent (Event event) {
+				System.out.println("default selection");
+			}
+		});
+		
+		
+		final Menu menu = new Menu(shell, SWT.POP_UP);
+        item.addListener(SWT.MenuDetect, new Listener() {
+            public void handleEvent(Event event) {
+                menu.setVisible(true);
+            }
+        });
+        MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+        menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
+        menuItem.addListener(SWT.Selection, new Listener() {
+            /**
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            public void handleEvent(Event event) {
+                OptionsDialog dlg = new OptionsDialog(shell,
+                        mindclient.icon, mindclient.options);
+                if (dlg.open() == Window.OK) {
+                    mindclient.saveOptions();
+                }
+            }
+        });
+        menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
-        createSWTTrayIcon(mindclient, display, tray);
+        menuItem = new MenuItem(menu, SWT.PUSH);
+        menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
+        menuItem.addListener(SWT.Selection, new Listener() {
+            /**
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
+            public void handleEvent(Event event) {
+                System.exit(1);
+            }
+        });
+
+        //createSWTTrayIcon(mindclient, display, tray);
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -143,42 +208,86 @@ public class MindClient {
         if (tray != null) {
             TrayItem ti = new TrayItem(tray, SWT.NONE);
             ti.setImage(mindclient.icon);
-            ti.addSelectionListener(new TrayIconSelectionListener(display,
-                    mindclient));
-            ti.setToolTipText(APPLICATION_NAME);
-
-            final Menu menu = new Menu(shell, SWT.POP_UP);
-            ti.addListener(SWT.MenuDetect, new Listener() {
-                public void handleEvent(Event event) {
-                    menu.setVisible(true);
-                }
-            });
-            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
-            menuItem.addListener(SWT.Selection, new Listener() {
-                /**
-                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                 */
-                public void handleEvent(Event event) {
-                    OptionsDialog dlg = new OptionsDialog(shell,
-                            mindclient.icon, mindclient.options);
-                    if (dlg.open() == Window.OK) {
-                        mindclient.saveOptions();
-                    }
-                }
-            });
-            menuItem = new MenuItem(menu, SWT.SEPARATOR);
-
-            menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
-            menuItem.addListener(SWT.Selection, new Listener() {
-                /**
-                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-                 */
-                public void handleEvent(Event event) {
-                    System.exit(1);
-                }
-            });
+            
+            {
+            	TrayItem item = ti;
+            	
+	            item.addListener (SWT.Show, new Listener () {
+	    			public void handleEvent (Event event) {
+	    				System.out.println("show");
+	    			}
+	    		});
+	    		item.addListener (SWT.Hide, new Listener () {
+	    			public void handleEvent (Event event) {
+	    				System.out.println("hide");
+	    			}
+	    		});
+	    		item.addListener (SWT.Selection, new Listener () {
+	    			public void handleEvent (Event event) {
+	    				System.out.println("selection");
+	    			}
+	    		});
+	    		item.addListener (SWT.DefaultSelection, new Listener () {
+	    			public void handleEvent (Event event) {
+	    				System.out.println("default selection");
+	    			}
+	    		});
+	    		final Menu menu = new Menu (shell, SWT.POP_UP);
+	    		for (int i = 0; i < 8; i++) {
+	    			MenuItem mi = new MenuItem (menu, SWT.PUSH);
+	    			mi.setText ("Item" + i);
+	    			mi.addListener (SWT.Selection, new Listener () {
+	    				public void handleEvent (Event event) {
+	    					System.out.println("selection " + event.widget);
+	    				}
+	    			});
+	    			if (i == 0) menu.setDefaultItem(mi);
+	    		}
+	    		item.addListener (SWT.MenuDetect, new Listener () {
+	    			public void handleEvent (Event event) {
+	    				menu.setVisible (true);
+	    			}
+	    		});
+	        }
+            
+            if (false) {
+	            ti.addSelectionListener(new TrayIconSelectionListener(display,
+	                    mindclient));
+	            ti.setToolTipText(APPLICATION_NAME);
+	
+	            final Menu menu = new Menu(shell, SWT.POP_UP);
+	            ti.addListener(SWT.MenuDetect, new Listener() {
+	                public void handleEvent(Event event) {
+	                    menu.setVisible(true);
+	                }
+	            });
+	            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+	            menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
+	            menuItem.addListener(SWT.Selection, new Listener() {
+	                /**
+	                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+	                 */
+	                public void handleEvent(Event event) {
+	                    OptionsDialog dlg = new OptionsDialog(shell,
+	                            mindclient.icon, mindclient.options);
+	                    if (dlg.open() == Window.OK) {
+	                        mindclient.saveOptions();
+	                    }
+	                }
+	            });
+	            menuItem = new MenuItem(menu, SWT.SEPARATOR);
+	
+	            menuItem = new MenuItem(menu, SWT.PUSH);
+	            menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
+	            menuItem.addListener(SWT.Selection, new Listener() {
+	                /**
+	                 * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+	                 */
+	                public void handleEvent(Event event) {
+	                    System.exit(1);
+	                }
+	            });
+            }
         } else {
             // there must be a tray
             System.exit(-1);
