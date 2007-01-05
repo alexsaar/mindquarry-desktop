@@ -3,6 +3,9 @@
  */
 package com.mindquarry.client.tray;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -18,12 +21,17 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
+import com.mindquarry.client.task.TaskSelectionChangedListener;
+import com.mindquarry.client.task.TaskTableContentProvider;
+import com.mindquarry.client.task.TaskTableLabelProvider;
 import com.mindquarry.client.workspace.WorkspaceShareListener;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
@@ -174,6 +182,39 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         ((GridLayout) taskContainer.getLayout()).verticalSpacing = 0;
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
+        
+        
+        Table taskTable = new Table(taskContainer, SWT.BORDER);
+        taskTable.setHeaderVisible(false);
+        taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+                true, true));
+        ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
+                .getParent().getLayoutData()).heightHint;
+        taskTable.setLinesVisible(false);
+        TableViewer taskTableViewer = new TableViewer(taskTable);
+
+        TableColumn activityColumn = new TableColumn(taskTable,
+                SWT.NONE);
+        activityColumn.setResizable(false);
+        activityColumn.setWidth(100);
+        activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+
+        // create task list
+        CellEditor[] editors = new CellEditor[taskTable
+                .getColumnCount()];
+        editors[0] = new CheckboxCellEditor(taskTable.getParent());
+
+        taskTableViewer.setCellEditors(editors);
+        taskTableViewer
+                .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
+        taskTableViewer.getTable().getColumn(0).setWidth(300);
+
+        taskTableViewer
+                .setLabelProvider(new TaskTableLabelProvider());
+        taskTableViewer
+                .setContentProvider(new TaskTableContentProvider());
+        
+        
 
         Button doneButton = new Button(tasksGroup, SWT.NONE);
         doneButton.setEnabled(false);
@@ -183,8 +224,12 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
 
-        tman = new TaskManager(client, taskContainer, doneButton);
+        tman = new TaskManager(client, taskTableViewer, doneButton);
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
+        
+        taskTableViewer
+        .addSelectionChangedListener(new TaskSelectionChangedListener(
+                tman, taskTableViewer, doneButton));
     }
 
     /**
