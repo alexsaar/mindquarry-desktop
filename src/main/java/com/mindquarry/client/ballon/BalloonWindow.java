@@ -434,7 +434,19 @@ public class BalloonWindow {
     public void close() {
         shell.close();
     }
-
+    
+    public void hide() {
+    	shell.setVisible(false);
+    }
+    
+    public void show() {
+    	shell.setVisible(true);
+    }
+    
+    public boolean isVisible() {
+    	return shell.isVisible();
+    }
+ 
     public void setVisible(boolean visible) {
         if (visible)
             prepareForOpen();

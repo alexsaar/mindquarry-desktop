@@ -14,7 +14,6 @@ import java.util.Properties;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -91,7 +90,9 @@ public class MindClient {
 
         // init display & shell
         final Display display = Display.getCurrent();
-        shell = new Shell(SWT.NONE);
+        Display.setAppName("Mindquarry");
+        shell = new Shell(display, SWT.NONE);
+        shell.setText("Mindquarry");
 
         // check CLI arguments
         if (mindclient.optionsFile.exists()) {
