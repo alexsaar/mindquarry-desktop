@@ -145,12 +145,14 @@ public class MindClient {
 			}
 		});
 		item.addListener (SWT.Selection, new Listener () {
-			public void handleEvent (Event event) {
+			public void handleEvent (final Event event) {
 				System.out.println("selection ");
 				System.out.println(trayListener);
-				trayListener.handleEvent(event);
-				System.out.println("hahaha");
-				//trayListener.handleEvent(event);
+				display.asyncExec(new Runnable() {
+					public void run() {
+						trayListener.handleEvent(event);
+					}
+				});
 				
 			}
 		});
