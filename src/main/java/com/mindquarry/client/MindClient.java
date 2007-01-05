@@ -3,18 +3,13 @@
  */
 package com.mindquarry.client;
 
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.Properties;
-
-import javax.imageio.ImageIO;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -33,7 +28,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.tray.TrayIconSelectionListener;
-import com.mindquarry.client.tray.awt.TrayIconMouseListener;
 import com.mindquarry.client.util.os.HomeUtil;
 import com.mindquarry.client.util.os.OperatingSystem;
 
@@ -135,13 +129,7 @@ public class MindClient {
         }
         final Tray tray = display.getSystemTray();
 
-        // check Java version
-        if (!ManagementFactory.getRuntimeMXBean().getVmVersion().startsWith(
-                "1.6")) { //$NON-NLS-1$
-            createSWTTrayIcon(mindclient, display, tray);
-        } else {
-            createAWTTrayIcon(mindclient, display, tray);
-        }
+        createSWTTrayIcon(mindclient, display, tray);
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
@@ -193,42 +181,6 @@ public class MindClient {
             });
         } else {
             // there must be a tray
-            System.exit(-1);
-        }
-    }
-
-    /**
-     * Creates AWT tray icon with a popup menu.
-     */
-    private static void createAWTTrayIcon(final MindClient mindclient,
-            final Display display, final Tray tray) throws IOException {
-        // we use Class.forName here to prevent compiler clashes with Java 5
-        // compiler
-        try {
-            // create new instance of tray icon
-            Class tiClazz = Class.forName("java.awt.TrayIcon", true, //$NON-NLS-1$
-                    MindClient.class.getClassLoader());
-            Constructor tiConst = tiClazz
-                    .getConstructor(new Class[] { java.awt.Image.class });
-            Object tiInstance = tiConst
-                    .newInstance(new Object[] { ImageIO.read(MindClient.class
-                            .getResourceAsStream(MINDCLIENT_ICON)) });
-
-            // init mouse listener
-            Method m = tiClazz.getMethod("addMouseListener",
-                    new Class[] { MouseListener.class });
-            m.invoke(tiInstance, new TrayIconMouseListener(display, mindclient,
-                    shell));
-            // get system tray
-            Class stClazz = Class.forName("java.awt.SystemTray", true, //$NON-NLS-1$
-                    MindClient.class.getClassLoader());
-            m = stClazz.getMethod("getSystemTray", new Class[0]);
-
-            Object stInstance = m.invoke(null, new Object[0]);
-            m = stClazz.getMethod("add", new Class[] { tiClazz });
-            m.invoke(stInstance, new Object[] { tiInstance });
-        } catch (Exception e) {
-            e.printStackTrace();
             System.exit(-1);
         }
     }
