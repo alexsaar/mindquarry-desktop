@@ -3,6 +3,8 @@
  */
 package com.mindquarry.client.task;
 
+import org.dom4j.Document;
+
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
@@ -10,7 +12,7 @@ package com.mindquarry.client.task;
 public class Task {
     private String id;
 
-    private String content;
+    private Document content;
 
     private String title;
 
@@ -22,7 +24,7 @@ public class Task {
         active = false;
     }
 
-    public Task(String id, String content, String title, String status) {
+    public Task(String id, Document content, String title, String status) {
         this.id = id;
         this.content = content;
         this.title = title;
@@ -46,11 +48,11 @@ public class Task {
         this.title = title;
     }
 
-    public String getContent() {
+    public Document getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Document content) {
         this.content = content;
     }
 

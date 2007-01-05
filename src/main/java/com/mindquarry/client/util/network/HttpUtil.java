@@ -4,6 +4,7 @@
 package com.mindquarry.client.util.network;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -20,7 +21,7 @@ import com.mindquarry.client.util.widgets.MessageDialogUtil;
  *         Saar</a>
  */
 public class HttpUtil {
-    public static String getContentAsXML(String login, String pwd,
+    public static InputStream getContentAsXML(String login, String pwd,
             String address) throws HttpException, IOException {
         HttpClient httpClient = new HttpClient();
         httpClient.getState().setCredentials(
@@ -33,9 +34,9 @@ public class HttpUtil {
         get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
         httpClient.executeMethod(get);
 
-        String result = null;
+        InputStream result = null;
         if (get.getStatusCode() == 200) {
-            result = get.getResponseBodyAsString();
+        	result = get.getResponseBodyAsStream();
         } else if (get.getStatusCode() == 401) {
             MessageDialogUtil
                     .displaySyncErrorMsg(Messages.getString("HttpUtil.0")); //$NON-NLS-1$
@@ -44,7 +45,7 @@ public class HttpUtil {
                     .displaySyncErrorMsg(Messages.getString("HttpUtil.1") //$NON-NLS-1$
                             + get.getStatusCode());
         }
-        get.releaseConnection();
+        //get.releaseConnection();
         return result;
     }
 

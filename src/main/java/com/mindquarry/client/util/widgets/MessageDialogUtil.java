@@ -18,6 +18,7 @@ public class MessageDialogUtil {
      * @param msg the message to be displayed
      */
     public static void displaySyncErrorMsg(final String msg) {
+    	System.out.println("Trying to write an error message");
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             /**
              * @see java.lang.Runnable#run()

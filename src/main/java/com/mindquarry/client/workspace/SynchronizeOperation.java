@@ -4,6 +4,7 @@
 package com.mindquarry.client.workspace;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -68,7 +69,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             IProgressMonitor monitor) {
         monitor.setTaskName(Messages.getString("SynchronizeOperation.1")); //$NON-NLS-1$
 
-        String content = null;
+        InputStream content = null;
         try {
             content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
                     MindClient.LOGIN_KEY), client.getOptions().getProperty(
@@ -93,7 +94,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         SAXReader reader = new SAXReader();
         Document doc;
         try {
-            doc = reader.read(new StringReader(content));
+            doc = reader.read(content);
         } catch (DocumentException e) {
             MessageDialogUtil
                     .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.4")); //$NON-NLS-1$
@@ -126,7 +127,7 @@ public class SynchronizeOperation implements IRunnableWithProgress {
             monitor.setTaskName(Messages.getString("SynchronizeOperation.8") + tsID //$NON-NLS-1$
                     + "'..."); //$NON-NLS-1$
             try {
-                doc = reader.read(new StringReader(content));
+                doc = reader.read(content);
             } catch (DocumentException e) {
                 e.printStackTrace();
                 return false;

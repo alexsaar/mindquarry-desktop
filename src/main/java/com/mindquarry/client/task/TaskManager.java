@@ -5,6 +5,7 @@ package com.mindquarry.client.task;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.io.DocumentSource;
 import org.dom4j.io.SAXReader;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -90,8 +92,7 @@ public class TaskManager {
 
         // set task content to status "done"
         ByteArrayOutputStream result = new ByteArrayOutputStream();
-        Source xmlSource = new StreamSource(new ByteArrayInputStream(task
-                .getContent().getBytes()));
+        Source xmlSource = new DocumentSource(task.getContent());
 
         TransformerFactory transFact = TransformerFactory.newInstance();
         try {
@@ -128,23 +129,18 @@ public class TaskManager {
      * Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
-        new Thread(new Runnable() {
-            public void run() {
-                refresh();
-            }
-        }).start();
+    	System.out.println("refereshing");
+		new Thread(new Runnable() {
+			public void run() {
+				refresh();
+			}
+		}).start();
     }
 
     private void refresh() {
-        setRefreshing(true);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String content = null;
+        //setRefreshing(true);
+    	System.out.println("calling http server for task list");
+        InputStream content = null;
         try {
             content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
                     MindClient.LOGIN_KEY), client.getOptions().getProperty(
@@ -155,124 +151,127 @@ public class TaskManager {
             MessageDialogUtil
                     .displaySyncErrorMsg(Messages.getString("TaskManager.0")); //$NON-NLS-1$
         }
+        System.out.println("got some http content");
         // check if some contant was received
         if (content == null) {
-            setRefreshing(false);
-        }
-        SAXReader reader = new SAXReader();
-        Document doc;
-        try {
-            doc = reader.read(new StringReader(content));
-        } catch (DocumentException e) {
-            e.printStackTrace();
-            return;
-        }
-        // create and execute transformer for tasklist description
-        TaskListTransformer tlTransformer = new TaskListTransformer();
-        tlTransformer.execute(doc);
-
-        // get task descriptions
-        for (String taskURI : tlTransformer.getTaskURIs()) {
-            content = null;
-            try {
-                content = HttpUtil.getContentAsXML(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
-                        .getProperty(MindClient.PASSWORD_KEY), client
-                        .getOptions().getProperty(MindClient.ENDPOINT_KEY)
-                        + "/tasks/" + taskURI); //$NON-NLS-1$
-            } catch (Exception e) {
-                MessageDialogUtil
-                        .displaySyncErrorMsg(Messages.getString("TaskManager.1")); //$NON-NLS-1$
-            }
-            // check if some contant was received
-            if (content == null) {
-                setRefreshing(false);
-            }
-            try {
-                doc = reader.read(new StringReader(content));
-            } catch (DocumentException e) {
-                e.printStackTrace();
-                return;
-            }
-            TaskTransformer tTransformer = new TaskTransformer();
-            tTransformer.execute(doc);
-
-            // get initialized teask and set content
-            Task newTask = tTransformer.getTask();
-            newTask.setContent(content);
-
-            // add task to internal list of tasks, if not yet exist
-            if ((!tasks.contains(newTask))
-                    && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
-                tasks.add(newTask);
-            }
+        	System.out.println("no content received...");
+            //setRefreshing(false);
+        } else {
+	        SAXReader reader = new SAXReader();
+	        Document doc;
+	        try {
+	            doc = reader.read(content);
+	        } catch (DocumentException e) {
+	            e.printStackTrace();
+	            return;
+	        }
+	        // create and execute transformer for tasklist description
+	        TaskListTransformer tlTransformer = new TaskListTransformer();
+	        tlTransformer.execute(doc);
+	        System.out.println("getting task descriptions");
+	        // get task descriptions
+	        for (String taskURI : tlTransformer.getTaskURIs()) {
+	            InputStream taskcontent = null;
+	            try {
+	                taskcontent = HttpUtil.getContentAsXML(client.getOptions()
+	                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
+	                        .getProperty(MindClient.PASSWORD_KEY), client
+	                        .getOptions().getProperty(MindClient.ENDPOINT_KEY)
+	                        + "/tasks/" + taskURI); //$NON-NLS-1$
+	            } catch (Exception e) {
+	                MessageDialogUtil
+	                        .displaySyncErrorMsg(Messages.getString("TaskManager.1")); //$NON-NLS-1$
+	            }
+	            try {
+	                doc = reader.read(taskcontent);
+	                
+	                TaskTransformer tTransformer = new TaskTransformer();
+	                tTransformer.execute(doc);
+	
+	                // get initialized teask and set content
+	                Task newTask = tTransformer.getTask();
+	                newTask.setContent(doc);
+	
+	                // add task to internal list of tasks, if not yet exist
+	                if ((!tasks.contains(newTask))
+	                        && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
+	                    tasks.add(newTask);
+	                }
+	            } catch (DocumentException e) {
+	                e.printStackTrace();
+	            }
+	        }
         }
         // update task table
+        System.out.println("Everything is parsed, I'm going to show you some content");
         setRefreshing(false);
-        taskContainer.getDisplay().syncExec(new Runnable() {
-            /**
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-                taskTableViewer.setInput(myself);
-            }
-        });
+        
+        if ((taskContainer!=null)&&(!taskContainer.isDisposed())) {
+	        taskContainer.getDisplay().syncExec(new Runnable() {
+	            public void run() {
+	                taskTableViewer.setInput(myself);
+	            }
+	        });
+        }
+		
     }
 
     private void setRefreshing(final boolean refreshing) {
-        taskContainer.getDisplay().syncExec(new Runnable() {
-            /**
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-                if (refreshing) {
-                    if (taskTable != null) {
-                        taskTable.dispose();
-                        taskTable = null;
-                    }
-                    refreshWidget = new UpdateComposite(taskContainer,
-                            Messages.getString("TaskManager.2")); //$NON-NLS-1$
-                } else {
-                    if (refreshWidget != null) {
-                        refreshWidget.dispose();
-                        refreshWidget = null;
-                    }
-                    taskTable = new Table(taskContainer, SWT.BORDER);
-                    taskTable.setHeaderVisible(false);
-                    taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-                            true, true));
-                    ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
-                            .getParent().getLayoutData()).heightHint;
-                    taskTable.setLinesVisible(false);
-                    taskTableViewer = new TableViewer(taskTable);
-
-                    TableColumn activityColumn = new TableColumn(taskTable,
-                            SWT.NONE);
-                    activityColumn.setResizable(false);
-                    activityColumn.setWidth(100);
-                    activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
-
-                    // create task list
-                    CellEditor[] editors = new CellEditor[taskTable
-                            .getColumnCount()];
-                    editors[0] = new CheckboxCellEditor(taskTable.getParent());
-
-                    taskTableViewer.setCellEditors(editors);
-                    taskTableViewer
-                            .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
-                    taskTableViewer.getTable().getColumn(0).setWidth(300);
-
-                    taskTableViewer
-                            .setLabelProvider(new TaskTableLabelProvider());
-                    taskTableViewer
-                            .setContentProvider(new TaskTableContentProvider());
-                    taskTableViewer
-                            .addSelectionChangedListener(new TaskSelectionChangedListener(
-                                    myself, taskTableViewer, doneButton));
-                }
-                taskContainer.layout(true);
-            }
-        });
+    	if ((taskContainer!=null)&&(!taskContainer.isDisposed())) {
+	        taskContainer.getDisplay().syncExec(new Runnable() {
+	            /**
+	             * @see java.lang.Runnable#run()
+	             */
+	            public void run() {
+	                if (refreshing) {
+	                    if (taskTable != null) {
+	                        taskTable.dispose();
+	                        taskTable = null;
+	                    }
+	                    refreshWidget = new UpdateComposite(taskContainer,
+	                            Messages.getString("TaskManager.2")); //$NON-NLS-1$
+	                } else {
+	                    if (refreshWidget != null) {
+	                        refreshWidget.dispose();
+	                        refreshWidget = null;
+	                    }
+	                    taskTable = new Table(taskContainer, SWT.BORDER);
+	                    taskTable.setHeaderVisible(false);
+	                    taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
+	                            true, true));
+	                    ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
+	                            .getParent().getLayoutData()).heightHint;
+	                    taskTable.setLinesVisible(false);
+	                    taskTableViewer = new TableViewer(taskTable);
+	
+	                    TableColumn activityColumn = new TableColumn(taskTable,
+	                            SWT.NONE);
+	                    activityColumn.setResizable(false);
+	                    activityColumn.setWidth(100);
+	                    activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+	
+	                    // create task list
+	                    CellEditor[] editors = new CellEditor[taskTable
+	                            .getColumnCount()];
+	                    editors[0] = new CheckboxCellEditor(taskTable.getParent());
+	
+	                    taskTableViewer.setCellEditors(editors);
+	                    taskTableViewer
+	                            .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
+	                    taskTableViewer.getTable().getColumn(0).setWidth(300);
+	
+	                    taskTableViewer
+	                            .setLabelProvider(new TaskTableLabelProvider());
+	                    taskTableViewer
+	                            .setContentProvider(new TaskTableContentProvider());
+	                    taskTableViewer
+	                            .addSelectionChangedListener(new TaskSelectionChangedListener(
+	                                    myself, taskTableViewer, doneButton));
+	                }
+	                taskContainer.layout(true);
+	            }
+	        });
+    	}
     }
 
     public TableViewer getTaskTableViewer() {
