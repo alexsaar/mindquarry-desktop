@@ -433,6 +433,7 @@ public class BalloonWindow {
 
     public void close() {
         shell.close();
+        shell.dispose();
     }
     
     public void hide() {

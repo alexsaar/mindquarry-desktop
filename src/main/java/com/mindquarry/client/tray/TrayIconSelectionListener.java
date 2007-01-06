@@ -51,6 +51,10 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     private Composite container = null;
 
     private TaskManager tman;
+    
+    private TableViewer taskTableViewer;
+    
+    private Button doneButton;
 
     public TrayIconSelectionListener(Display display, final MindClient client) {
         this.display = display;
@@ -72,22 +76,34 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     }
 
 	private void toggleBalloon() {
-		if (balloon==null) {
-			System.out.println("Creating balloon");
-			createContainer();
-			initBalloonPosition();
-			balloon.open();
-		} else if (balloon.isVisible()) {
-			System.out.println("Hiding Balloon");
-			balloon.hide();
-		} else {
-			System.out.println("Showing Balloon");
-			initBalloonPosition();
-            balloon.show();
-            // task update
-            //tman.asyncRefresh();
-		}
+		System.out.println(Thread.currentThread().getName());
 		System.out.println("Toggling Balloon");
+		display.syncExec(new Runnable() {
+			public void run() {
+				System.out.println("runnable: " + Thread.currentThread().getName());
+				if (balloon==null) {
+					System.out.println("Creating balloon");
+					createContainer();
+					initBalloonPosition();
+					balloon.open();
+					System.out.println("Ballon: " + balloon);
+					tman = new TaskManager(client, taskTableViewer, doneButton);
+					tman.asyncRefresh();
+				} else if (balloon.isVisible()) {
+					System.out.println("Hiding Balloon");
+					balloon.hide();
+					balloon.close();
+					balloon = null;
+					tman = null;
+				} else {
+					System.out.println("Showing Balloon");
+					initBalloonPosition();
+		            balloon.show();
+		            // task update
+		            //
+				}
+			}
+		});
 	}
 
 	private void initBalloonPosition() {
@@ -117,7 +133,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
      * This method initializes sShell
      */
     public void createContainer() {
-        balloon = new BalloonWindow(MindClient.getShell(), SWT.TITLE | SWT.CLOSE
+        balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE | SWT.CLOSE
                 | SWT.TOOL | SWT.ON_TOP);
         balloon.setText(MindClient.APPLICATION_NAME);
         balloon.setImage(client.getIcon());

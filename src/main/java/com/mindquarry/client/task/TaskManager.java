@@ -190,6 +190,7 @@ public class TaskManager {
 	                Task newTask = tTransformer.getTask();
 	                newTask.setContent(doc);
 	
+	                System.out.println("Task: " + taskURI + " " + newTask.getStatus());
 	                // add task to internal list of tasks, if it does not yet exist
 	                if ((!tasks.contains(newTask))
 	                        && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
@@ -209,7 +210,10 @@ public class TaskManager {
 		// update task table
         MindClient.getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-			    taskTableViewer.setInput(myself);
+				System.out.println("updateTaskList: " + Thread.currentThread().getName());
+				if ((taskTableViewer!=null)&&(!taskTable.isDisposed())) {
+					taskTableViewer.setInput(myself);
+				}
 			}
 		});
 	}

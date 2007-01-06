@@ -147,7 +147,7 @@ public class MindClient {
 		});
 		item.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (final Event event) {
-				System.out.println("selection ");
+				System.out.println("event: " + Thread.currentThread().getName());
 				System.out.println(trayListener);
 				display.asyncExec(new Runnable() {
 					public void run() {
