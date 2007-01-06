@@ -444,7 +444,7 @@ public class BalloonWindow {
     }
     
     public boolean isVisible() {
-    	return shell.isVisible();
+    	return !shell.isDisposed() && shell.isVisible();
     }
  
     public void setVisible(boolean visible) {

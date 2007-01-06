@@ -55,10 +55,6 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     public TrayIconSelectionListener(Display display, final MindClient client) {
         this.display = display;
         this.client = client;
-        
-        createContainer();
-        balloon.open();
-        balloon.hide();
     }
 
     /**
@@ -76,40 +72,45 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     }
 
 	private void toggleBalloon() {
-		display.asyncExec(new Runnable() {
-			public void run() {
-				if (balloon.isVisible()) {
-					System.out.println("Hiding Balloon");
-					balloon.hide();
-				} else {
-					System.out.println("Showing Balloon");
-					Rectangle diSize = display.getBounds();
-		            Point curPos = display.getCursorLocation();
-
-		            Point position = new Point(0, 0);
-		            int anchor = 0;
-		            if (diSize.height / 2 > curPos.y) {
-		                position.y = curPos.y;
-		                anchor |= SWT.TOP;
-		            } else {
-		                position.y = curPos.y;
-		                anchor |= SWT.BOTTOM;
-		            }
-		            if (diSize.width / 2 > curPos.x) {
-		                anchor |= SWT.LEFT;
-		            } else {
-		                anchor |= SWT.RIGHT;
-		            }
-		            // TODO set location based on event data
-		            balloon.setLocation(curPos);
-		            balloon.setAnchor(anchor);
-		            balloon.show();
-		            // task update
-		            tman.asyncRefresh();
-				}
-			}
-		});
+		if (balloon==null) {
+			System.out.println("Creating balloon");
+			createContainer();
+			initBalloonPosition();
+			balloon.open();
+		} else if (balloon.isVisible()) {
+			System.out.println("Hiding Balloon");
+			balloon.hide();
+		} else {
+			System.out.println("Showing Balloon");
+			initBalloonPosition();
+            balloon.show();
+            // task update
+            //tman.asyncRefresh();
+		}
 		System.out.println("Toggling Balloon");
+	}
+
+	private void initBalloonPosition() {
+		Rectangle diSize = display.getBounds();
+		Point curPos = display.getCursorLocation();
+
+		Point position = new Point(0, 0);
+		int anchor = 0;
+		if (diSize.height / 2 > curPos.y) {
+		    position.y = curPos.y;
+		    anchor |= SWT.TOP;
+		} else {
+		    position.y = curPos.y;
+		    anchor |= SWT.BOTTOM;
+		}
+		if (diSize.width / 2 > curPos.x) {
+		    anchor |= SWT.LEFT;
+		} else {
+		    anchor |= SWT.RIGHT;
+		}
+		// TODO set location based on event data
+		balloon.setLocation(curPos);
+		balloon.setAnchor(anchor);
 	}
 
     /**
