@@ -14,6 +14,8 @@ import java.util.Properties;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -90,6 +92,7 @@ public class MindClient {
 
         // init display & shell
         final Display display = Display.getCurrent();
+        display.setWarnings(true);
         Display.setAppName("Mindquarry");
         shell = new Shell(display, SWT.NONE);
         shell.setText("Mindquarry");
@@ -147,19 +150,9 @@ public class MindClient {
 		});
 		item.addListener (SWT.Selection, new Listener () {
 			public void handleEvent (final Event event) {
-				System.out.println("event: " + Thread.currentThread().getName());
-				System.out.println(trayListener);
-				display.asyncExec(new Runnable() {
-					public void run() {
-						trayListener.handleEvent(event);
-					}
-				});
+				//System.out.println("event: " + Thread.currentThread().getName() + " " + event);
 				
-			}
-		});
-		item.addListener (SWT.DefaultSelection, new Listener () {
-			public void handleEvent (Event event) {
-				System.out.println("default selection");
+				trayListener.handleEvent(event);
 			}
 		});
 		
@@ -184,6 +177,14 @@ public class MindClient {
                 }
             }
         });
+        
+        item.addListener (SWT.DefaultSelection, new Listener () {
+			public void handleEvent (Event event) {
+				System.out.println("default selection");
+				menu.setVisible(true);
+			}
+		});
+        
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
         menuItem = new MenuItem(menu, SWT.PUSH);

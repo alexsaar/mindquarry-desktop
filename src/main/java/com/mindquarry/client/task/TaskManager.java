@@ -67,10 +67,12 @@ public class TaskManager {
             TaskManager.class.getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
 
     public TaskManager(final MindClient client, final TableViewer taskTableViewer,
-            final Button doneButton) {
+            final Button doneButton, final Table taskTable) {
         this.client = client;
+        System.out.println("Task table viewer set to: " + taskTableViewer);
         this.taskTableViewer = taskTableViewer;
         this.doneButton = doneButton;
+        this.taskTable = taskTable;
     }
 
     public void startTask(Task t) {
@@ -208,14 +210,28 @@ public class TaskManager {
 
 	private void updateTaskList() {
 		// update task table
-        MindClient.getShell().getDisplay().asyncExec(new Runnable() {
+		System.out.println("About to update task list ");
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {
-				System.out.println("updateTaskList: " + Thread.currentThread().getName());
-				if ((taskTableViewer!=null)&&(!taskTable.isDisposed())) {
+				System.out.println("updateTaskList data: " + Thread.currentThread().getName());
+				if (taskTableViewer==null) {
+					System.out.println("taskTableViewer is not available, not updating");
+				} else {
 					taskTableViewer.setInput(myself);
+				}
+				
+				System.out.println("updateTaskList view: " + Thread.currentThread().getName());
+				if (taskTable==null) {
+					System.out.println("taskTable is not available, not updating");
+				} else if (taskTable.isDisposed()) {
+					System.out.println("taskTable is disposed, not updating");
+				}
+				else {
+					taskTable.update();
 				}
 			}
 		});
+        
 	}
 
     public TableViewer getTaskTableViewer() {

@@ -55,6 +55,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     private TableViewer taskTableViewer;
     
     private Button doneButton;
+    
+    private Table taskTable;
 
     public TrayIconSelectionListener(Display display, final MindClient client) {
         this.display = display;
@@ -87,7 +89,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
 					initBalloonPosition();
 					balloon.open();
 					System.out.println("Ballon: " + balloon);
-					tman = new TaskManager(client, taskTableViewer, doneButton);
+					tman = new TaskManager(client, taskTableViewer, doneButton, taskTable);
 					tman.asyncRefresh();
 				} else if (balloon.isVisible()) {
 					System.out.println("Hiding Balloon");
@@ -210,14 +212,14 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
         
         
-        Table taskTable = new Table(taskContainer, SWT.BORDER);
+        taskTable = new Table(taskContainer, SWT.BORDER);
         taskTable.setHeaderVisible(false);
         taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
                 true, true));
         ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
                 .getParent().getLayoutData()).heightHint;
         taskTable.setLinesVisible(false);
-        TableViewer taskTableViewer = new TableViewer(taskTable);
+        taskTableViewer = new TableViewer(taskTable);
 
         TableColumn activityColumn = new TableColumn(taskTable,
                 SWT.NONE);
@@ -242,7 +244,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         
         
 
-        Button doneButton = new Button(tasksGroup, SWT.NONE);
+        doneButton = new Button(tasksGroup, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
         doneButton.setToolTipText(Messages.getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
@@ -250,7 +252,6 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
 
-        tman = new TaskManager(client, taskTableViewer, doneButton);
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
         
         taskTableViewer
