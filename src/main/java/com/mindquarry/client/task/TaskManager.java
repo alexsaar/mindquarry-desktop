@@ -211,13 +211,15 @@ public class TaskManager {
 	private void updateTaskList() {
 		// update task table
 		System.out.println("About to update task list ");
-        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+        MindClient.getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 				System.out.println("updateTaskList data: " + Thread.currentThread().getName());
 				if (taskTableViewer==null) {
 					System.out.println("taskTableViewer is not available, not updating");
 				} else {
 					taskTableViewer.setInput(myself);
+					taskTable.update();
+					taskTable.getParent().update();
 				}
 				
 				System.out.println("updateTaskList view: " + Thread.currentThread().getName());
@@ -227,7 +229,7 @@ public class TaskManager {
 					System.out.println("taskTable is disposed, not updating");
 				}
 				else {
-					taskTable.update();
+					//taskTable.update();
 				}
 			}
 		});

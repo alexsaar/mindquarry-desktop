@@ -80,7 +80,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
 	private void toggleBalloon() {
 		System.out.println(Thread.currentThread().getName());
 		System.out.println("Toggling Balloon");
-		display.syncExec(new Runnable() {
+		MindClient.getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {
 				System.out.println("runnable: " + Thread.currentThread().getName());
 				if (balloon==null) {
@@ -89,7 +89,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
 					initBalloonPosition();
 					balloon.open();
 					System.out.println("Ballon: " + balloon);
-					tman = new TaskManager(client, taskTableViewer, doneButton, taskTable);
+					
 					tman.asyncRefresh();
 				} else if (balloon.isVisible()) {
 					System.out.println("Hiding Balloon");
@@ -253,6 +253,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
 
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
+        
+        tman = new TaskManager(client, taskTableViewer, doneButton, taskTable);
         
         taskTableViewer
         .addSelectionChangedListener(new TaskSelectionChangedListener(
