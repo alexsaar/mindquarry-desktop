@@ -1,12 +1,20 @@
-/**
- * Copyright (C) 2005 MindQuarry GmbH, All Rights Reserved
+/*
+ * Copyright (C) 2005-2006 MindQuarry GmbH, All Rights Reserved
+ * 
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
  */
 package com.mindquarry.client.task;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -21,20 +29,14 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DocumentSource;
 import org.dom4j.io.SAXReader;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
-import com.mindquarry.client.util.widgets.UpdateComposite;
 import com.mindquarry.client.xml.TaskListTransformer;
 import com.mindquarry.client.xml.TaskTransformer;
 
