@@ -50,6 +50,8 @@ import com.mindquarry.client.util.os.OperatingSystem;
 public class MindClient {
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
 
+    public static final String LOCATION_KEY = "location"; //$NON-NLS-1$
+    
     public static final String PASSWORD_KEY = "password"; //$NON-NLS-1$
 
     public static final String LOGIN_KEY = "login"; //$NON-NLS-1$

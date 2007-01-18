@@ -21,6 +21,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -29,8 +30,14 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -43,6 +50,10 @@ import com.mindquarry.client.MindClient;
 public class OptionsDialog extends TitleAreaDialog {
     private Image optionsImage;
 
+    private CLabel profileLabel = null;
+
+    private CCombo profileCombo = null;
+
     private CLabel loginLabel = null;
 
     private Text loginText = null;
@@ -50,6 +61,10 @@ public class OptionsDialog extends TitleAreaDialog {
     private CLabel pwdLabel = null;
 
     private Text pwdText = null;
+
+    private CLabel locationLabel = null;
+
+    private Text locationText = null;
 
     private CLabel quarryEndpointLabel = null;
 
@@ -71,7 +86,7 @@ public class OptionsDialog extends TitleAreaDialog {
         setBlockOnOpen(true);
 
         // Create the logo image
-        optionsImage = new Image(null, getClass().getResourceAsStream(
+        this.optionsImage = new Image(null, getClass().getResourceAsStream(
                 "/images/options.png")); //$NON-NLS-1$
 
         this.icon = icon;
@@ -96,8 +111,8 @@ public class OptionsDialog extends TitleAreaDialog {
         getShell().setImage(icon);
 
         // Set the logo
-        if (optionsImage != null) {
-            setTitleImage(optionsImage);
+        if (this.optionsImage != null) {
+            setTitleImage(this.optionsImage);
         }
         return contents;
     }
@@ -107,8 +122,8 @@ public class OptionsDialog extends TitleAreaDialog {
      */
     @Override
     public boolean close() {
-        if (optionsImage != null) {
-            optionsImage.dispose();
+        if (this.optionsImage != null) {
+            this.optionsImage.dispose();
         }
         return super.close();
     }
@@ -121,49 +136,124 @@ public class OptionsDialog extends TitleAreaDialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        validator = new FieldValidator();
-
-        GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 1;
-        gridLayout.makeColumnsEqualWidth = true;
+        this.validator = new FieldValidator();
 
         Composite composite = (Composite) super.createDialogArea(parent);
-        composite.setLayout(gridLayout);
+        composite.setLayout(new GridLayout(1, true));
 
-        loginLabel = new CLabel(composite, SWT.LEFT);
-        loginLabel.setText(Messages.getString("OptionsDialog.3")); //$NON-NLS-1$
-        loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // create widgets for profile selection
+        Group profileGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        profileGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        profileGroup.setText("Profiles");
+        profileGroup.setLayout(new GridLayout(2, false));
 
-        loginText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        loginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        loginText.setText(options.getProperty(MindClient.LOGIN_KEY));
-        loginText.addModifyListener(validator);
-        loginText.addFocusListener(new TextFocusListener(loginText));
+        List profileList = new List(profileGroup, SWT.SINGLE | SWT.BORDER
+                | SWT.V_SCROLL);
+        profileList.setLayoutData(new GridData(GridData.FILL_BOTH));
+        
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
+        profileList.add("www.mindquarry.org");
 
-        pwdLabel = new CLabel(composite, SWT.LEFT);
-        pwdLabel.setText(Messages.getString("OptionsDialog.4")); //$NON-NLS-1$
-        pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        Composite buttonArea = new Composite(profileGroup, SWT.NONE);
+        buttonArea.setLayout(new GridLayout(1, true));
 
-        pwdText = new Text(composite, SWT.PASSWORD | SWT.BORDER);
-        pwdText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        pwdText.setText(options.getProperty(MindClient.PASSWORD_KEY));
-        pwdText.addModifyListener(validator);
-        pwdText.addFocusListener(new TextFocusListener(pwdText));
+        Button addProfileButton = new Button(buttonArea, SWT.PUSH);
+        addProfileButton.setLayoutData(new GridData(GridData.FILL_BOTH
+                | GridData.GRAB_VERTICAL));
+        addProfileButton.setText("Add Profile...");
 
-        quarryEndpointLabel = new CLabel(composite, SWT.LEFT);
-        quarryEndpointLabel.setText(Messages.getString("OptionsDialog.5")); //$NON-NLS-1$
-        quarryEndpointLabel
+        Button delProfileButton = new Button(buttonArea, SWT.PUSH);
+        delProfileButton.setLayoutData(new GridData(GridData.FILL_BOTH));
+        delProfileButton.setText("Remove Profile");
+
+        Composite buttonAreaSpacer = new Composite(buttonArea, SWT.NONE);
+        buttonAreaSpacer.setLayoutData(new GridData(GridData.GRAB_VERTICAL));
+
+        // create widgets for profile settings
+        Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        settingsGroup.setText("Profile Settings");
+        settingsGroup.setLayout(new GridLayout(1, true));
+
+        this.loginLabel = new CLabel(settingsGroup, SWT.LEFT);
+        this.loginLabel.setText(Messages.getString("OptionsDialog.3")); //$NON-NLS-1$
+        this.loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        this.loginText = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        this.loginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        this.loginText.setText(this.options.getProperty(MindClient.LOGIN_KEY));
+        this.loginText.addModifyListener(this.validator);
+        this.loginText.addFocusListener(new TextFocusListener(this.loginText));
+
+        this.pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
+        this.pwdLabel.setText(Messages.getString("OptionsDialog.4")); //$NON-NLS-1$
+        this.pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        this.pwdText = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
+        this.pwdText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        this.pwdText.setText(this.options.getProperty(MindClient.PASSWORD_KEY));
+        this.pwdText.addModifyListener(this.validator);
+        this.pwdText.addFocusListener(new TextFocusListener(this.pwdText));
+
+        this.quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
+        this.quarryEndpointLabel.setText(Messages.getString("OptionsDialog.5")); //$NON-NLS-1$
+        this.quarryEndpointLabel.setLayoutData(new GridData(
+                GridData.FILL_HORIZONTAL));
+
+        this.quarryEndpointText = new Text(settingsGroup, SWT.SINGLE
+                | SWT.BORDER);
+        this.quarryEndpointText.setLayoutData(new GridData(
+                GridData.FILL_HORIZONTAL));
+        this.quarryEndpointText.setText(this.options
+                .getProperty(MindClient.ENDPOINT_KEY));
+        this.quarryEndpointText.addModifyListener(this.validator);
+        this.quarryEndpointText.addFocusListener(new TextFocusListener(
+                this.quarryEndpointText));
+
+        this.locationLabel = new CLabel(settingsGroup, SWT.LEFT);
+        this.locationLabel.setText("Workspace Location:");
+        this.locationLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        quarryEndpointText = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        quarryEndpointText
-                .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        quarryEndpointText
-                .setText(options.getProperty(MindClient.ENDPOINT_KEY));
-        quarryEndpointText.addModifyListener(validator);
-        quarryEndpointText.addFocusListener(new TextFocusListener(
-                quarryEndpointText));
+        Composite locationArea = new Composite(settingsGroup, SWT.NONE);
+        locationArea.setLayout(new GridLayout(2, false));
+        ((GridLayout) locationArea.getLayout()).marginBottom = 0;
+        ((GridLayout) locationArea.getLayout()).marginTop = 0;
+        ((GridLayout) locationArea.getLayout()).marginLeft = 0;
+        ((GridLayout) locationArea.getLayout()).marginRight = 0;
+        ((GridLayout) locationArea.getLayout()).marginHeight = 0;
+        ((GridLayout) locationArea.getLayout()).marginWidth = 0;
 
+        this.locationText = new Text(locationArea, SWT.BORDER);
+        this.locationText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        this.locationText.setText(this.options
+                .getProperty(MindClient.LOCATION_KEY));
+        this.locationText.addModifyListener(this.validator);
+        this.locationText.addFocusListener(new TextFocusListener(this.pwdText));
+
+        Button selectLocationButton = new Button(locationArea, SWT.PUSH);
+        selectLocationButton.setText("Browse...");
+        selectLocationButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
+                fd.setText("Select location for workspaces");
+
+                locationText.setText(fd.open());
+            }
+        });
         return composite;
     }
 
@@ -179,14 +269,15 @@ public class OptionsDialog extends TitleAreaDialog {
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
 
-        validator.init();
+        this.validator.init();
     }
 
     @Override
     protected void okPressed() {
-        options.put(MindClient.LOGIN_KEY, loginText.getText());
-        options.put(MindClient.PASSWORD_KEY, pwdText.getText());
-        options.put(MindClient.ENDPOINT_KEY, quarryEndpointText.getText());
+        this.options.put(MindClient.LOGIN_KEY, this.loginText.getText());
+        this.options.put(MindClient.PASSWORD_KEY, this.pwdText.getText());
+        this.options.put(MindClient.ENDPOINT_KEY, this.quarryEndpointText
+                .getText());
 
         super.okPressed();
     }
@@ -202,7 +293,7 @@ public class OptionsDialog extends TitleAreaDialog {
          * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
          */
         public void focusGained(FocusEvent e) {
-            text.setSelection(0, text.getText().length());
+            this.text.setSelection(0, this.text.getText().length());
         }
 
         /**
