@@ -56,6 +56,14 @@ public class ProfileList {
         this.profiles.remove(profile);
     }
     
+    public void deleteProfile(String name) {
+        for(Profile profile : this.profiles) {
+            if(profile.getName().equals(name)) {
+                this.profiles.remove(profile);
+            }
+        }
+    }
+    
     public Profile getProfileByName(String name) {
         for(Profile profile : this.profiles) {
             if(profile.getName().equals(name)) {

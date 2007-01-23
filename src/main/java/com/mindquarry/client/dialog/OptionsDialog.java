@@ -237,7 +237,7 @@ public class OptionsDialog extends TitleAreaDialog {
         // create profile list
         profileList = new List(profileGroup, SWT.SINGLE | SWT.BORDER
                 | SWT.V_SCROLL);
-        profileList.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        profileList.setLayoutData(new GridData(GridData.FILL_BOTH));
         updateProfileList();
 
         // create buttons for profile management
@@ -283,8 +283,10 @@ public class OptionsDialog extends TitleAreaDialog {
              */
             public void handleEvent(Event event) {
                 int[] selection = profileList.getSelectionIndices();
+                String name = profileList.getItem(selection[0]);
                 profileList.remove(selection);
-                updateProfileList();
+                
+                profiles.deleteProfile(name);
 
                 delProfileButton.setEnabled(false);
                 resetFields();
@@ -333,6 +335,8 @@ public class OptionsDialog extends TitleAreaDialog {
                 true);
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
+        
+        this.validator.init();
     }
 
     private class TextFocusListener implements FocusListener {
@@ -371,9 +375,11 @@ public class OptionsDialog extends TitleAreaDialog {
         public void modifyText(ModifyEvent event) {
             // check if a profile is selected
             if(profileList.getSelection().length == 0) {
-                setErrorMessage(null);
-                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                setErrorMessage("Please select a profile!");
+                getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
+            } else {
+                updateProfile();
             }
             // otherwise check settings of selected profile
             if (loginText.getText().equals("")) { //$NON-NLS-1$
@@ -409,6 +415,19 @@ public class OptionsDialog extends TitleAreaDialog {
             }
             setErrorMessage(null);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
+        }
+        
+        public void init() {
+            modifyText(null);
+        }
+
+        private void updateProfile() {
+            // set values of current profile
+            Profile profile = profiles.getProfileByName(profileList.getSelection()[0]);
+            profile.setLogin(loginText.getText());
+            profile.setPassword(pwdText.getText());
+            profile.setEndpoint(endpointText.getText());
+            profile.setLocation(locationText.getText());
         }
     }
 }

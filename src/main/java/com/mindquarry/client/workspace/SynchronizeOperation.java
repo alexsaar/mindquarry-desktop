@@ -80,14 +80,14 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getProfileList().getProperty(
-                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
-                    MindClient.PASSWORD_KEY), client.getProfileList().getProperty(
-                    MindClient.ENDPOINT_KEY)
+            content = HttpUtil.getContentAsXML(client.getProfileList()
+                    .selectedProfile().getLogin(), client.getProfileList()
+                    .selectedProfile().getPassword(), client.getProfileList()
+                    .selectedProfile().getEndpoint()
                     + "/teamspace"); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialogUtil
-                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.2")); //$NON-NLS-1$
+            MessageDialogUtil.displaySyncErrorMsg(Messages
+                    .getString("SynchronizeOperation.2")); //$NON-NLS-1$
             return false;
         }
         // check if some contant was received
@@ -105,8 +105,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         try {
             doc = reader.read(content);
         } catch (DocumentException e) {
-            MessageDialogUtil
-                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.4")); //$NON-NLS-1$
+            MessageDialogUtil.displaySyncErrorMsg(Messages
+                    .getString("SynchronizeOperation.4")); //$NON-NLS-1$
             return false;
         }
         // create a transformer for teamspace list
@@ -115,26 +115,27 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
-            monitor.setTaskName(Messages.getString("SynchronizeOperation.5") + tsID //$NON-NLS-1$
-                    + "'..."); //$NON-NLS-1$
+            monitor
+                    .setTaskName(Messages.getString("SynchronizeOperation.5") + tsID //$NON-NLS-1$
+                            + "'..."); //$NON-NLS-1$
 
             content = null;
             try {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
-                        .getProperty(MindClient.LOGIN_KEY), client.getProfileList()
-                        .getProperty(MindClient.PASSWORD_KEY), client
-                        .getProfileList().getProperty(MindClient.ENDPOINT_KEY)
+                        .selectedProfile().getLogin(), client.getProfileList()
+                        .selectedProfile().getPassword(), client
+                        .getProfileList().selectedProfile().getEndpoint()
                         + "/teamspace/" + tsID); //$NON-NLS-1$
             } catch (Exception e) {
-                MessageDialogUtil
-                        .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.6") //$NON-NLS-1$
-                                + tsID
-                                + Messages.getString("SynchronizeOperation.7")); //$NON-NLS-1$
+                MessageDialogUtil.displaySyncErrorMsg(Messages
+                        .getString("SynchronizeOperation.6") //$NON-NLS-1$
+                        + tsID + Messages.getString("SynchronizeOperation.7")); //$NON-NLS-1$
                 return false;
             }
             // parse teamspace description
-            monitor.setTaskName(Messages.getString("SynchronizeOperation.8") + tsID //$NON-NLS-1$
-                    + "'..."); //$NON-NLS-1$
+            monitor
+                    .setTaskName(Messages.getString("SynchronizeOperation.8") + tsID //$NON-NLS-1$
+                            + "'..."); //$NON-NLS-1$
             try {
                 doc = reader.read(content);
             } catch (DocumentException e) {
@@ -155,10 +156,10 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         monitor.setTaskName(Messages.getString("SynchronizeOperation.9")); //$NON-NLS-1$
 
         // init SVN types
-        svnClient.username(client.getProfileList()
-                .getProperty(MindClient.LOGIN_KEY));
-        svnClient.password(client.getProfileList().getProperty(
-                MindClient.PASSWORD_KEY));
+        svnClient
+                .username(client.getProfileList().selectedProfile().getLogin());
+        svnClient.password(client.getProfileList().selectedProfile()
+                .getPassword());
 
         // get directory for workspaces
         File teamspacesDir;
@@ -184,7 +185,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                 // TODO check if folder is under version control
 
                 // update workspace
-                monitor.setTaskName(Messages.getString("SynchronizeOperation.10") + id + " ...");  //$NON-NLS-1$//$NON-NLS-2$
+                monitor.setTaskName(Messages
+                        .getString("SynchronizeOperation.10") + id + " ..."); //$NON-NLS-1$//$NON-NLS-2$
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
                         + "/" + id), id); //$NON-NLS-1$
             }
@@ -199,7 +201,8 @@ public class SynchronizeOperation implements IRunnableWithProgress {
                     + "/" + id); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
 
-            monitor.setTaskName(Messages.getString("SynchronizeOperation.10") + id + " ...");  //$NON-NLS-1$//$NON-NLS-2$
+            monitor
+                    .setTaskName(Messages.getString("SynchronizeOperation.10") + id + " ..."); //$NON-NLS-1$//$NON-NLS-2$
             checkoutWorkspace(workspaces.get(id), newWorkspaceDir, id);
         }
     }
@@ -208,9 +211,9 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         try {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil
-                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.11") //$NON-NLS-1$
-                            + id);
+            MessageDialogUtil.displaySyncErrorMsg(Messages
+                    .getString("SynchronizeOperation.11") //$NON-NLS-1$
+                    + id);
         }
     }
 
@@ -218,9 +221,9 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         try {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil
-                    .displaySyncErrorMsg(Messages.getString("SynchronizeOperation.11") //$NON-NLS-1$
-                            + id);
+            MessageDialogUtil.displaySyncErrorMsg(Messages
+                    .getString("SynchronizeOperation.11") //$NON-NLS-1$
+                    + id);
         }
     }
 }

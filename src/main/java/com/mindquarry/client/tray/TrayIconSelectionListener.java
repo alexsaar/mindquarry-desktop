@@ -14,6 +14,7 @@
 package com.mindquarry.client.tray;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
+import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.workspace.WorkspaceShareListener;
@@ -73,50 +75,50 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         toggleBalloon();
     }
 
-	private void toggleBalloon() {
-		MindClient.getShell().getDisplay().syncExec(new Runnable() {
-			public void run() {
-				if (balloon==null) {
-					createContainer();
-					initBalloonPosition();
-					balloon.open();
-					
-					tman.asyncRefresh();
-				} else if (balloon.isVisible()) {
-					balloon.hide();
-					balloon.close();
-					balloon = null;
-					tman = null;
-				} else {
-					initBalloonPosition();
-		            balloon.show();
-				}
-			}
-		});
-	}
+    private void toggleBalloon() {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                if (balloon == null) {
+                    createContainer();
+                    initBalloonPosition();
+                    balloon.open();
 
-	private void initBalloonPosition() {
-		Rectangle diSize = display.getBounds();
-		Point curPos = display.getCursorLocation();
+                    tman.asyncRefresh();
+                } else if (balloon.isVisible()) {
+                    balloon.hide();
+                    balloon.close();
+                    balloon = null;
+                    tman = null;
+                } else {
+                    initBalloonPosition();
+                    balloon.show();
+                }
+            }
+        });
+    }
 
-		Point position = new Point(0, 0);
-		int anchor = 0;
-		if (diSize.height / 2 > curPos.y) {
-		    position.y = curPos.y;
-		    anchor |= SWT.TOP;
-		} else {
-		    position.y = curPos.y;
-		    anchor |= SWT.BOTTOM;
-		}
-		if (diSize.width / 2 > curPos.x) {
-		    anchor |= SWT.LEFT;
-		} else {
-		    anchor |= SWT.RIGHT;
-		}
-		// TODO set location based on event data
-		balloon.setLocation(curPos);
-		balloon.setAnchor(anchor);
-	}
+    private void initBalloonPosition() {
+        Rectangle diSize = display.getBounds();
+        Point curPos = display.getCursorLocation();
+
+        Point position = new Point(0, 0);
+        int anchor = 0;
+        if (diSize.height / 2 > curPos.y) {
+            position.y = curPos.y;
+            anchor |= SWT.TOP;
+        } else {
+            position.y = curPos.y;
+            anchor |= SWT.BOTTOM;
+        }
+        if (diSize.width / 2 > curPos.x) {
+            anchor |= SWT.LEFT;
+        } else {
+            anchor |= SWT.RIGHT;
+        }
+        // TODO set location based on event data
+        balloon.setLocation(curPos);
+        balloon.setAnchor(anchor);
+    }
 
     /**
      * This method initializes sShell
@@ -130,9 +132,15 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         container = balloon.getContents();
         container.setLayout(new GridLayout());
 
+        CCombo profileSelector = new CCombo(container, SWT.BORDER
+                | SWT.READ_ONLY);
+        for(Profile profile : client.getProfileList().getProfiles()) {
+            profileSelector.add(profile.getName());
+        }
+
         createWorkspacesGroup();
         createTasksGroup();
-        //createWikiGroup();
+        // createWikiGroup();
 
         container.pack();
         container.setSize(BALLOON_SIZE);
@@ -144,15 +152,15 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     private void createWorkspacesGroup() {
         Group workspacesGroup = new Group(container, SWT.SHADOW_NONE);
         workspacesGroup.setBackground(container.getBackground());
-        workspacesGroup.setText(Messages.getString("TrayIconSelectionListener.0")); //$NON-NLS-1$
+        workspacesGroup.setText(Messages
+                .getString("TrayIconSelectionListener.0")); //$NON-NLS-1$
         workspacesGroup.setLayout(new GridLayout(2, false));
         workspacesGroup.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
                 false));
 
         Link label = new Link(workspacesGroup, SWT.NONE);
         label.setBackground(workspacesGroup.getBackground());
-        label
-                .setText(Messages.getString("TrayIconSelectionListener.1")); //$NON-NLS-1$
+        label.setText(Messages.getString("TrayIconSelectionListener.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
         Button shareButton = new Button(workspacesGroup, SWT.NONE);
@@ -160,15 +168,15 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
                 .getResourceAsStream("/icons/24x24/actions/up.png"))); //$NON-NLS-1$
         shareButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
         shareButton.setText(Messages.getString("TrayIconSelectionListener.2")); //$NON-NLS-1$
-        shareButton
-                .setToolTipText(Messages.getString("TrayIconSelectionListener.3")); //$NON-NLS-1$
+        shareButton.setToolTipText(Messages
+                .getString("TrayIconSelectionListener.3")); //$NON-NLS-1$
         shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
                 client, shareButton));
 
         Button syncButton = new Button(workspacesGroup, SWT.PUSH);
         syncButton.setText(Messages.getString("TrayIconSelectionListener.4")); //$NON-NLS-1$
-        syncButton
-                .setToolTipText(Messages.getString("TrayIconSelectionListener.5")); //$NON-NLS-1$
+        syncButton.setToolTipText(Messages
+                .getString("TrayIconSelectionListener.5")); //$NON-NLS-1$
         syncButton.setLayoutData(new GridData(SWT.END, SWT.END, false, false));
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/down.png"))); //$NON-NLS-1$
@@ -201,7 +209,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         Button doneButton = new Button(tasksGroup, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
-        doneButton.setToolTipText(Messages.getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
+        doneButton.setToolTipText(Messages
+                .getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
@@ -229,8 +238,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
 
         Button clearButton = new Button(wikiGroup, SWT.NONE);
         clearButton.setText(Messages.getString("TrayIconSelectionListener.10")); //$NON-NLS-1$
-        clearButton
-                .setToolTipText(Messages.getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
+        clearButton.setToolTipText(Messages
+                .getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
         clearButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/edit-clear.png"))); //$NON-NLS-1$
         clearButton.setEnabled(false);
@@ -238,15 +247,15 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
 
         Button postButton = new Button(wikiGroup, SWT.NONE);
         postButton.setText(Messages.getString("TrayIconSelectionListener.12")); //$NON-NLS-1$
-        postButton
-                .setToolTipText(Messages.getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
+        postButton.setToolTipText(Messages
+                .getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
         postButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/actions/document-new.png"))); //$NON-NLS-1$
         postButton.setEnabled(false);
         postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     }
 
-	public void handleEvent(Event event) {
-		this.toggleBalloon();
-	}
+    public void handleEvent(Event event) {
+        this.toggleBalloon();
+    }
 }

@@ -13,10 +13,8 @@
  */
 package com.mindquarry.client.task;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -109,10 +107,9 @@ public class TaskManager {
             Transformer trans = transFact.newTransformer(taskDoneXSL);
             trans.transform(xmlSource, new StreamResult(result));
 
-            HttpUtil.putAsXML(client.getProfileList().getProperty(
-                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
-                    MindClient.PASSWORD_KEY), task.getId(), result
-                    .toByteArray());
+            HttpUtil.putAsXML(client.getProfileList().selectedProfile()
+                    .getLogin(), client.getProfileList().selectedProfile()
+                    .getPassword(), task.getId(), result.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,10 +154,10 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getProfileList().getProperty(
-                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
-                    MindClient.PASSWORD_KEY), client.getProfileList().getProperty(
-                    MindClient.ENDPOINT_KEY)
+            content = HttpUtil.getContentAsXML(client.getProfileList()
+                    .selectedProfile().getLogin(), client.getProfileList()
+                    .selectedProfile().getPassword(), client.getProfileList()
+                    .selectedProfile().getEndpoint()
                     + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
@@ -187,9 +184,9 @@ public class TaskManager {
             content = null;
             try {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
-                        .getProperty(MindClient.LOGIN_KEY), client.getProfileList()
-                        .getProperty(MindClient.PASSWORD_KEY), client
-                        .getProfileList().getProperty(MindClient.ENDPOINT_KEY)
+                        .selectedProfile().getLogin(), client.getProfileList()
+                        .selectedProfile().getPassword(), client
+                        .getProfileList().selectedProfile().getEndpoint()
                         + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 MessageDialogUtil.displaySyncErrorMsg(Messages
