@@ -54,9 +54,9 @@ public class ShareOperation implements IRunnableWithProgress {
         monitor.beginTask(Messages.getString("ShareOperation.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
         // init SVN types
-        svnClient.username(client.getOptions()
+        svnClient.username(client.getProfileList()
                 .getProperty(MindClient.LOGIN_KEY));
-        svnClient.password(client.getOptions().getProperty(
+        svnClient.password(client.getProfileList().getProperty(
                 MindClient.PASSWORD_KEY));
 
         // get directory for workspaces

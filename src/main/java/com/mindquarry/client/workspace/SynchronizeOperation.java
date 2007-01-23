@@ -80,9 +80,9 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
-                    MindClient.LOGIN_KEY), client.getOptions().getProperty(
-                    MindClient.PASSWORD_KEY), client.getOptions().getProperty(
+            content = HttpUtil.getContentAsXML(client.getProfileList().getProperty(
+                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
+                    MindClient.PASSWORD_KEY), client.getProfileList().getProperty(
                     MindClient.ENDPOINT_KEY)
                     + "/teamspace"); //$NON-NLS-1$
         } catch (Exception e) {
@@ -120,10 +120,10 @@ public class SynchronizeOperation implements IRunnableWithProgress {
 
             content = null;
             try {
-                content = HttpUtil.getContentAsXML(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
+                content = HttpUtil.getContentAsXML(client.getProfileList()
+                        .getProperty(MindClient.LOGIN_KEY), client.getProfileList()
                         .getProperty(MindClient.PASSWORD_KEY), client
-                        .getOptions().getProperty(MindClient.ENDPOINT_KEY)
+                        .getProfileList().getProperty(MindClient.ENDPOINT_KEY)
                         + "/teamspace/" + tsID); //$NON-NLS-1$
             } catch (Exception e) {
                 MessageDialogUtil
@@ -155,9 +155,9 @@ public class SynchronizeOperation implements IRunnableWithProgress {
         monitor.setTaskName(Messages.getString("SynchronizeOperation.9")); //$NON-NLS-1$
 
         // init SVN types
-        svnClient.username(client.getOptions()
+        svnClient.username(client.getProfileList()
                 .getProperty(MindClient.LOGIN_KEY));
-        svnClient.password(client.getOptions().getProperty(
+        svnClient.password(client.getProfileList().getProperty(
                 MindClient.PASSWORD_KEY));
 
         // get directory for workspaces

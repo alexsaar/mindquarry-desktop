@@ -109,8 +109,8 @@ public class TaskManager {
             Transformer trans = transFact.newTransformer(taskDoneXSL);
             trans.transform(xmlSource, new StreamResult(result));
 
-            HttpUtil.putAsXML(client.getOptions().getProperty(
-                    MindClient.LOGIN_KEY), client.getOptions().getProperty(
+            HttpUtil.putAsXML(client.getProfileList().getProperty(
+                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
                     MindClient.PASSWORD_KEY), task.getId(), result
                     .toByteArray());
         } catch (Exception e) {
@@ -157,9 +157,9 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getOptions().getProperty(
-                    MindClient.LOGIN_KEY), client.getOptions().getProperty(
-                    MindClient.PASSWORD_KEY), client.getOptions().getProperty(
+            content = HttpUtil.getContentAsXML(client.getProfileList().getProperty(
+                    MindClient.LOGIN_KEY), client.getProfileList().getProperty(
+                    MindClient.PASSWORD_KEY), client.getProfileList().getProperty(
                     MindClient.ENDPOINT_KEY)
                     + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
@@ -186,10 +186,10 @@ public class TaskManager {
         for (String taskURI : tlTransformer.getTaskURIs()) {
             content = null;
             try {
-                content = HttpUtil.getContentAsXML(client.getOptions()
-                        .getProperty(MindClient.LOGIN_KEY), client.getOptions()
+                content = HttpUtil.getContentAsXML(client.getProfileList()
+                        .getProperty(MindClient.LOGIN_KEY), client.getProfileList()
                         .getProperty(MindClient.PASSWORD_KEY), client
-                        .getOptions().getProperty(MindClient.ENDPOINT_KEY)
+                        .getProfileList().getProperty(MindClient.ENDPOINT_KEY)
                         + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 MessageDialogUtil.displaySyncErrorMsg(Messages
