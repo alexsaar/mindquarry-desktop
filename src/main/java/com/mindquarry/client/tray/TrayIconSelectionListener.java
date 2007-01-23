@@ -13,9 +13,6 @@
  */
 package com.mindquarry.client.tray;
 
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -31,17 +28,12 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
-import com.mindquarry.client.task.TaskSelectionChangedListener;
-import com.mindquarry.client.task.TaskTableContentProvider;
-import com.mindquarry.client.task.TaskTableLabelProvider;
 import com.mindquarry.client.workspace.WorkspaceShareListener;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
@@ -61,12 +53,6 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     private Composite container = null;
 
     private TaskManager tman;
-    
-    private TableViewer taskTableViewer;
-    
-    private Button doneButton;
-    
-    private Table taskTable;
 
     public TrayIconSelectionListener(Display display, final MindClient client) {
         this.display = display;
@@ -88,31 +74,22 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     }
 
 	private void toggleBalloon() {
-		System.out.println(Thread.currentThread().getName());
-		System.out.println("Toggling Balloon");
 		MindClient.getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {
-				System.out.println("runnable: " + Thread.currentThread().getName());
 				if (balloon==null) {
-					System.out.println("Creating balloon");
 					createContainer();
 					initBalloonPosition();
 					balloon.open();
-					System.out.println("Ballon: " + balloon);
 					
 					tman.asyncRefresh();
 				} else if (balloon.isVisible()) {
-					System.out.println("Hiding Balloon");
 					balloon.hide();
 					balloon.close();
 					balloon = null;
 					tman = null;
 				} else {
-					System.out.println("Showing Balloon");
 					initBalloonPosition();
 		            balloon.show();
-		            // task update
-		            //
 				}
 			}
 		});
@@ -220,41 +197,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         ((GridLayout) taskContainer.getLayout()).verticalSpacing = 0;
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
-        
-        
-        taskTable = new Table(taskContainer, SWT.BORDER);
-        taskTable.setHeaderVisible(false);
-        taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-                true, true));
-        ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
-                .getParent().getLayoutData()).heightHint;
-        taskTable.setLinesVisible(false);
-        taskTableViewer = new TableViewer(taskTable);
 
-        TableColumn activityColumn = new TableColumn(taskTable,
-                SWT.NONE);
-        activityColumn.setResizable(false);
-        activityColumn.setWidth(100);
-        activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
-
-        // create task list
-        CellEditor[] editors = new CellEditor[taskTable
-                .getColumnCount()];
-        editors[0] = new CheckboxCellEditor(taskTable.getParent());
-
-        taskTableViewer.setCellEditors(editors);
-        taskTableViewer
-                .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
-        taskTableViewer.getTable().getColumn(0).setWidth(300);
-
-        taskTableViewer
-                .setLabelProvider(new TaskTableLabelProvider());
-        taskTableViewer
-                .setContentProvider(new TaskTableContentProvider());
-        
-        
-
-        doneButton = new Button(tasksGroup, SWT.NONE);
+        Button doneButton = new Button(tasksGroup, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
         doneButton.setToolTipText(Messages.getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
@@ -262,13 +206,8 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
 
+        tman = new TaskManager(client, taskContainer, doneButton);
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
-        
-        tman = new TaskManager(client, taskTableViewer, doneButton, taskTable);
-        
-        taskTableViewer
-        .addSelectionChangedListener(new TaskSelectionChangedListener(
-                tman, taskTableViewer, doneButton));
     }
 
     /**
