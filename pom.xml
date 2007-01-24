@@ -38,16 +38,14 @@
 	</scm>
 
 	<dependencies>
+		<!-- XML & XPath libs -->
 		<dependency>
 			<groupId>dax</groupId>
 			<artifactId>dax</artifactId>
 			<version>0.2</version>
 		</dependency>
-		<dependency>
-			<groupId>swt</groupId>
-			<artifactId>jface</artifactId>
-			<version>3.3.0.I20061213-0010</version>
-		</dependency>
+		
+		<!-- apache-commons libs -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -58,6 +56,8 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+		
+		<!-- SVN libs -->
 		<dependency>
 			<groupId>org.tigris.subversion</groupId>
 			<artifactId>javahl-api</artifactId>
@@ -68,6 +68,8 @@
 			<artifactId>svnkit</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+		
+		<!-- spring libs -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
@@ -78,6 +80,8 @@
 			<artifactId>spring-context</artifactId>
 			<version>2.0.1</version>
 		</dependency>
+		
+		<!-- eclipse libs -->
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>commands</artifactId>
@@ -87,6 +91,23 @@
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>common</artifactId>
 			<version>3.3.0.v20061117</version>
+		</dependency>
+		<dependency>
+			<groupId>swt</groupId>
+			<artifactId>jface</artifactId>
+			<version>3.3.0.I20061213-0010</version>
+		</dependency>
+		
+		<!-- icon libs -->
+		<dependency>
+			<groupId>com.mindquarry.icons</groupId>
+			<artifactId>mindquarry-icons</artifactId>
+			<version>0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tango-project</groupId>
+			<artifactId>tango-icon-theme</artifactId>
+			<version>0.7.1</version>
 		</dependency>
 	</dependencies>
 	

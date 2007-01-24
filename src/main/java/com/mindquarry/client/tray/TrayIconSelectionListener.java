@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -44,7 +45,7 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
  *         Saar</a>
  */
 public class TrayIconSelectionListener implements SelectionListener, Listener {
-    private static final Point BALLOON_SIZE = new Point(356, 317);
+    private static final Point BALLOON_SIZE = new Point(356, 387);
 
     private final Display display;
 
@@ -132,11 +133,7 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         container = balloon.getContents();
         container.setLayout(new GridLayout());
 
-        CCombo profileSelector = new CCombo(container, SWT.BORDER
-                | SWT.READ_ONLY);
-        for(Profile profile : client.getProfileList().getProfiles()) {
-            profileSelector.add(profile.getName());
-        }
+        createProfileGroup();
 
         createWorkspacesGroup();
         createTasksGroup();
@@ -147,25 +144,48 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
     }
 
     /**
+     * Initializes the profile group for switching between profiles.
+     */
+    private void createProfileGroup() {
+        Group group = new Group(container, SWT.SHADOW_NONE);
+        group.setBackground(container.getBackground());
+        group.setText("Profiles");
+        group.setLayout(new GridLayout(1, false));
+        group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
+                false));
+        
+        Label label = new Label(group, SWT.LEFT);
+        label.setBackground(group.getBackground());
+        label.setText("Select Profile:");
+        
+        CCombo profileSelector = new CCombo(group, SWT.BORDER
+                | SWT.READ_ONLY);
+        profileSelector.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        for(Profile profile : client.getProfileList().getProfiles()) {
+            profileSelector.add(profile.getName());
+        }
+    }
+
+    /**
      * This method initializes workspacesGroup
      */
     private void createWorkspacesGroup() {
-        Group workspacesGroup = new Group(container, SWT.SHADOW_NONE);
-        workspacesGroup.setBackground(container.getBackground());
-        workspacesGroup.setText(Messages
+        Group group = new Group(container, SWT.SHADOW_NONE);
+        group.setBackground(container.getBackground());
+        group.setText(Messages
                 .getString("TrayIconSelectionListener.0")); //$NON-NLS-1$
-        workspacesGroup.setLayout(new GridLayout(2, false));
-        workspacesGroup.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
+        group.setLayout(new GridLayout(2, false));
+        group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
                 false));
 
-        Link label = new Link(workspacesGroup, SWT.NONE);
-        label.setBackground(workspacesGroup.getBackground());
+        Link label = new Link(group, SWT.NONE);
+        label.setBackground(group.getBackground());
         label.setText(Messages.getString("TrayIconSelectionListener.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
-        Button shareButton = new Button(workspacesGroup, SWT.NONE);
+        Button shareButton = new Button(group, SWT.NONE);
         shareButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream("/icons/24x24/actions/up.png"))); //$NON-NLS-1$
+                .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/go-up.png"))); //$NON-NLS-1$
         shareButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
         shareButton.setText(Messages.getString("TrayIconSelectionListener.2")); //$NON-NLS-1$
         shareButton.setToolTipText(Messages
@@ -173,13 +193,13 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
                 client, shareButton));
 
-        Button syncButton = new Button(workspacesGroup, SWT.PUSH);
+        Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("TrayIconSelectionListener.4")); //$NON-NLS-1$
         syncButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.5")); //$NON-NLS-1$
         syncButton.setLayoutData(new GridData(SWT.END, SWT.END, false, false));
         syncButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream("/icons/24x24/actions/down.png"))); //$NON-NLS-1$
+                .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/go-down.png"))); //$NON-NLS-1$
         syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener(
                 client, syncButton));
     }
@@ -188,13 +208,13 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
      * This method initializes tasksGroup
      */
     private void createTasksGroup() {
-        final Group tasksGroup = new Group(container, SWT.NONE);
-        tasksGroup.setBackground(container.getBackground());
-        tasksGroup.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        tasksGroup.setLayout(new GridLayout(1, false));
-        tasksGroup.setText(Messages.getString("TrayIconSelectionListener.6")); //$NON-NLS-1$
+        final Group group = new Group(container, SWT.NONE);
+        group.setBackground(container.getBackground());
+        group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        group.setLayout(new GridLayout(1, false));
+        group.setText(Messages.getString("TrayIconSelectionListener.6")); //$NON-NLS-1$
 
-        Composite taskContainer = new Composite(tasksGroup, SWT.NONE);
+        Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
                 true, 0, 0));
         ((GridData) taskContainer.getLayoutData()).heightHint = 150;
@@ -206,14 +226,14 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
-        Button doneButton = new Button(tasksGroup, SWT.NONE);
+        Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
         doneButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream("/icons/24x24/emblems/done.png"))); //$NON-NLS-1$
+                .getResourceAsStream("/com/mindquarry/icons/22x22/status/task-done.png"))); //$NON-NLS-1$
 
         tman = new TaskManager(client, taskContainer, doneButton);
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
@@ -223,34 +243,34 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
      * This method initializes wikiGroup
      */
     private void createWikiGroup() {
-        Group wikiGroup = new Group(container, SWT.NONE);
-        wikiGroup.setBackground(container.getBackground());
-        wikiGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        wikiGroup.setLayout(new GridLayout(2, false));
-        wikiGroup.setText(Messages.getString("TrayIconSelectionListener.9")); //$NON-NLS-1$
+        Group group = new Group(container, SWT.NONE);
+        group.setBackground(container.getBackground());
+        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        group.setLayout(new GridLayout(2, false));
+        group.setText(Messages.getString("TrayIconSelectionListener.9")); //$NON-NLS-1$
 
-        final Text wikiTextArea = new Text(wikiGroup, SWT.MULTI | SWT.WRAP
+        final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
                 | SWT.V_SCROLL | SWT.BORDER);
         wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
                 2, 2));
         ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
         wikiTextArea.setEnabled(false);
 
-        Button clearButton = new Button(wikiGroup, SWT.NONE);
+        Button clearButton = new Button(group, SWT.NONE);
         clearButton.setText(Messages.getString("TrayIconSelectionListener.10")); //$NON-NLS-1$
         clearButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
         clearButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream("/icons/24x24/actions/edit-clear.png"))); //$NON-NLS-1$
+                .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png"))); //$NON-NLS-1$
         clearButton.setEnabled(false);
         clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
 
-        Button postButton = new Button(wikiGroup, SWT.NONE);
+        Button postButton = new Button(group, SWT.NONE);
         postButton.setText(Messages.getString("TrayIconSelectionListener.12")); //$NON-NLS-1$
         postButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
         postButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream("/icons/24x24/actions/document-new.png"))); //$NON-NLS-1$
+                .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/document-new.png"))); //$NON-NLS-1$
         postButton.setEnabled(false);
         postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     }

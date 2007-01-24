@@ -21,15 +21,17 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
+ * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
+ *         Saar</a>
  */
 public class TaskTableLabelProvider implements ITableLabelProvider {
     private Image running = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/icons/24x24/actions/media-playback-start.png")); //$NON-NLS-1$
+                    "/org/tango-project/tango-icon-theme/22x22/actions/media-playback-start.png")); //$NON-NLS-1$
 
     private Image paused = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/icons/24x24/actions/media-playback-pause.png")); //$NON-NLS-1$
+                    "/org/tango-project/tango-icon-theme/22x22/actions/media-playback-pause.png")); //$NON-NLS-1$
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,

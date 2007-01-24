@@ -88,9 +88,9 @@ public class OptionsDialog extends TitleAreaDialog {
         super(shell);
         setBlockOnOpen(true);
 
-        // Create the logo image
+        // Create the options image
         this.optionsImage = new Image(null, getClass().getResourceAsStream(
-                "/images/options.png")); //$NON-NLS-1$
+                "/org/tango-project/tango-icon-theme/22x22/categories/preferences-system.png")); //$NON-NLS-1$
 
         this.icon = icon;
         this.profiles = profiles;
@@ -116,7 +116,7 @@ public class OptionsDialog extends TitleAreaDialog {
 
         // Set the logo
         if (this.optionsImage != null) {
-            setTitleImage(this.optionsImage);
+            //setTitleImage(this.optionsImage);
         }
         return contents;
     }
