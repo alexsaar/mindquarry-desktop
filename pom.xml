@@ -126,7 +126,6 @@
 			<activation>
 				<os>
 					<family>linux</family>
-					<name>Linux</name>
 				</os>
 			</activation>
 			<dependencies>
