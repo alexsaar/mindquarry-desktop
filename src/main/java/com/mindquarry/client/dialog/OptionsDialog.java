@@ -38,9 +38,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.options.Profile;
@@ -51,8 +54,6 @@ import com.mindquarry.client.options.ProfileList;
  *         Saar</a>
  */
 public class OptionsDialog extends TitleAreaDialog {
-    private Image optionsImage;
-
     private CLabel loginLabel = null;
 
     private Text loginText = null;
@@ -74,9 +75,9 @@ public class OptionsDialog extends TitleAreaDialog {
     private final Image icon;
 
     private ProfileList oldProfiles;
-    
+
     private ProfileList profiles;
-    
+
     private List profileList;
 
     /**
@@ -88,13 +89,9 @@ public class OptionsDialog extends TitleAreaDialog {
         super(shell);
         setBlockOnOpen(true);
 
-        // Create the options image
-        this.optionsImage = new Image(null, getClass().getResourceAsStream(
-                "/org/tango-project/tango-icon-theme/22x22/categories/preferences-system.png")); //$NON-NLS-1$
-
         this.icon = icon;
         this.profiles = profiles;
-        this.oldProfiles = profiles;
+        oldProfiles = profiles;
     }
 
     /**
@@ -114,24 +111,17 @@ public class OptionsDialog extends TitleAreaDialog {
         getShell().setText(Messages.getString("OptionsDialog.0")); //$NON-NLS-1$
         getShell().setImage(icon);
 
-        // Set the logo
-        if (this.optionsImage != null) {
-            //setTitleImage(this.optionsImage);
-        }
         return contents;
     }
 
     /**
-     * Closes the dialog box Override so we can dispose the image we created
+     * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
      */
     @Override
-    public boolean close() {
-        if (this.optionsImage != null) {
-            this.optionsImage.dispose();
-        }
+    protected void cancelPressed() {
         // reset changes on cancel
-        this.profiles = this.oldProfiles;
-        return super.close();
+        profiles = oldProfiles;
+        super.cancelPressed();
     }
 
     /**
@@ -142,91 +132,41 @@ public class OptionsDialog extends TitleAreaDialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        this.validator = new FieldValidator();
+        validator = new FieldValidator();
 
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setLayout(new GridLayout(1, true));
 
+        TabFolder tabFolder = new TabFolder(composite, SWT.NONE);
+        tabFolder.setLayout(new GridLayout(1, true));
+        tabFolder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        // create profile management tab
+        composite = new Composite(tabFolder, SWT.NONE);
+        composite.setLayout(new GridLayout(1, true));
+        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+        tabItem.setText("Profile Management");
+        tabItem.setControl(composite);
+
         createProfileManagementGroup(composite);
         createProfileSettingsGroup(composite);
+
+        // create task management tab
+        // composite = new Composite(tabFolder, SWT.NONE);
+        // composite.setLayout(new GridLayout(1, true));
+        // composite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        //
+        // tabItem = new TabItem(tabFolder, SWT.NONE);
+        // tabItem.setText("Task Management");
+        // tabItem.setControl(composite);
+        //
+        // createTaskManagementGroup(composite);
+
         return composite;
     }
 
-    /**
-     * @param composite
-     */
-    private void createProfileSettingsGroup(Composite composite) {
-        // create widgets for profile settings
-        Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-        settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        settingsGroup.setText("Profile Settings");
-        settingsGroup.setLayout(new GridLayout(1, true));
-
-        this.loginLabel = new CLabel(settingsGroup, SWT.LEFT);
-        this.loginLabel.setText(Messages.getString("OptionsDialog.3")); //$NON-NLS-1$
-        this.loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        this.loginText = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
-        this.loginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        this.loginText.addModifyListener(this.validator);
-        this.loginText.addFocusListener(new TextFocusListener(this.loginText));
-
-        this.pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
-        this.pwdLabel.setText(Messages.getString("OptionsDialog.4")); //$NON-NLS-1$
-        this.pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        this.pwdText = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
-        this.pwdText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        this.pwdText.addModifyListener(this.validator);
-        this.pwdText.addFocusListener(new TextFocusListener(this.pwdText));
-
-        this.quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
-        this.quarryEndpointLabel.setText(Messages.getString("OptionsDialog.5")); //$NON-NLS-1$
-        this.quarryEndpointLabel.setLayoutData(new GridData(
-                GridData.FILL_HORIZONTAL));
-
-        this.endpointText = new Text(settingsGroup, SWT.SINGLE
-                | SWT.BORDER);
-        this.endpointText.setLayoutData(new GridData(
-                GridData.FILL_HORIZONTAL));
-        this.endpointText.addModifyListener(this.validator);
-        this.endpointText.addFocusListener(new TextFocusListener(
-                this.endpointText));
-
-        this.locationLabel = new CLabel(settingsGroup, SWT.LEFT);
-        this.locationLabel.setText("Workspace Location:");
-        this.locationLabel
-                .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        Composite locationArea = new Composite(settingsGroup, SWT.NONE);
-        locationArea.setLayout(new GridLayout(2, false));
-        ((GridLayout) locationArea.getLayout()).marginBottom = 0;
-        ((GridLayout) locationArea.getLayout()).marginTop = 0;
-        ((GridLayout) locationArea.getLayout()).marginLeft = 0;
-        ((GridLayout) locationArea.getLayout()).marginRight = 0;
-        ((GridLayout) locationArea.getLayout()).marginHeight = 0;
-        ((GridLayout) locationArea.getLayout()).marginWidth = 0;
-
-        this.locationText = new Text(locationArea, SWT.BORDER);
-        this.locationText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        this.locationText.addModifyListener(this.validator);
-        this.locationText.addFocusListener(new TextFocusListener(this.pwdText));
-
-        Button selectLocationButton = new Button(locationArea, SWT.PUSH);
-        selectLocationButton.setText("Browse...");
-        selectLocationButton.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
-                fd.setText("Select location for workspaces");
-
-                locationText.setText(fd.open());
-            }
-        });
-    }
-
-    /**
-     * @param composite
-     */
     private void createProfileManagementGroup(Composite composite) {
         // create widgets for profile selection
         Group profileGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
@@ -256,8 +196,15 @@ public class OptionsDialog extends TitleAreaDialog {
                              * @see org.eclipse.jface.dialogs.IInputValidator#isValid(java.lang.String)
                              */
                             public String isValid(String text) {
+                                // check if a name was provided for the profile
                                 if (text.length() < 1) {
                                     return "Profile name must contain at least one character.";
+                                }
+                                // check if the name does already exist
+                                for (Profile profile : profiles.getProfiles()) {
+                                    if (profile.getName().equals(text)) {
+                                        return "A profile with that name already exists.";
+                                    }
                                 }
                                 return null;
                             }
@@ -265,6 +212,7 @@ public class OptionsDialog extends TitleAreaDialog {
                 if (dlg.open() == Window.OK) {
                     Profile profile = new Profile();
                     profile.setName(dlg.getValue());
+                    profiles.addProfile(profile);
 
                     profileList.add(profile.getName());
                     profileList
@@ -277,6 +225,21 @@ public class OptionsDialog extends TitleAreaDialog {
         delProfileButton.setLayoutData(new GridData(GridData.FILL_BOTH));
         delProfileButton.setText("Remove Profile");
         delProfileButton.setEnabled(false);
+
+        final Button saveProfileButton = new Button(buttonArea, SWT.PUSH);
+        saveProfileButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        saveProfileButton.setText("Save Profile");
+        saveProfileButton.setEnabled(false);
+        saveProfileButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                Profile profile = profiles.getProfileByName(profileList
+                        .getSelection()[0]);
+                profile.setLogin(loginText.getText());
+                profile.setPassword(pwdText.getText());
+                profile.setEndpoint(endpointText.getText());
+                profile.setLocation(locationText.getText());
+            }
+        });
         delProfileButton.addListener(SWT.Selection, new Listener() {
             /**
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
@@ -285,10 +248,11 @@ public class OptionsDialog extends TitleAreaDialog {
                 int[] selection = profileList.getSelectionIndices();
                 String name = profileList.getItem(selection[0]);
                 profileList.remove(selection);
-                
+
                 profiles.deleteProfile(name);
 
                 delProfileButton.setEnabled(false);
+                saveProfileButton.setEnabled(false);
                 resetFields();
             }
         });
@@ -298,16 +262,112 @@ public class OptionsDialog extends TitleAreaDialog {
              */
             public void handleEvent(Event event) {
                 delProfileButton.setEnabled(true);
-                Profile profile = profiles.getProfileByName(profileList
-                        .getSelection()[0]);
-                loginText.setText(profile.getLogin());
-                pwdText.setText(profile.getPassword());
-                endpointText.setText(profile.getEndpoint());
-                locationText.setText(profile.getLocation());
+                saveProfileButton.setEnabled(true);
+
+                if (profileList.getSelection().length > 0) {
+                    Profile profile = profiles.getProfileByName(profileList
+                            .getSelection()[0]);
+                    loginText.setText(profile.getLogin());
+                    pwdText.setText(profile.getPassword());
+                    endpointText.setText(profile.getEndpoint());
+                    locationText.setText(profile.getLocation());
+                }
             }
         });
     }
-    
+
+    private void createProfileSettingsGroup(Composite composite) {
+        // create widgets for profile settings
+        Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        settingsGroup.setText("Profile Settings");
+        settingsGroup.setLayout(new GridLayout(1, true));
+
+        loginLabel = new CLabel(settingsGroup, SWT.LEFT);
+        loginLabel.setText(Messages.getString("OptionsDialog.3")); //$NON-NLS-1$
+        loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        loginText = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        loginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        loginText.addModifyListener(validator);
+        loginText.addFocusListener(new TextFocusListener(loginText));
+
+        pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
+        pwdLabel.setText(Messages.getString("OptionsDialog.4")); //$NON-NLS-1$
+        pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        pwdText = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
+        pwdText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        pwdText.addModifyListener(validator);
+        pwdText.addFocusListener(new TextFocusListener(pwdText));
+
+        quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
+        quarryEndpointLabel.setText(Messages.getString("OptionsDialog.5")); //$NON-NLS-1$
+        quarryEndpointLabel
+                .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        endpointText = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        endpointText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        endpointText.addModifyListener(validator);
+        endpointText.addFocusListener(new TextFocusListener(endpointText));
+
+        locationLabel = new CLabel(settingsGroup, SWT.LEFT);
+        locationLabel.setText("Workspace Location:");
+        locationLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        Composite locationArea = new Composite(settingsGroup, SWT.NONE);
+        locationArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        locationArea.setLayout(new GridLayout(2, false));
+        ((GridLayout) locationArea.getLayout()).marginBottom = 0;
+        ((GridLayout) locationArea.getLayout()).marginTop = 0;
+        ((GridLayout) locationArea.getLayout()).marginLeft = 0;
+        ((GridLayout) locationArea.getLayout()).marginRight = 0;
+        ((GridLayout) locationArea.getLayout()).marginHeight = 0;
+        ((GridLayout) locationArea.getLayout()).marginWidth = 0;
+
+        locationText = new Text(locationArea, SWT.BORDER);
+        locationText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        locationText.addModifyListener(validator);
+        locationText.addFocusListener(new TextFocusListener(pwdText));
+
+        Button selectLocationButton = new Button(locationArea, SWT.PUSH);
+        selectLocationButton.setText("Browse...");
+        selectLocationButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
+                fd.setText("Select location for workspaces");
+
+                locationText.setText(fd.open());
+            }
+        });
+    }
+
+    private void createTaskManagementGroup(Composite composite) {
+        // create widgets for profile selection
+        Group tasksGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        tasksGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        tasksGroup.setText("Task Settings");
+        tasksGroup.setLayout(new GridLayout(2, false));
+
+        Composite area = new Composite(tasksGroup, SWT.NONE);
+        area.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        area.setLayout(new GridLayout(2, false));
+        ((GridLayout) area.getLayout()).marginBottom = 0;
+        ((GridLayout) area.getLayout()).marginTop = 0;
+        ((GridLayout) area.getLayout()).marginLeft = 0;
+        ((GridLayout) area.getLayout()).marginRight = 0;
+        ((GridLayout) area.getLayout()).marginHeight = 0;
+        ((GridLayout) area.getLayout()).marginWidth = 0;
+
+        Button finishedTasks = new Button(area, SWT.CHECK);
+        Label finishedLabel = new Label(area, SWT.LEFT);
+        finishedLabel.setText("Display finished tasks.");
+
+        Button updateTasks = new Button(area, SWT.CHECK);
+        Label updateLabel = new Label(area, SWT.LEFT);
+        updateLabel.setText("Update tasks only on startup.");
+    }
+
     private void resetFields() {
         loginText.setText(""); //$NON-NLS-1$
         pwdText.setText(""); //$NON-NLS-1$
@@ -335,8 +395,8 @@ public class OptionsDialog extends TitleAreaDialog {
                 true);
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
-        
-        this.validator.init();
+
+        validator.init();
     }
 
     private class TextFocusListener implements FocusListener {
@@ -350,7 +410,7 @@ public class OptionsDialog extends TitleAreaDialog {
          * @see org.eclipse.swt.events.FocusListener#focusGained(org.eclipse.swt.events.FocusEvent)
          */
         public void focusGained(FocusEvent e) {
-            this.text.setSelection(0, this.text.getText().length());
+            text.setSelection(0, text.getText().length());
         }
 
         /**
@@ -374,12 +434,10 @@ public class OptionsDialog extends TitleAreaDialog {
          */
         public void modifyText(ModifyEvent event) {
             // check if a profile is selected
-            if(profileList.getSelection().length == 0) {
+            if (profileList.getSelection().length == 0) {
                 setErrorMessage("Please select a profile!");
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
-            } else {
-                updateProfile();
             }
             // otherwise check settings of selected profile
             if (loginText.getText().equals("")) { //$NON-NLS-1$
@@ -413,21 +471,11 @@ public class OptionsDialog extends TitleAreaDialog {
                     return;
                 }
             }
-            setErrorMessage(null);
             getButton(IDialogConstants.OK_ID).setEnabled(true);
         }
-        
+
         public void init() {
             modifyText(null);
-        }
-
-        private void updateProfile() {
-            // set values of current profile
-            Profile profile = profiles.getProfileByName(profileList.getSelection()[0]);
-            profile.setLogin(loginText.getText());
-            profile.setPassword(pwdText.getText());
-            profile.setEndpoint(endpointText.getText());
-            profile.setLocation(locationText.getText());
         }
     }
 }

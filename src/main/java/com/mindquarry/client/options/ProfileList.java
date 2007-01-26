@@ -13,23 +13,28 @@
  */
 package com.mindquarry.client.options;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Add summary documentation here.
- *
+ * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ProfileList {
+public class ProfileList implements Serializable {
+    private static final long serialVersionUID = 8321211437810319791L;
+
     private List<Profile> profiles = new ArrayList<Profile>();
-    
+
     private Profile selected;
+
+    private Integer selectionIndex = -1;
 
     /**
      * Getter for profiles.
-     *
+     * 
      * @return the profiles
      */
     public Profile[] getProfiles() {
@@ -38,46 +43,83 @@ public class ProfileList {
 
     /**
      * Setter for profiles.
-     *
+     * 
      * @param profiles the profiles to set
      */
     public void setProfiles(Profile[] profiles) {
         this.profiles.clear();
-        for(Profile profile : profiles) {
+        for (Profile profile : profiles) {
             this.profiles.add(profile);
         }
     }
-    
+
     public void addProfile(Profile profile) {
         this.profiles.add(profile);
     }
-    
+
     public void deleteProfile(Profile profile) {
         this.profiles.remove(profile);
+        updateSelectionIndex();
     }
-    
+
     public void deleteProfile(String name) {
-        for(Profile profile : this.profiles) {
-            if(profile.getName().equals(name)) {
-                this.profiles.remove(profile);
+        Profile toDelete = findByName(name);
+        if (toDelete != null) {
+            this.profiles.remove(toDelete);
+        }
+        updateSelectionIndex();
+    }
+
+    public Profile getProfileByName(String name) {
+        return findByName(name);
+    }
+
+    public void select(Profile profile) {
+        this.selected = profile;
+        updateSelectionIndex();
+    }
+
+    public void select(String name) {
+        Profile tmp = findByName(name);
+        if (tmp != null) {
+            selected = tmp;
+        }
+        updateSelectionIndex();
+    }
+
+    public Profile selectedProfile() {
+        return this.selected;
+    }
+
+    public Integer getSelectionIndex() {
+        return selectionIndex;
+    }
+
+    public void setSelectionIndex(Integer selectedIndex) {
+        this.selectionIndex = selectedIndex;
+    }
+
+    private void updateSelectionIndex() {
+        if(selected == null){
+            selectionIndex = -1;
+            return;
+        }
+        
+        int index = -1;
+        for(Profile profile : profiles) {
+            if(profile.getName().equals(selected.getName())) {
+                selectionIndex = index;
+                return;
             }
         }
     }
-    
-    public Profile getProfileByName(String name) {
-        for(Profile profile : this.profiles) {
-            if(profile.getName().equals(name)) {
+
+    private Profile findByName(String name) {
+        for (Profile profile : profiles) {
+            if (profile.getName().equals(name)) {
                 return profile;
             }
         }
         return null;
-    }
-    
-    public void select(Profile profile) {
-        this.selected = profile;
-    }
-    
-    public Profile selectedProfile() {
-        return this.selected;
     }
 }

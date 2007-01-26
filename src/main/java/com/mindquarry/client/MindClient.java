@@ -21,8 +21,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.sql.Savepoint;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -59,7 +62,7 @@ public class MindClient {
             .getSettingsFolder()
             + "/mindclient.settings"; //$NON-NLS-1$
 
-    public static final String MINDCLIENT_ICON = "/icons/16x16/mindquarry.png"; //$NON-NLS-1$
+    public static final String MINDCLIENT_ICON = "/icons/16x16/mq-icon.png"; //$NON-NLS-1$
 
     private final OperatingSystem OS;
 
@@ -165,6 +168,7 @@ public class MindClient {
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
              */
             public void handleEvent(Event event) {
+                mindclient.saveOptions();
                 System.exit(1);
             }
         });
@@ -184,24 +188,25 @@ public class MindClient {
                 profile.setName("Your Quarry Profile");
                 profile.setEndpoint(Messages.getString("MindClient.3")); //$NON-NLS-1$
                 profile.setLogin(Messages.getString("MindClient.2")); //$NON-NLS-1$
+                profile.setPassword(""); //$NON-NLS-1$
+                profile.setLocation(""); //$NON-NLS-1$
 
                 profileList.addProfile(profile);
 
                 // request option values from user
                 OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
                         icon, profileList);
+                dlg.setBlockOnOpen(true);
                 if (dlg.open() == Window.OK) {
                     optionsFile.getParentFile().mkdirs();
                     optionsFile.createNewFile();
                     saveOptions();
                 }
             } else {
-                FileInputStream fis = new FileInputStream(optionsFile);
-
-                XMLDecoder decoder = new XMLDecoder(new BufferedInputStream(
-                        new FileInputStream(optionsFile)));
-                profileList = (ProfileList)decoder.readObject();
-                decoder.close();
+                ObjectInputStream is = new ObjectInputStream(
+                        new FileInputStream(optionsFile));
+                profileList = (ProfileList) is.readObject();
+                is.close();
             }
         } catch (Exception e) {
             MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
@@ -215,9 +220,10 @@ public class MindClient {
                 optionsFile.getParentFile().mkdirs();
                 optionsFile.createNewFile();
             }
-            XMLEncoder encoder = new XMLEncoder(new BufferedOutputStream(new FileOutputStream(optionsFile)));
-            encoder.writeObject(profileList);
-            encoder.close();
+            ObjectOutputStream os = new ObjectOutputStream(
+                    new FileOutputStream(optionsFile));
+            os.writeObject(profileList);
+            os.close();
         } catch (Exception e) {
             MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
                     Messages.getString("MindClient.7")); //$NON-NLS-1$

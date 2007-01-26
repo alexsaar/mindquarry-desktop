@@ -42,7 +42,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
-import com.mindquarry.client.util.widgets.UpdateComposite;
+import com.mindquarry.client.util.widgets.TaskErrorComposite;
+import com.mindquarry.client.util.widgets.TaskUpdateComposite;
 import com.mindquarry.client.xml.TaskListTransformer;
 import com.mindquarry.client.xml.TaskTransformer;
 
@@ -68,6 +69,8 @@ public class TaskManager {
     private final TaskManager myself = this;
 
     private Composite refreshWidget;
+
+    private Composite errorWidget;
 
     private Table taskTable = null;
 
@@ -144,7 +147,7 @@ public class TaskManager {
     }
 
     private void refresh() {
-        setRefreshing(true);
+        setRefreshing(true, false);
 
         try {
             Thread.sleep(2000);
@@ -165,7 +168,8 @@ public class TaskManager {
         }
         // check if some contant was received
         if (content == null) {
-            setRefreshing(false);
+            setRefreshing(false, true);
+            return;
         }
         SAXReader reader = new SAXReader();
         Document doc;
@@ -194,7 +198,8 @@ public class TaskManager {
             }
             // check if some contant was received
             if (content == null) {
-                setRefreshing(false);
+                setRefreshing(false, true);
+                return;
             }
             try {
                 doc = reader.read(content);
@@ -216,7 +221,7 @@ public class TaskManager {
             }
         }
         // update task table
-        setRefreshing(false);
+        setRefreshing(false, false);
         taskContainer.getDisplay().syncExec(new Runnable() {
             /**
              * @see java.lang.Runnable#run()
@@ -227,24 +232,18 @@ public class TaskManager {
         });
     }
 
-    private void setRefreshing(final boolean refreshing) {
+    private void setRefreshing(final boolean refreshing, final boolean error) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             /**
              * @see java.lang.Runnable#run()
              */
             public void run() {
-                if (refreshing) {
-                    if (taskTable != null) {
-                        taskTable.dispose();
-                        taskTable = null;
-                    }
-                    refreshWidget = new UpdateComposite(taskContainer, Messages
-                            .getString("TaskManager.2")); //$NON-NLS-1$
-                } else {
-                    if (refreshWidget != null) {
-                        refreshWidget.dispose();
-                        refreshWidget = null;
-                    }
+                if (refreshing && !error) {
+                    destroyContent();
+                    refreshWidget = new TaskUpdateComposite(taskContainer,
+                            Messages.getString("TaskManager.2")); //$NON-NLS-1$
+                } else if (!refreshing && !error) {
+                    destroyContent();
                     taskTable = new Table(taskContainer, SWT.BORDER);
                     taskTable.setHeaderVisible(false);
                     taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
@@ -277,8 +276,27 @@ public class TaskManager {
                     taskTableViewer
                             .addSelectionChangedListener(new TaskSelectionChangedListener(
                                     myself, taskTableViewer, doneButton));
+                } else {
+                    destroyContent();
+                    errorWidget = new TaskErrorComposite(taskContainer,
+                            "List of tasks could not be updated.");
                 }
                 taskContainer.layout(true);
+            }
+
+            private void destroyContent() {
+                if (taskTable != null) {
+                    taskTable.dispose();
+                    taskTable = null;
+                }
+                if (refreshWidget != null) {
+                    refreshWidget.dispose();
+                    refreshWidget = null;
+                }
+                if (errorWidget != null) {
+                    errorWidget.dispose();
+                    errorWidget = null;
+                }
             }
         });
     }

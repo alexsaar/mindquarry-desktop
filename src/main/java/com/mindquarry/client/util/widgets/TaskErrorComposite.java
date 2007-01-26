@@ -14,9 +14,11 @@
 package com.mindquarry.client.util.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 
@@ -24,8 +26,8 @@ import org.eclipse.swt.widgets.ProgressBar;
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class UpdateComposite extends Composite {
-    public UpdateComposite(Composite parent, String text) {
+public class TaskErrorComposite extends Composite {
+    public TaskErrorComposite(Composite parent, String text) {
         super(parent, SWT.BORDER);
 
         setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true, 2, 2));
@@ -40,12 +42,15 @@ public class UpdateComposite extends Composite {
         internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 true));
 
-        ProgressBar bar = new ProgressBar(internalComp, SWT.HORIZONTAL
-                | SWT.INDETERMINATE);
-        bar.setSize(200, 16);
-        bar.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-
+        Image icon = new Image(null, getClass().getResourceAsStream(
+                "/org/tango-project/tango-icon-theme/22x22/actions/edit-delete.png"));
+        
         Label label = new Label(internalComp, SWT.CENTER);
+        label.setImage(icon);
+        label.setBackground(label.getParent().getBackground());
+        label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        
+        label = new Label(internalComp, SWT.CENTER);
         label.setText(text);
         label.setBackground(label.getParent().getBackground());
         label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));

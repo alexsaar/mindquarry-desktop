@@ -13,13 +13,17 @@
  */
 package com.mindquarry.client.options;
 
+import java.io.Serializable;
+
 /**
  * Add summary documentation here.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class Profile {
+public class Profile implements Serializable {
+    private static final long serialVersionUID = -3145142861005182807L;
+
     private String name;
     
     private String login;
