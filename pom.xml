@@ -112,11 +112,18 @@
 	</dependencies>
 	
 	<profiles>
+		<!-- OS profiles:
+			 - everything must be in lower case, eg. system property os.name is 'Mac OS X' => 'mac os x' in this pom
+			 - available families are: dos, mac, netware, os/2, tandem, unix, windows, win9x, z/os, os/400
+			 
+			 (see http://www.google.com/codesearch?hl=en&q=+org.codehaus.plexus.util.Os+show:ruAGdVsOOwU:4-AYRgF18sw:nLnBYU_72Vc&sa=N&cd=7&ct=rc&cs_p=http://ftp.debian.org/debian/pool/main/libp/libplexus-utils/libplexus-utils_1.0alpha1.orig.tar.gz&cs_f=libplexus-utils-1.0alpha1/src/main/java/org/codehaus/plexus/util/Os.java#a0)
+			-->
 		<profile>
 			<id>macosx</id>
 			<activation>
 				<os>
-					<family>mac</family>
+					<name>mac os x</name>
+					<!--<family>mac</family>-->
 				</os>
 			</activation>
 			<dependencies>
@@ -146,7 +153,8 @@
 			<id>linux</id>
 			<activation>
 				<os>
-					<family>linux</family>
+					<name>linux</name>
+					<!-- <family>unix</family> -->
 				</os>
 			</activation>
 			<dependencies>
