@@ -13,10 +13,6 @@
  */
 package com.mindquarry.client;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.sql.Savepoint;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -65,11 +60,11 @@ public class MindClient {
     public static final String MINDCLIENT_ICON = "/icons/16x16/mq-icon.png"; //$NON-NLS-1$
 
     private final OperatingSystem OS;
-
+    
     private static Shell shell;
 
     private final Image icon;
-
+    
     private final BeanFactory factory;
 
     private ProfileList profileList;
@@ -79,10 +74,10 @@ public class MindClient {
     public MindClient() {
         factory = new ClassPathXmlApplicationContext(
                 new String[] { "applicationContext.xml" }); //$NON-NLS-1$
-
+        
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 MINDCLIENT_ICON));
-
+        
         // init settings file & name
         profileList = new ProfileList();
         optionsFile = new File(MINDCLIENT_SETTINGS);
@@ -98,14 +93,15 @@ public class MindClient {
     }
 
     public static void main(String[] args) throws IOException {
-        final MindClient mindclient = new MindClient();
-
         // init display & shell
-        final Display display = Display.getCurrent();
-        display.setWarnings(true);
+        Display display = new Display();
         Display.setAppName(APPLICATION_NAME);
+        display.setWarnings(true);
+
         shell = new Shell(display, SWT.NONE);
         shell.setText(APPLICATION_NAME);
+
+        final MindClient mindclient = new MindClient();
 
         // check CLI arguments
         if (args.length == 3) {
@@ -127,6 +123,7 @@ public class MindClient {
             // if something went wrong, try to load local options
             mindclient.loadOptions();
         }
+        
         final Tray tray = display.getSystemTray();
         final TrayIconSelectionListener trayListener = new TrayIconSelectionListener(
                 display, mindclient);
@@ -172,6 +169,7 @@ public class MindClient {
                 System.exit(1);
             }
         });
+        
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
                 display.sleep();
