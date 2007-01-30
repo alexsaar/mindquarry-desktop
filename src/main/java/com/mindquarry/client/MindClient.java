@@ -19,8 +19,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -59,7 +57,7 @@ public class MindClient {
 
     public static final String MINDCLIENT_ICON = "/icons/16x16/mq-icon.png"; //$NON-NLS-1$
 
-    private final OperatingSystem OS;
+    public static final OperatingSystem OS = getOperatingSystem();
     
     private static Shell shell;
 
@@ -70,6 +68,17 @@ public class MindClient {
     private ProfileList profileList;
 
     private File optionsFile;
+    
+    private static OperatingSystem getOperatingSystem() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.startsWith("windows")) {
+            return OperatingSystem.WINDOWS;
+        } else if (os.startsWith("mac")) {
+            return OperatingSystem.MAC_OS_X;
+        } else {
+            return OperatingSystem.OTHER;
+        }
+    }
 
     public MindClient() {
         factory = new ClassPathXmlApplicationContext(
@@ -81,15 +90,6 @@ public class MindClient {
         // init settings file & name
         profileList = new ProfileList();
         optionsFile = new File(MINDCLIENT_SETTINGS);
-
-        // check underlying OS version
-        OperatingSystemMXBean rtBean = ManagementFactory
-                .getOperatingSystemMXBean();
-        if (rtBean.getName().startsWith("Windows")) { //$NON-NLS-1$
-            OS = OperatingSystem.WINDOWS;
-        } else {
-            OS = OperatingSystem.OTHER;
-        }
     }
 
     public static void main(String[] args) throws IOException {
@@ -256,7 +256,7 @@ public class MindClient {
         return factory;
     }
 
-    public OperatingSystem getOS() {
+    /*public OperatingSystem getOS() {
         return OS;
-    }
+    }*/
 }

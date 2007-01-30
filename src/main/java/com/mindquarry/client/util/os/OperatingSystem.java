@@ -19,6 +19,6 @@ package com.mindquarry.client.util.os;
  */
 public enum OperatingSystem {
     WINDOWS,
-
+    MAC_OS_X,
     OTHER
 }

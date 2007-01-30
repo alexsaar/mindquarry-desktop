@@ -17,7 +17,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -31,13 +30,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
+import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.workspace.WorkspaceShareListener;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
@@ -117,7 +116,12 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         } else {
             anchor |= SWT.RIGHT;
         }
-        // TODO set location based on event data
+
+        // on mac the everything will be below the tray icon
+        if (MindClient.OS == OperatingSystem.MAC_OS_X) {
+            curPos.y += 10;
+        }
+        
         balloon.setLocation(curPos);
         balloon.setAnchor(anchor);
     }
@@ -273,49 +277,49 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
 
-    /**
-     * This method initializes wikiGroup
-     */
-    private void createWikiGroup() {
-        Group group = new Group(container, SWT.NONE);
-        group.setBackground(container.getBackground());
-        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        group.setLayout(new GridLayout(2, false));
-        group.setText(Messages.getString("TrayIconSelectionListener.9")); //$NON-NLS-1$
-
-        final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
-                | SWT.V_SCROLL | SWT.BORDER);
-        wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-                2, 2));
-        ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
-        wikiTextArea.setEnabled(false);
-
-        Button clearButton = new Button(group, SWT.NONE);
-        clearButton.setText(Messages.getString("TrayIconSelectionListener.10")); //$NON-NLS-1$
-        clearButton.setToolTipText(Messages
-                .getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
-        clearButton
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png"))); //$NON-NLS-1$
-        clearButton.setEnabled(false);
-        clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
-
-        Button postButton = new Button(group, SWT.NONE);
-        postButton.setText(Messages.getString("TrayIconSelectionListener.12")); //$NON-NLS-1$
-        postButton.setToolTipText(Messages
-                .getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
-        postButton
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/22x22/actions/document-new.png"))); //$NON-NLS-1$
-        postButton.setEnabled(false);
-        postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
-    }
+//    /**
+//     * This method initializes wikiGroup
+//     */
+//    private void createWikiGroup() {
+//        Group group = new Group(container, SWT.NONE);
+//        group.setBackground(container.getBackground());
+//        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+//        group.setLayout(new GridLayout(2, false));
+//        group.setText(Messages.getString("TrayIconSelectionListener.9")); //$NON-NLS-1$
+//
+//        final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
+//                | SWT.V_SCROLL | SWT.BORDER);
+//        wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+//                2, 2));
+//        ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
+//        wikiTextArea.setEnabled(false);
+//
+//        Button clearButton = new Button(group, SWT.NONE);
+//        clearButton.setText(Messages.getString("TrayIconSelectionListener.10")); //$NON-NLS-1$
+//        clearButton.setToolTipText(Messages
+//                .getString("TrayIconSelectionListener.11")); //$NON-NLS-1$
+//        clearButton
+//                .setImage(new Image(
+//                        Display.getCurrent(),
+//                        getClass()
+//                                .getResourceAsStream(
+//                                        "/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png"))); //$NON-NLS-1$
+//        clearButton.setEnabled(false);
+//        clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
+//
+//        Button postButton = new Button(group, SWT.NONE);
+//        postButton.setText(Messages.getString("TrayIconSelectionListener.12")); //$NON-NLS-1$
+//        postButton.setToolTipText(Messages
+//                .getString("TrayIconSelectionListener.13")); //$NON-NLS-1$
+//        postButton
+//                .setImage(new Image(
+//                        Display.getCurrent(),
+//                        getClass()
+//                                .getResourceAsStream(
+//                                        "/org/tango-project/tango-icon-theme/22x22/actions/document-new.png"))); //$NON-NLS-1$
+//        postButton.setEnabled(false);
+//        postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
+//    }
 
     public void handleEvent(Event event) {
         this.toggleBalloon();

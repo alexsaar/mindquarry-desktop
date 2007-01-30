@@ -38,7 +38,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
@@ -355,31 +354,31 @@ public class OptionsDialog extends TitleAreaDialog {
         });
     }
 
-    private void createTaskManagementGroup(Composite composite) {
-        // create widgets for profile selection
-        Group tasksGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-        tasksGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        tasksGroup.setText(Messages.getString("OptionsDialog.24")); //$NON-NLS-1$
-        tasksGroup.setLayout(new GridLayout(2, false));
-
-        Composite area = new Composite(tasksGroup, SWT.NONE);
-        area.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        area.setLayout(new GridLayout(2, false));
-        ((GridLayout) area.getLayout()).marginBottom = 0;
-        ((GridLayout) area.getLayout()).marginTop = 0;
-        ((GridLayout) area.getLayout()).marginLeft = 0;
-        ((GridLayout) area.getLayout()).marginRight = 0;
-        ((GridLayout) area.getLayout()).marginHeight = 0;
-        ((GridLayout) area.getLayout()).marginWidth = 0;
-
-        Button finishedTasks = new Button(area, SWT.CHECK);
-        Label finishedLabel = new Label(area, SWT.LEFT);
-        finishedLabel.setText(Messages.getString("OptionsDialog.25")); //$NON-NLS-1$
-
-        Button updateTasks = new Button(area, SWT.CHECK);
-        Label updateLabel = new Label(area, SWT.LEFT);
-        updateLabel.setText(Messages.getString("OptionsDialog.26")); //$NON-NLS-1$
-    }
+//    private void createTaskManagementGroup(Composite composite) {
+//        // create widgets for profile selection
+//        Group tasksGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+//        tasksGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+//        tasksGroup.setText(Messages.getString("OptionsDialog.24")); //$NON-NLS-1$
+//        tasksGroup.setLayout(new GridLayout(2, false));
+//
+//        Composite area = new Composite(tasksGroup, SWT.NONE);
+//        area.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+//        area.setLayout(new GridLayout(2, false));
+//        ((GridLayout) area.getLayout()).marginBottom = 0;
+//        ((GridLayout) area.getLayout()).marginTop = 0;
+//        ((GridLayout) area.getLayout()).marginLeft = 0;
+//        ((GridLayout) area.getLayout()).marginRight = 0;
+//        ((GridLayout) area.getLayout()).marginHeight = 0;
+//        ((GridLayout) area.getLayout()).marginWidth = 0;
+//
+//        Button finishedTasks = new Button(area, SWT.CHECK);
+//        Label finishedLabel = new Label(area, SWT.LEFT);
+//        finishedLabel.setText(Messages.getString("OptionsDialog.25")); //$NON-NLS-1$
+//
+//        Button updateTasks = new Button(area, SWT.CHECK);
+//        Label updateLabel = new Label(area, SWT.LEFT);
+//        updateLabel.setText(Messages.getString("OptionsDialog.26")); //$NON-NLS-1$
+//    }
 
     private void resetFields() {
         loginText.setText(""); //$NON-NLS-1$

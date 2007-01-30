@@ -59,7 +59,7 @@ public class ShareOperation implements IRunnableWithProgress {
 
         // get directory for workspaces
         File teamspacesDir;
-        if (client.getOS() == OperatingSystem.WINDOWS) {
+        if (MindClient.OS == OperatingSystem.WINDOWS) {
             teamspacesDir = new File(HomeUtil.getTeamspaceFolderWindows());
         } else {
             teamspacesDir = new File(HomeUtil.getTeamspaceFolder());
