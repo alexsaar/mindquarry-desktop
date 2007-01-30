@@ -52,6 +52,10 @@ public class ProfileList implements Serializable {
             this.profiles.add(profile);
         }
     }
+    
+    public Profile get(int index) {
+        return profiles.get(index);
+    }
 
     public void addProfile(Profile profile) {
         this.profiles.add(profile);
@@ -121,5 +125,9 @@ public class ProfileList implements Serializable {
             }
         }
         return null;
+    }
+    
+    public int size() {
+        return profiles.size();
     }
 }

@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
 import com.mindquarry.client.util.widgets.TaskErrorComposite;
@@ -147,6 +148,11 @@ public class TaskManager {
     }
 
     private void refresh() {
+        Profile profile = client.getProfileList().selectedProfile();
+        if (profile == null) {
+            return;
+        }
+        
         setRefreshing(true, false);
 
         try {
@@ -157,11 +163,10 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getProfileList()
-                    .selectedProfile().getLogin(), client.getProfileList()
-                    .selectedProfile().getPassword(), client.getProfileList()
-                    .selectedProfile().getEndpoint()
-                    + "/tasks"); //$NON-NLS-1$
+            content = HttpUtil.getContentAsXML(
+                    profile.getLogin(),
+                    profile.getPassword(),
+                    profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("TaskManager.0")); //$NON-NLS-1$
