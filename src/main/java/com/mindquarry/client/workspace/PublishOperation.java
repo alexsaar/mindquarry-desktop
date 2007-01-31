@@ -19,31 +19,19 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
-import org.tigris.subversion.javahl.SVNClientInterface;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.os.HomeUtil;
-import com.mindquarry.client.util.os.OperatingSystem;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ShareOperation implements IRunnableWithProgress {
-    private final MindClient client;
-
-    private final SVNClientInterface svnClient;
-
-    public ShareOperation(final MindClient client) {
-        this.client = client;
-
-        // get SVN client interface component
-        BeanFactory factory = client.getFactory();
-        svnClient = (SVNClientInterface) factory
-                .getBean(SVNClientInterface.class.getName());
+public class PublishOperation extends SvnOperation implements
+        IRunnableWithProgress {
+    public PublishOperation(final MindClient client) {
+        super(client);
     }
 
     /**
@@ -51,32 +39,37 @@ public class ShareOperation implements IRunnableWithProgress {
      */
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
-        monitor.beginTask(Messages.getString("ShareOperation.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+        monitor
+                .beginTask(
+                        Messages.getString("PublishOperation.0"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
-        // init SVN types
-        svnClient.username(client.getProfileList().selectedProfile().getLogin());
-        svnClient.password(client.getProfileList().selectedProfile().getPassword());
+        // init SVN client API types
+        svnClient
+                .username(client.getProfileList().selectedProfile().getLogin());
+        svnClient.password(client.getProfileList().selectedProfile()
+                .getPassword());
 
         // get directory for workspaces
-        File teamspacesDir;
-        if (MindClient.OS == OperatingSystem.WINDOWS) {
-            teamspacesDir = new File(HomeUtil.getTeamspaceFolderWindows());
-        } else {
-            teamspacesDir = new File(HomeUtil.getTeamspaceFolder());
-        }
+        File teamspacesDir = new File(client.getProfileList().selectedProfile()
+                .getLocation());
+
         // loop existing workspace directories
         for (final File tsDir : teamspacesDir.listFiles()) {
             if (monitor.isCanceled()) {
                 return;
             }
-            checkStatus(tsDir);
+            // check if folder is really a workspace folder
+            if (!isFolderVersionControled(tsDir)) {
+                continue;
+            }
+            checkVersionStatus(tsDir);
 
             // retrieve (asynchronously) commit message
             final InputDialog dlg = new InputDialog(MindClient.getShell(),
-                    Messages.getString("ShareOperation.1"), //$NON-NLS-1$
-                    Messages.getString("ShareOperation.2") //$NON-NLS-1$
+                    Messages.getString("PublishOperation.1"), //$NON-NLS-1$
+                    Messages.getString("PublishOperation.2") //$NON-NLS-1$
                             + tsDir.getName() + ".", //$NON-NLS-1$
-                    Messages.getString("ShareOperation.3"), null); //$NON-NLS-1$
+                    Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
             MindClient.getShell().getDisplay().syncExec(new Runnable() {
                 /**
                  * @see java.lang.Runnable#run()
@@ -97,7 +90,7 @@ public class ShareOperation implements IRunnableWithProgress {
         monitor.done();
     }
 
-    private void checkStatus(File item) {
+    private void checkVersionStatus(File item) {
         for (File child : item.listFiles()) {
             if (child.getName().equals(".svn")) { //$NON-NLS-1$
                 continue;
@@ -113,7 +106,7 @@ public class ShareOperation implements IRunnableWithProgress {
                 if (!status.isManaged()) {
                     svnClient.add(child.getAbsolutePath(), true);
                 } else if (child.isDirectory()) {
-                    checkStatus(child);
+                    checkVersionStatus(child);
                 }
             } catch (ClientException e) {
                 e.printStackTrace();

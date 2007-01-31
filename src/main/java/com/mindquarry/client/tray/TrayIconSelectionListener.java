@@ -37,7 +37,6 @@ import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.util.os.OperatingSystem;
-import com.mindquarry.client.workspace.WorkspaceShareListener;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
@@ -212,31 +211,17 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         label.setText(Messages.getString("TrayIconSelectionListener.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
-        Button shareButton = new Button(group, SWT.NONE);
-        shareButton
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/22x22/actions/go-up.png"))); //$NON-NLS-1$
-        shareButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
-        shareButton.setText(Messages.getString("TrayIconSelectionListener.2")); //$NON-NLS-1$
-        shareButton.setToolTipText(Messages
-                .getString("TrayIconSelectionListener.3")); //$NON-NLS-1$
-        shareButton.addListener(SWT.Selection, new WorkspaceShareListener(
-                client, shareButton));
-
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("TrayIconSelectionListener.4")); //$NON-NLS-1$
         syncButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.5")); //$NON-NLS-1$
-        syncButton.setLayoutData(new GridData(SWT.END, SWT.END, false, false));
+        syncButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
         syncButton
                 .setImage(new Image(
                         Display.getCurrent(),
                         getClass()
                                 .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/22x22/actions/go-down.png"))); //$NON-NLS-1$
+                                        "/com/mindquarry/icons/22x22/actions/synchronize.png"))); //$NON-NLS-1$
         syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener(
                 client, syncButton));
     }

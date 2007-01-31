@@ -55,7 +55,7 @@ public class MindClient {
             .getSettingsFolder()
             + "/mindclient.settings"; //$NON-NLS-1$
 
-    public static final String MINDCLIENT_ICON = "/icons/16x16/mq-icon.png"; //$NON-NLS-1$
+    public static final String MINDCLIENT_ICON = "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"; //$NON-NLS-1$
 
     public static final OperatingSystem OS = getOperatingSystem();
     
@@ -70,10 +70,10 @@ public class MindClient {
     private File optionsFile;
     
     private static OperatingSystem getOperatingSystem() {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.startsWith("windows")) {
+        String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+        if (os.startsWith("windows")) { //$NON-NLS-1$
             return OperatingSystem.WINDOWS;
-        } else if (os.startsWith("mac")) {
+        } else if (os.startsWith("mac")) { //$NON-NLS-1$
             return OperatingSystem.MAC_OS_X;
         } else {
             return OperatingSystem.OTHER;

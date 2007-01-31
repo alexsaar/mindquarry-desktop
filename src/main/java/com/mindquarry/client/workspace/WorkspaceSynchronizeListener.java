@@ -39,15 +39,33 @@ public class WorkspaceSynchronizeListener implements Listener {
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
+        if (client.getProfileList().selectedProfile() == null) {
+            MessageDialog.openError(MindClient.getShell(), Messages
+                    .getString("WorkspaceSynchronizeListener.2"), //$NON-NLS-1$
+                    Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
+            return;
+        }
         button.setEnabled(false);
 
         try {
-            SynchronizeOperation syncOp = new SynchronizeOperation(client);
+            // need to sync workspaces first (for merging, up-to-date working
+            // copies and so on)
+            UpdateOperation syncOp = new UpdateOperation(client);
             new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
                     syncOp);
         } catch (Exception e) {
-            MessageDialog.openError(MindClient.getShell(),
-                    Messages.getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
+            MessageDialog.openError(MindClient.getShell(), Messages
+                    .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
+                    Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
+        }
+        try {
+            // share workspace changes
+            PublishOperation shareOp = new PublishOperation(client);
+            new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
+                    shareOp);
+        } catch (Exception e) {
+            MessageDialog.openError(MindClient.getShell(), Messages
+                    .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
                     Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
         }
         button.setEnabled(true);
