@@ -78,7 +78,9 @@ public class TaskManager {
     private Table taskTable = null;
 
     private TableViewer taskTableViewer = null;
-
+    
+    private boolean refreshing = false;
+    
     private static final StreamSource taskDoneXSL = new StreamSource(
             TaskManager.class.getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
 
@@ -136,6 +138,18 @@ public class TaskManager {
     public Task[] getTasks() {
         return tasks.toArray(new Task[] {});
     }
+    
+    /**
+     * Runs task update in a separate thread, so that GUI can continue
+     * processing. Thus this method returns immediatly. While updating tasks the
+     * Task Manager will show an update widget instead of the task table.
+     */
+    public void cancelRefresh() {
+        if(!refreshing) {
+            return;
+        }
+        refreshing = false;
+    }
 
     /**
      * Runs task update in a separate thread, so that GUI can continue
@@ -143,6 +157,10 @@ public class TaskManager {
      * Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
+        if(refreshing) {
+            return;
+        }
+        refreshing = true;
         new Thread(new Runnable() {
             public void run() {
                 refresh();
@@ -151,24 +169,17 @@ public class TaskManager {
     }
 
     private void refresh() {
-        // disable refresh button
-        taskContainer.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                refreshButton.setEnabled(false);
-            }
-        });
+        refreshing = true;
+        switchRefreshButtonStatus(false);
+        
         // check profile
         Profile profile = client.getProfileList().selectedProfile();
         if (profile == null) {
+            refreshing = false;
+            switchRefreshButtonStatus(true);
             return;
         }
         setRefreshing(true, false);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         InputStream content = null;
         try {
@@ -183,6 +194,8 @@ public class TaskManager {
         // check if some contant was received
         if (content == null) {
             setRefreshing(false, true);
+            switchRefreshButtonStatus(true);
+            refreshing = false;
             return;
         }
         SAXReader reader = new SAXReader();
@@ -191,6 +204,9 @@ public class TaskManager {
             doc = reader.read(content);
         } catch (DocumentException e) {
             e.printStackTrace();
+            
+            switchRefreshButtonStatus(true);
+            refreshing = false;
             return;
         }
         // create and execute transformer for tasklist description
@@ -212,14 +228,15 @@ public class TaskManager {
             }
             // check if some contant was received
             if (content == null) {
+                switchRefreshButtonStatus(true);
                 setRefreshing(false, true);
+                refreshing = false;
                 return;
             }
             try {
                 doc = reader.read(content);
             } catch (DocumentException e) {
                 e.printStackTrace();
-                return;
             }
             TaskTransformer tTransformer = new TaskTransformer();
             tTransformer.execute(doc);
@@ -241,10 +258,17 @@ public class TaskManager {
                 taskTableViewer.setInput(myself);
             }
         });
-        // enable refresh button
+        switchRefreshButtonStatus(true);
+        refreshing = false;
+    }
+
+    /**
+     * 
+     */
+    private void switchRefreshButtonStatus(final boolean enabled) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
-                refreshButton.setEnabled(true);
+                refreshButton.setEnabled(enabled);
             }
         });
     }
