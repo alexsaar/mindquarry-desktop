@@ -36,6 +36,7 @@ import com.mindquarry.client.ballon.BalloonWindow;
 import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
+import com.mindquarry.client.task.TaskRefreshListener;
 import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
@@ -233,12 +234,12 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         final Group group = new Group(container, SWT.NONE);
         group.setBackground(container.getBackground());
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        group.setLayout(new GridLayout(1, false));
+        group.setLayout(new GridLayout(2, false));
         group.setText(Messages.getString("TrayIconSelectionListener.6")); //$NON-NLS-1$
 
         Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
-                true, 0, 0));
+                true, 2, 0));
         ((GridData) taskContainer.getLayoutData()).heightHint = 150;
         taskContainer.setBackground(taskContainer.getDisplay().getSystemColor(
                 SWT.COLOR_WHITE));
@@ -247,24 +248,33 @@ public class TrayIconSelectionListener implements SelectionListener, Listener {
         ((GridLayout) taskContainer.getLayout()).verticalSpacing = 0;
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
+        
+        Button refreshButton = new Button(group, SWT.NONE);
+        refreshButton.setText("Refresh");
+        refreshButton.setToolTipText("Refresh list of tasks.");
+        refreshButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
+        refreshButton.setImage(new Image(Display.getCurrent(), getClass()
+                .getResourceAsStream(
+                        "/org/tango-project/tango-icon-theme/22x22/actions/view-refresh.png"))); //$NON-NLS-1$
 
         Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText(Messages.getString("TrayIconSelectionListener.7")); //$NON-NLS-1$
         doneButton.setToolTipText(Messages
                 .getString("TrayIconSelectionListener.8")); //$NON-NLS-1$
-        doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
+        doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream(
                         "/com/mindquarry/icons/22x22/status/task-done.png"))); //$NON-NLS-1$
 
-        tman = new TaskManager(client, taskContainer, doneButton);
+        tman = new TaskManager(client, taskContainer, refreshButton, doneButton);
+        refreshButton.addListener(SWT.Selection, new TaskRefreshListener(tman));
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
 
-//    /**
-//     * This method initializes wikiGroup
-//     */
+    /**
+     * This method initializes wikiGroup
+     */
 //    private void createWikiGroup() {
 //        Group group = new Group(container, SWT.NONE);
 //        group.setBackground(container.getBackground());

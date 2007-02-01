@@ -62,6 +62,7 @@
 			<groupId>org.tigris.subversion</groupId>
 			<artifactId>javahl-api</artifactId>
 			<version>1.4.2</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.svnkit</groupId>

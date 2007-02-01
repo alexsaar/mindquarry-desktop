@@ -14,12 +14,15 @@
 package com.mindquarry.client.workspace;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.SVNClientInterface;
 import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.client.MindClient;
 
@@ -40,7 +43,7 @@ public abstract class SvnOperation implements IRunnableWithProgress {
         svnClient = (SVNClientInterface) factory
                 .getBean(SVNClientInterface.class.getName());
     }
-    
+
     protected boolean isFolderVersionControled(File item) {
         // retrieve local status
         Status status;
@@ -56,5 +59,28 @@ public abstract class SvnOperation implements IRunnableWithProgress {
         } else {
             return false;
         }
+    }
+
+    protected String[] getConflictedFiles(File item) {
+        List<String> conflicted = new ArrayList<String>();
+        
+        // retrieve local status
+        Status[] stati;
+        try {
+            stati = svnClient
+                    .status(item.getAbsolutePath(), true, false, false);
+        } catch (ClientException e) {
+            e.printStackTrace();
+            return conflicted.toArray(new String[0]);
+        }
+        for (Status status : stati) {
+            // check if the item is in conflict
+            if (status.isManaged()) {
+                if(status.getTextStatus() == StatusKind.conflicted) {
+                    conflicted.add(status.getConflictWorking());
+                }
+            }
+        }
+        return conflicted.toArray(new String[0]);
     }
 }

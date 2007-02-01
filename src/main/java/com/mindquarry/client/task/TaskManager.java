@@ -66,6 +66,8 @@ public class TaskManager {
     private final Composite taskContainer;
 
     private final Button doneButton;
+    
+    private final Button refreshButton;
 
     private final TaskManager myself = this;
 
@@ -81,10 +83,11 @@ public class TaskManager {
             TaskManager.class.getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
 
     public TaskManager(final MindClient client, final Composite taskContainer,
-            final Button doneButton) {
+            Button refreshButton, final Button doneButton) {
         this.client = client;
         this.taskContainer = taskContainer;
         this.doneButton = doneButton;
+        this.refreshButton = refreshButton;
     }
 
     public void startTask(Task t) {
@@ -148,11 +151,17 @@ public class TaskManager {
     }
 
     private void refresh() {
+        // disable refresh button
+        taskContainer.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                refreshButton.setEnabled(false);
+            }
+        });
+        // check profile
         Profile profile = client.getProfileList().selectedProfile();
         if (profile == null) {
             return;
         }
-        
         setRefreshing(true, false);
 
         try {
@@ -228,11 +237,14 @@ public class TaskManager {
         // update task table
         setRefreshing(false, false);
         taskContainer.getDisplay().syncExec(new Runnable() {
-            /**
-             * @see java.lang.Runnable#run()
-             */
             public void run() {
                 taskTableViewer.setInput(myself);
+            }
+        });
+        // enable refresh button
+        taskContainer.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                refreshButton.setEnabled(true);
             }
         });
     }
