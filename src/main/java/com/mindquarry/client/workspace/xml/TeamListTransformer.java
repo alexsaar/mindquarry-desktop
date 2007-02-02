@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.client.xml;
+package com.mindquarry.client.workspace.xml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,23 +26,24 @@ import dax.Transformer;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskListTransformer extends Transformer {
-    private List<String> taskURIs = new ArrayList<String>();
+public class TeamListTransformer extends Transformer {
+    private List<String> teamspaces = new ArrayList<String>();
 
     @Override
     public void init() {
-        taskURIs.clear();
+        teamspaces.clear();
     }
 
-    @Path("//task")
-    public void task(Node node) {
+    @Path("//teamspace")
+    public void teamspace(Node node) {
+        applyTemplates(node);
         if (node instanceof Element) {
             Element element = (Element) node;
-            taskURIs.add(element.attribute("href").getStringValue()); //$NON-NLS-1$
+            teamspaces.add(element.attribute("href").getStringValue()); //$NON-NLS-1$
         }
     }
 
-    public List<String> getTaskURIs() {
-        return taskURIs;
+    public List<String> getTeamspaces() {
+        return teamspaces;
     }
 }

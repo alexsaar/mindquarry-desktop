@@ -29,8 +29,8 @@ import org.tigris.subversion.javahl.Revision;
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
-import com.mindquarry.client.xml.TeamListTransformer;
-import com.mindquarry.client.xml.TeamspaceTransformer;
+import com.mindquarry.client.workspace.xml.TeamListTransformer;
+import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander

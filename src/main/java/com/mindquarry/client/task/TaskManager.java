@@ -41,12 +41,12 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.options.Profile;
+import com.mindquarry.client.task.widgets.TaskErrorComposite;
+import com.mindquarry.client.task.widgets.TaskUpdateComposite;
+import com.mindquarry.client.task.xml.TaskListTransformer;
+import com.mindquarry.client.task.xml.TaskTransformer;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
-import com.mindquarry.client.util.widgets.TaskErrorComposite;
-import com.mindquarry.client.util.widgets.TaskUpdateComposite;
-import com.mindquarry.client.xml.TaskListTransformer;
-import com.mindquarry.client.xml.TaskTransformer;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars

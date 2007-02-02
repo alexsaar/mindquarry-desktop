@@ -35,10 +35,10 @@ import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.mindquarry.client.ballon.MindClientBallonWidget;
 import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
-import com.mindquarry.client.tray.TrayIconSelectionListener;
 import com.mindquarry.client.util.os.HomeUtil;
 import com.mindquarry.client.util.os.OperatingSystem;
 
@@ -125,7 +125,7 @@ public class MindClient {
         }
         
         final Tray tray = display.getSystemTray();
-        final TrayIconSelectionListener trayListener = new TrayIconSelectionListener(
+        final MindClientBallonWidget trayListener = new MindClientBallonWidget(
                 display, mindclient);
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);

@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.client.util.widgets;
+package com.mindquarry.client.task.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -41,7 +41,7 @@ public class TaskErrorComposite extends Composite {
                 true));
 
         Image icon = new Image(null, getClass().getResourceAsStream(
-                "/org/tango-project/tango-icon-theme/22x22/actions/edit-delete.png"));
+                "/org/tango-project/tango-icon-theme/22x22/actions/edit-delete.png")); //$NON-NLS-1$
         
         Label label = new Label(internalComp, SWT.CENTER);
         label.setImage(icon);
