@@ -58,17 +58,17 @@ public class MindClient {
     public static final String MINDCLIENT_ICON = "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"; //$NON-NLS-1$
 
     public static final OperatingSystem OS = getOperatingSystem();
-    
+
     private static Shell shell;
 
     private final Image icon;
-    
+
     private final BeanFactory factory;
 
     private ProfileList profileList;
 
     private File optionsFile;
-    
+
     private static OperatingSystem getOperatingSystem() {
         String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
         if (os.startsWith("windows")) { //$NON-NLS-1$
@@ -83,10 +83,10 @@ public class MindClient {
     public MindClient() {
         factory = new ClassPathXmlApplicationContext(
                 new String[] { "applicationContext.xml" }); //$NON-NLS-1$
-        
+
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 MINDCLIENT_ICON));
-        
+
         // init settings file & name
         profileList = new ProfileList();
         optionsFile = new File(MINDCLIENT_SETTINGS);
@@ -103,6 +103,19 @@ public class MindClient {
 
         final MindClient mindclient = new MindClient();
 
+        checkArguments(args, mindclient);
+        createTrayIcon(display, mindclient);
+
+        while (!display.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        display.dispose();
+    }
+
+    private static void checkArguments(String[] args,
+            final MindClient mindclient) throws IOException {
         // check CLI arguments
         if (args.length == 3) {
             Profile profile = new Profile();
@@ -123,7 +136,10 @@ public class MindClient {
             // if something went wrong, try to load local options
             mindclient.loadOptions();
         }
-        
+    }
+
+    private static void createTrayIcon(Display display,
+            final MindClient mindclient) {
         final Tray tray = display.getSystemTray();
         final MindClientBallonWidget trayListener = new MindClientBallonWidget(
                 display, mindclient);
@@ -169,13 +185,6 @@ public class MindClient {
                 System.exit(1);
             }
         });
-        
-        while (!display.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
-        display.dispose();
     }
 
     private void loadOptions() {
@@ -205,9 +214,10 @@ public class MindClient {
                         new FileInputStream(optionsFile));
                 profileList = (ProfileList) is.readObject();
                 is.close();
-                
+
                 // if no profile is selected, use the first one
-                if (profileList.selectedProfile() == null && profileList.size() > 0) {
+                if (profileList.selectedProfile() == null
+                        && profileList.size() > 0) {
                     profileList.select(profileList.get(0));
                 }
             }
@@ -255,8 +265,4 @@ public class MindClient {
     public BeanFactory getFactory() {
         return factory;
     }
-
-    /*public OperatingSystem getOS() {
-        return OS;
-    }*/
 }
