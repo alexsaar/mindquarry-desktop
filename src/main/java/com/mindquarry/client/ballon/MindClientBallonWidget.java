@@ -318,6 +318,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
+    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }

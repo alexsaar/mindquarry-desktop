@@ -110,7 +110,7 @@ public class BalloonWindow {
             public void handleEvent(Event event) {
                 Widget w = event.widget;
                 if (w == systemControlsBar) {
-                    shell.close();
+                    hide();
                 }
                 for (int i = selectionControls.size() - 1; i >= 0; i--) {
                     if (selectionControls.get(i) == w) {
@@ -119,7 +119,7 @@ public class BalloonWindow {
                                 ((Listener) selectionListeners.get(j))
                                         .handleEvent(event);
                         } else {
-                            shell.close();
+                            hide();
                         }
                         event.doit = false;
                     }
@@ -306,7 +306,7 @@ public class BalloonWindow {
                 closeItem.setImage(closeImage);
                 Listener listener = new Listener() {
                     public void handleEvent(Event event) {
-                        shell.close();
+                        hide();
                     }
                 };
                 closeItem.addListener(SWT.SELECTED, listener);
@@ -440,8 +440,9 @@ public class BalloonWindow {
     }
  
     public void setVisible(boolean visible) {
-        if (visible)
+        if (visible) {
             prepareForOpen();
+        }
         shell.setVisible(visible);
     }
 
