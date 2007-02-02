@@ -40,7 +40,8 @@ import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
- * Add summary documentation here.
+ * Specialized implementation of the ballon widget that contains all widgets for
+ * the MindClient.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
@@ -53,18 +54,18 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     private final MindClient client;
 
-    private BalloonWindow balloon;
-
     private Composite container = null;
 
     private TaskManager tman;
 
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
+
         this.display = display;
         this.client = client;
+        createContainer();
     }
-    
+
     /**
      * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
      */
@@ -82,20 +83,15 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void toggleBalloon() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                if (balloon == null) {
-                    createContainer();
-                    initBalloonPosition();
-                    balloon.open();
-
-                    tman.asyncRefresh();
-                } else if (balloon.isVisible()) {
-                    balloon.hide();
-                    balloon.close();
-                    balloon = null;
-                    tman = null;
+                if (isVisible()) {
+                    hide();
                 } else {
                     initBalloonPosition();
-                    balloon.show();
+                    show();
+
+                    if (!tman.isInitialized()) {
+                        tman.asyncRefresh();
+                    }
                 }
             }
         });
@@ -123,25 +119,21 @@ public class MindClientBallonWidget extends BalloonWindow implements
         if (MindClient.OS == OperatingSystem.MAC_OS_X) {
             curPos.y += 10;
         }
-        
-        balloon.setLocation(curPos);
-        balloon.setAnchor(anchor);
+        setLocation(curPos);
+        setAnchor(anchor);
     }
 
     /**
      * This method initializes sShell
      */
     public void createContainer() {
-        balloon = new BalloonWindow(Display.getCurrent(), SWT.TITLE | SWT.CLOSE
-                | SWT.TOOL | SWT.ON_TOP);
-        balloon.setText(MindClient.APPLICATION_NAME);
-        balloon.setImage(client.getIcon());
+        setText(MindClient.APPLICATION_NAME);
+        setImage(client.getIcon());
 
-        container = balloon.getContents();
+        container = getContents();
         container.setLayout(new GridLayout());
 
         createProfileGroup();
-
         createWorkspacesGroup();
         createTasksGroup();
         // createWikiGroup();
@@ -250,14 +242,18 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).verticalSpacing = 0;
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
-        
+
         Button refreshButton = new Button(group, SWT.NONE);
         refreshButton.setText("Refresh");
         refreshButton.setToolTipText("Refresh list of tasks.");
-        refreshButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
-        refreshButton.setImage(new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream(
-                        "/org/tango-project/tango-icon-theme/22x22/actions/view-refresh.png"))); //$NON-NLS-1$
+        refreshButton
+                .setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
+        refreshButton
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/org/tango-project/tango-icon-theme/22x22/actions/view-refresh.png"))); //$NON-NLS-1$
 
         Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
@@ -277,47 +273,51 @@ public class MindClientBallonWidget extends BalloonWindow implements
     /**
      * This method initializes wikiGroup
      */
-//    private void createWikiGroup() {
-//        Group group = new Group(container, SWT.NONE);
-//        group.setBackground(container.getBackground());
-//        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-//        group.setLayout(new GridLayout(2, false));
-//        group.setText(Messages.getString("MindClientBallonWidget.9")); //$NON-NLS-1$
-//
-//        final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
-//                | SWT.V_SCROLL | SWT.BORDER);
-//        wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-//                2, 2));
-//        ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
-//        wikiTextArea.setEnabled(false);
-//
-//        Button clearButton = new Button(group, SWT.NONE);
-//        clearButton.setText(Messages.getString("MindClientBallonWidget.10")); //$NON-NLS-1$
-//        clearButton.setToolTipText(Messages
-//                .getString("MindClientBallonWidget.11")); //$NON-NLS-1$
-//        clearButton
-//                .setImage(new Image(
-//                        Display.getCurrent(),
-//                        getClass()
-//                                .getResourceAsStream(
-//                                        "/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png"))); //$NON-NLS-1$
-//        clearButton.setEnabled(false);
-//        clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
-//
-//        Button postButton = new Button(group, SWT.NONE);
-//        postButton.setText(Messages.getString("MindClientBallonWidget.12")); //$NON-NLS-1$
-//        postButton.setToolTipText(Messages
-//                .getString("MindClientBallonWidget.13")); //$NON-NLS-1$
-//        postButton
-//                .setImage(new Image(
-//                        Display.getCurrent(),
-//                        getClass()
-//                                .getResourceAsStream(
-//                                        "/org/tango-project/tango-icon-theme/22x22/actions/document-new.png"))); //$NON-NLS-1$
-//        postButton.setEnabled(false);
-//        postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
-//    }
-
+    // private void createWikiGroup() {
+    // Group group = new Group(container, SWT.NONE);
+    // group.setBackground(container.getBackground());
+    // group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+    // group.setLayout(new GridLayout(2, false));
+    // group.setText(Messages.getString("MindClientBallonWidget.9"));
+    // //$NON-NLS-1$
+    //
+    // final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
+    // | SWT.V_SCROLL | SWT.BORDER);
+    // wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+    // 2, 2));
+    // ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
+    // wikiTextArea.setEnabled(false);
+    //
+    // Button clearButton = new Button(group, SWT.NONE);
+    // clearButton.setText(Messages.getString("MindClientBallonWidget.10"));
+    // //$NON-NLS-1$
+    // clearButton.setToolTipText(Messages
+    // .getString("MindClientBallonWidget.11")); //$NON-NLS-1$
+    // clearButton
+    // .setImage(new Image(
+    // Display.getCurrent(),
+    // getClass()
+    // .getResourceAsStream(
+    // "/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png")));
+    // //$NON-NLS-1$
+    // clearButton.setEnabled(false);
+    // clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
+    //
+    // Button postButton = new Button(group, SWT.NONE);
+    // postButton.setText(Messages.getString("MindClientBallonWidget.12"));
+    // //$NON-NLS-1$
+    // postButton.setToolTipText(Messages
+    // .getString("MindClientBallonWidget.13")); //$NON-NLS-1$
+    // postButton
+    // .setImage(new Image(
+    // Display.getCurrent(),
+    // getClass()
+    // .getResourceAsStream(
+    // "/org/tango-project/tango-icon-theme/22x22/actions/document-new.png")));
+    // //$NON-NLS-1$
+    // postButton.setEnabled(false);
+    // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
+    // }
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }

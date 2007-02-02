@@ -425,22 +425,13 @@ public class BalloonWindow {
             shell.setLocation(shellLoc);
         }
     }
-
-    public void open() {
-        prepareForOpen();
-        shell.open();
-    }
-
-    public void close() {
-        shell.close();
-        shell.dispose();
-    }
     
     public void hide() {
     	shell.setVisible(false);
     }
     
     public void show() {
+        prepareForOpen();
     	shell.setVisible(true);
     }
     

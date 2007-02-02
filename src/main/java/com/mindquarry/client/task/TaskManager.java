@@ -66,7 +66,7 @@ public class TaskManager {
     private final Composite taskContainer;
 
     private final Button doneButton;
-    
+
     private final Button refreshButton;
 
     private final TaskManager myself = this;
@@ -78,9 +78,11 @@ public class TaskManager {
     private Table taskTable = null;
 
     private TableViewer taskTableViewer = null;
-    
+
     private boolean refreshing = false;
     
+    private boolean initialized = false;
+
     private static final StreamSource taskDoneXSL = new StreamSource(
             TaskManager.class.getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
 
@@ -138,14 +140,14 @@ public class TaskManager {
     public Task[] getTasks() {
         return tasks.toArray(new Task[] {});
     }
-    
+
     /**
      * Runs task update in a separate thread, so that GUI can continue
      * processing. Thus this method returns immediatly. While updating tasks the
      * Task Manager will show an update widget instead of the task table.
      */
     public void cancelRefresh() {
-        if(!refreshing) {
+        if (!refreshing) {
             return;
         }
         refreshing = false;
@@ -157,7 +159,7 @@ public class TaskManager {
      * Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
-        if(refreshing) {
+        if (refreshing) {
             return;
         }
         refreshing = true;
@@ -171,7 +173,7 @@ public class TaskManager {
     private void refresh() {
         refreshing = true;
         switchRefreshButtonStatus(false);
-        
+
         // check profile
         Profile profile = client.getProfileList().selectedProfile();
         if (profile == null) {
@@ -183,10 +185,8 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(
-                    profile.getLogin(),
-                    profile.getPassword(),
-                    profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
+            content = HttpUtil.getContentAsXML(profile.getLogin(), profile
+                    .getPassword(), profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("TaskManager.0")); //$NON-NLS-1$
@@ -204,7 +204,7 @@ public class TaskManager {
             doc = reader.read(content);
         } catch (DocumentException e) {
             e.printStackTrace();
-            
+
             switchRefreshButtonStatus(true);
             refreshing = false;
             return;
@@ -260,6 +260,7 @@ public class TaskManager {
         });
         switchRefreshButtonStatus(true);
         refreshing = false;
+        initialized = true;
     }
 
     /**
@@ -282,7 +283,9 @@ public class TaskManager {
                 if (refreshing && !error) {
                     destroyContent();
                     refreshWidget = new TaskUpdateComposite(taskContainer,
-                            Messages.getString("TaskManager.2")); //$NON-NLS-1$
+                            Messages.getString("TaskManager.2") + //$NON-NLS-1$
+                                    client.getProfileList().selectedProfile()
+                                            .getName() + "..."); //$NON-NLS-1$
                 } else if (!refreshing && !error) {
                     destroyContent();
                     taskTable = new Table(taskContainer, SWT.BORDER);
@@ -344,5 +347,14 @@ public class TaskManager {
 
     public TableViewer getTaskTableViewer() {
         return taskTableViewer;
+    }
+
+    /**
+     * Getter for initialized.
+     *
+     * @return the initialized
+     */
+    public boolean isInitialized() {
+        return initialized;
     }
 }

@@ -27,11 +27,11 @@ import org.eclipse.swt.widgets.Display;
 public class TaskTableLabelProvider implements ITableLabelProvider {
     private Image running = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/org/tango-project/tango-icon-theme/22x22/actions/media-playback-start.png")); //$NON-NLS-1$
+                    "/org/tango-project/tango-icon-theme/16x16/actions/media-playback-start.png")); //$NON-NLS-1$
 
     private Image paused = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/org/tango-project/tango-icon-theme/22x22/actions/media-playback-pause.png")); //$NON-NLS-1$
+                    "/org/tango-project/tango-icon-theme/16x16/actions/media-playback-pause.png")); //$NON-NLS-1$
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
