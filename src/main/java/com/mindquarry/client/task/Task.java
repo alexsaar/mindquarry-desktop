@@ -27,6 +27,8 @@ public class Task {
     private String title;
 
     private String status;
+    
+    private String summary;
 
     private boolean active;
 
@@ -80,6 +82,14 @@ public class Task {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     /**

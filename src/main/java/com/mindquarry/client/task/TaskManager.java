@@ -36,6 +36,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -75,12 +76,12 @@ public class TaskManager {
 
     private Composite errorWidget;
 
-    private Table taskTable = null;
+    private Table table = null;
 
     private TableViewer taskTableViewer = null;
 
     private boolean refreshing = false;
-    
+
     private boolean initialized = false;
 
     private static final StreamSource taskDoneXSL = new StreamSource(
@@ -288,25 +289,39 @@ public class TaskManager {
                                             .getName() + "..."); //$NON-NLS-1$
                 } else if (!refreshing && !error) {
                     destroyContent();
-                    taskTable = new Table(taskContainer, SWT.BORDER);
-                    taskTable.setHeaderVisible(false);
-                    taskTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
-                            true, true));
-                    ((GridData) taskTable.getLayoutData()).heightHint = ((GridData) taskTable
+                    table = new Table(taskContainer, SWT.BORDER);
+                    table.setHeaderVisible(false);
+                    table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+                            true));
+                    ((GridData) table.getLayoutData()).heightHint = ((GridData) table
                             .getParent().getLayoutData()).heightHint;
-                    taskTable.setLinesVisible(false);
-                    taskTableViewer = new TableViewer(taskTable);
+                    table.setLinesVisible(false);
+                    table.setToolTipText(""); //$NON-NLS-1$
 
-                    TableColumn activityColumn = new TableColumn(taskTable,
-                            SWT.NONE);
-                    activityColumn.setResizable(false);
-                    activityColumn.setWidth(100);
-                    activityColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+                    // add a "fake" tooltip
+                    Listener labelListener = new TableItemTooltipListener(table);
+                    Listener tableListener = new TableTooltipListener(table,
+                            labelListener);
+                    table.addListener(SWT.Dispose, tableListener);
+                    table.addListener(SWT.KeyDown, tableListener);
+                    table.addListener(SWT.MouseMove, tableListener);
+                    table.addListener(SWT.MouseHover, tableListener);
+
+                    // create table viewer
+                    taskTableViewer = new TableViewer(table);
+                    TableColumn titleColumn = new TableColumn(table, SWT.NONE);
+                    titleColumn.setResizable(false);
+                    titleColumn.setWidth(100);
+                    titleColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+
+                    // create dummy columns for holding additional tooltip content
+                    new TableColumn(table, SWT.NONE);
+                    new TableColumn(table, SWT.NONE);
 
                     // create task list
-                    CellEditor[] editors = new CellEditor[taskTable
+                    CellEditor[] editors = new CellEditor[table
                             .getColumnCount()];
-                    editors[0] = new CheckboxCellEditor(taskTable.getParent());
+                    editors[0] = new CheckboxCellEditor(table.getParent());
 
                     taskTableViewer.setCellEditors(editors);
                     taskTableViewer
@@ -329,9 +344,9 @@ public class TaskManager {
             }
 
             private void destroyContent() {
-                if (taskTable != null) {
-                    taskTable.dispose();
-                    taskTable = null;
+                if (table != null) {
+                    table.dispose();
+                    table = null;
                 }
                 if (refreshWidget != null) {
                     refreshWidget.dispose();
@@ -351,7 +366,7 @@ public class TaskManager {
 
     /**
      * Getter for initialized.
-     *
+     * 
      * @return the initialized
      */
     public boolean isInitialized() {

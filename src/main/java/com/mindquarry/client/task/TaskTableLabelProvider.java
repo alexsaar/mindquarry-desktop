@@ -51,7 +51,16 @@ public class TaskTableLabelProvider implements ITableLabelProvider {
      */
     public String getColumnText(Object element, int columnIndex) {
         Task task = (Task) element;
-        return task.getTitle();
+        
+        String text = ""; //$NON-NLS-1$
+        if(columnIndex == 0) {
+            text = task.getTitle();
+        } else if (columnIndex == 1) {
+            text = task.getStatus();
+        } else if (columnIndex == 2) {
+            text = task.getSummary();
+        }
+        return text;
     }
 
     /**

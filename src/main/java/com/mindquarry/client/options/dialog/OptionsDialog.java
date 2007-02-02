@@ -49,6 +49,8 @@ import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
 
 /**
+ * Dialog widget for editing MindClient options.
+ * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
@@ -153,7 +155,6 @@ public class OptionsDialog extends TitleAreaDialog {
         // create profile management tab
         composite = new Composite(tabFolder, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
-        composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
         tabItem.setText(Messages.getString("OptionsDialog.10")); //$NON-NLS-1$
@@ -163,23 +164,18 @@ public class OptionsDialog extends TitleAreaDialog {
         createProfileSettingsGroup(composite);
 
         // create task management tab
-        // composite = new Composite(tabFolder, SWT.NONE);
-        // composite.setLayout(new GridLayout(1, true));
-        // composite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        //
-        // tabItem = new TabItem(tabFolder, SWT.NONE);
-        // tabItem.setText("Task Management");
-        // tabItem.setControl(composite);
-        //
-        // createTaskManagementGroup(composite);
-        
-//        delProfileButton.setEnabled(true);
-//        saveProfileButton.setEnabled(true);
-        
+//        composite = new Composite(tabFolder, SWT.NONE);
+//        composite.setLayout(new GridLayout(1, true));
+//
+//        tabItem = new TabItem(tabFolder, SWT.NONE);
+//        tabItem.setText("Task Management");
+//        tabItem.setControl(composite);
+//
+//        createTaskManagementGroup(composite);
+                
         if (profileList.getItemCount() > 0) {
             profileList.select(0);
         }
-
         return composite;
     }
     
@@ -287,8 +283,10 @@ public class OptionsDialog extends TitleAreaDialog {
         });
     }
 
+    /**
+     * Create widgets for profile settings.
+     */
     private void createProfileSettingsGroup(Composite composite) {
-        // create widgets for profile settings
         Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
         settingsGroup.setText(Messages.getString("OptionsDialog.20")); //$NON-NLS-1$
@@ -354,31 +352,19 @@ public class OptionsDialog extends TitleAreaDialog {
         });
     }
 
-//    private void createTaskManagementGroup(Composite composite) {
-//        // create widgets for profile selection
-//        Group tasksGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
-//        tasksGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-//        tasksGroup.setText(Messages.getString("OptionsDialog.24")); //$NON-NLS-1$
-//        tasksGroup.setLayout(new GridLayout(2, false));
-//
-//        Composite area = new Composite(tasksGroup, SWT.NONE);
-//        area.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//        area.setLayout(new GridLayout(2, false));
-//        ((GridLayout) area.getLayout()).marginBottom = 0;
-//        ((GridLayout) area.getLayout()).marginTop = 0;
-//        ((GridLayout) area.getLayout()).marginLeft = 0;
-//        ((GridLayout) area.getLayout()).marginRight = 0;
-//        ((GridLayout) area.getLayout()).marginHeight = 0;
-//        ((GridLayout) area.getLayout()).marginWidth = 0;
-//
-//        Button finishedTasks = new Button(area, SWT.CHECK);
-//        Label finishedLabel = new Label(area, SWT.LEFT);
-//        finishedLabel.setText(Messages.getString("OptionsDialog.25")); //$NON-NLS-1$
-//
-//        Button updateTasks = new Button(area, SWT.CHECK);
-//        Label updateLabel = new Label(area, SWT.LEFT);
-//        updateLabel.setText(Messages.getString("OptionsDialog.26")); //$NON-NLS-1$
-//    }
+    private void createTaskManagementGroup(Composite composite) {
+        // create widgets for profile selection
+        Group tasksGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        //tasksGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        tasksGroup.setText(Messages.getString("OptionsDialog.24")); //$NON-NLS-1$
+        tasksGroup.setLayout(new GridLayout(1, false));
+
+        Button finishedTasks = new Button(tasksGroup, SWT.CHECK);
+        finishedTasks.setText(Messages.getString("OptionsDialog.25")); //$NON-NLS-1$
+
+        Button updateTasks = new Button(tasksGroup, SWT.CHECK);
+        updateTasks.setText(Messages.getString("OptionsDialog.26")); //$NON-NLS-1$
+    }
 
     private void resetFields() {
         loginText.setText(""); //$NON-NLS-1$
@@ -455,9 +441,6 @@ public class OptionsDialog extends TitleAreaDialog {
      *         Saar</a>
      */
     class FieldValidator implements ModifyListener {
-        /**
-         * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
-         */
         public void modifyText(ModifyEvent event) {
             // check if a profile is selected
             if (profileList.getSelection().length == 0) {
@@ -471,19 +454,16 @@ public class OptionsDialog extends TitleAreaDialog {
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-            
             if (pwdText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage(Messages.getString("OptionsDialog.7")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-            
             if (endpointText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage(Messages.getString("OptionsDialog.8")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-            
             try {
                 new URL(endpointText.getText());
             } catch (MalformedURLException e) {
@@ -491,20 +471,17 @@ public class OptionsDialog extends TitleAreaDialog {
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-
             if (locationText.getText().equals("")) { //$NON-NLS-1$
                 setErrorMessage(Messages.getString("OptionsDialog.28")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-            
             File location = new File(locationText.getText());
             if ((!location.exists()) || (!location.isDirectory())) {
                 setErrorMessage(Messages.getString("OptionsDialog.29")); //$NON-NLS-1$
                 getButton(IDialogConstants.OK_ID).setEnabled(false);
                 return;
             }
-            
             // if we get this far, all input is valid
             setErrorMessage(null);
             getButton(IDialogConstants.OK_ID).setEnabled(true);

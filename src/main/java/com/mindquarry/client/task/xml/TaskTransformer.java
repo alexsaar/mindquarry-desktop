@@ -51,6 +51,11 @@ public class TaskTransformer extends Transformer {
     public void status(Node node) {
         task.setStatus(node.getStringValue().trim());
     }
+    
+    @Path("summary")
+    public void summary(Node node) {
+        task.setSummary(node.getStringValue().trim());
+    }
 
     public Task getTask() {
         return task;
