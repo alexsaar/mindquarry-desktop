@@ -11,13 +11,13 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.client.dialog;
+package com.mindquarry.client.options.dialog;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Messages {
-    private static final String BUNDLE_NAME = "com.mindquarry.client.dialog.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "com.mindquarry.client.options.dialog.messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
             .getBundle(BUNDLE_NAME);

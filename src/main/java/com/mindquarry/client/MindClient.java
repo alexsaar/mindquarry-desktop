@@ -36,9 +36,9 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.ballon.MindClientBallonWidget;
-import com.mindquarry.client.dialog.OptionsDialog;
 import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
+import com.mindquarry.client.options.dialog.OptionsDialog;
 import com.mindquarry.client.util.os.HomeUtil;
 import com.mindquarry.client.util.os.OperatingSystem;
 

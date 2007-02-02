@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.client.dialog;
+package com.mindquarry.client.options.dialog;
 
 import java.io.File;
 import java.net.MalformedURLException;
