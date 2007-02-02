@@ -34,8 +34,21 @@ public class Profile implements Serializable {
 
     private String location;
 
+    /**
+     * Default constructor
+     */
     public Profile() {
-        
+    }
+    
+    /**
+     * Copy constructor.
+     */
+    public Profile(Profile old) {
+        name = new String(old.getName());
+        login = new String(old.getLogin());
+        password = new String(old.getPassword());
+        endpoint = new String(old.getEndpoint());
+        location = new String(old.getLocation());
     }
     
     public Profile(String name, String login, String password, String endpoint,

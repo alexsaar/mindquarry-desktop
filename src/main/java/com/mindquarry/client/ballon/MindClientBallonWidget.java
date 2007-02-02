@@ -58,6 +58,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     private TaskManager tman;
 
+    private CCombo profileSelector;
+
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
 
@@ -92,9 +94,34 @@ public class MindClientBallonWidget extends BalloonWindow implements
                     if (!tman.isInitialized()) {
                         tman.asyncRefresh();
                     }
+                    updateProfileSelector();
                 }
             }
         });
+    }
+
+    private void updateProfileSelector() {
+        profileSelector.removeAll();
+
+        // add profiles and select selected profile in combo box
+        int selected = -1;
+        for (Profile profile : client.getProfileList().getProfiles()) {
+            profileSelector.add(profile.getName());
+
+            selected++;
+            if ((client.getProfileList().selectedProfile() != null)
+                    && (profile.getName().equals(client.getProfileList()
+                            .selectedProfile().getName()))) {
+                profileSelector.select(selected);
+            }
+        }
+        // select first profile, if no selected profile is specified
+        if ((profileSelector.getSelectionIndex() == -1)
+                && (client.getProfileList().getProfiles().length > 0)) {
+            client.getProfileList().select(
+                    client.getProfileList().getProfiles()[0]);
+            profileSelector.select(0);
+        }
     }
 
     private void initBalloonPosition() {
@@ -156,8 +183,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         label.setBackground(group.getBackground());
         label.setText("Select Profile:");
 
-        final CCombo profileSelector = new CCombo(group, SWT.BORDER
-                | SWT.READ_ONLY);
+        profileSelector = new CCombo(group, SWT.BORDER | SWT.READ_ONLY);
         profileSelector.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
         profileSelector.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         profileSelector.addListener(SWT.Selection, new Listener() {
@@ -177,18 +203,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 }
             }
         });
-
-        int selected = -1;
-        for (Profile profile : client.getProfileList().getProfiles()) {
-            profileSelector.add(profile.getName());
-
-            selected++;
-            if ((client.getProfileList().selectedProfile() != null)
-                    && (profile.getName().equals(client.getProfileList()
-                            .selectedProfile().getName()))) {
-                profileSelector.select(selected);
-            }
-        }
     }
 
     /**
@@ -318,7 +332,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
-    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }

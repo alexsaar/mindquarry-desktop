@@ -151,7 +151,6 @@ public class MindClient {
                 trayListener.handleEvent(event);
             }
         });
-
         final Menu menu = new Menu(shell, SWT.POP_UP);
         item.addListener(SWT.MenuDetect, new Listener() {
             public void handleEvent(Event event) {
@@ -193,7 +192,7 @@ public class MindClient {
                 // init options with dummy values
                 Profile profile = new Profile();
                 profile.setName(Messages.getString("MindClient.8")); //$NON-NLS-1$
-                profile.setEndpoint(Messages.getString("MindClient.3")); //$NON-NLS-1$
+                profile.setEndpoint(""); //$NON-NLS-1$
                 profile.setLogin(""); //$NON-NLS-1$
                 profile.setPassword(""); //$NON-NLS-1$
                 profile.setLocation(""); //$NON-NLS-1$

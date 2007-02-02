@@ -31,6 +31,21 @@ public class ProfileList implements Serializable {
     private Profile selected;
 
     private Integer selectionIndex = -1;
+    
+    /**
+     * Default constructor.
+     */
+    public ProfileList() {
+    }
+    
+    /**
+     * Copy constructor.
+     */
+    public ProfileList(ProfileList list) {
+        for(Profile old : list.getProfiles()) {
+            addProfile(new Profile(old));
+        }
+    }
 
     /**
      * Getter for profiles.

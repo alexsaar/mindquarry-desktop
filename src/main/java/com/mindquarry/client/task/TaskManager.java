@@ -174,6 +174,7 @@ public class TaskManager {
     private void refresh() {
         refreshing = true;
         switchRefreshButtonStatus(false);
+        tasks.clear();
 
         // check profile
         Profile profile = client.getProfileList().selectedProfile();
