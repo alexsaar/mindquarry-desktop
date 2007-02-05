@@ -92,7 +92,7 @@ public class MindClient {
 
         MindClient mindclient = new MindClient();
         mindclient.checkArguments(args);
-        mindclient.createTrayIcon(display);
+        mindclient.createTrayIconAndMenu(display);
 
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
@@ -130,7 +130,7 @@ public class MindClient {
         return profileList.addProfile(profile);
     }
 
-    private void createTrayIcon(Display display) {
+    private void createTrayIconAndMenu(Display display) {
         final Tray tray = display.getSystemTray();
         final MindClientBallonWidget trayListener = new MindClientBallonWidget(
                 display, this);
