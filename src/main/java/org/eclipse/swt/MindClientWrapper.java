@@ -26,10 +26,8 @@ import com.mindquarry.client.MindClient;
  * 
  * @author <a href="mailto:alexander(dot)klimetschek(at)mindquarry(dot)com">
  *         Alexander Klimetschek</a>
- *
  */
-public class MindClientMacOSX {
-
+public class MindClientWrapper {
     public static void main(String[] args) throws IOException {
         // simply delegate, it only matters that the main() method
         // is inside the org.eclipse.swt package

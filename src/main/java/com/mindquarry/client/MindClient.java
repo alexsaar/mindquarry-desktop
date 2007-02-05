@@ -69,17 +69,6 @@ public class MindClient {
 
     private File optionsFile;
 
-    private static OperatingSystem getOperatingSystem() {
-        String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
-        if (os.startsWith("windows")) { //$NON-NLS-1$
-            return OperatingSystem.WINDOWS;
-        } else if (os.startsWith("mac")) { //$NON-NLS-1$
-            return OperatingSystem.MAC_OS_X;
-        } else {
-            return OperatingSystem.OTHER;
-        }
-    }
-
     public MindClient() {
         factory = new ClassPathXmlApplicationContext(
                 new String[] { "applicationContext.xml" }); //$NON-NLS-1$
@@ -101,10 +90,9 @@ public class MindClient {
         shell = new Shell(display, SWT.NONE);
         shell.setText(APPLICATION_NAME);
 
-        final MindClient mindclient = new MindClient();
-
-        checkArguments(args, mindclient);
-        createTrayIcon(display, mindclient);
+        MindClient mindclient = new MindClient();
+        mindclient.checkArguments(args);
+        mindclient.createTrayIcon(display);
 
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
@@ -114,38 +102,54 @@ public class MindClient {
         display.dispose();
     }
 
-    private static void checkArguments(String[] args,
-            final MindClient mindclient) throws IOException {
-        // check CLI arguments
-        if (args.length == 3) {
+    private void checkArguments(String[] args) throws IOException {
+        if ((args.length == 3) && (optionsFile.exists())) {
+            loadOptions();
+
+            // add new profile entry
             Profile profile = new Profile();
             profile.setName(args[0]);
             profile.setEndpoint(args[1]);
             profile.setLogin(args[2]);
+            profile.setPassword(""); //$NON-NLS-1$
+            profile.setLocation(""); //$NON-NLS-1$
+            profileList.addProfile(profile);
 
-            mindclient.profileList.addProfile(profile);
+            showOptionsDlg();
+        } else if ((args.length == 3) && (!optionsFile.exists())) {
+            // add new profile entry
+            Profile profile = new Profile();
+            profile.setName(args[0]);
+            profile.setEndpoint(args[1]);
+            profile.setLogin(args[2]);
+            profile.setPassword(""); //$NON-NLS-1$
+            profile.setLocation(""); //$NON-NLS-1$
+            profileList.addProfile(profile);
 
-            OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
-                    mindclient.icon, mindclient.profileList);
-            if (dlg.open() == Window.OK) {
-                mindclient.optionsFile.getParentFile().mkdirs();
-                mindclient.optionsFile.createNewFile();
-            }
-            mindclient.saveOptions();
+            showOptionsDlg();
+        } else if (!optionsFile.exists()) {
+            // add dummy entry
+            Profile profile = new Profile();
+            profile.setName(Messages.getString("MindClient.8")); //$NON-NLS-1$
+            profile.setEndpoint("http://server"); //$NON-NLS-1$
+            profile.setLogin(""); //$NON-NLS-1$
+            profile.setPassword(""); //$NON-NLS-1$
+            profile.setLocation(""); //$NON-NLS-1$
+            profileList.addProfile(profile);
+
+            showOptionsDlg();
         } else {
-            // if something went wrong, try to load local options
-            mindclient.loadOptions();
+            loadOptions();
         }
     }
 
-    private static void createTrayIcon(Display display,
-            final MindClient mindclient) {
+    private void createTrayIcon(Display display) {
         final Tray tray = display.getSystemTray();
         final MindClientBallonWidget trayListener = new MindClientBallonWidget(
-                display, mindclient);
+                display, this);
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);
-        item.setImage(mindclient.icon);
+        item.setImage(icon);
         item.addListener(SWT.Selection, new Listener() {
             public void handleEvent(final Event event) {
                 trayListener.handleEvent(event);
@@ -164,10 +168,10 @@ public class MindClient {
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
              */
             public void handleEvent(Event event) {
-                OptionsDialog dlg = new OptionsDialog(shell, mindclient.icon,
-                        mindclient.profileList);
-                if (dlg.open() == Window.OK) {
-                    mindclient.saveOptions();
+                try {
+                    showOptionsDlg();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -180,7 +184,7 @@ public class MindClient {
              * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
              */
             public void handleEvent(Event event) {
-                mindclient.saveOptions();
+                saveOptions();
                 System.exit(1);
             }
         });
@@ -188,41 +192,27 @@ public class MindClient {
 
     private void loadOptions() {
         try {
-            if (!optionsFile.exists()) {
-                // init options with dummy values
-                Profile profile = new Profile();
-                profile.setName(Messages.getString("MindClient.8")); //$NON-NLS-1$
-                profile.setEndpoint(""); //$NON-NLS-1$
-                profile.setLogin(""); //$NON-NLS-1$
-                profile.setPassword(""); //$NON-NLS-1$
-                profile.setLocation(""); //$NON-NLS-1$
-
-                profileList.addProfile(profile);
-
-                // request option values from user
-                OptionsDialog dlg = new OptionsDialog(MindClient.getShell(),
-                        icon, profileList);
-                dlg.setBlockOnOpen(true);
-                if (dlg.open() == Window.OK) {
-                    optionsFile.getParentFile().mkdirs();
-                    optionsFile.createNewFile();
-                    saveOptions();
-                }
-            } else {
-                ObjectInputStream is = new ObjectInputStream(
-                        new FileInputStream(optionsFile));
-                profileList = (ProfileList) is.readObject();
-                is.close();
-
-                // if no profile is selected, use the first one
-                if (profileList.selectedProfile() == null
-                        && profileList.size() > 0) {
-                    profileList.select(profileList.get(0));
-                }
-            }
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream(
+                    optionsFile));
+            profileList = (ProfileList) is.readObject();
+            is.close();
         } catch (Exception e) {
             MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
                     Messages.getString("MindClient.5")); //$NON-NLS-1$
+        }
+        // if no profile is selected, use the first one
+        if (profileList.selectedProfile() == null && profileList.size() > 0) {
+            profileList.select(profileList.get(0));
+        }
+    }
+
+    private void showOptionsDlg() throws IOException {
+        // request option values from user
+        OptionsDialog dlg = new OptionsDialog(MindClient.getShell(), icon,
+                profileList);
+        dlg.setBlockOnOpen(true);
+        if (dlg.open() == Window.OK) {
+            saveOptions();
         }
     }
 
@@ -263,5 +253,16 @@ public class MindClient {
 
     public BeanFactory getFactory() {
         return factory;
+    }
+
+    private static OperatingSystem getOperatingSystem() {
+        String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
+        if (os.startsWith("windows")) { //$NON-NLS-1$
+            return OperatingSystem.WINDOWS;
+        } else if (os.startsWith("mac")) { //$NON-NLS-1$
+            return OperatingSystem.MAC_OS_X;
+        } else {
+            return OperatingSystem.OTHER;
+        }
     }
 }
