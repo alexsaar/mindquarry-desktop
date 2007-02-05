@@ -178,6 +178,15 @@
 					</tagBase>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-SNAPSHOT</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/binary.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

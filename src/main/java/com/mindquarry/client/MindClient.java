@@ -39,10 +39,12 @@ import com.mindquarry.client.ballon.MindClientBallonWidget;
 import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
 import com.mindquarry.client.options.dialog.OptionsDialog;
-import com.mindquarry.client.util.os.HomeUtil;
 import com.mindquarry.client.util.os.OperatingSystem;
 
 /**
+ * Main class for the MindClient. Responsible for managing persistence of
+ * options and creation of initial GUI types.
+ * 
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -51,8 +53,8 @@ import com.mindquarry.client.util.os.OperatingSystem;
 public class MindClient {
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
 
-    public static final String MINDCLIENT_SETTINGS = HomeUtil
-            .getSettingsFolder()
+    public static final String MINDCLIENT_SETTINGS = System
+            .getProperty("user.home") //$NON-NLS-1$
             + "/mindclient.settings"; //$NON-NLS-1$
 
     public static final String MINDCLIENT_ICON = "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"; //$NON-NLS-1$
