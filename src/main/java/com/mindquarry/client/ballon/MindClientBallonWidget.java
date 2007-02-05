@@ -175,13 +175,13 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void createProfileGroup() {
         Group group = new Group(container, SWT.SHADOW_NONE);
         group.setBackground(container.getBackground());
-        group.setText("Profiles");
+        group.setText(Messages.getString("MindClientBallonWidget.9")); //$NON-NLS-1$
         group.setLayout(new GridLayout(1, false));
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
         Label label = new Label(group, SWT.LEFT);
         label.setBackground(group.getBackground());
-        label.setText("Select Profile:");
+        label.setText(Messages.getString("MindClientBallonWidget.10") + ":"); //$NON-NLS-1$//$NON-NLS-2$
 
         profileSelector = new CCombo(group, SWT.BORDER | SWT.READ_ONLY);
         profileSelector.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
@@ -258,8 +258,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
         Button refreshButton = new Button(group, SWT.NONE);
-        refreshButton.setText("Refresh");
-        refreshButton.setToolTipText("Refresh list of tasks.");
+        refreshButton.setText(Messages.getString("MindClientBallonWidget.11")); //$NON-NLS-1$
+        refreshButton.setToolTipText(Messages
+                .getString("MindClientBallonWidget.12")); //$NON-NLS-1$
         refreshButton
                 .setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         refreshButton

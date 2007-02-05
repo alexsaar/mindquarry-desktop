@@ -95,13 +95,13 @@ public class TableTooltipListener implements Listener {
     private String createTooltipText(TableItem item) {
         String text = ""; //$NON-NLS-1$
         if ((item.getText() != null) && (!item.getText().equals(""))) { //$NON-NLS-1$
-            text += "Title" + ": " + item.getText(); //$NON-NLS-2$
+            text += Messages.getString("TableTooltipListener.0") + ": " + item.getText();  //$NON-NLS-1$//$NON-NLS-2$
         }
         if ((item.getText(1) != null) && (!item.getText(1).equals(""))) { //$NON-NLS-1$
-            text += "\n" + "Status" + ": " + item.getText(1); //$NON-NLS-1$ //$NON-NLS-3$
+            text += "\n" + Messages.getString("TableTooltipListener.1") + ": " + item.getText(1); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         }
         if ((item.getText(2) != null) && (!item.getText(2).equals(""))) { //$NON-NLS-1$
-            text += "\n" + "Summary" + ": " + item.getText(2); //$NON-NLS-1$//$NON-NLS-3$
+            text += "\n" + Messages.getString("TableTooltipListener.2") + ": " + item.getText(2); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
         }
         return text;
     }

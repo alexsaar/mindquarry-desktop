@@ -183,7 +183,7 @@ public class OptionsDialog extends TitleAreaDialog {
                         });
                 if (dlg.open() == Window.OK) {
                     storeValues();
-                    
+
                     Profile profile = new Profile();
                     profile.setName(dlg.getValue());
                     profiles.addProfile(profile);
@@ -323,7 +323,8 @@ public class OptionsDialog extends TitleAreaDialog {
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
                 true);
-        getButton(IDialogConstants.OK_ID).setText("Done");
+        getButton(IDialogConstants.OK_ID).setText(
+                Messages.getString("OptionsDialog.30")); //$NON-NLS-1$
 
         // init dialog validator
         validator.init();

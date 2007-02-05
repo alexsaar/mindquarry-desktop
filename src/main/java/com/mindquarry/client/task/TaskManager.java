@@ -346,7 +346,7 @@ public class TaskManager {
                 } else {
                     destroyContent();
                     errorWidget = new TaskErrorComposite(taskContainer,
-                            "List of tasks could not be updated.");
+                            Messages.getString("TaskManager.4")); //$NON-NLS-1$
                 }
                 taskContainer.layout(true);
             }
