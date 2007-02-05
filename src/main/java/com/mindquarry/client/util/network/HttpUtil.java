@@ -58,6 +58,34 @@ public class HttpUtil {
         //get.releaseConnection();
         return result;
     }
+    
+    public static String getContentAsString(String login, String pwd,
+            String address) throws HttpException, IOException {
+        HttpClient httpClient = new HttpClient();
+        httpClient.getState().setCredentials(
+                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT,
+                        AuthScope.ANY_REALM),
+                new UsernamePasswordCredentials(login, pwd));
+
+        GetMethod get = new GetMethod(address);
+        get.setDoAuthentication(true);
+        get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
+        httpClient.executeMethod(get);
+
+        String result = null;
+        if (get.getStatusCode() == 200) {
+            result = get.getResponseBodyAsString();
+        } else if (get.getStatusCode() == 401) {
+            MessageDialogUtil
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.0")); //$NON-NLS-1$
+        } else {
+            MessageDialogUtil
+                    .displaySyncErrorMsg(Messages.getString("HttpUtil.1") //$NON-NLS-1$
+                            + get.getStatusCode());
+        }
+        //get.releaseConnection();
+        return result;
+    }
 
     public static void putAsXML(String login, String pwd, String address,
             byte[] content) throws HttpException, IOException {

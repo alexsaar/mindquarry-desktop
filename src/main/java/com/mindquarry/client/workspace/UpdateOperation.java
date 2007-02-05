@@ -108,6 +108,9 @@ public class UpdateOperation extends SvnOperation implements
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
             tsNbr++;
+            if (monitor.isCanceled()) {
+                return true;
+            }
 
             monitor
                     .setTaskName(Messages.getString("UpdateOperation.5") + tsID //$NON-NLS-1$
@@ -119,7 +122,7 @@ public class UpdateOperation extends SvnOperation implements
                         .selectedProfile().getLogin(), client.getProfileList()
                         .selectedProfile().getPassword(), client
                         .getProfileList().selectedProfile().getEndpoint()
-                        + "/teamspace/" + tsID); //$NON-NLS-1$
+                        + "/teamspace/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
                 MessageDialogUtil.displaySyncErrorMsg(Messages
                         .getString("UpdateOperation.6") //$NON-NLS-1$
@@ -170,7 +173,6 @@ public class UpdateOperation extends SvnOperation implements
         // loop existing workspace directories
         for (String id : teamspacesDir.list()) {
             tsNbr++;
-            
             if (monitor.isCanceled()) {
                 return;
             }
@@ -190,6 +192,7 @@ public class UpdateOperation extends SvnOperation implements
         }
         // add additional workspace directories
         for (String id : workspaces.keySet()) {
+            tsNbr++;
             if (monitor.isCanceled()) {
                 return;
             }
