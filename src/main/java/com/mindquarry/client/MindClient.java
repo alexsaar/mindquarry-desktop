@@ -55,7 +55,7 @@ public class MindClient {
 
     public static final String MINDCLIENT_SETTINGS = System
             .getProperty("user.home") //$NON-NLS-1$
-            + "/mindclient.settings"; //$NON-NLS-1$
+            + "/.mindclient/mindclient.settings"; //$NON-NLS-1$
 
     public static final String MINDCLIENT_ICON = "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"; //$NON-NLS-1$
 

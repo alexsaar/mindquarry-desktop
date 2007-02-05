@@ -73,7 +73,7 @@ public class ProfileList implements Serializable {
     }
 
     public boolean addProfile(Profile profile) {
-        if(findByName(profile.getName()) == null) {
+        if(findByName(profile.getName()) != null) {
             return false;
         }
         this.profiles.add(profile);
