@@ -105,42 +105,29 @@ public class MindClient {
     private void checkArguments(String[] args) throws IOException {
         if ((args.length == 3) && (optionsFile.exists())) {
             loadOptions();
-
-            // add new profile entry
-            Profile profile = new Profile();
-            profile.setName(args[0]);
-            profile.setEndpoint(args[1]);
-            profile.setLogin(args[2]);
-            profile.setPassword(""); //$NON-NLS-1$
-            profile.setLocation(""); //$NON-NLS-1$
-            profileList.addProfile(profile);
-
+            addNewProfile(args[0], args[1], args[2]);
             showOptionsDlg();
         } else if ((args.length == 3) && (!optionsFile.exists())) {
-            // add new profile entry
-            Profile profile = new Profile();
-            profile.setName(args[0]);
-            profile.setEndpoint(args[1]);
-            profile.setLogin(args[2]);
-            profile.setPassword(""); //$NON-NLS-1$
-            profile.setLocation(""); //$NON-NLS-1$
-            profileList.addProfile(profile);
-
+            addNewProfile(args[0], args[1], args[2]);
             showOptionsDlg();
         } else if (!optionsFile.exists()) {
-            // add dummy entry
-            Profile profile = new Profile();
-            profile.setName(Messages.getString("MindClient.8")); //$NON-NLS-1$
-            profile.setEndpoint("http://server"); //$NON-NLS-1$
-            profile.setLogin(""); //$NON-NLS-1$
-            profile.setPassword(""); //$NON-NLS-1$
-            profile.setLocation(""); //$NON-NLS-1$
-            profileList.addProfile(profile);
-
+            addNewProfile(Messages.getString("MindClient.8"), "http://server", //$NON-NLS-1$ //$NON-NLS-2$
+                    "your login name"); //$NON-NLS-1$
             showOptionsDlg();
         } else {
             loadOptions();
         }
+    }
+
+    private boolean addNewProfile(String name, String endpoint, String login) {
+        // add new profile entry
+        Profile profile = new Profile();
+        profile.setName(name);
+        profile.setEndpoint(endpoint);
+        profile.setLogin(login);
+        profile.setPassword(""); //$NON-NLS-1$
+        profile.setLocation(""); //$NON-NLS-1$
+        return profileList.addProfile(profile);
     }
 
     private void createTrayIcon(Display display) {
