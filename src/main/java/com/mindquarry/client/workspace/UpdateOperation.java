@@ -74,7 +74,7 @@ public class UpdateOperation extends SvnOperation implements
                     .selectedProfile().getLogin(), client.getProfileList()
                     .selectedProfile().getPassword(), client.getProfileList()
                     .selectedProfile().getEndpoint()
-                    + "/teamspace"); //$NON-NLS-1$
+                    + "/teams"); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("UpdateOperation.2")); //$NON-NLS-1$
@@ -124,7 +124,7 @@ public class UpdateOperation extends SvnOperation implements
                         .selectedProfile().getLogin(), client.getProfileList()
                         .selectedProfile().getPassword(), client
                         .getProfileList().selectedProfile().getEndpoint()
-                        + "/teamspace/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
+                        + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
                 MessageDialogUtil.displaySyncErrorMsg(Messages
                         .getString("UpdateOperation.6") //$NON-NLS-1$
@@ -216,7 +216,7 @@ public class UpdateOperation extends SvnOperation implements
         } catch (ClientException e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
-                    + id);
+                    + id + " (" + e.getMessage() + ")");
         }
     }
 
@@ -226,7 +226,7 @@ public class UpdateOperation extends SvnOperation implements
         } catch (ClientException e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
-                    + id);
+                    + id + " (" + e.getMessage() + ")");
         }
     }
 }
