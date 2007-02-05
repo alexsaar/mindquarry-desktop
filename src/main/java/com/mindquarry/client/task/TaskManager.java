@@ -84,8 +84,7 @@ public class TaskManager {
 
     private boolean initialized = false;
 
-    private static final StreamSource taskDoneXSL = new StreamSource(
-            TaskManager.class.getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
+    private Transformer taskDoneXSLTrans;
 
     public TaskManager(final MindClient client, final Composite taskContainer,
             Button refreshButton, final Button doneButton) {
@@ -93,6 +92,15 @@ public class TaskManager {
         this.taskContainer = taskContainer;
         this.doneButton = doneButton;
         this.refreshButton = refreshButton;
+
+        StreamSource taskDoneXSL = new StreamSource(TaskManager.class
+                .getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
+        TransformerFactory transFact = TransformerFactory.newInstance();
+        try {
+            taskDoneXSLTrans = transFact.newTransformer(taskDoneXSL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void startTask(Task t) {
@@ -114,11 +122,9 @@ public class TaskManager {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         Source xmlSource = new DocumentSource(task.getContent());
 
-        TransformerFactory transFact = TransformerFactory.newInstance();
         try {
-            Transformer trans = transFact.newTransformer(taskDoneXSL);
-            trans.transform(xmlSource, new StreamResult(result));
-
+            taskDoneXSLTrans.transform(xmlSource, new StreamResult(result));
+        
             HttpUtil.putAsXML(client.getProfileList().selectedProfile()
                     .getLogin(), client.getProfileList().selectedProfile()
                     .getPassword(), task.getId(), result.toByteArray());
@@ -315,7 +321,8 @@ public class TaskManager {
                     titleColumn.setWidth(100);
                     titleColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
 
-                    // create dummy columns for holding additional tooltip content
+                    // create dummy columns for holding additional tooltip
+                    // content
                     new TableColumn(table, SWT.NONE);
                     new TableColumn(table, SWT.NONE);
 

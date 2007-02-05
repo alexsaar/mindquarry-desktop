@@ -33,6 +33,8 @@ import com.mindquarry.client.workspace.xml.TeamListTransformer;
 import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
 
 /**
+ * Updates the local working copy of the workspaces.
+ * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
