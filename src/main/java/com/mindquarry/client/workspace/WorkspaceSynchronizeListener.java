@@ -15,9 +15,11 @@ package com.mindquarry.client.workspace;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
 
@@ -28,11 +30,19 @@ import com.mindquarry.client.MindClient;
 public class WorkspaceSynchronizeListener implements Listener {
     private final MindClient client;
 
-    private final Button button;
+    private final Widget widget;
 
-    public WorkspaceSynchronizeListener(final MindClient client, Button button) {
+    public WorkspaceSynchronizeListener(final MindClient client, Widget widget) {
         this.client = client;
-        this.button = button;
+        this.widget = widget;
+    }
+    
+    private static void setEnabled(Widget widget, boolean enable) {
+        if (widget instanceof Control) {
+            ((Control) widget).setEnabled(enable);
+        } else if (widget instanceof MenuItem) {
+            ((MenuItem) widget).setEnabled(enable);
+        }        
     }
 
     /**
@@ -45,7 +55,8 @@ public class WorkspaceSynchronizeListener implements Listener {
                     Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;
         }
-        button.setEnabled(false);
+        
+        setEnabled(widget, false);
 
         try {
             // need to sync workspaces first (for merging, up-to-date working
@@ -68,6 +79,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
                     Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
         }
-        button.setEnabled(true);
+        
+        setEnabled(widget, true);
     }
 }
