@@ -23,9 +23,13 @@ import java.io.ObjectOutputStream;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.GetTrayItemLocationHack;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -40,6 +44,7 @@ import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
 import com.mindquarry.client.options.dialog.OptionsDialog;
 import com.mindquarry.client.util.os.OperatingSystem;
+import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
  * Main class for the MindClient. Responsible for managing persistence of
@@ -131,26 +136,83 @@ public class MindClient {
         profile.setLocation(""); //$NON-NLS-1$
         return profileList.addProfile(profile);
     }
-
+    
     private void createTrayIconAndMenu(Display display) {
         final Tray tray = display.getSystemTray();
-        final MindClientBallonWidget trayListener = new MindClientBallonWidget(
-                display, this);
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);
         item.setImage(icon);
-        item.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(final Event event) {
-                trayListener.handleEvent(event);
-            }
-        });
+        
+        final MindClientBallonWidget ballonWindow =
+            new MindClientBallonWidget(display, this, item);
+        
         final Menu menu = new Menu(shell, SWT.POP_UP);
-        item.addListener(SWT.MenuDetect, new Listener() {
+        if (MindClient.getOperatingSystem() == OperatingSystem.MAC_OS_X) {
+            // Mac does not use the right mouse for tray icons
+            
+            // left-click => menu
+            item.addSelectionListener(new SelectionListener() {
+
+                // single-click
+                public void widgetSelected(SelectionEvent e) {
+                    menu.setLocation(GetTrayItemLocationHack.getAlignedLocation(item));
+                    menu.setVisible(true);
+                }
+                
+                // double-click
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+            });
+            
+            // extra item in menu => balloon window
+            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+            menuItem.setText("Show Client...");
+            menuItem.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(Event event) {
+                    ballonWindow.toggleBalloon();
+                }
+            });
+            
+        } else {
+            // Windows/Gnome
+            
+            // right-click / context menu => menu
+            item.addListener(SWT.MenuDetect, new Listener() {
+                public void handleEvent(Event event) {
+                    menu.setVisible(true);
+                }
+            });
+            
+            // left-click => balloon window
+            item.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(final Event event) {
+                    ballonWindow.handleEvent(event);
+                }
+            });
+        }
+        
+        // go to webpage
+        MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+        menuItem.setText("Go to webpage");
+        menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                menu.setVisible(true);
+                if (profileList.selectedProfile() != null) {
+                    Program.launch(profileList.selectedProfile().getEndpoint());
+                }
             }
         });
-        MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+        
+        // synchronize
+        menuItem = new MenuItem(menu, SWT.PUSH);
+        menuItem.setText("Synchronize");
+        menuItem.addListener(SWT.Selection,
+                new WorkspaceSynchronizeListener(this, menuItem));
+        
+        menuItem = new MenuItem(menu, SWT.SEPARATOR);
+        
+        // options dialog
+        menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             /**
@@ -164,8 +226,10 @@ public class MindClient {
                 }
             }
         });
+        
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
+        // close application
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {

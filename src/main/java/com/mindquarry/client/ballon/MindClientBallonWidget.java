@@ -26,10 +26,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.GetTrayItemLocationHack;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.options.Profile;
@@ -59,12 +61,15 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private TaskManager tman;
 
     private CCombo profileSelector;
+    
+    private TrayItem itemForPosition;
 
-    public MindClientBallonWidget(Display display, final MindClient client) {
+    public MindClientBallonWidget(Display display, final MindClient client, TrayItem itemForPosition) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
 
         this.display = display;
         this.client = client;
+        this.itemForPosition = itemForPosition;
         createContainer();
     }
 
@@ -82,7 +87,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         toggleBalloon();
     }
 
-    private void toggleBalloon() {
+    public void toggleBalloon() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (isVisible()) {
@@ -144,7 +149,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         }
         // on mac the everything will be below the tray icon
         if (MindClient.OS == OperatingSystem.MAC_OS_X) {
-            curPos.y += 10;
+            curPos = GetTrayItemLocationHack.getAlignedLocation(this.itemForPosition);
         }
         setLocation(curPos);
         setAnchor(anchor);
