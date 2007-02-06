@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.GetTrayItemLocationHack;
+import org.eclipse.swt.widgets.GetTrayItemLocationHackMacOSX;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
@@ -149,7 +149,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         }
         // on mac the everything will be below the tray icon
         if (MindClient.OS == OperatingSystem.MAC_OS_X) {
-            curPos = GetTrayItemLocationHack.getAlignedLocation(this.itemForPosition);
+            curPos = GetTrayItemLocationHackMacOSX.getAlignedLocation(this.itemForPosition);
         }
         setLocation(curPos);
         setAnchor(anchor);

@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.GetTrayItemLocationHack;
+import org.eclipse.swt.widgets.GetTrayItemLocationHackMacOSX;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -155,7 +155,7 @@ public class MindClient {
 
                 // single-click
                 public void widgetSelected(SelectionEvent e) {
-                    menu.setLocation(GetTrayItemLocationHack.getAlignedLocation(item));
+                    menu.setLocation(GetTrayItemLocationHackMacOSX.getAlignedLocation(item));
                     menu.setVisible(true);
                 }
                 

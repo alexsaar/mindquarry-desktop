@@ -13,6 +13,8 @@
  */
 package org.eclipse.swt.widgets;
 
+import java.lang.reflect.Method;
+
 import org.eclipse.swt.graphics.Point;
 
 /**
@@ -23,10 +25,15 @@ import org.eclipse.swt.graphics.Point;
  *         Alexander Klimetschek</a>
  *
  */
-public class GetTrayItemLocationHack {
+public class GetTrayItemLocationHackMacOSX {
 
     public static Point getLocation(TrayItem trayItem) {
-        return trayItem.getLocation();
+        try {
+            Method m = TrayItem.class.getDeclaredMethod("getLocation", new Class[] {});
+            return (Point) m.invoke(trayItem, new Object[] {});
+        } catch (Exception e) {
+            return new Point(0,0);
+        }
     }
 
     public static Point getAlignedLocation(TrayItem trayItem) {
