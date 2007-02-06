@@ -167,7 +167,7 @@ public class MindClient {
             
             // extra item in menu => balloon window
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText("Show Client...");
+            menuItem.setText(Messages.getString("MindClient.9")); //$NON-NLS-1$
             menuItem.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     ballonWindow.toggleBalloon();
@@ -194,7 +194,7 @@ public class MindClient {
         
         // go to webpage
         MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Go to webpage");
+        menuItem.setText(Messages.getString("MindClient.10")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 if (profileList.selectedProfile() != null) {
@@ -205,7 +205,7 @@ public class MindClient {
         
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Synchronize");
+        menuItem.setText(Messages.getString("MindClient.11")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection,
                 new WorkspaceSynchronizeListener(this, menuItem));
         
