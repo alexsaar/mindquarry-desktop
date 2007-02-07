@@ -13,6 +13,7 @@
  */
 package com.mindquarry.client.workspace;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.util.widgets.MessageDialogUtil;
 
 /**
  * Listener that is responsible for receiving and handling workspace
@@ -69,10 +71,14 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
     }
 
-    private void enableWidgets(boolean enable) {
-        for (Widget widget : widgets) {
-            setEnabled(widget, enable);
-        }
+    private void enableWidgets(final boolean enable) {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (Widget widget : widgets) {
+                    setEnabled(widget, enable);
+                }
+            }
+        });
     }
 
     /**
@@ -88,26 +94,20 @@ public class WorkspaceSynchronizeListener implements Listener {
         enableWidgets(false);
 
         try {
-            // need to sync workspaces first (for merging, up-to-date working
-            // copies and so on)
-            UpdateOperation syncOp = new UpdateOperation(client);
-            new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
-                    syncOp);
-        } catch (Exception e) {
-            MessageDialog.openError(MindClient.getShell(), Messages
-                    .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
-                    Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
-        }
-        try {
+            // need to sync workspaces first (for merging, up-to-date
+            // working copies and so on)
+            startActivity(new UpdateOperation(client));
             // share workspace changes
-            PublishOperation shareOp = new PublishOperation(client);
-            new ProgressMonitorDialog(MindClient.getShell()).run(true, true,
-                    shareOp);
+            startActivity(new PublishOperation(client));
         } catch (Exception e) {
-            MessageDialog.openError(MindClient.getShell(), Messages
-                    .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
-                    Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
+            MessageDialogUtil.displaySyncErrorMsg(Messages
+                    .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
         }
         enableWidgets(true);
+    }
+
+    private void startActivity(final SvnOperation op)
+            throws InvocationTargetException, InterruptedException {
+        new ProgressMonitorDialog(MindClient.getShell()).run(true, true, op);
     }
 }

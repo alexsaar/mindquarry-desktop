@@ -23,16 +23,17 @@ import org.eclipse.swt.graphics.Point;
  * 
  * @author <a href="mailto:alexander(dot)klimetschek(at)mindquarry(dot)com">
  *         Alexander Klimetschek</a>
- *
+ * 
  */
 public class GetTrayItemLocationHackMacOSX {
 
     public static Point getLocation(TrayItem trayItem) {
         try {
-            Method m = TrayItem.class.getDeclaredMethod("getLocation", new Class[] {});
+            Method m = TrayItem.class.getDeclaredMethod("getLocation", //$NON-NLS-1$
+                    new Class[] {});
             return (Point) m.invoke(trayItem, new Object[] {});
         } catch (Exception e) {
-            return new Point(0,0);
+            return new Point(0, 0);
         }
     }
 

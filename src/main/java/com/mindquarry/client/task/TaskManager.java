@@ -49,12 +49,16 @@ import com.mindquarry.client.task.xml.TaskTransformer;
 import com.mindquarry.client.util.network.HttpUtil;
 
 /**
+ * Responsible class for managing tasks.
+ * 
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class TaskManager {
+    private static TaskManager instance;
+
     public static final String TITLE_COLUMN = "title"; //$NON-NLS-1$
 
     private List<Task> tasks = new ArrayList<Task>();
@@ -85,7 +89,7 @@ public class TaskManager {
 
     private Transformer taskDoneXSLTrans;
 
-    public TaskManager(final MindClient client, final Composite taskContainer,
+    private TaskManager(final MindClient client, final Composite taskContainer,
             Button refreshButton, final Button doneButton) {
         this.client = client;
         this.taskContainer = taskContainer;
@@ -100,6 +104,16 @@ public class TaskManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static TaskManager getInstance(final MindClient client,
+            final Composite taskContainer, Button refreshButton,
+            final Button doneButton) {
+        if (instance == null) {
+            instance = new TaskManager(client, taskContainer, refreshButton,
+                    doneButton);
+        }
+        return instance;
     }
 
     public void startTask(Task t) {

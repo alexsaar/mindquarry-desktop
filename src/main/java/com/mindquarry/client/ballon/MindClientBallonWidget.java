@@ -287,7 +287,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 .getResourceAsStream(
                         "/com/mindquarry/icons/22x22/status/task-done.png"))); //$NON-NLS-1$
 
-        tman = new TaskManager(client, taskContainer, refreshButton, doneButton);
+        tman = TaskManager.getInstance(client, taskContainer, refreshButton,
+                doneButton);
         refreshButton.addListener(SWT.Selection, new TaskRefreshListener(tman));
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
@@ -340,6 +341,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
+    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }

@@ -44,7 +44,7 @@ public class PublishOperation extends SvnOperation implements
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
                 .getLocation());
-        
+
         // list directories
         File[] directories = teamspacesDir.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -68,19 +68,18 @@ public class PublishOperation extends SvnOperation implements
             if (monitor.isCanceled()) {
                 return;
             }
-            
+
             Status[] stati = checkStatus(tsDir);
             if (stati != null && stati.length > 0) {
                 // build message with list of changes
                 String msg = Messages.getString("PublishOperation.2") //$NON-NLS-1$
-                                + tsDir.getName() + ":\n\n" //$NON-NLS-1$
-                                + getStatiDescription(stati, tsDir.getPath()); //$NON-NLS-1$
+                        + tsDir.getName() + ":\n\n" //$NON-NLS-1$
+                        + getStatiDescription(stati, tsDir.getPath());
 
                 // retrieve (asynchronously) commit message
                 final InputDialog dlg = new InputDialog(MindClient.getShell(),
                         Messages.getString("PublishOperation.1"), //$NON-NLS-1$
-                        msg,
-                        Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
+                        msg, Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
                 MindClient.getShell().getDisplay().syncExec(new Runnable() {
                     /**
                      * @see java.lang.Runnable#run()
@@ -90,25 +89,27 @@ public class PublishOperation extends SvnOperation implements
                         if (dlg.open() == Dialog.OK) {
                             // commit changes
                             try {
-                                svnClient.commit(new String[] { tsDir.getAbsolutePath() }, dlg
-                                        .getValue(), true);
+                                svnClient.commit(new String[] { tsDir
+                                        .getAbsolutePath() }, dlg.getValue(),
+                                        true);
                             } catch (ClientException e) {
                                 e.printStackTrace();
                             }
                         }
                     }
                 });
-                
+
             }
         }
         monitor.done();
     }
-    
+
     private Status[] checkStatus(File item) {
         try {
-            Status[] stati = svnClient.status(item.getPath(), true, false, false);
+            Status[] stati = svnClient.status(item.getPath(), true, false,
+                    false);
             for (Status status : stati) {
-                // check if the item is managed by SVN; if not, add it 
+                // check if the item is managed by SVN; if not, add it
                 if (!status.isManaged()) {
                     svnClient.add(status.getPath(), true);
                 }
@@ -125,13 +126,16 @@ public class PublishOperation extends SvnOperation implements
         for (Status status : stati) {
             // show the relative path
             String path = status.getPath().substring(pathPrefix.length() + 1);
-            
+
             if (!status.isManaged() || status.isAdded()) {
-                msg.append(Messages.getString("PublishOperation.5") + path + "\n"); //$NON-NLS-1$
+                msg.append(Messages.getString("PublishOperation.5") //$NON-NLS-1$
+                        + path + "\n"); //$NON-NLS-1$
             } else if (status.isModified()) {
-                msg.append(Messages.getString("PublishOperation.7") + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                msg.append(Messages.getString("PublishOperation.7") //$NON-NLS-1$
+                        + path + "\n"); //$NON-NLS-1$ 
             } else {
-                msg.append(status.getTextStatusDescription() + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                msg.append(status.getTextStatusDescription()
+                        + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return msg.toString();

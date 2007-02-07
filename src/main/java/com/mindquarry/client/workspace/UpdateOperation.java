@@ -115,7 +115,7 @@ public class UpdateOperation extends SvnOperation implements
             }
 
             monitor
-                    .subTask(Messages.getString("UpdateOperation.5") + " '" + tsID //$NON-NLS-1$
+                    .subTask(Messages.getString("UpdateOperation.5") + " '" + tsID //$NON-NLS-1$ //$NON-NLS-2$
                             + "' (" + tsNbr + Messages.getString("UpdateOperation.13") + tsCount + ")..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             content = null;
@@ -133,7 +133,7 @@ public class UpdateOperation extends SvnOperation implements
             }
             // parse teamspace description
             monitor
-                    .subTask(Messages.getString("UpdateOperation.8") + " '" + tsID //$NON-NLS-1$
+                    .subTask(Messages.getString("UpdateOperation.8") + " '" + tsID //$NON-NLS-1$ //$NON-NLS-2$
                             + "' (" + tsNbr + Messages.getString("UpdateOperation.13") + tsCount + ")..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             try {
                 doc = reader.read(content);
@@ -185,7 +185,8 @@ public class UpdateOperation extends SvnOperation implements
 
                 // update workspace
                 monitor.subTask(Messages.getString("UpdateOperation.10") //$NON-NLS-1$
-                        + " '" + id + "' (" //$NON-NLS-1$
+                        + " '" //$NON-NLS-1$
+                        + id + "' (" //$NON-NLS-1$
                         + tsNbr + Messages.getString("UpdateOperation.13") //$NON-NLS-1$
                         + tsCount + ")..."); //$NON-NLS-1$
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
@@ -203,8 +204,10 @@ public class UpdateOperation extends SvnOperation implements
                     + "/" + id); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
 
-            monitor.subTask(Messages.getString("UpdateOperation.10") + " '" + id //$NON-NLS-1$
-                    + "' (" + tsNbr + Messages.getString("UpdateOperation.13") //$NON-NLS-1$ //$NON-NLS-2$
+            monitor.subTask(Messages.getString("UpdateOperation.10") //$NON-NLS-1$
+                    + " '" //$NON-NLS-1$
+                    + id + "' (" //$NON-NLS-1$
+                    + tsNbr + Messages.getString("UpdateOperation.13") //$NON-NLS-1$
                     + tsCount + ")..."); //$NON-NLS-1$
             checkoutWorkspace(workspaces.get(id), newWorkspaceDir, id);
         }
@@ -216,7 +219,9 @@ public class UpdateOperation extends SvnOperation implements
         } catch (ClientException e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
-                    + " '" + id + "' (" + e.getMessage() + ")");
+                    + " '" //$NON-NLS-1$
+                    + id + "' (" //$NON-NLS-1$
+                    + e.getMessage() + ")"); //$NON-NLS-1$
         }
     }
 
@@ -226,7 +231,9 @@ public class UpdateOperation extends SvnOperation implements
         } catch (ClientException e) {
             MessageDialogUtil.displaySyncErrorMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
-                    + " '" + id + "' (" + e.getMessage() + ")");
+                    + " '" //$NON-NLS-1$
+                    + id + "' (" //$NON-NLS-1$
+                    + e.getMessage() + ")"); //$NON-NLS-1$
         }
     }
 }
