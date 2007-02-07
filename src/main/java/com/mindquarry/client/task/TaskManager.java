@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.options.Profile;
+import com.mindquarry.client.task.widgets.NoTasksComposite;
 import com.mindquarry.client.task.widgets.TaskErrorComposite;
 import com.mindquarry.client.task.widgets.TaskUpdateComposite;
 import com.mindquarry.client.task.xml.TaskListTransformer;
@@ -74,6 +75,8 @@ public class TaskManager {
     private final Button refreshButton;
 
     private final TaskManager myself = this;
+
+    private Composite noTasksWidget;
 
     private Composite refreshWidget;
 
@@ -147,6 +150,11 @@ public class TaskManager {
         // must disable doneButton explicitly, because removing tasks does
         // not fire a selection changed event
         doneButton.setEnabled(false);
+        
+        // check number of active tasks, if 0 display NoTasksWidget
+        if (tasks.isEmpty()) {
+            setRefreshing(false, false, true);
+        }
     }
 
     public void removeChangeListener(TaskListChangeListener provider) {
@@ -202,7 +210,7 @@ public class TaskManager {
             switchRefreshButtonStatus(true);
             return;
         }
-        setRefreshing(true, false);
+        setRefreshing(true, false, false);
 
         InputStream content = null;
         try {
@@ -213,7 +221,7 @@ public class TaskManager {
         }
         // check if some contant was received
         if (content == null) {
-            setRefreshing(false, true);
+            setRefreshing(false, true, false);
             switchRefreshButtonStatus(true);
             refreshing = false;
             return;
@@ -248,7 +256,7 @@ public class TaskManager {
             // check if some contant was received
             if (content == null) {
                 switchRefreshButtonStatus(true);
-                setRefreshing(false, true);
+                setRefreshing(false, true, false);
                 refreshing = false;
                 return;
             }
@@ -270,13 +278,18 @@ public class TaskManager {
                 tasks.add(newTask);
             }
         }
-        // update task table
-        setRefreshing(false, false);
-        taskContainer.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                taskTableViewer.setInput(myself);
-            }
-        });
+        if (tasks.isEmpty()) {
+            setRefreshing(false, false, true);
+        } else {
+            setRefreshing(false, false, false);
+            
+            // update task table
+            taskContainer.getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    taskTableViewer.setInput(myself);
+                }
+            });
+        }
         switchRefreshButtonStatus(true);
         refreshing = false;
         initialized = true;
@@ -290,16 +303,17 @@ public class TaskManager {
         });
     }
 
-    private void setRefreshing(final boolean refreshing, final boolean error) {
+    private void setRefreshing(final boolean refreshing, final boolean error,
+            final boolean empty) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
-                if (refreshing && !error) {
+                if (refreshing) {
                     destroyContent();
                     refreshWidget = new TaskUpdateComposite(taskContainer,
                             Messages.getString("TaskManager.2") + //$NON-NLS-1$
                                     client.getProfileList().selectedProfile()
                                             .getName() + "..."); //$NON-NLS-1$
-                } else if (!refreshing && !error) {
+                } else if (!error && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);
                     table.setHeaderVisible(false);
@@ -348,6 +362,10 @@ public class TaskManager {
                     taskTableViewer
                             .addSelectionChangedListener(new TaskSelectionChangedListener(
                                     myself, taskTableViewer, doneButton));
+                } else if (!error && empty) {
+                    destroyContent();
+                    noTasksWidget = new NoTasksComposite(taskContainer,
+                            Messages.getString("TaskManager.1")); //$NON-NLS-1$
                 } else {
                     destroyContent();
                     errorWidget = new TaskErrorComposite(taskContainer,
@@ -368,6 +386,10 @@ public class TaskManager {
                 if (errorWidget != null) {
                     errorWidget.dispose();
                     errorWidget = null;
+                }
+                if (noTasksWidget != null) {
+                    noTasksWidget.dispose();
+                    noTasksWidget = null;
                 }
             }
         });
