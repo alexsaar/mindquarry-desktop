@@ -61,10 +61,11 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private TaskManager tman;
 
     private CCombo profileSelector;
-    
+
     private TrayItem itemForPosition;
 
-    public MindClientBallonWidget(Display display, final MindClient client, TrayItem itemForPosition) {
+    public MindClientBallonWidget(Display display, final MindClient client,
+            TrayItem itemForPosition) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
 
         this.display = display;
@@ -149,7 +150,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
         }
         // on mac the everything will be below the tray icon
         if (MindClient.OS == OperatingSystem.MAC_OS_X) {
-            curPos = GetTrayItemLocationHackMacOSX.getAlignedLocation(this.itemForPosition);
+            curPos = GetTrayItemLocationHackMacOSX
+                    .getAlignedLocation(this.itemForPosition);
         }
         setLocation(curPos);
         setAnchor(anchor);
@@ -236,8 +238,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         getClass()
                                 .getResourceAsStream(
                                         "/com/mindquarry/icons/22x22/actions/synchronize-vertical.png"))); //$NON-NLS-1$
-        syncButton.addListener(SWT.Selection, new WorkspaceSynchronizeListener(
-                client, syncButton));
+        syncButton.addListener(SWT.Selection, WorkspaceSynchronizeListener
+                .getInstance(client, syncButton));
     }
 
     /**

@@ -136,33 +136,34 @@ public class MindClient {
         profile.setLocation(""); //$NON-NLS-1$
         return profileList.addProfile(profile);
     }
-    
+
     private void createTrayIconAndMenu(Display display) {
         final Tray tray = display.getSystemTray();
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);
         item.setImage(icon);
-        
-        final MindClientBallonWidget ballonWindow =
-            new MindClientBallonWidget(display, this, item);
-        
+
+        final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
+                display, this, item);
+
         final Menu menu = new Menu(shell, SWT.POP_UP);
         if (MindClient.getOperatingSystem() == OperatingSystem.MAC_OS_X) {
             // Mac does not use the right mouse for tray icons
-            
+
             // left-click => menu
             item.addSelectionListener(new SelectionListener() {
                 // single-click
                 public void widgetSelected(SelectionEvent e) {
-                    menu.setLocation(GetTrayItemLocationHackMacOSX.getAlignedLocation(item));
+                    menu.setLocation(GetTrayItemLocationHackMacOSX
+                            .getAlignedLocation(item));
                     menu.setVisible(true);
                 }
-                
+
                 // double-click
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
-            
+
             // extra item in menu => balloon window
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
             menuItem.setText(Messages.getString("MindClient.9")); //$NON-NLS-1$
@@ -173,14 +174,14 @@ public class MindClient {
             });
         } else {
             // Windows/Gnome
-            
+
             // right-click / context menu => menu
             item.addListener(SWT.MenuDetect, new Listener() {
                 public void handleEvent(Event event) {
                     menu.setVisible(true);
                 }
             });
-            
+
             // left-click => balloon window
             item.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(final Event event) {
@@ -201,19 +202,16 @@ public class MindClient {
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.11")); //$NON-NLS-1$
-        menuItem.addListener(SWT.Selection,
-                new WorkspaceSynchronizeListener(this, menuItem));
-        
+        menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
+                .getInstance(this, menuItem));
+
         // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
-        
+
         // options dialog
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
-            /**
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
                 try {
                     showOptionsDlg();
@@ -229,9 +227,6 @@ public class MindClient {
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
-            /**
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
                 saveOptions();
                 System.exit(1);

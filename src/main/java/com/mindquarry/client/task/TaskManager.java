@@ -47,7 +47,6 @@ import com.mindquarry.client.task.widgets.TaskUpdateComposite;
 import com.mindquarry.client.task.xml.TaskListTransformer;
 import com.mindquarry.client.task.xml.TaskTransformer;
 import com.mindquarry.client.util.network.HttpUtil;
-import com.mindquarry.client.util.widgets.MessageDialogUtil;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -279,9 +278,6 @@ public class TaskManager {
 
     private void setRefreshing(final boolean refreshing, final boolean error) {
         taskContainer.getDisplay().syncExec(new Runnable() {
-            /**
-             * @see java.lang.Runnable#run()
-             */
             public void run() {
                 if (refreshing && !error) {
                     destroyContent();
@@ -368,9 +364,7 @@ public class TaskManager {
     }
 
     /**
-     * Getter for initialized.
-     * 
-     * @return the initialized
+     * Indicates if the task manager is initialized or not.
      */
     public boolean isInitialized() {
         return initialized;

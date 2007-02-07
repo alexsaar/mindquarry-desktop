@@ -13,6 +13,9 @@
  */
 package com.mindquarry.client.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.widgets.Control;
@@ -24,25 +27,52 @@ import org.eclipse.swt.widgets.Widget;
 import com.mindquarry.client.MindClient;
 
 /**
+ * Listener that is responsible for receiving and handling workspace
+ * synchronization events. After receiving such an event it does some
+ * postprocessing and triggers synchronization of workspaces.
+ * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class WorkspaceSynchronizeListener implements Listener {
+    private static WorkspaceSynchronizeListener instance;
+
     private final MindClient client;
 
-    private final Widget widget;
+    private List<Widget> widgets;
 
-    public WorkspaceSynchronizeListener(final MindClient client, Widget widget) {
+    private WorkspaceSynchronizeListener(final MindClient client) {
         this.client = client;
-        this.widget = widget;
+        widgets = new ArrayList<Widget>();
     }
-    
+
+    public static WorkspaceSynchronizeListener getInstance(
+            final MindClient client, Widget widget) {
+        if (instance == null) {
+            instance = new WorkspaceSynchronizeListener(client);
+        }
+        instance.addWidget(widget);
+        return instance;
+    }
+
+    private void addWidget(Widget widget) {
+        if (!widgets.contains(widget)) {
+            widgets.add(widget);
+        }
+    }
+
     private static void setEnabled(Widget widget, boolean enable) {
         if (widget instanceof Control) {
             ((Control) widget).setEnabled(enable);
         } else if (widget instanceof MenuItem) {
             ((MenuItem) widget).setEnabled(enable);
-        }        
+        }
+    }
+
+    private void enableWidgets(boolean enable) {
+        for (Widget widget : widgets) {
+            setEnabled(widget, enable);
+        }
     }
 
     /**
@@ -55,8 +85,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;
         }
-        
-        setEnabled(widget, false);
+        enableWidgets(false);
 
         try {
             // need to sync workspaces first (for merging, up-to-date working
@@ -79,7 +108,6 @@ public class WorkspaceSynchronizeListener implements Listener {
                     .getString("WorkspaceSynchronizeListener.0"), //$NON-NLS-1$
                     Messages.getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
         }
-        
-        setEnabled(widget, true);
+        enableWidgets(true);
     }
 }
