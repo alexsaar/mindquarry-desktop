@@ -31,6 +31,9 @@ public class TaskTransformer extends Transformer {
     @Override
     public void init() {
         task = new Task();
+        task.setStatus(""); //$NON-NLS-1$
+        task.setSummary(""); //$NON-NLS-1$
+        task.setTitle(""); //$NON-NLS-1$
     }
 
     @Path("/task")

@@ -152,7 +152,6 @@ public class MindClient {
             
             // left-click => menu
             item.addSelectionListener(new SelectionListener() {
-
                 // single-click
                 public void widgetSelected(SelectionEvent e) {
                     menu.setLocation(GetTrayItemLocationHackMacOSX.getAlignedLocation(item));
@@ -162,7 +161,6 @@ public class MindClient {
                 // double-click
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
-
             });
             
             // extra item in menu => balloon window
@@ -173,7 +171,6 @@ public class MindClient {
                     ballonWindow.toggleBalloon();
                 }
             });
-            
         } else {
             // Windows/Gnome
             
@@ -191,7 +188,6 @@ public class MindClient {
                 }
             });
         }
-        
         // go to webpage
         MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.10")); //$NON-NLS-1$
@@ -202,13 +198,13 @@ public class MindClient {
                 }
             }
         });
-        
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.11")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection,
                 new WorkspaceSynchronizeListener(this, menuItem));
         
+        // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
         
         // options dialog
@@ -226,7 +222,7 @@ public class MindClient {
                 }
             }
         });
-        
+        // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
         // close application

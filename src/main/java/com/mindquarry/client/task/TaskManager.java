@@ -124,7 +124,7 @@ public class TaskManager {
 
         try {
             taskDoneXSLTrans.transform(xmlSource, new StreamResult(result));
-        
+
             HttpUtil.putAsXML(client.getProfileList().selectedProfile()
                     .getLogin(), client.getProfileList().selectedProfile()
                     .getPassword(), task.getId(), result.toByteArray());
@@ -196,8 +196,7 @@ public class TaskManager {
             content = HttpUtil.getContentAsXML(profile.getLogin(), profile
                     .getPassword(), profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
-                    .getString("TaskManager.0")); //$NON-NLS-1$
+            // nothing todo here, task list widgets shows
         }
         // check if some contant was received
         if (content == null) {
@@ -231,8 +230,7 @@ public class TaskManager {
                         .getProfileList().selectedProfile().getEndpoint()
                         + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
-                MessageDialogUtil.displaySyncErrorMsg(Messages
-                        .getString("TaskManager.1")); //$NON-NLS-1$
+                continue;
             }
             // check if some contant was received
             if (content == null) {
@@ -271,9 +269,6 @@ public class TaskManager {
         initialized = true;
     }
 
-    /**
-     * 
-     */
     private void switchRefreshButtonStatus(final boolean enabled) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
