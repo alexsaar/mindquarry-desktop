@@ -15,14 +15,13 @@ package com.mindquarry.client.workspace;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Widget;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 
@@ -38,36 +37,24 @@ import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class UpdateOperation extends SvnOperation implements
-        IRunnableWithProgress {
-    public UpdateOperation(final MindClient client) {
-        super(client);
+public class UpdateOperation extends SvnOperation {
+    public UpdateOperation(final MindClient client,
+            List<Widget> progressBars) {
+        super(client, progressBars);
     }
 
     /**
-     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+     * @see java.lang.Runnable#run()
      */
-    public void run(IProgressMonitor monitor) throws InvocationTargetException,
-            InterruptedException {
-        monitor.beginTask(Messages.getString("UpdateOperation.0"), //$NON-NLS-1$
-                IProgressMonitor.UNKNOWN);
-
+    public void run() {
         HashMap<String, String> teamspaces = new HashMap<String, String>();
-        if (!getTeamspaceList(teamspaces, monitor)) {
+        if (!getTeamspaceList(teamspaces)) {
             return;
         }
-        // check cancel state
-        if (monitor.isCanceled()) {
-            return;
-        }
-        updateWorkspaces(teamspaces, monitor);
-        monitor.done();
+        updateWorkspaces(teamspaces);
     }
 
-    private boolean getTeamspaceList(HashMap<String, String> teamspaces,
-            IProgressMonitor monitor) {
-        monitor.subTask(Messages.getString("UpdateOperation.1")); //$NON-NLS-1$
-
+    private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
         InputStream content = null;
         try {
             content = HttpUtil.getContentAsXML(client.getProfileList()
@@ -84,12 +71,7 @@ public class UpdateOperation extends SvnOperation implements
         if (content == null) {
             return false;
         }
-        // check if the operation was canceled
-        if (monitor.isCanceled()) {
-            return true;
-        }
         // parse teamspace list
-        monitor.subTask(Messages.getString("UpdateOperation.3")); //$NON-NLS-1$
         SAXReader reader = new SAXReader();
         Document doc;
         try {
@@ -103,21 +85,13 @@ public class UpdateOperation extends SvnOperation implements
         TeamListTransformer listTrans = new TeamListTransformer();
         listTrans.execute(doc);
 
-        // init counter for progress dialog
+        // init progress steps for progress dialog
         int tsCount = listTrans.getTeamspaces().size();
-        int tsNbr = 0;
+        setProgressSteps((tsCount * 3) + 1);
+        updateProgress();
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
-            tsNbr++;
-            if (monitor.isCanceled()) {
-                return true;
-            }
-
-            monitor
-                    .subTask(Messages.getString("UpdateOperation.5") + " '" + tsID //$NON-NLS-1$ //$NON-NLS-2$
-                            + "' (" + tsNbr + Messages.getString("UpdateOperation.13") + tsCount + ")..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-
             content = null;
             try {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
@@ -132,9 +106,6 @@ public class UpdateOperation extends SvnOperation implements
                 return false;
             }
             // parse teamspace description
-            monitor
-                    .subTask(Messages.getString("UpdateOperation.8") + " '" + tsID //$NON-NLS-1$ //$NON-NLS-2$
-                            + "' (" + tsNbr + Messages.getString("UpdateOperation.13") + tsCount + ")..."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             try {
                 doc = reader.read(content);
             } catch (DocumentException e) {
@@ -146,14 +117,12 @@ public class UpdateOperation extends SvnOperation implements
             tsTrans.execute(doc);
 
             teamspaces.put(tsID, tsTrans.getWorkspace());
+            updateProgress();
         }
         return true;
     }
 
-    private void updateWorkspaces(HashMap<String, String> workspaces,
-            IProgressMonitor monitor) {
-        monitor.setTaskName(Messages.getString("UpdateOperation.9")); //$NON-NLS-1$
-
+    private void updateWorkspaces(HashMap<String, String> workspaces) {
         // init SVN client API types
         svnClient
                 .username(client.getProfileList().selectedProfile().getLogin());
@@ -168,48 +137,27 @@ public class UpdateOperation extends SvnOperation implements
         if (!teamspacesDir.exists()) {
             teamspacesDir.mkdirs();
         }
-        // init counter for progress dialog
-        int tsCount = workspaces.keySet().size();
-        int tsNbr = 0;
-
         // loop existing workspace directories
         for (String id : teamspacesDir.list()) {
-            tsNbr++;
-            if (monitor.isCanceled()) {
-                return;
-            }
             // loop received workspace items
             if (workspaces.containsKey(id)) {
                 // remove entry from workspace list
                 workspaces.remove(id);
 
                 // update workspace
-                monitor.subTask(Messages.getString("UpdateOperation.10") //$NON-NLS-1$
-                        + " '" //$NON-NLS-1$
-                        + id + "' (" //$NON-NLS-1$
-                        + tsNbr + Messages.getString("UpdateOperation.13") //$NON-NLS-1$
-                        + tsCount + ")..."); //$NON-NLS-1$
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
                         + "/" + id), id); //$NON-NLS-1$
             }
+            updateProgress();
         }
         // add additional workspace directories
         for (String id : workspaces.keySet()) {
-            tsNbr++;
-            if (monitor.isCanceled()) {
-                return;
-            }
             // create directory for the new workspace
             File newWorkspaceDir = new File(teamspacesDir.getAbsolutePath()
                     + "/" + id); //$NON-NLS-1$
             newWorkspaceDir.mkdir();
-
-            monitor.subTask(Messages.getString("UpdateOperation.10") //$NON-NLS-1$
-                    + " '" //$NON-NLS-1$
-                    + id + "' (" //$NON-NLS-1$
-                    + tsNbr + Messages.getString("UpdateOperation.13") //$NON-NLS-1$
-                    + tsCount + ")..."); //$NON-NLS-1$
             checkoutWorkspace(workspaces.get(id), newWorkspaceDir, id);
+            updateProgress();
         }
     }
 

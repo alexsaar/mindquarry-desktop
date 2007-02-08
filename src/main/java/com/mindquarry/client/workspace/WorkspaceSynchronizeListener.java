@@ -13,16 +13,15 @@
  */
 package com.mindquarry.client.workspace;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
@@ -41,29 +40,46 @@ public class WorkspaceSynchronizeListener implements Listener {
 
     private final MindClient client;
 
-    private List<Widget> widgets;
+    private List<Widget> triggerWidgets;
+
+    private List<Widget> progressBars;
 
     private WorkspaceSynchronizeListener(final MindClient client) {
         this.client = client;
-        widgets = new ArrayList<Widget>();
+        triggerWidgets = new ArrayList<Widget>();
+        progressBars = new ArrayList<Widget>();
     }
 
     public static WorkspaceSynchronizeListener getInstance(
-            final MindClient client, Widget widget) {
+            final MindClient client, Widget triggerWidget,
+            ProgressBar progressBar) {
         if (instance == null) {
             instance = new WorkspaceSynchronizeListener(client);
         }
-        instance.addWidget(widget);
+        instance.addTriggerWidget(triggerWidget);
+        instance.addProgressBar(progressBar);
         return instance;
     }
 
-    private void addWidget(Widget widget) {
-        if (!widgets.contains(widget)) {
-            widgets.add(widget);
+    private void addTriggerWidget(Widget widget) {
+        if (widget == null) {
+            return;
+        }
+        if (!triggerWidgets.contains(widget)) {
+            triggerWidgets.add(widget);
         }
     }
 
-    private static void setEnabled(Widget widget, boolean enable) {
+    private void addProgressBar(ProgressBar progressBar) {
+        if (progressBar == null) {
+            return;
+        }
+        if (!progressBars.contains(progressBar)) {
+            progressBars.add(progressBar);
+        }
+    }
+
+    private void setEnabled(Widget widget, boolean enable) {
         if (widget instanceof Control) {
             ((Control) widget).setEnabled(enable);
         } else if (widget instanceof MenuItem) {
@@ -71,7 +87,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
     }
 
-    private void enableWidgets(final boolean enable) {
+    private void enableWidgets(final boolean enable, final List<Widget> widgets) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
                 for (Widget widget : widgets) {
@@ -91,23 +107,26 @@ public class WorkspaceSynchronizeListener implements Listener {
                     Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;
         }
-        enableWidgets(false);
+        enableWidgets(false, triggerWidgets);
+        // enableWidgets(true, progressBars);
 
-        try {
-            // need to sync workspaces first (for merging, up-to-date
-            // working copies and so on)
-            startActivity(new UpdateOperation(client));
-            // share workspace changes
-            startActivity(new PublishOperation(client));
-        } catch (Exception e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
-                    .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
-        }
-        enableWidgets(true);
-    }
-
-    private void startActivity(final SvnOperation op)
-            throws InvocationTargetException, InterruptedException {
-        new ProgressMonitorDialog(MindClient.getShell()).run(true, true, op);
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    // need to sync workspaces first (for merging, up-to-date
+                    // working copies and so on)
+                    SvnOperation op = new UpdateOperation(client, progressBars);
+                    op.run();
+                    // share workspace changes
+                    op = new PublishOperation(client, progressBars);
+                    op.run();
+                } catch (Exception e) {
+                    MessageDialogUtil.displaySyncErrorMsg(Messages
+                            .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
+                }
+                enableWidgets(true, triggerWidgets);
+                // enableWidgets(false, progressBars);
+            }
+        }).start();
     }
 }

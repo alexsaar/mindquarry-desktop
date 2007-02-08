@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.client.MindClient;
@@ -227,11 +228,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
         label.setText(Messages.getString("MindClientBallonWidget.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
+        ProgressBar progressBar = new ProgressBar(group, SWT.NONE);
+        progressBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        progressBar.setVisible(true);
+
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("MindClientBallonWidget.4")); //$NON-NLS-1$
         syncButton.setToolTipText(Messages
                 .getString("MindClientBallonWidget.5")); //$NON-NLS-1$
-        syncButton.setLayoutData(new GridData(SWT.END, SWT.END, true, false));
         syncButton
                 .setImage(new Image(
                         Display.getCurrent(),
@@ -239,7 +243,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 .getResourceAsStream(
                                         "/com/mindquarry/icons/22x22/actions/synchronize-vertical.png"))); //$NON-NLS-1$
         syncButton.addListener(SWT.Selection, WorkspaceSynchronizeListener
-                .getInstance(client, syncButton));
+                .getInstance(client, syncButton, progressBar));
     }
 
     /**
@@ -301,8 +305,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // group.setBackground(container.getBackground());
     // group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     // group.setLayout(new GridLayout(2, false));
-    // group.setText(Messages.getString("MindClientBallonWidget.9"));
-    // //$NON-NLS-1$
+    // group.setText("Wiki");
     //
     // final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
     // | SWT.V_SCROLL | SWT.BORDER);
@@ -312,10 +315,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // wikiTextArea.setEnabled(false);
     //
     // Button clearButton = new Button(group, SWT.NONE);
-    // clearButton.setText(Messages.getString("MindClientBallonWidget.10"));
-    // //$NON-NLS-1$
-    // clearButton.setToolTipText(Messages
-    // .getString("MindClientBallonWidget.11")); //$NON-NLS-1$
+    // clearButton.setText("Clear");
+    // clearButton.setToolTipText("Use this button to clear the text in the Wiki textbox."));
     // clearButton
     // .setImage(new Image(
     // Display.getCurrent(),
@@ -327,8 +328,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
     //
     // Button postButton = new Button(group, SWT.NONE);
-    // postButton.setText(Messages.getString("MindClientBallonWidget.12"));
-    // //$NON-NLS-1$
+    // postButton.setText("Post");
     // postButton.setToolTipText(Messages
     // .getString("MindClientBallonWidget.13")); //$NON-NLS-1$
     // postButton
@@ -341,7 +341,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
-    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }

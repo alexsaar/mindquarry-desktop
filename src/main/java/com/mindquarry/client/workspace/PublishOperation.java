@@ -15,12 +15,11 @@ package com.mindquarry.client.workspace;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Widget;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
@@ -30,17 +29,16 @@ import com.mindquarry.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class PublishOperation extends SvnOperation implements
-        IRunnableWithProgress {
-    public PublishOperation(final MindClient client) {
-        super(client);
+public class PublishOperation extends SvnOperation {
+    public PublishOperation(final MindClient client,
+            List<Widget> progressBars) {
+        super(client, progressBars);
     }
 
     /**
-     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+     * @see java.lang.Runnable#run()
      */
-    public void run(IProgressMonitor monitor) throws InvocationTargetException,
-            InterruptedException {
+    public void run() {
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
                 .getLocation());
@@ -53,10 +51,6 @@ public class PublishOperation extends SvnOperation implements
                 return file.isDirectory() && isFolderVersionControled(file);
             }
         });
-
-        monitor.beginTask(
-                Messages.getString("PublishOperation.0"), directories.length); //$NON-NLS-1$
-
         // init SVN client API types
         svnClient
                 .username(client.getProfileList().selectedProfile().getLogin());
@@ -65,10 +59,6 @@ public class PublishOperation extends SvnOperation implements
 
         // loop existing workspace directories
         for (final File tsDir : directories) {
-            if (monitor.isCanceled()) {
-                return;
-            }
-
             Status[] stati = checkStatus(tsDir);
             if (stati != null && stati.length > 0) {
                 // build message with list of changes
@@ -98,47 +88,8 @@ public class PublishOperation extends SvnOperation implements
                         }
                     }
                 });
-
+                updateProgress();
             }
         }
-        monitor.done();
     }
-
-    private Status[] checkStatus(File item) {
-        try {
-            Status[] stati = svnClient.status(item.getPath(), true, false,
-                    false);
-            for (Status status : stati) {
-                // check if the item is managed by SVN; if not, add it
-                if (!status.isManaged()) {
-                    svnClient.add(status.getPath(), true);
-                }
-            }
-            return stati;
-        } catch (ClientException e1) {
-            e1.printStackTrace();
-            return null;
-        }
-    }
-
-    private String getStatiDescription(Status[] stati, String pathPrefix) {
-        StringBuffer msg = new StringBuffer();
-        for (Status status : stati) {
-            // show the relative path
-            String path = status.getPath().substring(pathPrefix.length() + 1);
-
-            if (!status.isManaged() || status.isAdded()) {
-                msg.append(Messages.getString("PublishOperation.5") //$NON-NLS-1$
-                        + path + "\n"); //$NON-NLS-1$
-            } else if (status.isModified()) {
-                msg.append(Messages.getString("PublishOperation.7") //$NON-NLS-1$
-                        + path + "\n"); //$NON-NLS-1$ 
-            } else {
-                msg.append(status.getTextStatusDescription()
-                        + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-        }
-        return msg.toString();
-    }
-
 }

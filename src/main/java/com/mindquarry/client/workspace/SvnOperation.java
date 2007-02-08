@@ -17,7 +17,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Widget;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.SVNClientInterface;
@@ -30,13 +31,16 @@ import com.mindquarry.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public abstract class SvnOperation implements IRunnableWithProgress {
+public abstract class SvnOperation implements Runnable {
     protected final MindClient client;
 
     protected final SVNClientInterface svnClient;
 
-    public SvnOperation(final MindClient client) {
+    protected final List<Widget> progressBars;
+
+    public SvnOperation(final MindClient client, List<Widget> progressBars) {
         this.client = client;
+        this.progressBars = progressBars;
 
         // get SVN client interface component
         BeanFactory factory = client.getFactory();
@@ -60,10 +64,47 @@ public abstract class SvnOperation implements IRunnableWithProgress {
             return false;
         }
     }
+    
+    protected Status[] checkStatus(File item) {
+        try {
+            Status[] stati = svnClient.status(item.getPath(), true, false,
+                    false);
+            for (Status status : stati) {
+                // check if the item is managed by SVN; if not, add it
+                if (!status.isManaged()) {
+                    svnClient.add(status.getPath(), true);
+                }
+            }
+            return stati;
+        } catch (ClientException e1) {
+            e1.printStackTrace();
+            return null;
+        }
+    }
+
+    protected String getStatiDescription(Status[] stati, String pathPrefix) {
+        StringBuffer msg = new StringBuffer();
+        for (Status status : stati) {
+            // show the relative path
+            String path = status.getPath().substring(pathPrefix.length() + 1);
+
+            if (!status.isManaged() || status.isAdded()) {
+                msg.append(Messages.getString("PublishOperation.5") //$NON-NLS-1$
+                        + path + "\n"); //$NON-NLS-1$
+            } else if (status.isModified()) {
+                msg.append(Messages.getString("PublishOperation.7") //$NON-NLS-1$
+                        + path + "\n"); //$NON-NLS-1$ 
+            } else {
+                msg.append(status.getTextStatusDescription()
+                        + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        return msg.toString();
+    }
 
     protected String[] getConflictedFiles(File item) {
         List<String> conflicted = new ArrayList<String>();
-        
+
         // retrieve local status
         Status[] stati;
         try {
@@ -76,11 +117,42 @@ public abstract class SvnOperation implements IRunnableWithProgress {
         for (Status status : stati) {
             // check if the item is in conflict
             if (status.isManaged()) {
-                if(status.getTextStatus() == StatusKind.conflicted) {
+                if (status.getTextStatus() == StatusKind.conflicted) {
                     conflicted.add(status.getConflictWorking());
                 }
             }
         }
         return conflicted.toArray(new String[0]);
+    }
+
+    protected void setProgressSteps(final int value) {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (Widget progressBar : progressBars) {
+                    ((ProgressBar) progressBar).setMaximum(value);
+                }
+            }
+        });
+    }
+
+    protected void updateProgress() {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (Widget progressBar : progressBars) {
+                    int step = ((ProgressBar) progressBar).getSelection();
+                    ((ProgressBar) progressBar).setSelection(++step);
+                }
+            }
+        });
+    }
+    
+    protected void resetProgress() {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (Widget progressBar : progressBars) {
+                    ((ProgressBar) progressBar).setSelection(0);
+                }
+            }
+        });
     }
 }

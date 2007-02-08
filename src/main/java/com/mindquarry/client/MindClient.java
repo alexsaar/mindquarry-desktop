@@ -203,7 +203,7 @@ public class MindClient {
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.11")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
-                .getInstance(this, menuItem));
+                .getInstance(this, menuItem, null));
 
         // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
