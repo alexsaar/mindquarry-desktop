@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
@@ -141,6 +142,7 @@ public class MindClient {
         final Tray tray = display.getSystemTray();
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);
+        item.setToolTipText(APPLICATION_NAME);
         item.setImage(icon);
 
         final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
