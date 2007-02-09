@@ -150,10 +150,10 @@ public class TaskManager {
         // must disable doneButton explicitly, because removing tasks does
         // not fire a selection changed event
         doneButton.setEnabled(false);
-        
+
         // check number of active tasks, if 0 display NoTasksWidget
         if (tasks.isEmpty()) {
-            setRefreshing(false, false, true);
+            updateTaskWidgetContents(false, false, true);
         }
     }
 
@@ -200,17 +200,17 @@ public class TaskManager {
 
     private void refresh() {
         refreshing = true;
-        switchRefreshButtonStatus(false);
+        setRefreshStatus(false);
         tasks.clear();
 
         // check profile
         Profile profile = client.getProfileList().selectedProfile();
         if (profile == null) {
             refreshing = false;
-            switchRefreshButtonStatus(true);
+            setRefreshStatus(true);
             return;
         }
-        setRefreshing(true, false, false);
+        updateTaskWidgetContents(true, false, false);
 
         InputStream content = null;
         try {
@@ -221,8 +221,8 @@ public class TaskManager {
         }
         // check if some contant was received
         if (content == null) {
-            setRefreshing(false, true, false);
-            switchRefreshButtonStatus(true);
+            updateTaskWidgetContents(false, true, false);
+            setRefreshStatus(true);
             refreshing = false;
             return;
         }
@@ -233,7 +233,7 @@ public class TaskManager {
         } catch (DocumentException e) {
             e.printStackTrace();
 
-            switchRefreshButtonStatus(true);
+            setRefreshStatus(true);
             refreshing = false;
             return;
         }
@@ -255,8 +255,8 @@ public class TaskManager {
             }
             // check if some contant was received
             if (content == null) {
-                switchRefreshButtonStatus(true);
-                setRefreshing(false, true, false);
+                setRefreshStatus(true);
+                updateTaskWidgetContents(false, true, false);
                 refreshing = false;
                 return;
             }
@@ -279,10 +279,10 @@ public class TaskManager {
             }
         }
         if (tasks.isEmpty()) {
-            setRefreshing(false, false, true);
+            updateTaskWidgetContents(false, false, true);
         } else {
-            setRefreshing(false, false, false);
-            
+            updateTaskWidgetContents(false, false, false);
+
             // update task table
             taskContainer.getDisplay().syncExec(new Runnable() {
                 public void run() {
@@ -290,21 +290,29 @@ public class TaskManager {
                 }
             });
         }
-        switchRefreshButtonStatus(true);
+        setRefreshStatus(true);
         refreshing = false;
         initialized = true;
     }
 
-    private void switchRefreshButtonStatus(final boolean enabled) {
+    private void setRefreshStatus(final boolean enabled) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
                 refreshButton.setEnabled(enabled);
+
+                if (!enabled) {
+                    MindClient.getIconActionHandler().startAction(
+                            Messages.getString("TaskManager.0")); //$NON-NLS-1$
+                } else {
+                    MindClient.getIconActionHandler().stopAction(
+                            Messages.getString("TaskManager.0")); //$NON-NLS-1$
+                }
             }
         });
     }
 
-    private void setRefreshing(final boolean refreshing, final boolean error,
-            final boolean empty) {
+    private void updateTaskWidgetContents(final boolean refreshing,
+            final boolean error, final boolean empty) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (refreshing) {

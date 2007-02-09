@@ -44,6 +44,7 @@ import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
 import com.mindquarry.client.options.dialog.OptionsDialog;
 import com.mindquarry.client.util.os.OperatingSystem;
+import com.mindquarry.client.util.widgets.IconActionThread;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 
 /**
@@ -75,6 +76,8 @@ public class MindClient {
     private ProfileList profileList;
 
     private File optionsFile;
+    
+    private static IconActionThread iconAction;
 
     public MindClient() {
         factory = new ClassPathXmlApplicationContext(
@@ -141,7 +144,6 @@ public class MindClient {
         final Tray tray = display.getSystemTray();
 
         final TrayItem item = new TrayItem(tray, SWT.NONE);
-        item.setToolTipText(APPLICATION_NAME);
         item.setImage(icon);
 
         final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
@@ -232,6 +234,9 @@ public class MindClient {
                 System.exit(1);
             }
         });
+        iconAction = new IconActionThread(item);
+        iconAction.setDaemon(true);
+        iconAction.start();
     }
 
     private void loadOptions() {
@@ -308,5 +313,9 @@ public class MindClient {
         } else {
             return OperatingSystem.OTHER;
         }
+    }
+
+    public static IconActionThread getIconActionHandler() {
+        return MindClient.iconAction;
     }
 }
