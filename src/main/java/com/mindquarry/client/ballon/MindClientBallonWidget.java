@@ -229,6 +229,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
         
         SynchronizeWidget synArea = new SynchronizeWidget(group);
+        synArea.setVisible(false);
                 
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("MindClientBallonWidget.4")); //$NON-NLS-1$

@@ -69,7 +69,7 @@ public class WorkspaceSynchronizeListener implements Listener {
             triggerWidgets.add(widget);
         }
     }
-    
+
     private void addSynArea(SynchronizeWidget synArea) {
         if (synArea == null) {
             return;
@@ -97,6 +97,17 @@ public class WorkspaceSynchronizeListener implements Listener {
         });
     }
 
+    private void enableSynAreas(final boolean enabled,
+            final List<SynchronizeWidget> synAreas) {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (SynchronizeWidget synArea : synAreas) {
+                    synArea.setVisible(enabled);
+                }
+            }
+        });
+    }
+
     /**
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
@@ -110,6 +121,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         new Thread(new Runnable() {
             public void run() {
                 enableWidgets(false, triggerWidgets);
+                enableSynAreas(true, synAreas);
 
                 try {
                     // need to sync workspaces first (for merging, up-to-date
@@ -125,6 +137,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                             .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
                 }
                 enableWidgets(true, triggerWidgets);
+                enableSynAreas(false, synAreas);
             }
         }).start();
     }
