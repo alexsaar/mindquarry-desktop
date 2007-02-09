@@ -17,8 +17,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Widget;
 import org.springframework.beans.factory.BeanFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.SVNClientInterface;
@@ -26,6 +24,7 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -36,11 +35,12 @@ public abstract class SvnOperation implements Runnable {
 
     protected final SVNClientInterface svnClient;
 
-    protected final List<Widget> progressBars;
+    protected final List<SynchronizeWidget> synAreas;
 
-    public SvnOperation(final MindClient client, List<Widget> progressBars) {
+    public SvnOperation(final MindClient client,
+            List<SynchronizeWidget> synAreas) {
         this.client = client;
-        this.progressBars = progressBars;
+        this.synAreas = synAreas;
 
         // get SVN client interface component
         BeanFactory factory = client.getFactory();
@@ -64,7 +64,7 @@ public abstract class SvnOperation implements Runnable {
             return false;
         }
     }
-    
+
     protected Status[] checkStatus(File item) {
         try {
             Status[] stati = svnClient.status(item.getPath(), true, false,
@@ -125,32 +125,42 @@ public abstract class SvnOperation implements Runnable {
         return conflicted.toArray(new String[0]);
     }
 
-    protected void setProgressSteps(final int value) {
+    public void setProgressSteps(final int value) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (Widget progressBar : progressBars) {
-                    ((ProgressBar) progressBar).setMaximum(value);
+                for (SynchronizeWidget synArea : synAreas) {
+                    synArea.setProgressSteps(value);
                 }
             }
         });
     }
 
-    protected void updateProgress() {
+    public void updateProgress() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (Widget progressBar : progressBars) {
-                    int step = ((ProgressBar) progressBar).getSelection();
-                    ((ProgressBar) progressBar).setSelection(++step);
+                for (SynchronizeWidget synArea : synAreas) {
+                    synArea.updateProgress();
                 }
             }
         });
     }
-    
-    protected void resetProgress() {
+
+    public void resetProgress() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (Widget progressBar : progressBars) {
-                    ((ProgressBar) progressBar).setSelection(0);
+                for (SynchronizeWidget synArea : synAreas) {
+                    synArea.resetProgress();
+                    synArea.setMessage(""); //$NON-NLS-1$
+                }
+            }
+        });
+    }
+
+    public void setMessage(final String message) {
+        MindClient.getShell().getDisplay().syncExec(new Runnable() {
+            public void run() {
+                for (SynchronizeWidget synArea : synAreas) {
+                    synArea.setMessage(message);
                 }
             }
         });

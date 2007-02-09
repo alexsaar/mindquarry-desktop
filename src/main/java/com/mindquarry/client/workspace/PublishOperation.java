@@ -15,15 +15,17 @@ package com.mindquarry.client.workspace;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.swt.widgets.Widget;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -31,14 +33,17 @@ import com.mindquarry.client.MindClient;
  */
 public class PublishOperation extends SvnOperation {
     public PublishOperation(final MindClient client,
-            List<Widget> progressBars) {
-        super(client, progressBars);
+            List<SynchronizeWidget> synAreas) {
+        super(client, synAreas);
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
+        resetProgress();
+        setMessage("Checking workspace changes...");
+        
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
                 .getLocation());
@@ -58,6 +63,7 @@ public class PublishOperation extends SvnOperation {
                 .getPassword());
 
         // loop existing workspace directories
+        HashMap<String, File> changed = new HashMap<String, File>();
         for (final File tsDir : directories) {
             Status[] stati = checkStatus(tsDir);
             if (stati != null && stati.length > 0) {
@@ -65,31 +71,49 @@ public class PublishOperation extends SvnOperation {
                 String msg = Messages.getString("PublishOperation.2") //$NON-NLS-1$
                         + tsDir.getName() + ":\n\n" //$NON-NLS-1$
                         + getStatiDescription(stati, tsDir.getPath());
-
-                // retrieve (asynchronously) commit message
-                final InputDialog dlg = new InputDialog(MindClient.getShell(),
-                        Messages.getString("PublishOperation.1"), //$NON-NLS-1$
-                        msg, Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
-                MindClient.getShell().getDisplay().syncExec(new Runnable() {
-                    /**
-                     * @see java.lang.Runnable#run()
-                     */
-                    public void run() {
-                        dlg.setBlockOnOpen(true);
-                        if (dlg.open() == Dialog.OK) {
-                            // commit changes
-                            try {
-                                svnClient.commit(new String[] { tsDir
-                                        .getAbsolutePath() }, dlg.getValue(),
-                                        true);
-                            } catch (ClientException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                });
-                updateProgress();
+                changed.put(msg, tsDir);
             }
         }
+        // init progress steps for progress dialog
+        final int tsCount = changed.keySet().size();
+        int tsNbr = 0;
+
+        setProgressSteps(tsCount);
+
+        Iterator<String> changedIt = changed.keySet().iterator();
+        while (changedIt.hasNext()) {
+            String msg = changedIt.next();
+            final File dir = changed.get(msg);
+
+            // retrieve (asynchronously) commit message
+            final InputDialog dlg = new InputDialog(MindClient.getShell(),
+                    Messages.getString("PublishOperation.1"), //$NON-NLS-1$
+                    msg, Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
+
+            final int tmpTsNbr = ++tsNbr;
+            MindClient.getShell().getDisplay().syncExec(new Runnable() {
+                /**
+                 * @see java.lang.Runnable#run()
+                 */
+                public void run() {
+                    dlg.setBlockOnOpen(true);
+                    if (dlg.open() == Dialog.OK) {
+                        // commit changes
+                        try {
+                            updateProgress();
+                            setMessage("Publishing workspace" + " (" //$NON-NLS-2$
+                                    + tmpTsNbr + " of " //$NON-NLS-1$
+                                    + tsCount + ")"); //$NON-NLS-1$
+
+                            svnClient.commit(new String[] { dir
+                                    .getAbsolutePath() }, dlg.getValue(), true);
+                        } catch (ClientException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }
+        resetProgress();
     }
 }

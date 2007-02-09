@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.client.MindClient;
@@ -41,6 +40,7 @@ import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskRefreshListener;
 import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
+import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 
 /**
  * Specialized implementation of the ballon widget that contains all widgets for
@@ -51,7 +51,7 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
  */
 public class MindClientBallonWidget extends BalloonWindow implements
         SelectionListener, Listener {
-    private static final Point BALLOON_SIZE = new Point(356, 387);
+    private static final Point BALLOON_SIZE = new Point(356, 397);
 
     private final Display display;
 
@@ -227,11 +227,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
         label.setBackground(group.getBackground());
         label.setText(Messages.getString("MindClientBallonWidget.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
-
-        ProgressBar progressBar = new ProgressBar(group, SWT.NONE);
-        progressBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        progressBar.setVisible(true);
-
+        
+        SynchronizeWidget synArea = new SynchronizeWidget(group);
+                
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("MindClientBallonWidget.4")); //$NON-NLS-1$
         syncButton.setToolTipText(Messages
@@ -243,7 +241,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 .getResourceAsStream(
                                         "/com/mindquarry/icons/22x22/actions/synchronize-vertical.png"))); //$NON-NLS-1$
         syncButton.addListener(SWT.Selection, WorkspaceSynchronizeListener
-                .getInstance(client, syncButton, progressBar));
+                .getInstance(client, syncButton, synArea));
     }
 
     /**

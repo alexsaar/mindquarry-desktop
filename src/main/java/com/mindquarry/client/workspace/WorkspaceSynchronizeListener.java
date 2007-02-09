@@ -21,11 +21,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
+import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 
 /**
  * Listener that is responsible for receiving and handling workspace
@@ -42,22 +42,22 @@ public class WorkspaceSynchronizeListener implements Listener {
 
     private List<Widget> triggerWidgets;
 
-    private List<Widget> progressBars;
+    private List<SynchronizeWidget> synAreas;
 
     private WorkspaceSynchronizeListener(final MindClient client) {
         this.client = client;
         triggerWidgets = new ArrayList<Widget>();
-        progressBars = new ArrayList<Widget>();
+        synAreas = new ArrayList<SynchronizeWidget>();
     }
 
     public static WorkspaceSynchronizeListener getInstance(
             final MindClient client, Widget triggerWidget,
-            ProgressBar progressBar) {
+            SynchronizeWidget synArea) {
         if (instance == null) {
             instance = new WorkspaceSynchronizeListener(client);
         }
         instance.addTriggerWidget(triggerWidget);
-        instance.addProgressBar(progressBar);
+        instance.addSynArea(synArea);
         return instance;
     }
 
@@ -69,13 +69,13 @@ public class WorkspaceSynchronizeListener implements Listener {
             triggerWidgets.add(widget);
         }
     }
-
-    private void addProgressBar(ProgressBar progressBar) {
-        if (progressBar == null) {
+    
+    private void addSynArea(SynchronizeWidget synArea) {
+        if (synArea == null) {
             return;
         }
-        if (!progressBars.contains(progressBar)) {
-            progressBars.add(progressBar);
+        if (!synAreas.contains(synArea)) {
+            synAreas.add(synArea);
         }
     }
 
@@ -107,25 +107,24 @@ public class WorkspaceSynchronizeListener implements Listener {
                     Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;
         }
-        enableWidgets(false, triggerWidgets);
-        // enableWidgets(true, progressBars);
-
         new Thread(new Runnable() {
             public void run() {
+                enableWidgets(false, triggerWidgets);
+
                 try {
                     // need to sync workspaces first (for merging, up-to-date
                     // working copies and so on)
-                    SvnOperation op = new UpdateOperation(client, progressBars);
+                    SvnOperation op = new UpdateOperation(client, synAreas);
                     op.run();
                     // share workspace changes
-                    op = new PublishOperation(client, progressBars);
+                    op = new PublishOperation(client, synAreas);
                     op.run();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     MessageDialogUtil.displaySyncErrorMsg(Messages
                             .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
                 }
                 enableWidgets(true, triggerWidgets);
-                // enableWidgets(false, progressBars);
             }
         }).start();
     }

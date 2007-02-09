@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
@@ -165,7 +164,6 @@ public class MindClient {
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
             });
-
             // extra item in menu => balloon window
             MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
             menuItem.setText(Messages.getString("MindClient.9")); //$NON-NLS-1$

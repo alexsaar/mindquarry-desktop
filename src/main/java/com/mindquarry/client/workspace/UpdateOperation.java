@@ -21,13 +21,13 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.eclipse.swt.widgets.Widget;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.util.widgets.MessageDialogUtil;
+import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.client.workspace.xml.TeamListTransformer;
 import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
 
@@ -39,22 +39,28 @@ import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
  */
 public class UpdateOperation extends SvnOperation {
     public UpdateOperation(final MindClient client,
-            List<Widget> progressBars) {
-        super(client, progressBars);
+            List<SynchronizeWidget> synAreas) {
+        super(client, synAreas);
     }
 
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
+        resetProgress();
         HashMap<String, String> teamspaces = new HashMap<String, String>();
         if (!getTeamspaceList(teamspaces)) {
+            resetProgress();
             return;
         }
+        resetProgress();
         updateWorkspaces(teamspaces);
+        resetProgress();
     }
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
+        setMessage("Retrieving teamspace list...");
+
         InputStream content = null;
         try {
             content = HttpUtil.getContentAsXML(client.getProfileList()
@@ -87,11 +93,15 @@ public class UpdateOperation extends SvnOperation {
 
         // init progress steps for progress dialog
         int tsCount = listTrans.getTeamspaces().size();
-        setProgressSteps((tsCount * 3) + 1);
+        int tsNbr = 0;
+        setProgressSteps(tsCount + 1);
         updateProgress();
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
+            setMessage("Checking workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+                    + tsCount + ")..."); //$NON-NLS-1$
+
             content = null;
             try {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
@@ -137,12 +147,21 @@ public class UpdateOperation extends SvnOperation {
         if (!teamspacesDir.exists()) {
             teamspacesDir.mkdirs();
         }
+        // init progress steps for progress dialog
+        int tsCount = workspaces.size();
+        int tsNbr = 0;
+        
+        setProgressSteps(tsCount);
+
         // loop existing workspace directories
         for (String id : teamspacesDir.list()) {
             // loop received workspace items
             if (workspaces.containsKey(id)) {
                 // remove entry from workspace list
                 workspaces.remove(id);
+
+                setMessage("Updating workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+                        + tsCount + ")"); //$NON-NLS-1$
 
                 // update workspace
                 updateWorkspace(new File(teamspacesDir.getAbsolutePath()
@@ -152,6 +171,9 @@ public class UpdateOperation extends SvnOperation {
         }
         // add additional workspace directories
         for (String id : workspaces.keySet()) {
+            setMessage("Updating workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+                    + tsCount + ")"); //$NON-NLS-1$
+
             // create directory for the new workspace
             File newWorkspaceDir = new File(teamspacesDir.getAbsolutePath()
                     + "/" + id); //$NON-NLS-1$
