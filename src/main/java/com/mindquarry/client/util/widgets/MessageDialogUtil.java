@@ -13,9 +13,7 @@
  */
 package com.mindquarry.client.util.widgets;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-
-import com.mindquarry.client.MindClient;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -27,15 +25,19 @@ public class MessageDialogUtil {
      * 
      * @param msg the message to be displayed
      */
-    public static void displaySyncErrorMsg(final String msg) {
-    	MindClient.getShell().getDisplay().syncExec(new Runnable() {
-            /**
-             * @see java.lang.Runnable#run()
-             */
-            public void run() {
-                MessageDialog.openError(MindClient.getShell(), Messages
-                        .getString("MessageDialogUtil.0"), msg); //$NON-NLS-1$
-            }
-        });
+    public static void showMsg(final String message) {
+        // standard message box
+//    	MindClient.getShell().getDisplay().syncExec(new Runnable() {
+//            /**
+//             * @see java.lang.Runnable#run()
+//             */
+//            public void run() {
+//                MessageDialog.openError(MindClient.getShell(), Messages
+//                        .getString("MessageDialogUtil.0"), msg); //$NON-NLS-1$
+//            }
+//        });
+        // notification box like firefox forecast
+        NotificationWidget widget = new NotificationWidget(new Display());
+        widget.show(message, 2000);        
     }
 }

@@ -214,10 +214,12 @@ public class TaskManager {
 
         InputStream content = null;
         try {
+            client.showMessage("this is a test");
             content = HttpUtil.getContentAsXML(profile.getLogin(), profile
                     .getPassword(), profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             // nothing todo here, task list widgets shows
+            e.printStackTrace();
         }
         // check if some contant was received
         if (content == null) {
@@ -318,9 +320,8 @@ public class TaskManager {
                 if (refreshing) {
                     destroyContent();
                     refreshWidget = new TaskUpdateComposite(taskContainer,
-                            Messages.getString("TaskManager.2") + //$NON-NLS-1$
-                                    client.getProfileList().selectedProfile()
-                                            .getName() + "..."); //$NON-NLS-1$
+                            Messages.getString("TaskManager.2") //$NON-NLS-1$
+                                    + " ..."); //$NON-NLS-1$
                 } else if (!error && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);

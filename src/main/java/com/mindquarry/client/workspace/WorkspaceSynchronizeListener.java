@@ -133,7 +133,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     op.run();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    MessageDialogUtil.displaySyncErrorMsg(Messages
+                    MessageDialogUtil.showMsg(Messages
                             .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
                 }
                 enableWidgets(true, triggerWidgets);

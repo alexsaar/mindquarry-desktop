@@ -69,7 +69,7 @@ public class UpdateOperation extends SvnOperation {
                     .selectedProfile().getEndpoint()
                     + "/teams"); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("UpdateOperation.2")); //$NON-NLS-1$
             return false;
         }
@@ -83,7 +83,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             doc = reader.read(content);
         } catch (DocumentException e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("UpdateOperation.4")); //$NON-NLS-1$
             return false;
         }
@@ -110,7 +110,7 @@ public class UpdateOperation extends SvnOperation {
                         .getProfileList().selectedProfile().getEndpoint()
                         + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
-                MessageDialogUtil.displaySyncErrorMsg(Messages
+                MessageDialogUtil.showMsg(Messages
                         .getString("UpdateOperation.6") //$NON-NLS-1$
                         + tsID + Messages.getString("UpdateOperation.7")); //$NON-NLS-1$
                 return false;
@@ -187,7 +187,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
                     + " '" //$NON-NLS-1$
                     + id + "' (" //$NON-NLS-1$
@@ -199,7 +199,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
                     + " '" //$NON-NLS-1$
                     + id + "' (" //$NON-NLS-1$

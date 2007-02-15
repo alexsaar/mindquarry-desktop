@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
@@ -76,6 +77,8 @@ public class MindClient {
     private ProfileList profileList;
 
     private File optionsFile;
+    
+    private TrayItem item;
     
     private static IconActionThread iconAction;
 
@@ -143,7 +146,7 @@ public class MindClient {
     private void createTrayIconAndMenu(Display display) {
         final Tray tray = display.getSystemTray();
 
-        final TrayItem item = new TrayItem(tray, SWT.NONE);
+        item = new TrayItem(tray, SWT.NONE);
         item.setImage(icon);
 
         final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
@@ -317,5 +320,19 @@ public class MindClient {
 
     public static IconActionThread getIconActionHandler() {
         return MindClient.iconAction;
+    }
+    
+    public void showMessage(final String message) {
+        shell.getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                ToolTip tip = new ToolTip(MindClient.getShell(), 
+                        SWT.BALLOON | SWT.ICON_INFORMATION);
+                item.setToolTip(tip);
+                tip.setMessage("A notification");
+                tip.setMessage(message);
+                tip.setAutoHide(true);
+                tip.setVisible(true);
+            }
+        });
     }
 }

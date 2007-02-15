@@ -42,10 +42,10 @@ public class HttpUtil {
         if (get.getStatusCode() == 200) {
             result = get.getResponseBodyAsStream();
         } else if (get.getStatusCode() == 401) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.0")); //$NON-NLS-1$
         } else {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.1") //$NON-NLS-1$
                     + get.getStatusCode());
         }
@@ -61,10 +61,10 @@ public class HttpUtil {
         if (get.getStatusCode() == 200) {
             result = get.getResponseBodyAsString();
         } else if (get.getStatusCode() == 401) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.0")); //$NON-NLS-1$
         } else {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.1") //$NON-NLS-1$
                     + get.getStatusCode());
         }
@@ -83,13 +83,13 @@ public class HttpUtil {
         client.executeMethod(put);
 
         if (put.getStatusCode() == 401) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.0")); //$NON-NLS-1$
         } else if (put.getStatusCode() == 302) {
             // we received a redirect to the URL of the putted document, so
             // everthign seems right and we have nothing to do
         } else if (put.getStatusCode() != 200) {
-            MessageDialogUtil.displaySyncErrorMsg(Messages
+            MessageDialogUtil.showMsg(Messages
                     .getString("HttpUtil.1") //$NON-NLS-1$
                     + put.getStatusCode());
         }

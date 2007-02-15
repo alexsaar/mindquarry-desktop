@@ -43,30 +43,21 @@ public class NotificationWidget {
     public NotificationWidget(Display display) {
         this.display = display;
 
-        shell = new Shell(SWT.ON_TOP);
-        shell.setLayout(new GridLayout(2, false));
-        shell.setLocation(400,400);
-
-        createContents();
-
-        shell.pack();
-        shell.open();
-    }
-    
-    public static void main(String[] args) {
-        Display display = new Display();
-
-        NotificationWidget shell = new NotificationWidget(display);
-        shell.show("this is a test with much more text", 2000); //$NON-NLS-1$
-
-//        while (!shell.isDisposed()) {
-//            if (!display.readAndDispatch())
-//                display.sleep();
-//        }
-        display.dispose();
+        display.syncExec(new Runnable() {
+            public void run() {
+                createContents();
+            }
+        });
     }
 
     private void createContents() {
+        shell = new Shell(SWT.ON_TOP);
+        shell.setLayout(new GridLayout(2, false));
+        shell.setLocation(display.getBounds().width - WIDTH, display
+                .getBounds().height);
+        shell.setLocation(400, 400);
+        shell.setSize(WIDTH, HEIGHT);
+
         img = new Image(null, getClass().getResourceAsStream(
                 "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
 
@@ -75,32 +66,51 @@ public class NotificationWidget {
         icon.setImage(img);
 
         msgLabel = new Label(shell, SWT.WRAP);
+        msgLabel.setSize(WIDTH - 16, HEIGHT);
         msgLabel.setText(""); //$NON-NLS-1$
+
+        shell.open();
     }
 
-    public void show(String message, final long duration) {
-        msgLabel.setText(message);
-        msgLabel.redraw();
-        shell.pack();
-        shell.setSize(WIDTH, HEIGHT);
-        shell.layout();
+    public void show(final String message, final long duration) {
+        display.syncExec(new Runnable() {
+            public void run() {
+                msgLabel.setText(message);
+                msgLabel.redraw();
+            }
+        });
 
-        int height = shell.getSize().y;
-        int x = shell.getLocation().x;
-        int y = shell.getLocation().y;
+        final int height = shell.getSize().y;
+        new Thread(new Runnable() {
+            public void run() {
+                for (int i = 0; i <= height; i++) {
+                    updatePosition(true);
+                    redrawAndSleep();
+                }
+                try {
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {
+                }
+                for (int i = 0; i <= height; i++) {
+                    updatePosition(false);
+                    redrawAndSleep();
+                }
+            }
+        }).start();
+    }
 
-        for (int i = 0; i <= height; i++) {
-            shell.setLocation(x, y--);
-            redrawAndSleep();
-        }
-        try {
-            Thread.sleep(duration);
-        } catch (InterruptedException e) {
-        }
-        for (int i = 0; i <= height; i++) {
-            shell.setLocation(x, y++);
-            redrawAndSleep();
-        }
+    private void updatePosition(final boolean up) {
+        display.syncExec(new Runnable() {
+            public void run() {
+                int x = shell.getLocation().x;
+                int y = shell.getLocation().y;
+                if (up) {
+                    shell.setLocation(x, --y);
+                } else {
+                    shell.setLocation(x, ++y);
+                }
+            }
+        });
     }
 
     private void redrawAndSleep() {
@@ -109,13 +119,13 @@ public class NotificationWidget {
                 shell.redraw(shell.getLocation().x, shell.getLocation().y,
                         shell.getSize().x, shell.getSize().y, true);
                 shell.layout(true, true);
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         });
+        try {
+            Thread.sleep(6);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isDisposed() {
@@ -123,5 +133,19 @@ public class NotificationWidget {
             img.dispose();
         }
         return shell.isDisposed();
+    }
+
+    public static void main(String[] args) {
+        Display display = new Display();
+
+        NotificationWidget shell = new NotificationWidget(display);
+        shell.show("this is a test with much more text", 2000); //$NON-NLS-1$
+
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        display.dispose();
     }
 }
