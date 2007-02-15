@@ -144,7 +144,7 @@ public class MindClient {
     }
 
     private void createTrayIconAndMenu(Display display) {
-        final Tray tray = display.getSystemTray();
+        Tray tray = display.getSystemTray();
 
         item = new TrayItem(tray, SWT.NONE);
         item.setImage(icon);
@@ -325,12 +325,11 @@ public class MindClient {
     public void showMessage(final String message) {
         shell.getDisplay().asyncExec(new Runnable() {
             public void run() {
-                ToolTip tip = new ToolTip(MindClient.getShell(), 
-                        SWT.BALLOON | SWT.ICON_INFORMATION);
-                item.setToolTip(tip);
-                tip.setMessage("A notification");
+                final ToolTip tip = new ToolTip(shell, SWT.BALLOON
+                        | SWT.ICON_INFORMATION);
                 tip.setMessage(message);
-                tip.setAutoHide(true);
+                tip.setText("Notification from a tray item");
+                item.setToolTip(tip);
                 tip.setVisible(true);
             }
         });

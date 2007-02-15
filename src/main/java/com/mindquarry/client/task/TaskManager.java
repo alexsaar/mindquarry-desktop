@@ -214,7 +214,7 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            client.showMessage("this is a test");
+            client.showMessage("test");
             content = HttpUtil.getContentAsXML(profile.getLogin(), profile
                     .getPassword(), profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {

@@ -35,9 +35,6 @@ public class Snippet225 {
         Tray tray = display.getSystemTray();
         if (tray != null) {
             TrayItem item = new TrayItem(tray, SWT.NONE);
-//            image = new Image(display, Snippet225.class
-//                    .getResourceAsStream("eclipse.png"));
-//            item.setImage(image);
             tip.setText("Notification from a tray item");
             item.setToolTip(tip);
             tip.setVisible(true);
