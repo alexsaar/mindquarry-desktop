@@ -42,7 +42,7 @@ public class PublishOperation extends SvnOperation {
      */
     public void run() {
         resetProgress();
-        setMessage("Checking workspace changes...");
+        setMessage(Messages.getString("PublishOperation.0")); //$NON-NLS-1$
         
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
@@ -101,7 +101,7 @@ public class PublishOperation extends SvnOperation {
                         // commit changes
                         try {
                             updateProgress();
-                            setMessage("Publishing workspace" + " (" //$NON-NLS-2$
+                            setMessage(Messages.getString("PublishOperation.4") + " ("  //$NON-NLS-1$//$NON-NLS-2$
                                     + tmpTsNbr + " of " //$NON-NLS-1$
                                     + tsCount + ")"); //$NON-NLS-1$
 

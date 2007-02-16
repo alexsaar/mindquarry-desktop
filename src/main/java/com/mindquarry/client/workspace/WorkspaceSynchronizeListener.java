@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.widgets.MessageDialogUtil;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 
 /**
@@ -133,7 +132,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     op.run();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    MessageDialogUtil.showMsg(Messages
+                    MindClient.showErrorMessage(Messages
                             .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
                 }
                 enableWidgets(true, triggerWidgets);

@@ -78,7 +78,7 @@ public class MindClient {
 
     private File optionsFile;
     
-    private TrayItem item;
+    private static TrayItem item;
     
     private static IconActionThread iconAction;
 
@@ -322,14 +322,15 @@ public class MindClient {
         return MindClient.iconAction;
     }
     
-    public void showMessage(final String message) {
+    public static void showErrorMessage(final String message) {
         shell.getDisplay().asyncExec(new Runnable() {
             public void run() {
                 final ToolTip tip = new ToolTip(shell, SWT.BALLOON
-                        | SWT.ICON_INFORMATION);
+                        | SWT.ICON_ERROR);
                 tip.setMessage(message);
-                tip.setText("Notification from a tray item");
+                tip.setText(Messages.getString("MindClient.12")); //$NON-NLS-1$
                 item.setToolTip(tip);
+                tip.setAutoHide(true);
                 tip.setVisible(true);
             }
         });

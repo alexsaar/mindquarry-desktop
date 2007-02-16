@@ -26,7 +26,6 @@ import org.tigris.subversion.javahl.Revision;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.util.network.HttpUtil;
-import com.mindquarry.client.util.widgets.MessageDialogUtil;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.client.workspace.xml.TeamListTransformer;
 import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
@@ -59,7 +58,7 @@ public class UpdateOperation extends SvnOperation {
     }
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
-        setMessage("Retrieving teamspace list...");
+        setMessage(Messages.getString("UpdateOperation.1")); //$NON-NLS-1$
 
         InputStream content = null;
         try {
@@ -69,7 +68,7 @@ public class UpdateOperation extends SvnOperation {
                     .selectedProfile().getEndpoint()
                     + "/teams"); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialogUtil.showMsg(Messages
+            MindClient.showErrorMessage(Messages
                     .getString("UpdateOperation.2")); //$NON-NLS-1$
             return false;
         }
@@ -83,7 +82,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             doc = reader.read(content);
         } catch (DocumentException e) {
-            MessageDialogUtil.showMsg(Messages
+            MindClient.showErrorMessage(Messages
                     .getString("UpdateOperation.4")); //$NON-NLS-1$
             return false;
         }
@@ -99,7 +98,7 @@ public class UpdateOperation extends SvnOperation {
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
-            setMessage("Checking workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+            setMessage(Messages.getString("UpdateOperation.0") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     + tsCount + ")..."); //$NON-NLS-1$
 
             content = null;
@@ -110,7 +109,7 @@ public class UpdateOperation extends SvnOperation {
                         .getProfileList().selectedProfile().getEndpoint()
                         + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
-                MessageDialogUtil.showMsg(Messages
+                MindClient.showErrorMessage(Messages
                         .getString("UpdateOperation.6") //$NON-NLS-1$
                         + tsID + Messages.getString("UpdateOperation.7")); //$NON-NLS-1$
                 return false;
@@ -160,7 +159,7 @@ public class UpdateOperation extends SvnOperation {
                 // remove entry from workspace list
                 workspaces.remove(id);
 
-                setMessage("Updating workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+                setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                         + tsCount + ")"); //$NON-NLS-1$
 
                 // update workspace
@@ -171,7 +170,7 @@ public class UpdateOperation extends SvnOperation {
         }
         // add additional workspace directories
         for (String id : workspaces.keySet()) {
-            setMessage("Updating workspace" + " (" + ++tsNbr + " of " //$NON-NLS-2$ //$NON-NLS-3$
+            setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     + tsCount + ")"); //$NON-NLS-1$
 
             // create directory for the new workspace
@@ -187,7 +186,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             svnClient.checkout(url, dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil.showMsg(Messages
+            MindClient.showErrorMessage(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
                     + " '" //$NON-NLS-1$
                     + id + "' (" //$NON-NLS-1$
@@ -199,7 +198,7 @@ public class UpdateOperation extends SvnOperation {
         try {
             svnClient.update(dir.getAbsolutePath(), Revision.HEAD, true);
         } catch (ClientException e) {
-            MessageDialogUtil.showMsg(Messages
+            MindClient.showErrorMessage(Messages
                     .getString("UpdateOperation.11") //$NON-NLS-1$
                     + " '" //$NON-NLS-1$
                     + id + "' (" //$NON-NLS-1$
