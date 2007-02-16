@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -249,8 +248,7 @@ public class MindClient {
             profileList = (ProfileList) is.readObject();
             is.close();
         } catch (Exception e) {
-            MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
-                    Messages.getString("MindClient.5")); //$NON-NLS-1$
+            showErrorMessage(Messages.getString("MindClient.5")); //$NON-NLS-1$
         }
         // if no profile is selected, use the first one
         if (profileList.selectedProfile() == null && profileList.size() > 0) {
@@ -279,8 +277,7 @@ public class MindClient {
             os.writeObject(profileList);
             os.close();
         } catch (Exception e) {
-            MessageDialog.openError(shell, Messages.getString("MindClient.4"), //$NON-NLS-1$
-                    Messages.getString("MindClient.7")); //$NON-NLS-1$
+            showErrorMessage(Messages.getString("MindClient.7")); //$NON-NLS-1$
         }
     }
 

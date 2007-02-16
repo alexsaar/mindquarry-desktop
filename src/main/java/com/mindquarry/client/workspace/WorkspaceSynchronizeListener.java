@@ -16,7 +16,6 @@ package com.mindquarry.client.workspace;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -112,9 +111,8 @@ public class WorkspaceSynchronizeListener implements Listener {
      */
     public void handleEvent(Event event) {
         if (client.getProfileList().selectedProfile() == null) {
-            MessageDialog.openError(MindClient.getShell(), Messages
-                    .getString("WorkspaceSynchronizeListener.2"), //$NON-NLS-1$
-                    Messages.getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
+            MindClient.showErrorMessage(Messages
+                    .getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;
         }
         new Thread(new Runnable() {
