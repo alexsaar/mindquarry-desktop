@@ -11,7 +11,7 @@
 	basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
 	License for the specific language governing rights and limitations
 	under the License.
---> 
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -19,129 +19,22 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.mindquarry</groupId>
-		<artifactId>mindquarry</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<groupId>com.mindquarry.tools</groupId>
+		<artifactId>mindquarry-desktop-tools</artifactId>
+		<version>1.0-M1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.mindquarry.minutes.editor</groupId>
+	<groupId>com.mindquarry.tools</groupId>
 	<artifactId>mindquarry-minutes-editor</artifactId>
-	<version>1.0-M1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Mindquarry Minutes Editor</name>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-minutes-editor/trunk/</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-minutes-editor/trunk/</url>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-minutes-editor/trunk/</developerConnection>
+		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor/</connection>
+		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor/</url>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor/</developerConnection>
 	</scm>
-
-	<dependencies>
-		<!-- XML & XPath libs -->
-		<dependency>
-			<groupId>dax</groupId>
-			<artifactId>dax</artifactId>
-			<version>0.2</version>
-		</dependency>
-		
-		<!-- apache-commons libs -->
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-
-		<!-- eclipse libs -->
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>commands</artifactId>
-			<version>3.3.0.I20061114</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.equinox</groupId>
-			<artifactId>common</artifactId>
-			<version>3.3.0.v20061117</version>
-		</dependency>
-		<dependency>
-			<groupId>swt</groupId>
-			<artifactId>jface</artifactId>
-			<version>3.3.0.I20061213-0010</version>
-		</dependency>
-		
-		<!-- icon libs -->
-		<dependency>
-			<groupId>com.mindquarry.icons</groupId>
-			<artifactId>mindquarry-icons</artifactId>
-			<version>0.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.tango-project</groupId>
-			<artifactId>tango-icon-theme</artifactId>
-			<version>0.7.1</version>
-		</dependency>
-	</dependencies>
-	
-	<profiles>
-		<!-- OS profiles:
-			 - everything must be in lower case, eg. system property os.name is 'Mac OS X' => 'mac os x' in this pom
-			 - available families are: dos, mac, netware, os/2, tandem, unix, windows, win9x, z/os, os/400
-			 
-			 (see http://www.google.com/codesearch?hl=en&q=+org.codehaus.plexus.util.Os+show:ruAGdVsOOwU:4-AYRgF18sw:nLnBYU_72Vc&sa=N&cd=7&ct=rc&cs_p=http://ftp.debian.org/debian/pool/main/libp/libplexus-utils/libplexus-utils_1.0alpha1.orig.tar.gz&cs_f=libplexus-utils-1.0alpha1/src/main/java/org/codehaus/plexus/util/Os.java#a0)
-			-->
-		<profile>
-			<id>macosx</id>
-			<activation>
-				<os>
-					<name>mac os x</name>
-					<!--<family>mac</family>-->
-				</os>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-macosx</artifactId>
-					<version>3.3M4</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>windows</id>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-windows</artifactId>
-					<version>3.3M4</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>linux</id>
-			<activation>
-				<os>
-					<name>linux</name>
-					<!-- <family>unix</family> -->
-				</os>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-linux</artifactId>
-					<version>3.3M4</version>
-				</dependency>
-			</dependencies>
-		</profile>
-	</profiles>
 
 	<build>
 		<plugins>
@@ -149,7 +42,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<tagBase>
-						https://www.mindquarry.org/repos/mindquarry-minutes-editor/tags
+						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags/mindquarry-minutes-editor/
 					</tagBase>
 				</configuration>
 			</plugin>
