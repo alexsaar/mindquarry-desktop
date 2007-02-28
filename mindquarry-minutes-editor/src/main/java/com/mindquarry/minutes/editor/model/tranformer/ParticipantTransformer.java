@@ -16,7 +16,7 @@ package com.mindquarry.minutes.editor.model.tranformer;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
-import com.mindquarry.minutes.editor.model.ModelPart;
+import com.mindquarry.minutes.editor.model.ModelBase;
 import com.mindquarry.minutes.editor.model.Participant;
 
 import dax.Path;
@@ -41,10 +41,10 @@ public class ParticipantTransformer extends TransformerBase {
     /**
      * {@inheritJavaDoc}
      * 
-     * @see com.mindquarry.minutes.editor.model.tranformer.TransformerBase#handleModelPart(com.mindquarry.minutes.editor.model.ModelPart)
+     * @see com.mindquarry.minutes.editor.model.tranformer.TransformerBase#handleModelPart(com.mindquarry.minutes.editor.model.ModelBase)
      */
     @Override
-    protected void handleModelPart(ModelPart model) {
+    protected void handleModelPart(ModelBase model) {
         participant = (Participant) model;
     }
 }

@@ -28,12 +28,12 @@ import com.mindquarry.minutes.editor.model.tranformer.TransformerBase;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public abstract class ModelPart {
-    public ModelPart() {
+public abstract class ModelBase {
+    public ModelBase() {
         // nothing to do here
     }
 
-    public ModelPart(InputStream data, TransformerBase transformer) {
+    public ModelBase(InputStream data, TransformerBase transformer) {
         parseInput(data, transformer);
     }
 

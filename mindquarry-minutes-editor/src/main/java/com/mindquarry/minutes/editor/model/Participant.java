@@ -25,10 +25,10 @@ import com.mindquarry.minutes.editor.model.tranformer.ParticipantTransformer;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class Participant extends ModelPart {
-    private Image picture = null;
+public class Participant extends ModelBase {
+    private Image picture;
 
-    private String name = null;
+    private String name;
 
     public Participant() {
         super();

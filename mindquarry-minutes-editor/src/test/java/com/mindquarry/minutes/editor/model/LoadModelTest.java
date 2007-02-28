@@ -29,8 +29,8 @@ public class LoadModelTest extends TestCase {
     @Test
     public void testLoadParticipant() {
         InputStream is = getClass().getResourceAsStream(
-                "/com/mindquarry/minutes/editor/model/participant.xml");
+                "/com/mindquarry/minutes/editor/model/participant.xml"); //$NON-NLS-1$
         Participant participant = new Participant(is);
-        assertEquals("Alexander Saar", participant.getName());
+        assertEquals("Alexander Saar", participant.getName()); //$NON-NLS-1$
     }
 }

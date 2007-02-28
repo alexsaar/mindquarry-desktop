@@ -15,7 +15,7 @@ package com.mindquarry.minutes.editor.model.tranformer;
 
 import org.dom4j.Document;
 
-import com.mindquarry.minutes.editor.model.ModelPart;
+import com.mindquarry.minutes.editor.model.ModelBase;
 
 import dax.Transformer;
 
@@ -26,10 +26,10 @@ import dax.Transformer;
  *         Saar</a>
  */
 public abstract class TransformerBase extends Transformer {
-    public void execute(ModelPart model, Document doc) {
+    public void execute(ModelBase model, Document doc) {
         handleModelPart(model);
         super.execute(doc);
     }
     
-    protected abstract void handleModelPart(ModelPart model);
+    protected abstract void handleModelPart(ModelBase model);
 }
