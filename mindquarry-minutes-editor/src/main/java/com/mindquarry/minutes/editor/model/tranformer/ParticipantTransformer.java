@@ -16,8 +16,10 @@ package com.mindquarry.minutes.editor.model.tranformer;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
+import com.mindquarry.minutes.editor.model.ModelPart;
+import com.mindquarry.minutes.editor.model.Participant;
+
 import dax.Path;
-import dax.Transformer;
 
 /**
  * Transformer for processing XML descriptions of participants.
@@ -25,11 +27,24 @@ import dax.Transformer;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ParticipantTransformer extends Transformer {
+public class ParticipantTransformer extends TransformerBase {
+    private Participant participant;
+
     @Path("//name")
     public void name(Node node) {
         if (node instanceof Element) {
             Element element = (Element) node;
+            participant.setName(element.getText());
         }
+    }
+
+    /**
+     * {@inheritJavaDoc}
+     * 
+     * @see com.mindquarry.minutes.editor.model.tranformer.TransformerBase#handleModelPart(com.mindquarry.minutes.editor.model.ModelPart)
+     */
+    @Override
+    protected void handleModelPart(ModelPart model) {
+        participant = (Participant) model;
     }
 }

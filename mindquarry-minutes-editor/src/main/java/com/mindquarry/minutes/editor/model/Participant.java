@@ -26,11 +26,57 @@ import com.mindquarry.minutes.editor.model.tranformer.ParticipantTransformer;
  *         Saar</a>
  */
 public class Participant extends ModelPart {
-    private Image picture;
+    private Image picture = null;
 
-    private String name;
+    private String name = null;
 
+    public Participant() {
+        super();
+    }
+    
     public Participant(InputStream data) {
         super(data, new ParticipantTransformer());
+    }
+    
+    public Participant(Image picture, String name) {
+        super();
+        this.picture = picture;
+        this.name = name;
+    }
+
+    /**
+     * Getter for name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter for name.
+     *
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Getter for picture.
+     *
+     * @return the picture
+     */
+    public Image getPicture() {
+        return picture;
+    }
+
+    /**
+     * Setter for picture.
+     *
+     * @param picture the picture to set
+     */
+    public void setPicture(Image picture) {
+        this.picture = picture;
     }
 }

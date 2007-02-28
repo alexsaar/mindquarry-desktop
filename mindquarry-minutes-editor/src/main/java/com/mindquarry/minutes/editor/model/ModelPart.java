@@ -19,7 +19,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
-import dax.Transformer;
+import com.mindquarry.minutes.editor.model.tranformer.TransformerBase;
 
 /**
  * Abstract base class for all model types. Provides base functionality for
@@ -29,11 +29,15 @@ import dax.Transformer;
  *         Saar</a>
  */
 public abstract class ModelPart {
-    public ModelPart(InputStream data, Transformer transformer) {
+    public ModelPart() {
+        // nothing to do here
+    }
+
+    public ModelPart(InputStream data, TransformerBase transformer) {
         parseInput(data, transformer);
     }
 
-    private void parseInput(InputStream data, Transformer transformer) {
+    private void parseInput(InputStream data, TransformerBase transformer) {
         SAXReader reader = new SAXReader();
         Document doc;
         try {
@@ -42,6 +46,6 @@ public abstract class ModelPart {
             e.printStackTrace();
             return;
         }
-        transformer.execute(doc);
+        transformer.execute(this, doc);
     }
 }
