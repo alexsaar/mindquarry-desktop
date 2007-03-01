@@ -15,11 +15,9 @@ package com.mindquarry.minutes.editor.model;
 
 import java.io.InputStream;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Image;
 
-import com.mindquarry.minutes.editor.MinutesEditor;
-import com.mindquarry.minutes.editor.model.tranformer.ParticipantTransformer;
+import com.mindquarry.minutes.editor.model.tranformer.ConversationTransformer;
 
 /**
  * Model type that represents a conversation participant.
@@ -27,59 +25,37 @@ import com.mindquarry.minutes.editor.model.tranformer.ParticipantTransformer;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class Participant extends ModelBase {
-    private Image picture;
+public class Conversation extends ModelBase {
+    private String topic;
 
-    private String name;
-
-    public Participant() {
+    public Conversation() {
         super();
     }
-
-    public Participant(InputStream data) {
-        super(data, new ParticipantTransformer());
+    
+    public Conversation(InputStream data) {
+        super(data, new ConversationTransformer());
     }
-
-    public Participant(Image picture, String name) {
+    
+    public Conversation(Image picture, String name) {
         super();
-        this.picture = picture;
-        this.name = name;
+        this.topic = name;
     }
 
     /**
      * Getter for name.
-     * 
+     *
      * @return the name
      */
-    public String getName() {
-        return name;
+    public String getTopic() {
+        return topic;
     }
 
     /**
      * Setter for name.
-     * 
+     *
      * @param name the name to set
      */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Getter for picture.
-     * 
-     * @return the picture
-     */
-    public Image getPicture() {
-        return JFaceResources.getImage(MinutesEditor.SMILE_IMG_KEY);
-        // return picture;
-    }
-
-    /**
-     * Setter for picture.
-     * 
-     * @param picture the picture to set
-     */
-    public void setPicture(Image picture) {
-        this.picture = picture;
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 }

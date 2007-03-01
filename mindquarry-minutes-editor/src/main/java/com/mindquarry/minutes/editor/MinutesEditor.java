@@ -13,20 +13,25 @@
  */
 package com.mindquarry.minutes.editor;
 
-import org.eclipse.jface.action.Action;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.minutes.editor.action.ActionBase;
 import com.mindquarry.minutes.editor.action.AddMemberAction;
 import com.mindquarry.minutes.editor.action.EditPreferencesAction;
 import com.mindquarry.minutes.editor.action.NewConversationAction;
@@ -45,22 +50,34 @@ public class MinutesEditor extends ApplicationWindow {
 
     public static final String EDITOR_IMG_KEY = "editor-image"; //$NON-NLS-1$
 
-    private Action newConversationAction;
+    public static final String SMILE_IMG_KEY = "smile"; //$NON-NLS-1$
 
-    private Action openConversationAction;
+    public static final String CONV_TITLE_FONT_KEY = "conversation-title"; //$NON-NLS-1$
 
-    private Action addMemberAction;
+    public static final String CONV_TOPIC_TITLE_FONT_KEY = "conversation-topic-title"; //$NON-NLS-1$
 
-    private Action editPreferencesAction;
+    private static List<ActionBase> actions;
+
+    static {
+        // create actions
+        actions = new ArrayList<ActionBase>();
+        actions.add(new NewConversationAction());
+        actions.add(new OpenConversationAction());
+        actions.add(new AddMemberAction());
+        actions.add(new EditPreferencesAction());
+    }
+
+    public static ActionBase getAction(String id) {
+        for (ActionBase action : actions) {
+            if (action.getId().equals(id)) {
+                return action;
+            }
+        }
+        return null;
+    }
 
     public MinutesEditor() {
         super(null);
-
-        // create actions
-        newConversationAction = new NewConversationAction();
-        openConversationAction = new OpenConversationAction();
-        addMemberAction = new AddMemberAction();
-        editPreferencesAction = new EditPreferencesAction();
     }
 
     /**
@@ -82,12 +99,12 @@ public class MinutesEditor extends ApplicationWindow {
     @Override
     protected ToolBarManager createToolBarManager(int style) {
         ToolBarManager manager = super.createToolBarManager(style);
-        manager.add(newConversationAction);
-        manager.add(openConversationAction);
+        manager.add(getAction(NewConversationAction.class.getName()));
+        manager.add(getAction(OpenConversationAction.class.getName()));
         manager.add(new Separator());
-        manager.add(addMemberAction);
+        manager.add(getAction(AddMemberAction.class.getName()));
         manager.add(new Separator());
-        manager.add(editPreferencesAction);
+        manager.add(getAction(EditPreferencesAction.class.getName()));
         return manager;
     }
 
@@ -99,7 +116,7 @@ public class MinutesEditor extends ApplicationWindow {
      */
     @Override
     protected Control createContents(Composite parent) {
-        initImageRegistry();
+        initRegistries();
 
         SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -121,7 +138,7 @@ public class MinutesEditor extends ApplicationWindow {
     /**
      * Initialzes the image registry for the minutes editor.
      */
-    private void initImageRegistry() {
+    private void initRegistries() {
         ImageRegistry reg = JFaceResources.getImageRegistry();
 
         Image img = new Image(
@@ -129,5 +146,17 @@ public class MinutesEditor extends ApplicationWindow {
                 MinutesEditor.class
                         .getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
         reg.put(EDITOR_IMG_KEY, img);
+        img = new Image(
+                Display.getCurrent(),
+                MinutesEditor.class
+                        .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/emotes/face-smile.png")); //$NON-NLS-1$
+        reg.put(SMILE_IMG_KEY, img);
+
+        FontRegistry fReg = JFaceResources.getFontRegistry();
+        fReg.put(CONV_TOPIC_TITLE_FONT_KEY, new FontData[] { new FontData(
+                "Arial", //$NON-NLS-1$
+                10, SWT.ITALIC) });
+        fReg.put(CONV_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
+                10, SWT.BOLD) });
     }
 }

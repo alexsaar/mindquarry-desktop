@@ -36,6 +36,7 @@ public abstract class EditorWidget extends Composite {
     public EditorWidget(Composite parent, int style) {
         super(parent, style);
 
+        // init layout and content
         setLayout(new FillLayout());
         createContents(this);
     }

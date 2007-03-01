@@ -33,4 +33,12 @@ public class LoadModelTest extends TestCase {
         Participant participant = new Participant(is);
         assertEquals("Alexander Saar", participant.getName()); //$NON-NLS-1$
     }
+    
+    @Test
+    public void testLoadConversation() {
+        InputStream is = getClass().getResourceAsStream(
+                "/com/mindquarry/minutes/editor/model/conversation.xml"); //$NON-NLS-1$
+        Conversation conversation = new Conversation(is);
+        assertEquals("discuss something", conversation.getTopic()); //$NON-NLS-1$
+    }
 }
