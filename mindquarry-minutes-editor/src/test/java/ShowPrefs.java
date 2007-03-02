@@ -20,7 +20,7 @@ public class ShowPrefs {
 
         // create pref manager and add nodes
         PreferenceManager mgr = new PreferenceManager();
-        mgr.addToRoot(new PreferenceNode("profiles", new ProfilesPage()));
+        mgr.addToRoot(new PreferenceNode("profiles", new ServerProfilesPage()));
         mgr.addToRoot(new PreferenceNode("shortcuts", new ShortcutsPage()));
 
         // Set the preference store

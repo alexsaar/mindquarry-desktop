@@ -24,6 +24,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -43,38 +45,36 @@ import org.eclipse.swt.widgets.Text;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ProfilesPage extends PreferencePage {
+public class ServerProfilesPage extends PreferencePage {
     public static final String PROFILE_KEY_BASE = "com.mindquarry.server.profile."; //$NON-NLS-1$
 
     private Text login;
 
     private Text pwd;
 
-    private Text location;
+    private Text folder;
 
-    private Text endpoint;
+    private Text url;
 
-    private Button delProfileButton;
+    private Button delButton;
 
     private List profileList;
 
     private java.util.List<Profile> profiles;
 
     /**
-     * PrefPageTwo constructor
+     * ProfilesPage default constructor
      */
-    public ProfilesPage() {
+    public ServerProfilesPage() {
         super("Server Profiles");
+        profiles = new ArrayList<Profile>();
 
         // inital preference page
         setDescription("Manage different Mindquarry installations by using Mindquarry Server profiles.");
-        setImageDescriptor(ImageDescriptor
-                .createFromImage(new Image(
-                        null,
-                        getClass()
-                                .getResourceAsStream(
-                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")))); //$NON-NLS-1$
-        profiles = new ArrayList<Profile>();
+        Image img = new Image(null, getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+        ImageDescriptor imgDesc = ImageDescriptor.createFromImage(img);
+        setImageDescriptor(imgDesc);
     }
 
     /**
@@ -105,59 +105,51 @@ public class ProfilesPage extends PreferencePage {
         Composite buttonArea = new Composite(profileGroup, SWT.NONE);
         buttonArea.setLayout(new GridLayout(1, true));
 
-        Button addProfileButton = new Button(buttonArea, SWT.PUSH);
-        addProfileButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        addProfileButton.setText("Add Profile...");
-        addProfileButton.addListener(SWT.Selection, new Listener() {
+        Button addButton = new Button(buttonArea, SWT.PUSH);
+        addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        addButton.setText("Add Profile...");
+        addButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 InputDialog dlg = new InputDialog(getShell(),
                         "Create new server profile",
                         "Please enter your profile name",
-                        "My Mindquarry Server Profile", new IInputValidator() {
-                            /**
-                             * @see org.eclipse.jface.dialogs.IInputValidator#isValid(java.lang.String)
-                             */
-                            public String isValid(String text) {
-                                // check if a name was provided for the profile
-                                if (text.length() < 1) {
-                                    return "Profile name must contain at least one character.";
-                                }
-                                // check if the name does already exist
-                                for (String profile : profileList.getItems()) {
-                                    if (text.equals(profile)) {
-                                        return "A profile with the same name already exists. Each profile must have a unique name.";
-                                    }
-                                }
-                                return null;
-                            }
-                        });
+                        "My Mindquarry Server Profile",
+                        new AddProfileInputValidator());
+
+                // open dialog and check results
                 if (dlg.open() == Window.OK) {
-                    profileList.add(dlg.getValue());
+                    Profile profile = new Profile(dlg.getValue(), "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            ""); //$NON-NLS-1$
+                    profileList.add(profile.getName());
+                    profiles.add(profile);
                     resetFields();
                 }
             }
         });
-        delProfileButton = new Button(buttonArea, SWT.PUSH);
-        delProfileButton.setLayoutData(new GridData(GridData.FILL_BOTH));
-        delProfileButton.setText("Delete Profile");
-        delProfileButton.addListener(SWT.Selection, new Listener() {
+        delButton = new Button(buttonArea, SWT.PUSH);
+        delButton.setLayoutData(new GridData(GridData.FILL_BOTH));
+        delButton.setText("Delete Profile");
+        delButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
+                Profile profile = findByName(profileList.getSelection()[0]);
+                profiles.remove(profile);
                 profileList.remove(profileList.getSelectionIndices());
-                delProfileButton.setEnabled(false);
+
+                delButton.setEnabled(false);
                 resetFields();
             }
         });
         profileList.addListener(SWT.Selection, new Listener() {
-            /**
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
             public void handleEvent(Event event) {
-                delProfileButton.setEnabled(true);
+                delButton.setEnabled(true);
 
-                // login.setText(profile.getLogin());
-                // pwd.setText(profile.getPassword());
-                // endpoint.setText(profile.getEndpoint());
-                // location.setText(profile.getLocation());
+                Profile profile = findByName(profileList.getSelection()[0]);
+                login.setText(profile.getLogin());
+                pwd.setText(profile.getPassword());
+                url.setText(profile.getServerURL());
+                folder.setText(profile.getWorkspaceFolder());
             }
         });
     }
@@ -168,28 +160,56 @@ public class ProfilesPage extends PreferencePage {
         settingsGroup.setText("Profile Settings");
         settingsGroup.setLayout(new GridLayout(1, true));
 
+        // init login section
         CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
         loginLabel.setText("Your Login ID:");
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         login = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
         login.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+        login.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setLogin(login.getText());
+                }
+            }
+        });
+        // init password section
         CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
         pwdLabel.setText("Your Password:");
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         pwd = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
         pwd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+        pwd.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setPassword(pwd.getText());
+                }
+            }
+        });
+        // init server URL section
         CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
         quarryEndpointLabel.setText("URL of the Mindquarry Server:");
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        endpoint = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
-        endpoint.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
+        url = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        url.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setServerURL(url.getText());
+                }
+            }
+        });
+        // init workspace folder section
         CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
         locationLabel.setText("Folder for Workspaces:");
         locationLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -204,27 +224,50 @@ public class ProfilesPage extends PreferencePage {
         ((GridLayout) locationArea.getLayout()).marginHeight = 0;
         ((GridLayout) locationArea.getLayout()).marginWidth = 0;
 
-        location = new Text(locationArea, SWT.BORDER);
-        location.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        Button selectLocationButton = new Button(locationArea, SWT.PUSH);
-        selectLocationButton.setText("Browse...");
-        selectLocationButton.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
-                fd.setText("Select folder for workspaces");
-                location.setText(fd.open());
+        folder = new Text(locationArea, SWT.BORDER);
+        folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        folder.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setWorkspaceFolder(folder.getText());
+                }
             }
         });
+        Button selectWSLocationButton = new Button(locationArea, SWT.PUSH);
+        selectWSLocationButton.setText("Browse...");
+        selectWSLocationButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
+                fd.setText("Select folder for workspaces.");
+
+                String path = fd.open();
+                if (path != null) {
+                    folder.setText(path);
+                }
+            }
+        });
+    }
+
+    private Profile findByName(String name) {
+        Profile result = null;
+        for (Profile profile : profiles) {
+            if (profile.getName().equals(name)) {
+                result = profile;
+                break;
+            }
+        }
+        return result;
     }
 
     private void resetFields() {
         login.setText(""); //$NON-NLS-1$
         pwd.setText(""); //$NON-NLS-1$
-        endpoint.setText(""); //$NON-NLS-1$
-        location.setText(""); //$NON-NLS-1$
+        url.setText(""); //$NON-NLS-1$
+        folder.setText(""); //$NON-NLS-1$
     }
-    
+
     private void loadStoredProfiles() {
         PreferenceStore store = (PreferenceStore) getPreferenceStore();
         HashMap<Integer, Profile> storedProfiles = new HashMap<Integer, Profile>();
@@ -244,7 +287,11 @@ public class ProfilesPage extends PreferencePage {
                 if (storedProfiles.containsKey(nbr)) {
                     profile = storedProfiles.get(nbr);
                 } else {
-                    profile = new Profile();
+                    profile = new Profile("",  //$NON-NLS-1$
+                            "",  //$NON-NLS-1$
+                            "",  //$NON-NLS-1$
+                            "",  //$NON-NLS-1$
+                            ""); //$NON-NLS-1$
                     storedProfiles.put(nbr, profile);
                 }
                 // set profile values
@@ -266,6 +313,7 @@ public class ProfilesPage extends PreferencePage {
         Iterator<Integer> keyIter = storedProfiles.keySet().iterator();
         while (keyIter.hasNext()) {
             Profile profile = storedProfiles.get(keyIter.next());
+            profileList.add(profile.getName());
             profiles.add(profile);
         }
     }
@@ -290,7 +338,22 @@ public class ProfilesPage extends PreferencePage {
         }
         return true;
     }
-    
+
+    class AddProfileInputValidator implements IInputValidator {
+        public String isValid(String text) {
+            // check if a name was provided for the profile
+            if (text.length() < 1) {
+                return "Profile name must contain at least one character.";
+            }
+            // check if the name does already exist
+            for (String profile : profileList.getItems()) {
+                if (text.equals(profile)) {
+                    return "A profile with the same name already exists. Each profile must have a unique name.";
+                }
+            }
+            return null;
+        }
+    }
 
     class Profile {
         private static final long serialVersionUID = -3145142861005182807L;
@@ -322,6 +385,9 @@ public class ProfilesPage extends PreferencePage {
             workspaceFolder = new String(old.getWorkspaceFolder());
         }
 
+        /**
+         * Constructor that initializes all fields.
+         */
         public Profile(String name, String login, String password,
                 String serverURL, String workspaceFolder) {
             super();
@@ -333,27 +399,27 @@ public class ProfilesPage extends PreferencePage {
         }
 
         /**
-         * Getter for endpoint.
+         * Getter for name.
          * 
-         * @return the endpoint
+         * @return the name
          */
         public String getName() {
             return name;
         }
 
         /**
-         * Setter for endpoint.
+         * Setter for name.
          * 
-         * @param endpoint the endpoint to set
+         * @param name the name to set
          */
         public void setName(String name) {
             this.name = name;
         }
 
         /**
-         * Getter for endpoint.
+         * Getter for serverURL.
          * 
-         * @return the endpoint
+         * @return the serverURL
          */
         public String getServerURL() {
             return serverURL;
@@ -362,7 +428,7 @@ public class ProfilesPage extends PreferencePage {
         /**
          * Setter for serverURL.
          * 
-         * @param endpoint the serverURL to set
+         * @param url the serverURL to set
          */
         public void setServerURL(String serverURL) {
             this.serverURL = serverURL;
@@ -380,7 +446,7 @@ public class ProfilesPage extends PreferencePage {
         /**
          * Setter for location.
          * 
-         * @param location the location to set
+         * @param folder the location to set
          */
         public void setWorkspaceFolder(String workspaceFolder) {
             this.workspaceFolder = workspaceFolder;
