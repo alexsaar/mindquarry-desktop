@@ -36,6 +36,7 @@ import com.mindquarry.minutes.editor.action.AddMemberAction;
 import com.mindquarry.minutes.editor.action.EditPreferencesAction;
 import com.mindquarry.minutes.editor.action.NewConversationAction;
 import com.mindquarry.minutes.editor.action.OpenConversationAction;
+import com.mindquarry.minutes.editor.splash.SplashScreen;
 import com.mindquarry.minutes.editor.widget.ConversationWidget;
 import com.mindquarry.minutes.editor.widget.PeopleWidget;
 
@@ -86,6 +87,10 @@ public class MinutesEditor extends ApplicationWindow {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        // show splash
+        new SplashScreen().show();
+        
+        // run editor
         MinutesEditor editor = new MinutesEditor();
         editor.addToolBar(SWT.FLAT | SWT.WRAP);
         editor.addStatusLine();
