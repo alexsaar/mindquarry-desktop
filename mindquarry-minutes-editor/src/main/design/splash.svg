@@ -17,7 +17,7 @@
    version="1.0"
    sodipodi:docbase="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/design"
    sodipodi:docname="splash.svg"
-   inkscape:export-filename="/Users/saar/MQ-Workspaces/mindquarry-webapp/mindquarry-launcher/src/installer/images/installer-splash.bmp"
+   inkscape:export-filename="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/resources/com/mindquarry/splash/splash.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -146,17 +146,17 @@
        ry="0" />
     <text
        xml:space="preserve"
-       style="font-size:16.26959419px;font-style:normal;font-weight:normal;line-height:125%;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="491.46915"
-       y="380.08524"
+       style="font-size:16.2696476px;font-style:normal;font-weight:normal;line-height:125%;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="514.97424"
+       y="380.08609"
        id="text8526"
        sodipodi:linespacing="125%"
        transform="scale(1.021115,0.979322)"><tspan
          sodipodi:role="line"
          id="tspan8528"
-         x="491.46915"
-         y="380.08524"
-         style="font-size:16.33784485px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:white;fill-opacity:1;font-family:Helvetica Neue">Discover teamplay with Mindquarry</tspan></text>
+         x="514.97424"
+         y="380.08609"
+         style="font-size:16.33789825px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:white;fill-opacity:1;font-family:Helvetica Neue">Enjoy meetings with Mindquarry</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.93316078px;font-style:normal;font-weight:normal;line-height:125%;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -165,15 +165,10 @@
        id="text8530"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan8532"
          x="249.96936"
          y="398.34726"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Minutes Editor</tspan><tspan
-         sodipodi:role="line"
-         x="249.96936"
-         y="420.84726"
          id="tspan8534"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">1.0 Alpha</tspan></text>
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Minutes Editor 1.0</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
        id="rect5629"
