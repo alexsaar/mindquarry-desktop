@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.44"
    version="1.0"
-   sodipodi:docbase="/Users/saar/MQ-Workspaces/mindquarry-webapp/mindquarry-launcher/src/installer/images"
+   sodipodi:docbase="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/design"
    sodipodi:docname="splash.svg"
    inkscape:export-filename="/Users/saar/MQ-Workspaces/mindquarry-webapp/mindquarry-launcher/src/installer/images/installer-splash.bmp"
    inkscape:export-xdpi="90"
@@ -168,7 +168,7 @@
          id="tspan8532"
          x="249.96936"
          y="398.34726"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Collaboration Server</tspan><tspan
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Minutes Editor</tspan><tspan
          sodipodi:role="line"
          x="249.96936"
          y="420.84726"
