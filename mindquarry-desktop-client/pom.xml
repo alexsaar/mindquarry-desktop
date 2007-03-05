@@ -75,6 +75,7 @@
 						<configuration>
 							<mainClass>org.eclipse.swt.MindClientWrapper</mainClass>
 							<iconFile>${basedir}/src/main/app-resources/mindquarry.icns</iconFile>
+							<javaApplicationStub>${basedir}/src/main/app-resources/JavaApplicationStub</javaApplicationStub>
 						</configuration>
 						<executions>
 							<execution>
