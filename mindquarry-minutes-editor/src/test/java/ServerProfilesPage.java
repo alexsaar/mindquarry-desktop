@@ -75,6 +75,7 @@ public class ServerProfilesPage extends PreferencePage {
                 "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
         ImageDescriptor imgDesc = ImageDescriptor.createFromImage(img);
         setImageDescriptor(imgDesc);
+        noDefaultAndApplyButton();
     }
 
     /**
@@ -123,12 +124,14 @@ public class ServerProfilesPage extends PreferencePage {
                             "", //$NON-NLS-1$
                             ""); //$NON-NLS-1$
                     profileList.add(profile.getName());
+                    profileList.select(profileList.getItemCount() - 1);
                     profiles.add(profile);
                     resetFields();
                 }
             }
         });
         delButton = new Button(buttonArea, SWT.PUSH);
+        delButton.setEnabled(false);
         delButton.setLayoutData(new GridData(GridData.FILL_BOTH));
         delButton.setText("Delete Profile");
         delButton.addListener(SWT.Selection, new Listener() {
@@ -143,13 +146,16 @@ public class ServerProfilesPage extends PreferencePage {
         });
         profileList.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                delButton.setEnabled(true);
-
-                Profile profile = findByName(profileList.getSelection()[0]);
-                login.setText(profile.getLogin());
-                pwd.setText(profile.getPassword());
-                url.setText(profile.getServerURL());
-                folder.setText(profile.getWorkspaceFolder());
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    login.setText(profile.getLogin());
+                    pwd.setText(profile.getPassword());
+                    url.setText(profile.getServerURL());
+                    folder.setText(profile.getWorkspaceFolder());
+                    
+                    delButton.setEnabled(true);
+                }
             }
         });
     }
@@ -287,17 +293,16 @@ public class ServerProfilesPage extends PreferencePage {
                 if (storedProfiles.containsKey(nbr)) {
                     profile = storedProfiles.get(nbr);
                 } else {
-                    profile = new Profile("",  //$NON-NLS-1$
-                            "",  //$NON-NLS-1$
-                            "",  //$NON-NLS-1$
-                            "",  //$NON-NLS-1$
+                    profile = new Profile("", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
                             ""); //$NON-NLS-1$
                     storedProfiles.put(nbr, profile);
                 }
                 // set profile values
                 if (prefName.equals("name")) { //$NON-NLS-1$
                     profile.setName(store.getString(pref));
-                    System.out.println(store.getString(pref));
                 } else if (prefName.equals("login")) { //$NON-NLS-1$
                     profile.setLogin(store.getString(pref));
                 } else if (prefName.equals("password")) { //$NON-NLS-1$
