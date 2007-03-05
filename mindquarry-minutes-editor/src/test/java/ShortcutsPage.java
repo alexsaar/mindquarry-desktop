@@ -12,10 +12,15 @@
  * under the License.
  */
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.bindings.keys.KeySequence;
+import org.eclipse.jface.bindings.keys.KeySequenceText;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -33,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * This class creates a preference page for shortcuts.
@@ -68,13 +74,15 @@ public class ShortcutsPage extends PreferencePage {
 
         // init shortcuts
         shortcuts = new ArrayList<Shortcut>();
-        shortcuts.add(new Shortcut("Conversation", "Add Member", "Strg+1"));
     }
 
     /**
      * Creates the controls for this page
      */
+    @Override
     protected Control createContents(Composite parent) {
+        loadStoredShortcuts();
+        
         Table table = new Table(parent, SWT.BORDER | SWT.SINGLE
                 | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -86,15 +94,13 @@ public class ShortcutsPage extends PreferencePage {
         col.setWidth(100);
         col = new TableColumn(table, SWT.NONE);
         col.setText("Action");
-        col.setWidth(100);
+        col.setWidth(200);
         col = new TableColumn(table, SWT.NONE);
         col.setText("Shortcut");
         col.setWidth(100);
 
         CellEditor[] editors = new CellEditor[table.getColumnCount()];
-        editors[0] = null;
-        editors[1] = null;
-        editors[2] = new TextCellEditor(table);
+        editors[2] = new KeySequenceTextCellEditor(table);
 
         TableViewer viewer = new TableViewer(table);
         viewer.setColumnProperties(new String[] { CATEGORY_COL_ID,
@@ -104,8 +110,63 @@ public class ShortcutsPage extends PreferencePage {
         viewer.setContentProvider(new ShortcutContentProvider());
         viewer.setLabelProvider(new ShortcutLabelProvider());
         viewer.setInput(shortcuts.toArray(new Shortcut[0]));
-
+        
         return parent;
+    }
+    
+    class KeySequenceTextCellEditor extends TextCellEditor {
+        public KeySequenceTextCellEditor(Composite parent) {
+            super(parent);
+        }
+        
+        @Override
+        protected Control createControl(Composite parent) {
+            Text txt = (Text)super.createControl(parent);
+            KeySequenceText kst = new KeySequenceText(txt);
+            return txt;
+        }
+    }
+
+    private void loadStoredShortcuts() {
+        PreferenceStore store = (PreferenceStore)getPreferenceStore();
+        HashMap<Integer, Shortcut> storedProfiles = new HashMap<Integer, Shortcut>();
+
+        // load stored profiles
+        String[] prefs = store.preferenceNames();
+        for (String pref : prefs) {
+            if (pref.startsWith(SHORTCUT_KEY_BASE)) {
+                // analyze preference
+                int nbr = Integer.valueOf(pref.substring(SHORTCUT_KEY_BASE
+                        .length(), SHORTCUT_KEY_BASE.length() + 1));
+                String prefName = pref.substring(SHORTCUT_KEY_BASE.length() + 2,
+                        pref.length());
+
+                // init profile
+                Shortcut shortcut;
+                if (storedProfiles.containsKey(nbr)) {
+                    shortcut = storedProfiles.get(nbr);
+                } else {
+                    shortcut = new Shortcut("", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            ""); //$NON-NLS-1$
+                    storedProfiles.put(nbr, shortcut);
+                }
+                // set shortcut values
+                if (prefName.equals("category")) { //$NON-NLS-1$
+                    shortcut.setCategory(store.getString(pref));
+                } else if (prefName.equals("action")) { //$NON-NLS-1$
+                    shortcut.setAction(store.getString(pref));
+                } else if (prefName.equals("shortcut")) { //$NON-NLS-1$
+                    shortcut.setShortcutIdentifier(store.getString(pref));
+                }
+            }
+        }
+        // set profile list
+        Iterator<Integer> keyIter = storedProfiles.keySet().iterator();
+        while (keyIter.hasNext()) {
+            Shortcut shortcut = storedProfiles.get(keyIter.next());
+            shortcuts.add(shortcut);
+        }
     }
 
     @Override

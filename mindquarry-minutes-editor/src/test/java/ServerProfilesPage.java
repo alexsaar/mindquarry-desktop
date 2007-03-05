@@ -81,6 +81,7 @@ public class ServerProfilesPage extends PreferencePage {
     /**
      * Creates the controls for this page
      */
+    @Override
     protected Control createContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
