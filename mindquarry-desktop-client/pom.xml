@@ -100,6 +100,44 @@
 					</tagBase>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.0-SNAPSHOT</version>
+				<configuration>
+					<!-- Include etc/ in the beginning of the classpath declaration in the bin scripts -->
+					<includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
+					<!-- prefix all bin files with "mycompany" -->
+					<!--binPrefix>mycompany</binPrefix-->
+					<!-- set alternative assemble directory -->
+					<!--assembleDirectory>${project.build.directory}/mycompany-assemble</assembleDirectory-->
+					<!-- Extra JVM arguments that will be included in the bin scripts -->
+					<extraJvmArguments>-Xms128m</extraJvmArguments> 
+					<!-- Generate bin scripts for windows and unix pr default -->
+					<platforms>
+						<!--platform>windows</platform-->
+						<platform>unix</platform>
+					</platforms>
+					<programs>
+						<program>
+							<mainClass>org.eclipse.swt.MindClientWrapper</mainClass>
+							<name>mindquarry</name>
+							<!-- Only generate unix sh script for this application -->
+							<platforms>
+								<platform>unix</platform>
+							</platforms>
+						</program>
+					</programs>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!--plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.2-SNAPSHOT</version>
