@@ -64,7 +64,7 @@ public class ShortcutsPage extends PreferencePage {
      */
     public ShortcutsPage() {
         super("Shortcuts");
-        setDescription("Manage Minutes editor shortcuts.");
+        setDescription("Manage shortcuts of the application.");
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,

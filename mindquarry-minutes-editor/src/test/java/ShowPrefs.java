@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -32,7 +31,8 @@ public class ShowPrefs {
         ps.load();
 
         // Create the preferences dialog
-        PreferenceDialog dlg = new PreferenceDialog(new Shell(), mgr);
+        //PreferenceDialog dlg = new PreferenceDialog(new Shell(), mgr);
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(), mgr);
         dlg.setPreferenceStore(ps);
         dlg.open();
 
