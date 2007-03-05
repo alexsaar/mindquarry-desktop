@@ -22,7 +22,7 @@ public class ShowPrefs {
         PreferenceManager mgr = new PreferenceManager();
         mgr.addToRoot(new PreferenceNode("profiles", new ServerProfilesPage()));
         mgr.addToRoot(new PreferenceNode("shortcuts", new ShortcutsPage()));
-
+        
         // Set the preference store
         File prefFile = new File("minutes-editor.properties");
         if(!prefFile.exists()) {

@@ -11,21 +11,50 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Item;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 /**
- * This class creates a preference page for editor shortcuts.
+ * This class creates a preference page for shortcuts.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class ShortcutsPage extends PreferencePage {
+    public static final String SHORTCUT_KEY_BASE = "com.mindquarry.desktop.shortcut."; //$NON-NLS-1$
+
+    private static final String CATEGORY_COL_ID = "category"; //$NON-NLS-1$
+
+    private static final String ACTION_COL_ID = "action"; //$NON-NLS-1$
+
+    private static final String SHORTCUT_COL_ID = "shortcut"; //$NON-NLS-1$
+
+    private TableViewer viewer;
+
+    private List<Shortcut> shortcuts;
+
     /**
-     * PrefPageTwo constructor
+     * ShortcutsPage default constructor
      */
     public ShortcutsPage() {
         super("Shortcuts");
@@ -36,12 +65,213 @@ public class ShortcutsPage extends PreferencePage {
                         getClass()
                                 .getResourceAsStream(
                                         "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"))));
+
+        // init shortcuts
+        shortcuts = new ArrayList<Shortcut>();
+        shortcuts.add(new Shortcut("Conversation", "Add Member", "Strg+1"));
     }
 
     /**
      * Creates the controls for this page
      */
     protected Control createContents(Composite parent) {
+        Table table = new Table(parent, SWT.BORDER | SWT.SINGLE
+                | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+        table.setLayoutData(new GridData(GridData.FILL_BOTH));
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
+        TableColumn col = new TableColumn(table, SWT.NONE);
+        col.setText("Category");
+        col.setWidth(100);
+        col = new TableColumn(table, SWT.NONE);
+        col.setText("Action");
+        col.setWidth(100);
+        col = new TableColumn(table, SWT.NONE);
+        col.setText("Shortcut");
+        col.setWidth(100);
+
+        CellEditor[] editors = new CellEditor[table.getColumnCount()];
+        editors[0] = null;
+        editors[1] = null;
+        editors[2] = new TextCellEditor(table);
+
+        TableViewer viewer = new TableViewer(table);
+        viewer.setColumnProperties(new String[] { CATEGORY_COL_ID,
+                ACTION_COL_ID, SHORTCUT_COL_ID });
+        viewer.setCellEditors(editors);
+        viewer.setCellModifier(new ShortcutCellModifier(viewer));
+        viewer.setContentProvider(new ShortcutContentProvider());
+        viewer.setLabelProvider(new ShortcutLabelProvider());
+        viewer.setInput(shortcuts.toArray(new Shortcut[0]));
+
         return parent;
+    }
+
+    @Override
+    public boolean performOk() {
+        IPreferenceStore store = getPreferenceStore();
+        int pos = 0;
+
+        // set properties from shortcuts
+        for (Shortcut shortcut : shortcuts) {
+            store.putValue(SHORTCUT_KEY_BASE + pos + ".category", //$NON-NLS-1$
+                    shortcut.getCategory());
+            store.putValue(SHORTCUT_KEY_BASE + pos + ".action", //$NON-NLS-1$
+                    shortcut.getAction());
+            store.putValue(SHORTCUT_KEY_BASE + pos + ".shortcut", //$NON-NLS-1$
+                    shortcut.getShortcutIdentifier());
+            pos++;
+        }
+        return true;
+    }
+
+    private class ShortcutCellModifier implements ICellModifier {
+        private TableViewer viewer;
+
+        public ShortcutCellModifier(TableViewer viewer) {
+            this.viewer = viewer;
+        }
+
+        public boolean canModify(Object element, String property) {
+            if (property.equals(SHORTCUT_COL_ID)) {
+                return true;
+            }
+            return false;
+        }
+
+        public Object getValue(Object element, String property) {
+            if (property.equals(SHORTCUT_COL_ID)) {
+                return ((Shortcut) element).getShortcutIdentifier();
+            }
+            return null;
+        }
+
+        public void modify(Object element, String property, Object value) {
+            if (property.equals(SHORTCUT_COL_ID)) {
+                Item item = (Item) element;
+                Shortcut shortcut = (Shortcut) item.getData();
+                shortcut.setShortcutIdentifier((String) value);
+                viewer.refresh(shortcut);
+            }
+        }
+    }
+
+    class Shortcut {
+        private String category;
+
+        private String action;
+
+        private String shortcutId;
+
+        public Shortcut(String category, String action, String shortcutId) {
+            super();
+            this.category = category;
+            this.action = action;
+            this.shortcutId = shortcutId;
+        }
+
+        /**
+         * Getter for action.
+         * 
+         * @return the action
+         */
+        public String getAction() {
+            return action;
+        }
+
+        /**
+         * Setter for action.
+         * 
+         * @param action the action to set
+         */
+        public void setAction(String action) {
+            this.action = action;
+        }
+
+        /**
+         * Getter for category.
+         * 
+         * @return the category
+         */
+        public String getCategory() {
+            return category;
+        }
+
+        /**
+         * Setter for category.
+         * 
+         * @param category the category to set
+         */
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        /**
+         * Getter for shortcut.
+         * 
+         * @return the shortcut
+         */
+        public String getShortcutIdentifier() {
+            return shortcutId;
+        }
+
+        /**
+         * Setter for shortcut.
+         * 
+         * @param shortcut the shortcut to set
+         */
+        public void setShortcutIdentifier(String shortcutId) {
+            this.shortcutId = shortcutId;
+        }
+    }
+
+    class ShortcutContentProvider implements IStructuredContentProvider {
+        public Object[] getElements(Object inputElement) {
+            return (Shortcut[]) inputElement;
+        }
+
+        public void dispose() {
+            // nothing to do here
+        }
+
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // nothing to do here
+        }
+    }
+
+    class ShortcutLabelProvider implements ITableLabelProvider {
+        public Image getColumnImage(Object element, int columnIndex) {
+            return null;
+        }
+
+        public String getColumnText(Object element, int columnIndex) {
+            Shortcut shortcut = (Shortcut) element;
+            switch (columnIndex) {
+            case 0:
+                return shortcut.getCategory();
+            case 1:
+                return shortcut.getAction();
+            case 2:
+                return shortcut.getShortcutIdentifier();
+            }
+            return null;
+        }
+
+        public void addListener(ILabelProviderListener listener) {
+            // nothing to do here
+        }
+
+        public void dispose() {
+            // nothing to do here
+        }
+
+        public boolean isLabelProperty(Object element, String property) {
+            return false;
+        }
+
+        public void removeListener(ILabelProviderListener listener) {
+            // nothing to do here
+        }
     }
 }
