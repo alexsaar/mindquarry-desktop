@@ -34,13 +34,13 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskRefreshListener;
 import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Specialized implementation of the ballon widget that contains all widgets for

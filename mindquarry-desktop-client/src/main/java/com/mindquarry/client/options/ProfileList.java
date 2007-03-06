@@ -17,6 +17,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mindquarry.desktop.preferences.profile.Profile;
+
 /**
  * Add summary documentation here.
  * 

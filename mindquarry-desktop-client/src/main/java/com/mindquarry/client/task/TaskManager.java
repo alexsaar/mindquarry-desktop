@@ -41,13 +41,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.task.widgets.NoTasksComposite;
 import com.mindquarry.client.task.widgets.TaskErrorComposite;
 import com.mindquarry.client.task.widgets.TaskUpdateComposite;
 import com.mindquarry.client.task.xml.TaskListTransformer;
 import com.mindquarry.client.task.xml.TaskTransformer;
 import com.mindquarry.client.util.network.HttpUtil;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Responsible class for managing tasks.
@@ -215,7 +215,7 @@ public class TaskManager {
         InputStream content = null;
         try {
             content = HttpUtil.getContentAsXML(profile.getLogin(), profile
-                    .getPassword(), profile.getEndpoint() + "/tasks"); //$NON-NLS-1$
+                    .getPassword(), profile.getServerURL() + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             // nothing todo here, task list widgets shows
             e.printStackTrace();
@@ -249,7 +249,7 @@ public class TaskManager {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
                         .selectedProfile().getLogin(), client.getProfileList()
                         .selectedProfile().getPassword(), client
-                        .getProfileList().selectedProfile().getEndpoint()
+                        .getProfileList().selectedProfile().getServerURL()
                         + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 continue;

@@ -65,7 +65,7 @@ public class UpdateOperation extends SvnOperation {
             content = HttpUtil.getContentAsXML(client.getProfileList()
                     .selectedProfile().getLogin(), client.getProfileList()
                     .selectedProfile().getPassword(), client.getProfileList()
-                    .selectedProfile().getEndpoint()
+                    .selectedProfile().getServerURL()
                     + "/teams"); //$NON-NLS-1$
         } catch (Exception e) {
             MindClient.showErrorMessage(Messages
@@ -106,7 +106,7 @@ public class UpdateOperation extends SvnOperation {
                 content = HttpUtil.getContentAsXML(client.getProfileList()
                         .selectedProfile().getLogin(), client.getProfileList()
                         .selectedProfile().getPassword(), client
-                        .getProfileList().selectedProfile().getEndpoint()
+                        .getProfileList().selectedProfile().getServerURL()
                         + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
                 MindClient.showErrorMessage(Messages
@@ -140,7 +140,7 @@ public class UpdateOperation extends SvnOperation {
 
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
-                .getLocation());
+                .getWorkspaceFolder());
 
         // check if teamspace dir already exists, if not create it
         if (!teamspacesDir.exists()) {

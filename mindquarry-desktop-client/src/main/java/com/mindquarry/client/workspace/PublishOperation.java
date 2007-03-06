@@ -46,7 +46,7 @@ public class PublishOperation extends SvnOperation {
         
         // get directory for workspaces
         File teamspacesDir = new File(client.getProfileList().selectedProfile()
-                .getLocation());
+                .getWorkspaceFolder());
 
         // list directories
         File[] directories = teamspacesDir.listFiles(new FilenameFilter() {

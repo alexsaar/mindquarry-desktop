@@ -43,8 +43,8 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Dialog widget for editing MindClient options.
@@ -226,8 +226,8 @@ public class OptionsDialog extends TitleAreaDialog {
                 toBeStored = profile;
                 login.setText(profile.getLogin());
                 pwd.setText(profile.getPassword());
-                endpoint.setText(profile.getEndpoint());
-                location.setText(profile.getLocation());
+                endpoint.setText(profile.getServerURL());
+                location.setText(profile.getWorkspaceFolder());
             }
         });
     }
@@ -334,8 +334,8 @@ public class OptionsDialog extends TitleAreaDialog {
         if (toBeStored != null) {
             toBeStored.setLogin(login.getText());
             toBeStored.setPassword(pwd.getText());
-            toBeStored.setEndpoint(endpoint.getText());
-            toBeStored.setLocation(location.getText());
+            toBeStored.setServerURL(endpoint.getText());
+            toBeStored.setWorkspaceFolder(location.getText());
         }
     }
 
@@ -394,8 +394,8 @@ public class OptionsDialog extends TitleAreaDialog {
                 toBeStored = profile;
                 login.setText(profile.getLogin());
                 pwd.setText(profile.getPassword());
-                endpoint.setText(profile.getEndpoint());
-                location.setText(profile.getLocation());
+                endpoint.setText(profile.getServerURL());
+                location.setText(profile.getWorkspaceFolder());
                 modifyText(null);
             }
         }

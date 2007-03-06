@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -40,12 +41,14 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.ballon.MindClientBallonWidget;
-import com.mindquarry.client.options.Profile;
 import com.mindquarry.client.options.ProfileList;
 import com.mindquarry.client.options.dialog.OptionsDialog;
 import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.util.widgets.IconActionThread;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
+import com.mindquarry.desktop.DesktopConstants;
+import com.mindquarry.desktop.preferences.PreferenceUtilities;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Main class for the MindClient. Responsible for managing persistence of
@@ -59,11 +62,8 @@ import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 public class MindClient {
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
 
-    public static final String MINDCLIENT_SETTINGS = System
-            .getProperty("user.home") //$NON-NLS-1$
-            + "/.mindclient/mindclient.settings"; //$NON-NLS-1$
-
-    public static final String MINDCLIENT_ICON = "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"; //$NON-NLS-1$
+    public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
+            + "/mindclient.settings"; //$NON-NLS-1$
 
     public static final OperatingSystem OS = getOperatingSystem();
 
@@ -75,22 +75,29 @@ public class MindClient {
 
     private ProfileList profileList;
 
-    private File optionsFile;
-    
+    private File prefFile;
+
     private static TrayItem item;
-    
+
     private static IconActionThread iconAction;
 
-    public MindClient() {
+    private PreferenceStore ps;
+
+    public MindClient() throws IOException {
         factory = new ClassPathXmlApplicationContext(
                 new String[] { "applicationContext.xml" }); //$NON-NLS-1$
 
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
-                MINDCLIENT_ICON));
+                DesktopConstants.MINDQUARRY_ICON));
 
         // init settings file & name
         profileList = new ProfileList();
-        optionsFile = new File(MINDCLIENT_SETTINGS);
+        prefFile = new File(PREF_FILE);
+
+        // load preferences
+        PreferenceUtilities.checkPreferenceFile(prefFile);
+        ps = new PreferenceStore(prefFile.getAbsolutePath());
+        ps.load();
     }
 
     public static void main(String[] args) throws IOException {
@@ -115,14 +122,14 @@ public class MindClient {
     }
 
     private void checkArguments(String[] args) throws IOException {
-        if ((args.length == 3) && (optionsFile.exists())) {
+        if ((args.length == 3) && (prefFile.exists())) {
             loadOptions();
             addNewProfile(args[0], args[1], args[2]);
             showOptionsDlg();
-        } else if ((args.length == 3) && (!optionsFile.exists())) {
+        } else if ((args.length == 3) && (!prefFile.exists())) {
             addNewProfile(args[0], args[1], args[2]);
             showOptionsDlg();
-        } else if (!optionsFile.exists()) {
+        } else if (!prefFile.exists()) {
             addNewProfile(Messages.getString("MindClient.8"), "http://server", //$NON-NLS-1$ //$NON-NLS-2$
                     "your login name"); //$NON-NLS-1$
             showOptionsDlg();
@@ -135,10 +142,10 @@ public class MindClient {
         // add new profile entry
         Profile profile = new Profile();
         profile.setName(name);
-        profile.setEndpoint(endpoint);
+        profile.setServerURL(endpoint);
         profile.setLogin(login);
         profile.setPassword(""); //$NON-NLS-1$
-        profile.setLocation(""); //$NON-NLS-1$
+        profile.setWorkspaceFolder(""); //$NON-NLS-1$
         return profileList.addProfile(profile);
     }
 
@@ -199,7 +206,9 @@ public class MindClient {
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 if (profileList.selectedProfile() != null) {
-                    Program.launch(profileList.selectedProfile().getEndpoint());
+                    Program
+                            .launch(profileList.selectedProfile()
+                                    .getServerURL());
                 }
             }
         });
@@ -244,7 +253,7 @@ public class MindClient {
     private void loadOptions() {
         try {
             ObjectInputStream is = new ObjectInputStream(new FileInputStream(
-                    optionsFile));
+                    prefFile));
             profileList = (ProfileList) is.readObject();
             is.close();
         } catch (Exception e) {
@@ -268,12 +277,12 @@ public class MindClient {
 
     public void saveOptions() {
         try {
-            if (!optionsFile.exists()) {
-                optionsFile.getParentFile().mkdirs();
-                optionsFile.createNewFile();
+            if (!prefFile.exists()) {
+                prefFile.getParentFile().mkdirs();
+                prefFile.createNewFile();
             }
             ObjectOutputStream os = new ObjectOutputStream(
-                    new FileOutputStream(optionsFile));
+                    new FileOutputStream(prefFile));
             os.writeObject(profileList);
             os.close();
         } catch (Exception e) {
@@ -318,7 +327,7 @@ public class MindClient {
     public static IconActionThread getIconActionHandler() {
         return MindClient.iconAction;
     }
-    
+
     public static void showErrorMessage(final String message) {
         shell.getDisplay().asyncExec(new Runnable() {
             public void run() {
