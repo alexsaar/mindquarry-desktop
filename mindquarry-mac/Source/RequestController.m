@@ -9,12 +9,17 @@
 #import "RequestController.h"
 
 #import "MQTeamsRequest.h"
+#import "MQTaskCell.h"
 
 @implementation RequestController
 
 - (void)awakeFromNib
 {
 //	[[dateColumn dataCell] setFormatter:dateFormatter];
+	
+	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
+	[taskColumn setDataCell:cell];
+	
 }
 
 - (IBAction)test:(id)sender

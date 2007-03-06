@@ -23,6 +23,8 @@
 		DD8665630B9DB2F7000C7B66 /* task-new.png in Resources */ = {isa = PBXBuildFile; fileRef = DD86655E0B9DB2F7000C7B66 /* task-new.png */; };
 		DD8665640B9DB2F7000C7B66 /* task-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = DD86655F0B9DB2F7000C7B66 /* task-paused.png */; };
 		DD8665650B9DB2F7000C7B66 /* task-running.png in Resources */ = {isa = PBXBuildFile; fileRef = DD8665600B9DB2F7000C7B66 /* task-running.png */; };
+		DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */; };
+		DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +56,10 @@
 		DD86655E0B9DB2F7000C7B66 /* task-new.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-new.png"; path = "Resources/task-new.png"; sourceTree = "<group>"; };
 		DD86655F0B9DB2F7000C7B66 /* task-paused.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-paused.png"; path = "Resources/task-paused.png"; sourceTree = "<group>"; };
 		DD8665600B9DB2F7000C7B66 /* task-running.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-running.png"; path = "Resources/task-running.png"; sourceTree = "<group>"; };
+		DD8665B70B9DB5A4000C7B66 /* MQTaskCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTaskCell.h; sourceTree = "<group>"; };
+		DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTaskCell.m; sourceTree = "<group>"; };
+		DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OFGradientTableView.h; sourceTree = "<group>"; };
+		DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OFGradientTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +89,10 @@
 				DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */,
 				DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */,
 				DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */,
+				DD8665B70B9DB5A4000C7B66 /* MQTaskCell.h */,
+				DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */,
+				DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */,
+				DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -233,6 +243,8 @@
 				DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */,
 				DD8662790B9D9BBD000C7B66 /* MQTasksRequest.m in Sources */,
 				DD8663CC0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m in Sources */,
+				DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */,
+				DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
