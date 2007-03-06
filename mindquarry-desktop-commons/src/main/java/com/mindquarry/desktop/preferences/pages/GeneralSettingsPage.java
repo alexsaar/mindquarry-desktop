@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.preferences.pages;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -25,6 +24,8 @@ import org.eclipse.swt.graphics.Image;
  *         Saar</a>
  */
 public class GeneralSettingsPage extends FieldEditorPreferencePage {
+    public static final String PREF_ENCRYPT = "com.mindquarry.desktop.encrypt"; //$NON-NLS-1$
+
     /**
      * ShortcutsPage default constructor
      */
@@ -41,10 +42,9 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
 
     @Override
     protected void createFieldEditors() {
-        BooleanFieldEditor encryptPasswords = new BooleanFieldEditor(
-                "com.mindquarry.desktop.encrypt", //$NON-NLS-1$
-                "&" + //$NON-NLS-1$
-                        "Encrypt sentitive data", getFieldEditorParent());
-        addField(encryptPasswords);
+//        BooleanFieldEditor encryptPasswords = new BooleanFieldEditor(
+//                PREF_ENCRYPT, "&" + //$NON-NLS-1$
+//                        "Encrypt sentitive data", getFieldEditorParent());
+//        addField(encryptPasswords);
     }
 }

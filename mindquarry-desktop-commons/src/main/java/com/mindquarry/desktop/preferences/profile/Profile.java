@@ -18,7 +18,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.jface.preference.PreferenceStore;
+
+import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 
 /**
  * Add summary documentation here.
@@ -219,11 +222,15 @@ public class Profile {
             store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
                     + Profile.PREF_LOGIN, profile.getLogin());
             store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_PASSWORD, profile.getPassword());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
                     + Profile.PREF_SERVER_URL, profile.getServerURL());
             store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
                     + Profile.PREF_WORKSPACES, profile.getWorkspaceFolder());
+
+            // encrypt and store password
+            byte[] passwordData = Base64.encodeBase64(profile.getPassword()
+                    .getBytes());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_PASSWORD, new String(passwordData));
             pos++;
         }
     }
@@ -301,7 +308,9 @@ public class Profile {
         } else if (prefName.equals(PREF_LOGIN)) {
             profile.setLogin(store.getString(pref));
         } else if (prefName.equals(PREF_PASSWORD)) {
-            profile.setPassword(store.getString(pref));
+            byte[] passwordData = store.getString(pref).getBytes();
+            String password = new String(Base64.decodeBase64(passwordData));
+            profile.setPassword(password);
         } else if (prefName.equals(PREF_SERVER_URL)) {
             profile.setServerURL(store.getString(pref));
         } else if (prefName.equals(PREF_WORKSPACES)) {
