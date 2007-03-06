@@ -209,16 +209,63 @@ public class Profile {
         return profiles;
     }
 
+    public static void storeProfiles(PreferenceStore store,
+            List<Profile> profiles) {
+        // set properties from profiles
+        int pos = 0;
+        for (Profile profile : profiles) {
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_NAME, profile.getName());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_LOGIN, profile.getLogin());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_PASSWORD, profile.getPassword());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_SERVER_URL, profile.getServerURL());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_WORKSPACES, profile.getWorkspaceFolder());
+            pos++;
+        }
+    }
+
+    public static boolean addProfile(PreferenceStore store, Profile toBeStored) {
+        List<Profile> profiles = loadProfiles(store);
+        for (Profile profile : profiles) {
+            if (profile.getName().equals(toBeStored.getName())) {
+                return false;
+            }
+        }
+        profiles.add(toBeStored);
+        storeProfiles(store, profiles);
+        return true;
+    }
+
+    public static void selectProfile(PreferenceStore store, String name) {
+        String[] prefs = store.preferenceNames();
+        for (String pref : prefs) {
+            if (pref.startsWith(PROFILE_KEY_BASE)) {
+                // analyze preference
+                int nbr = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
+                        .length(), PROFILE_KEY_BASE.length() + 1));
+                String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
+                        pref.length());
+
+                // check if we found the select profile
+                if ((prefName.equals(PREF_NAME))
+                        && (store.getString(pref).equals(name))) {
+                    store.putValue(PROFILE_SELECTED, String.valueOf(nbr));
+                    return;
+                }
+            }
+        }
+    }
+
     public static Profile getSelectedProfile(PreferenceStore store) {
         return getSelectedProfile(store, store.getInt(PROFILE_SELECTED));
     }
 
     private static Profile getSelectedProfile(PreferenceStore store, int id) {
-        Profile profile = new Profile("", //$NON-NLS-1$
-                "", //$NON-NLS-1$
-                "", //$NON-NLS-1$
-                "", //$NON-NLS-1$
-                ""); //$NON-NLS-1$
+        Profile profile = null;
 
         String[] prefs = store.preferenceNames();
         for (String pref : prefs) {
@@ -228,6 +275,15 @@ public class Profile {
                         .length(), PROFILE_KEY_BASE.length() + 1));
                 String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
                         pref.length());
+
+                // init profile if not done already
+                if (profile == null) {
+                    profile = new Profile("", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            "", //$NON-NLS-1$
+                            ""); //$NON-NLS-1$
+                }
 
                 // set profile values
                 if (nbr == id) {

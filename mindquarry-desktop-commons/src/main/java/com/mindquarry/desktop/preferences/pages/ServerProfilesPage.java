@@ -283,23 +283,7 @@ public class ServerProfilesPage extends PreferencePage {
 
     @Override
     public boolean performOk() {
-        IPreferenceStore store = getPreferenceStore();
-
-        // set properties from profiles
-        int pos = 0;
-        for (Profile profile : profiles) {
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_NAME, profile.getName());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_LOGIN, profile.getLogin());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_PASSWORD, profile.getPassword());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_SERVER_URL, profile.getServerURL());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
-                    + Profile.PREF_WORKSPACES, profile.getWorkspaceFolder());
-            pos++;
-        }
+        Profile.storeProfiles((PreferenceStore) getPreferenceStore(), profiles);
         return true;
     }
 
