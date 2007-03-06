@@ -39,7 +39,7 @@ public class Profile {
 
     public static final String PROFILE_KEY_BASE = "com.mindquarry.server.profile."; //$NON-NLS-1$
 
-    public static final String PROFILE_SELECTED = "com.mindquarry.server.profile.selected"; //$NON-NLS-1$
+    public static final String PROFILE_SELECTED = "com.mindquarry.server.selected"; //$NON-NLS-1$
 
     private String name;
 
