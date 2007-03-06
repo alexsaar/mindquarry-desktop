@@ -223,8 +223,11 @@ public class TaskManager {
                             .getServerURL()
                             + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
-            // nothing todo here, task list widgets shows
+            updateTaskWidgetContents(false, true, false);
+            setRefreshStatus(true);
+            refreshing = false;
             e.printStackTrace();
+            return;
         }
         // check if some contant was received
         if (content == null) {
