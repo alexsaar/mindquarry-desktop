@@ -15,20 +15,19 @@
 
 - (void)awakeFromNib
 {
-//	[[dateColumn dataCell] setFormatter:dateFormatter];
-	
 	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
 	[taskColumn setDataCell:cell];
 	
+//	[self refresh:nil];
 }
 
-- (IBAction)test:(id)sender
+- (IBAction)refresh:(id)sender
 {
 	id currentServer = [self selectedServer];	
 	
 	MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithController:self forServer:currentServer];
 	[request startRequest];
-		
+	[request autorelease];
 }
 
 - (id)selectedServer

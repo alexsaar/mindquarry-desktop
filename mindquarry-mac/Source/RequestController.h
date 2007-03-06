@@ -21,7 +21,7 @@ enum {
 	
 }
 
-- (IBAction)test:(id)sender;
+- (IBAction)refresh:(id)sender;
 
 - (id)selectedServer;
 

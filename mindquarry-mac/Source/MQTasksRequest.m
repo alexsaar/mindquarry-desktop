@@ -63,7 +63,7 @@
 				
 		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithController:controller forServer:server forTask:taskobj];
 		[req startRequest];
-		
+		[req autorelease];
 	}
 	
 }

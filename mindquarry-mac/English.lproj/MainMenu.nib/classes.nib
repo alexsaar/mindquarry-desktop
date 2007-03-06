@@ -10,7 +10,7 @@
         }, 
         {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
-            ACTIONS = {test = id; }; 
+            ACTIONS = {refresh = id; }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {serversController = id; taskColumn = id; }; 

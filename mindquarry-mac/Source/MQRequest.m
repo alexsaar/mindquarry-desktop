@@ -54,15 +54,14 @@
 
 - (void)startRequest
 {
-	
 	[self setValue:[self url] forKey:@"url"];
-//	NSLog(@"url: %@", [self url]);
 	
 	[responseData release];
 	responseData = [[NSMutableData alloc] init];
 	
 	connection = [NSURLConnection connectionWithRequest:[self xmlRequestForURL:url] delegate:self];
-	
+	if (connection)
+		[self retain];
 }
 
 - (void)parseXMLResponse:(NSXMLDocument *)document
@@ -110,6 +109,8 @@
 	
 	[responseData release];
 	responseData = nil;
+	
+	[self autorelease];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -127,6 +128,8 @@
 	[document release];	
 	
 	[self finishRequest];
+	
+	[self autorelease];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge

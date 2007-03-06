@@ -45,7 +45,7 @@
 				
 		MQTasksRequest *treq = [[MQTasksRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
 		[treq startRequest];
-		
+		[treq autorelease];
 	}
 }
 
