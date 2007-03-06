@@ -19,13 +19,10 @@ import java.io.IOException;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.GetTrayItemLocationHackMacOSX;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -37,7 +34,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.ballon.MindClientBallonWidget;
-import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.util.widgets.IconActionThread;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.DesktopConstants;
@@ -59,8 +55,6 @@ public class MindClient {
 
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
-
-    public static final OperatingSystem OS = getOperatingSystem();
 
     private static Shell shell;
 
@@ -87,16 +81,11 @@ public class MindClient {
         prefFile = new File(PREF_FILE);
 
         // load preferences
-        PreferenceUtilities.checkPreferenceFile(prefFile);
         store = new PreferenceStore(prefFile.getAbsolutePath());
-        store.load();
     }
 
     public static void main(String[] args) throws IOException {
-    	
-    	System.err.println("main()");
-    	
-        // init display & shell
+    	// init display & shell
         Display display = new Display();
         Display.setAppName(APPLICATION_NAME);
         display.setWarnings(true);
@@ -151,50 +140,22 @@ public class MindClient {
         item.setImage(icon);
 
         final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
-                display, this, item);
+                display, this);
 
         final Menu menu = new Menu(shell, SWT.POP_UP);
-        if (MindClient.getOperatingSystem() == OperatingSystem.MAC_OS_X) {
-            // Mac does not use the right mouse for tray icons
+        // right-click / context menu => menu
+        item.addListener(SWT.MenuDetect, new Listener() {
+            public void handleEvent(Event event) {
+                menu.setVisible(true);
+            }
+        });
 
-            // left-click => menu
-            item.addSelectionListener(new SelectionListener() {
-                // single-click
-                public void widgetSelected(SelectionEvent e) {
-                    menu.setLocation(GetTrayItemLocationHackMacOSX
-                            .getAlignedLocation(item));
-                    menu.setVisible(true);
-                }
-
-                // double-click
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-            });
-            // extra item in menu => balloon window
-            MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-            menuItem.setText(Messages.getString("MindClient.9")); //$NON-NLS-1$
-            menuItem.addListener(SWT.Selection, new Listener() {
-                public void handleEvent(Event event) {
-                    ballonWindow.toggleBalloon();
-                }
-            });
-        } else {
-            // Windows/Gnome
-
-            // right-click / context menu => menu
-            item.addListener(SWT.MenuDetect, new Listener() {
-                public void handleEvent(Event event) {
-                    menu.setVisible(true);
-                }
-            });
-
-            // left-click => balloon window
-            item.addListener(SWT.Selection, new Listener() {
-                public void handleEvent(final Event event) {
-                    ballonWindow.handleEvent(event);
-                }
-            });
-        }
+        // left-click => balloon window
+        item.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(final Event event) {
+                ballonWindow.handleEvent(event);
+            }
+        });
         // go to webpage
         MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText(Messages.getString("MindClient.10")); //$NON-NLS-1$
@@ -244,15 +205,9 @@ public class MindClient {
         iconAction.start();
     }
 
-    private void loadOptions() {
-        try {
-            store.load();
-        } catch (Exception e) {
-            showErrorMessage(Messages.getString("MindClient.5")); //$NON-NLS-1$
-        }
-    }
-
     private void showPreferenceDialog() throws IOException {
+        loadOptions();
+
         // request preference values from user
         PreferenceManager mgr = PreferenceUtilities
                 .getDefaultPreferenceManager();
@@ -261,9 +216,17 @@ public class MindClient {
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
                 mgr);
         dlg.setPreferenceStore(store);
-        dlg.setHelpAvailable(true);
         dlg.open();
         saveOptions();
+    }
+
+    private void loadOptions() {
+        try {
+            PreferenceUtilities.checkPreferenceFile(prefFile);
+            store.load();
+        } catch (Exception e) {
+            showErrorMessage(Messages.getString("MindClient.5")); //$NON-NLS-1$
+        }
     }
 
     public void saveOptions() {
@@ -295,17 +258,6 @@ public class MindClient {
 
     public BeanFactory getFactory() {
         return factory;
-    }
-
-    private static OperatingSystem getOperatingSystem() {
-        String os = System.getProperty("os.name").toLowerCase(); //$NON-NLS-1$
-        if (os.startsWith("windows")) { //$NON-NLS-1$
-            return OperatingSystem.WINDOWS;
-        } else if (os.startsWith("mac")) { //$NON-NLS-1$
-            return OperatingSystem.MAC_OS_X;
-        } else {
-            return OperatingSystem.OTHER;
-        }
     }
 
     public static IconActionThread getIconActionHandler() {
