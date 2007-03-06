@@ -1,0 +1,343 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		770B37ED0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */; };
+		77C8280E06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */; };
+		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		DD39F4FB0B9D7FD200384D0C /* RequestController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */; };
+		DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD86617F0B9D95E3000C7B66 /* MQRequest.m */; };
+		DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */; };
+		DD8662790B9D9BBD000C7B66 /* MQTasksRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */; };
+		DD8663CC0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */; };
+		DD8665610B9DB2F7000C7B66 /* DesktopClientAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD86655C0B9DB2F7000C7B66 /* DesktopClientAppIcon.icns */; };
+		DD8665620B9DB2F7000C7B66 /* task-done.png in Resources */ = {isa = PBXBuildFile; fileRef = DD86655D0B9DB2F7000C7B66 /* task-done.png */; };
+		DD8665630B9DB2F7000C7B66 /* task-new.png in Resources */ = {isa = PBXBuildFile; fileRef = DD86655E0B9DB2F7000C7B66 /* task-new.png */; };
+		DD8665640B9DB2F7000C7B66 /* task-paused.png in Resources */ = {isa = PBXBuildFile; fileRef = DD86655F0B9DB2F7000C7B66 /* task-paused.png */; };
+		DD8665650B9DB2F7000C7B66 /* task-running.png in Resources */ = {isa = PBXBuildFile; fileRef = DD8665600B9DB2F7000C7B66 /* task-running.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Source/main.m; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* Mindquarry_Desktop_Client_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mindquarry_Desktop_Client_Prefix.pch; sourceTree = "<group>"; };
+		770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = wrapper.xcdatamodel; path = Mindquarry_Desktop_Client_DataModel.xcdatamodel; sourceTree = "<group>"; };
+		77C82804067257F0000B614F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		77C8280B06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mindquarry_Desktop_Client_AppDelegate.h; sourceTree = "<group>"; };
+		77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mindquarry_Desktop_Client_AppDelegate.m; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mindquarry Desktop Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD39F4F90B9D7FD200384D0C /* RequestController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestController.h; sourceTree = "<group>"; };
+		DD39F4FA0B9D7FD200384D0C /* RequestController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestController.m; sourceTree = "<group>"; };
+		DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQRequest.h; sourceTree = "<group>"; };
+		DD86617F0B9D95E3000C7B66 /* MQRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQRequest.m; sourceTree = "<group>"; };
+		DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTeamsRequest.h; sourceTree = "<group>"; };
+		DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTeamsRequest.m; sourceTree = "<group>"; };
+		DD8662770B9D9BBD000C7B66 /* MQTasksRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTasksRequest.h; sourceTree = "<group>"; };
+		DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTasksRequest.m; sourceTree = "<group>"; };
+		DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTaskPropertiesRequest.h; sourceTree = "<group>"; };
+		DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTaskPropertiesRequest.m; sourceTree = "<group>"; };
+		DD86655C0B9DB2F7000C7B66 /* DesktopClientAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DesktopClientAppIcon.icns; path = Resources/DesktopClientAppIcon.icns; sourceTree = "<group>"; };
+		DD86655D0B9DB2F7000C7B66 /* task-done.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-done.png"; path = "Resources/task-done.png"; sourceTree = "<group>"; };
+		DD86655E0B9DB2F7000C7B66 /* task-new.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-new.png"; path = "Resources/task-new.png"; sourceTree = "<group>"; };
+		DD86655F0B9DB2F7000C7B66 /* task-paused.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-paused.png"; path = "Resources/task-paused.png"; sourceTree = "<group>"; };
+		DD8665600B9DB2F7000C7B66 /* task-running.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-running.png"; path = "Resources/task-running.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				77C8280B06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.h */,
+				77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */,
+				DD39F4F90B9D7FD200384D0C /* RequestController.h */,
+				DD39F4FA0B9D7FD200384D0C /* RequestController.m */,
+				DD86617E0B9D95E3000C7B66 /* MQRequest.h */,
+				DD86617F0B9D95E3000C7B66 /* MQRequest.m */,
+				DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */,
+				DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */,
+				DD8662770B9D9BBD000C7B66 /* MQTasksRequest.h */,
+				DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */,
+				DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */,
+				DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				77C82804067257F0000B614F /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* Mindquarry Desktop Client */ = {
+			isa = PBXGroup;
+			children = (
+				7756732906782D8800D1FEB8 /* Models */,
+				080E96DDFE201D6D7F000001 /* Source */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = "Mindquarry Desktop Client";
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* Mindquarry_Desktop_Client_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DD86655C0B9DB2F7000C7B66 /* DesktopClientAppIcon.icns */,
+				DD86655D0B9DB2F7000C7B66 /* task-done.png */,
+				DD86655E0B9DB2F7000C7B66 /* task-new.png */,
+				DD86655F0B9DB2F7000C7B66 /* task-paused.png */,
+				DD8665600B9DB2F7000C7B66 /* task-running.png */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		7756732906782D8800D1FEB8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* Mindquarry Desktop Client */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Mindquarry Desktop Client" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Mindquarry Desktop Client";
+			productInstallPath = "$(HOME)/Applications";
+			productName = "Mindquarry Desktop Client";
+			productReference = 8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Mindquarry Desktop Client" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* Mindquarry Desktop Client */;
+			projectDirPath = "";
+			targets = (
+				8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				DD8665610B9DB2F7000C7B66 /* DesktopClientAppIcon.icns in Resources */,
+				DD8665620B9DB2F7000C7B66 /* task-done.png in Resources */,
+				DD8665630B9DB2F7000C7B66 /* task-new.png in Resources */,
+				DD8665640B9DB2F7000C7B66 /* task-paused.png in Resources */,
+				DD8665650B9DB2F7000C7B66 /* task-running.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				77C8280E06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m in Sources */,
+				770B37ED0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel in Sources */,
+				DD39F4FB0B9D7FD200384D0C /* RequestController.m in Sources */,
+				DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */,
+				DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */,
+				DD8662790B9D9BBD000C7B66 /* MQTasksRequest.m in Sources */,
+				DD8663CC0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		26FC0A850875C7B200E6366F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Mindquarry_Desktop_Client_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = "Mindquarry Desktop Client";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		26FC0A860875C7B200E6366F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Mindquarry_Desktop_Client_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = "Mindquarry Desktop Client";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		26FC0A890875C7B200E6366F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		26FC0A8A0875C7B200E6366F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		26FC0A840875C7B200E6366F /* Build configuration list for PBXNativeTarget "Mindquarry Desktop Client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26FC0A850875C7B200E6366F /* Debug */,
+				26FC0A860875C7B200E6366F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Mindquarry Desktop Client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				26FC0A890875C7B200E6366F /* Debug */,
+				26FC0A8A0875C7B200E6366F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

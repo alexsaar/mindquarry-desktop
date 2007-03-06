@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {saveAction = id; }; 
+            CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {window = NSWindow; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {test = id; }; 
+            CLASS = RequestController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {serversController = id; taskColumn = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -93,6 +93,9 @@ public class MindClient {
     }
 
     public static void main(String[] args) throws IOException {
+    	
+    	System.err.println("main()");
+    	
         // init display & shell
         Display display = new Display();
         Display.setAppName(APPLICATION_NAME);

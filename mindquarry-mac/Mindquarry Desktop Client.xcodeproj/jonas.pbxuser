@@ -1,0 +1,415 @@
+// !$*UTF8*$!
+{
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = DD39F4E70B9D7CCC00384D0C /* Mindquarry Desktop Client */;
+		activeTarget = 8D1107260486CEB800E47090 /* Mindquarry Desktop Client */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
+		);
+		breakpointsGroup = DD8662240B9D994A000C7B66 /* XCBreakpointsBucket */;
+		codeSenseManager = DD39F4F30B9D7CEC00384D0C /* Code sense */;
+		executables = (
+			DD39F4E70B9D7CCC00384D0C /* Mindquarry Desktop Client */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					747,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 194884824;
+			PBXWorkspaceStateSaveDate = 194884824;
+		};
+		perUserProjectItems = {
+			DD86657B0B9DB4A3000C7B66 /* PBXTextBookmark */ = DD86657B0B9DB4A3000C7B66 /* PBXTextBookmark */;
+			DD8665860B9DB4D2000C7B66 /* PBXTextBookmark */ = DD8665860B9DB4D2000C7B66 /* PBXTextBookmark */;
+			DD8665880B9DB4D2000C7B66 /* PBXTextBookmark */ = DD8665880B9DB4D2000C7B66 /* PBXTextBookmark */;
+			DD8665890B9DB4D2000C7B66 /* PBXTextBookmark */ = DD8665890B9DB4D2000C7B66 /* PBXTextBookmark */;
+			DD8665AF0B9DB545000C7B66 /* PBXTextBookmark */ = DD8665AF0B9DB545000C7B66 /* PBXTextBookmark */;
+			DDE1E9650B9D83E500F677BB /* PBXTextBookmark */ = DDE1E9650B9D83E500F677BB /* PBXTextBookmark */;
+		};
+		sourceControlManager = DD39F4F20B9D7CEC00384D0C /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */ = {
+		uiCtxt = {
+			"Xdesign Model Editor Bookmark Key" = {
+				UIContextForDetailArea = {
+					_indexOfSelectedPane = 0;
+					_indexOfSelectedView = 0;
+				};
+				UIContextForEntityArea = {
+					_indexOfSelectedView = 0;
+					chosenTableColumnns = (
+						"ET Entity",
+						"ET Abstract",
+						"ET Class",
+					);
+					chosenTableColumnns_sortDirections = (
+						YES,
+					);
+					chosenTableColumnns_sortKeys = (
+						name,
+					);
+					chosenTableColumnns_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableWidths = (
+						103.000000,
+						22.000000,
+						80.080078,
+					);
+				};
+				UIContextForLayoutManager = {
+					detailSplitGeometry = {
+						_collapsingFrameDimension = 0;
+						_indexOfCollapsedView = 0;
+						_percentageOfCollapsedView = 0;
+						isCollapsed = yes;
+						sizes = (
+							"{{0, 0}, {614, 220}}",
+							"{{619, 0}, {365, 220}}",
+						);
+					};
+					diagramSplitGeometry = {
+						_collapsingFrameDimension = 0;
+						_indexOfCollapsedView = 0;
+						_percentageOfCollapsedView = 0;
+						isCollapsed = yes;
+						sizes = (
+							"{{0, 0}, {984, 220}}",
+							"{{0, 225}, {984, 588}}",
+						);
+					};
+					tableSplitGeometry = {
+						_collapsingFrameDimension = 0;
+						_indexOfCollapsedView = 0;
+						_percentageOfCollapsedView = 0;
+						isCollapsed = yes;
+						sizes = (
+							"{{0, 0}, {230, 220}}",
+							"{{235, 0}, {378, 220}}",
+						);
+					};
+				};
+				UIContextForPropertyArea = {
+					_indexOfSelectedView = 0;
+					chosenTableColumnnFRTs = (
+						"FT Fetch Request",
+						"FT Predicate",
+					);
+					chosenTableColumnnFRTs_sortDirections = (
+						YES,
+					);
+					chosenTableColumnnFRTs_sortKeys = (
+						name,
+					);
+					chosenTableColumnnFRTs_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableColumnnsAT = (
+						"AT Attribute",
+						"AT Type",
+					);
+					chosenTableColumnnsAT_sortDirections = (
+						YES,
+					);
+					chosenTableColumnnsAT_sortKeys = (
+						name,
+					);
+					chosenTableColumnnsAT_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableColumnnsFPT = (
+						"FP FetchedProperty",
+						"FP Destination",
+						"FP Predicate",
+					);
+					chosenTableColumnnsFPT_sortDirections = (
+						YES,
+					);
+					chosenTableColumnnsFPT_sortKeys = (
+						name,
+					);
+					chosenTableColumnnsFPT_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableColumnnsPT = (
+						"PT Property",
+						"PT Kind",
+						"PT SharedKeyOne",
+					);
+					chosenTableColumnnsPT_sortDirections = (
+						YES,
+					);
+					chosenTableColumnnsPT_sortKeys = (
+						name,
+					);
+					chosenTableColumnnsPT_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableColumnnsRT = (
+						"RT Relationship",
+						"RT Destination",
+					);
+					chosenTableColumnnsRT_sortDirections = (
+						YES,
+					);
+					chosenTableColumnnsRT_sortKeys = (
+						name,
+					);
+					chosenTableColumnnsRT_sortSelectors = (
+						"_xdcaseInsensitiveNumericCompare:",
+					);
+					chosenTableWidthsAT = (
+						128.000000,
+						64.000000,
+					);
+					chosenTableWidthsFPT = (
+						128.000000,
+						64.000000,
+						144.764160,
+					);
+					chosenTableWidthsFRT = (
+						128.000000,
+						249.764160,
+					);
+					chosenTableWidthsPT = (
+						128.000000,
+						108.110840,
+						115.570801,
+					);
+					chosenTableWidthsRT = (
+						128.000000,
+						64.000000,
+					);
+				};
+				"xdesign model browser state key - shown/hidden" = 1;
+				"xdesign model diagram view visible rect key" = "{{-136, -79}, {969, 573}}";
+			};
+			sepNavWindowFrame = "{{19, 615}, {750, 558}}";
+		};
+	};
+	77C8280B06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	8D1107260486CEB800E47090 /* Mindquarry Desktop Client */ = {
+		activeExec = 0;
+		executables = (
+			DD39F4E70B9D7CCC00384D0C /* Mindquarry Desktop Client */,
+		);
+	};
+	8D1107310486CEB800E47090 /* Info.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{429, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD39F4E70B9D7CCC00384D0C /* Mindquarry Desktop Client */ = {
+		isa = PBXExecutable;
+		activeArgIndex = 2147483647;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "Mindquarry Desktop Client";
+		savedGlobals = {
+		};
+		sourceDirectories = (
+		);
+		variableFormatDictionary = {
+		};
+	};
+	DD39F4F20B9D7CEC00384D0C /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+		scmType = "";
+	};
+	DD39F4F30B9D7CEC00384D0C /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	DD39F4F90B9D7FD200384D0C /* RequestController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{347, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD39F4FA0B9D7FD200384D0C /* RequestController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1148, 1064}}";
+			sepNavSelRange = "{276, 0}";
+			sepNavVisRect = "{{0, 0}, {1148, 451}}";
+		};
+	};
+	DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{557, 16}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD86617F0B9D95E3000C7B66 /* MQRequest.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 1974}}";
+			sepNavSelRange = "{1744, 0}";
+			sepNavVisRect = "{{0, 1161}, {939, 813}}";
+		};
+	};
+	DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{274, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{938, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD8662240B9D994A000C7B66 /* XCBreakpointsBucket */ = {
+		isa = XCBreakpointsBucket;
+		name = "Project Breakpoints";
+		objects = (
+		);
+	};
+	DD8662770B9D9BBD000C7B66 /* MQTasksRequest.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{285, 99}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 1008}}";
+			sepNavSelRange = "{854, 71}";
+			sepNavVisRect = "{{0, 182}, {939, 813}}";
+		};
+	};
+	DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 813}}";
+			sepNavSelRange = "{403, 41}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {939, 1190}}";
+			sepNavSelRange = "{800, 0}";
+			sepNavVisRect = "{{0, 0}, {939, 813}}";
+		};
+	};
+	DD86657B0B9DB4A3000C7B66 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8D1107310486CEB800E47090 /* Info.plist */;
+		name = "Info.plist: 12";
+		rLen = 0;
+		rLoc = 429;
+		rType = 0;
+		vrLen = 930;
+		vrLoc = 0;
+	};
+	DD86657E0B9DB4A3000C7B66 /* RequestController.h */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = RequestController.h;
+		path = "/Users/jonas/Desktop/mindquarry/mindquarry-desktop-client/mindquarry-mac/Source/RequestController.h";
+		sourceTree = "<absolute>";
+	};
+	DD8665860B9DB4D2000C7B66 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD86657E0B9DB4A3000C7B66 /* RequestController.h */;
+		name = "RequestController.h: 16";
+		rLen = 0;
+		rLoc = 251;
+		rType = 0;
+		vrLen = 492;
+		vrLoc = 0;
+	};
+	DD8665880B9DB4D2000C7B66 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD86657E0B9DB4A3000C7B66 /* RequestController.h */;
+		name = "RequestController.h: 16";
+		rLen = 0;
+		rLoc = 251;
+		rType = 0;
+		vrLen = 492;
+		vrLoc = 0;
+	};
+	DD8665890B9DB4D2000C7B66 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */;
+		name = "MQTaskPropertiesRequest.m: 39";
+		rLen = 0;
+		rLoc = 800;
+		rType = 0;
+		vrLen = 1405;
+		vrLoc = 0;
+	};
+	DD8665AF0B9DB545000C7B66 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */;
+		name = "MQTaskPropertiesRequest.m: 39";
+		rLen = 0;
+		rLoc = 800;
+		rType = 0;
+		vrLen = 1405;
+		vrLoc = 0;
+	};
+	DDE1E9650B9D83E500F677BB /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 8D1107310486CEB800E47090 /* Info.plist */;
+		name = "Info.plist: 14";
+		rLen = 0;
+		rLoc = 504;
+		rType = 0;
+		vrLen = 910;
+		vrLoc = 0;
+	};
+}
