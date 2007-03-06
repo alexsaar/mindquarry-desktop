@@ -1,3 +1,4 @@
+package com.mindquarry.desktop.preferences;
 import java.io.File;
 import java.io.IOException;
 
@@ -6,6 +7,11 @@ import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+
+import com.mindquarry.desktop.preferences.FilteredPreferenceDialog;
+import com.mindquarry.desktop.preferences.GeneralSettingsPage;
+import com.mindquarry.desktop.preferences.ServerProfilesPage;
+import com.mindquarry.desktop.preferences.ShortcutsPage;
 
 /**
  * This class demonstrates JFace preferences
@@ -19,8 +25,10 @@ public class ShowPrefs {
 
         // create pref manager and add nodes
         PreferenceManager mgr = new PreferenceManager();
-        mgr.addToRoot(new PreferenceNode("profiles", new ServerProfilesPage()));
-        mgr.addToRoot(new PreferenceNode("shortcuts", new ShortcutsPage()));
+        GeneralSettingsPage general = new GeneralSettingsPage();
+        mgr.addToRoot(new PreferenceNode("general", general));
+        mgr.addTo("general", new PreferenceNode("profiles", new ServerProfilesPage()));
+        mgr.addTo("general", new PreferenceNode("shortcuts", new ShortcutsPage()));
         
         // Set the preference store
         File prefFile = new File("minutes-editor.properties");
