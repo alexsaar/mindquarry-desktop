@@ -29,6 +29,12 @@ import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
  *         Saar</a>
  */
 public class PreferenceUtilities {
+    public static final String GENERAL_NODE = "general"; //$NON-NLS-1$
+
+    public static final String PROFILE_NODE = "profiles"; //$NON-NLS-1$
+
+    public static final String SHORTCUTS_NODE = "shortcuts"; //$NON-NLS-1$
+
     public static final String SETTINGS_FOLDER = System
             .getProperty("user.home") //$NON-NLS-1$
             + "/.mindquarry"; //$NON-NLS-1$
@@ -48,8 +54,8 @@ public class PreferenceUtilities {
     public static PreferenceManager getDefaultPreferenceManager() {
         PreferenceManager mgr = new PreferenceManager();
         GeneralSettingsPage general = new GeneralSettingsPage();
-        mgr.addToRoot(new PreferenceNode("general", general));
-        mgr.addTo("general", new PreferenceNode("profiles",
+        mgr.addToRoot(new PreferenceNode(GENERAL_NODE, general));
+        mgr.addTo(GENERAL_NODE, new PreferenceNode(PROFILE_NODE,
                 new ServerProfilesPage()));
         return mgr;
     }
