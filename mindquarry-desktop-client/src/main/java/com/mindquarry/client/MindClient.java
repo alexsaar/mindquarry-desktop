@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
@@ -76,6 +77,7 @@ public class MindClient {
 
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 DesktopConstants.MINDQUARRY_ICON));
+        Window.setDefaultImage(icon);
 
         // init settings
         prefFile = new File(PREF_FILE);
@@ -109,14 +111,14 @@ public class MindClient {
         if ((args.length == 3) && (prefFile.exists())) {
             loadOptions();
             addNewProfile(args[0], args[1], args[2]);
-            showPreferenceDialog();
+            showPreferenceDialog(true);
         } else if ((args.length == 3) && (!prefFile.exists())) {
             addNewProfile(args[0], args[1], args[2]);
-            showPreferenceDialog();
+            showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
             addNewProfile(Messages.getString("MindClient.8"), "http://server", //$NON-NLS-1$ //$NON-NLS-2$
                     "your login name"); //$NON-NLS-1$
-            showPreferenceDialog();
+            showPreferenceDialog(true);
         } else {
             loadOptions();
         }
@@ -182,7 +184,7 @@ public class MindClient {
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 try {
-                    showPreferenceDialog();
+                    showPreferenceDialog(false);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -205,17 +207,20 @@ public class MindClient {
         iconAction.start();
     }
 
-    private void showPreferenceDialog() throws IOException {
+    private void showPreferenceDialog(boolean showProfiles) throws IOException {
         loadOptions();
 
         // request preference values from user
         PreferenceManager mgr = PreferenceUtilities
                 .getDefaultPreferenceManager();
-
+        
         // Create the preferences dialog
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
                 mgr);
         dlg.setPreferenceStore(store);
+        if(showProfiles) {
+            dlg.setSelectedNode(PreferenceUtilities.PROFILE_NODE);
+        }
         dlg.open();
         saveOptions();
     }
