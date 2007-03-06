@@ -30,6 +30,7 @@
 	<name>Mindquarry Desktop Tools</name>
 	
 	<modules>
+	         <module>mindquarry-desktop-commons</module>
 	         <module>mindquarry-desktop-client</module>
 	         <module>mindquarry-minutes-editor</module>
 	</modules>

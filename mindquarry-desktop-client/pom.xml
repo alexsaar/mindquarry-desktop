@@ -35,6 +35,12 @@
 	</scm>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.mindquarry.tools</groupId>
+			<artifactId>mindquarry-desktop-commons</artifactId>
+			<version>1.0-M2-SNAPSHOT</version>
+		</dependency>
+		
 		<!-- SVN libs -->
 		<dependency>
 			<groupId>org.tigris.subversion</groupId>

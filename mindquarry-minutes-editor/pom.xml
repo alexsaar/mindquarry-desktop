@@ -27,6 +27,14 @@
 	<packaging>jar</packaging>
 
 	<name>Mindquarry Minutes Editor</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.mindquarry.tools</groupId>
+			<artifactId>mindquarry-desktop-commons</artifactId>
+			<version>1.0-M2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 
 	<scm>
 		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-1.1</connection>
