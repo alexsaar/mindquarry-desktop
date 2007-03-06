@@ -1,3 +1,16 @@
+/*
+ * Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
+ * 
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ */
 package com.mindquarry.desktop.preferences;
 
 import java.io.File;
@@ -10,8 +23,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
-import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
-import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.pages.ShortcutsPage;
 
 /**
@@ -31,21 +42,20 @@ public class ShowPrefs {
                 new ShortcutsPage()));
 
         // Set the preference store
-        File prefFile = new File(PreferenceUtilities.SETTINGS_FOLDER
-                + "/minutes-editor.properties"); //$NON-NLS-1$
+        File prefFile = new File("./preference-test.properties"); //$NON-NLS-1$
         PreferenceUtilities.checkPreferenceFile(prefFile);
-        PreferenceStore ps = new PreferenceStore(prefFile.getAbsolutePath());
-        ps.load();
+        PreferenceStore store = new PreferenceStore(prefFile.getAbsolutePath());
+        store.load();
 
         // Create the preferences dialog
         // PreferenceDialog dlg = new PreferenceDialog(new Shell(), mgr);
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(
                 new Shell(), mgr);
-        dlg.setPreferenceStore(ps);
+        dlg.setPreferenceStore(store);
         dlg.setHelpAvailable(true);
         dlg.open();
 
-        ps.save();
+        store.save();
         display.dispose();
     }
 

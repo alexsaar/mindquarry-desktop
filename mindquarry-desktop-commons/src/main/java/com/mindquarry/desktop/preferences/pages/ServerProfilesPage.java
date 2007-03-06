@@ -14,8 +14,6 @@
 package com.mindquarry.desktop.preferences.pages;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -41,6 +39,8 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import com.mindquarry.desktop.preferences.profile.Profile;
+
 /**
  * This class creates a preference page for Mindquarry Server profiles.
  * 
@@ -48,8 +48,6 @@ import org.eclipse.swt.widgets.Text;
  *         Saar</a>
  */
 public class ServerProfilesPage extends PreferencePage {
-    public static final String PROFILE_KEY_BASE = "com.mindquarry.server.profile."; //$NON-NLS-1$
-
     private Text login;
 
     private Text pwd;
@@ -90,7 +88,13 @@ public class ServerProfilesPage extends PreferencePage {
 
         createProfileManagementGroup(composite);
         createProfileSettingsGroup(composite);
-        loadStoredProfiles();
+
+        // load list of stored profiles
+        PreferenceStore store = (PreferenceStore) getPreferenceStore();
+        profiles = Profile.loadProfiles(store);
+        for (Profile profile : profiles) {
+            profileList.add(profile.getName());
+        }
         return composite;
     }
 
@@ -156,7 +160,7 @@ public class ServerProfilesPage extends PreferencePage {
                     pwd.setText(profile.getPassword());
                     url.setText(profile.getServerURL());
                     folder.setText(profile.getWorkspaceFolder());
-                    
+
                     delButton.setEnabled(true);
                 }
             }
@@ -277,55 +281,6 @@ public class ServerProfilesPage extends PreferencePage {
         folder.setText(""); //$NON-NLS-1$
     }
 
-    private void loadStoredProfiles() {
-        PreferenceStore store = (PreferenceStore) getPreferenceStore();
-        HashMap<Integer, Profile> storedProfiles = new HashMap<Integer, Profile>();
-
-        // load stored profiles
-        String[] prefs = store.preferenceNames();
-        for (String pref : prefs) {
-            if (pref.startsWith(PROFILE_KEY_BASE)) {
-                // analyze preference
-                int nbr = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
-                        .length(), PROFILE_KEY_BASE.length() + 1));
-                String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
-                        pref.length());
-
-                // init profile
-                Profile profile;
-                if (storedProfiles.containsKey(nbr)) {
-                    profile = storedProfiles.get(nbr);
-                } else {
-                    profile = new Profile("", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            ""); //$NON-NLS-1$
-                    storedProfiles.put(nbr, profile);
-                }
-                // set profile values
-                if (prefName.equals("name")) { //$NON-NLS-1$
-                    profile.setName(store.getString(pref));
-                } else if (prefName.equals("login")) { //$NON-NLS-1$
-                    profile.setLogin(store.getString(pref));
-                } else if (prefName.equals("password")) { //$NON-NLS-1$
-                    profile.setPassword(store.getString(pref));
-                } else if (prefName.equals("url")) { //$NON-NLS-1$
-                    profile.setServerURL(store.getString(pref));
-                } else if (prefName.equals("workspaces")) { //$NON-NLS-1$
-                    profile.setWorkspaceFolder(store.getString(pref));
-                }
-            }
-        }
-        // set profile list
-        Iterator<Integer> keyIter = storedProfiles.keySet().iterator();
-        while (keyIter.hasNext()) {
-            Profile profile = storedProfiles.get(keyIter.next());
-            profileList.add(profile.getName());
-            profiles.add(profile);
-        }
-    }
-
     @Override
     public boolean performOk() {
         IPreferenceStore store = getPreferenceStore();
@@ -333,15 +288,16 @@ public class ServerProfilesPage extends PreferencePage {
         // set properties from profiles
         int pos = 0;
         for (Profile profile : profiles) {
-            store.putValue(PROFILE_KEY_BASE + pos + ".name", profile.getName()); //$NON-NLS-1$
-            store.putValue(PROFILE_KEY_BASE + pos + ".login", //$NON-NLS-1$
-                    profile.getLogin());
-            store.putValue(PROFILE_KEY_BASE + pos + ".password", //$NON-NLS-1$
-                    profile.getPassword());
-            store.putValue(PROFILE_KEY_BASE + pos + ".url", //$NON-NLS-1$
-                    profile.getServerURL());
-            store.putValue(PROFILE_KEY_BASE + pos + ".workspaces", //$NON-NLS-1$
-                    profile.getWorkspaceFolder());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_NAME, profile.getName());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_LOGIN, profile.getLogin());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_PASSWORD, profile.getPassword());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_SERVER_URL, profile.getServerURL());
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+                    + Profile.PREF_WORKSPACES, profile.getWorkspaceFolder());
             pos++;
         }
         return true;
@@ -360,140 +316,6 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
             return null;
-        }
-    }
-
-    class Profile {
-        private static final long serialVersionUID = -3145142861005182807L;
-
-        private String name;
-
-        private String login;
-
-        private String password;
-
-        private String serverURL;
-
-        private String workspaceFolder;
-
-        /**
-         * Default constructor
-         */
-        public Profile() {
-        }
-
-        /**
-         * Copy constructor.
-         */
-        public Profile(Profile old) {
-            name = new String(old.getName());
-            login = new String(old.getLogin());
-            password = new String(old.getPassword());
-            serverURL = new String(old.getServerURL());
-            workspaceFolder = new String(old.getWorkspaceFolder());
-        }
-
-        /**
-         * Constructor that initializes all fields.
-         */
-        public Profile(String name, String login, String password,
-                String serverURL, String workspaceFolder) {
-            super();
-            this.name = name;
-            this.login = login;
-            this.password = password;
-            this.serverURL = serverURL;
-            this.workspaceFolder = workspaceFolder;
-        }
-
-        /**
-         * Getter for name.
-         * 
-         * @return the name
-         */
-        public String getName() {
-            return name;
-        }
-
-        /**
-         * Setter for name.
-         * 
-         * @param name the name to set
-         */
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        /**
-         * Getter for serverURL.
-         * 
-         * @return the serverURL
-         */
-        public String getServerURL() {
-            return serverURL;
-        }
-
-        /**
-         * Setter for serverURL.
-         * 
-         * @param url the serverURL to set
-         */
-        public void setServerURL(String serverURL) {
-            this.serverURL = serverURL;
-        }
-
-        /**
-         * Getter for workspaceFolder.
-         * 
-         * @return the workspaceFolder
-         */
-        public String getWorkspaceFolder() {
-            return workspaceFolder;
-        }
-
-        /**
-         * Setter for location.
-         * 
-         * @param folder the location to set
-         */
-        public void setWorkspaceFolder(String workspaceFolder) {
-            this.workspaceFolder = workspaceFolder;
-        }
-
-        /**
-         * Getter for login.
-         * 
-         * @return the login
-         */
-        public String getLogin() {
-            return login;
-        }
-
-        /**
-         * Setter for login.
-         * 
-         * @param login the login to set
-         */
-        public void setLogin(String login) {
-            this.login = login;
-        }
-
-        /**
-         * Getter for password.
-         * 
-         * @return the password
-         */
-        public String getPassword() {
-            return password;
-        }
-
-        /**
-         * Setter for password.
-         * 
-         * @param password the password to set
-         */
-        public void setPassword(String password) {
-            this.password = password;
         }
     }
 }
