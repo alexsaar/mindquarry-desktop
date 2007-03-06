@@ -1,4 +1,4 @@
-package com.mindquarry.desktop.preferences;
+package com.mindquarry.desktop.preferences.dialog;
 /*******************************************************************************
  * Copyright (c) 2000, 2006 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials

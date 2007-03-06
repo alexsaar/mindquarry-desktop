@@ -1,4 +1,5 @@
 package com.mindquarry.desktop.preferences;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -8,10 +9,10 @@ import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.preferences.FilteredPreferenceDialog;
-import com.mindquarry.desktop.preferences.GeneralSettingsPage;
-import com.mindquarry.desktop.preferences.ServerProfilesPage;
-import com.mindquarry.desktop.preferences.ShortcutsPage;
+import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
+import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
+import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
+import com.mindquarry.desktop.preferences.pages.ShortcutsPage;
 
 /**
  * This class demonstrates JFace preferences
@@ -24,23 +25,22 @@ public class ShowPrefs {
         Display display = new Display();
 
         // create pref manager and add nodes
-        PreferenceManager mgr = new PreferenceManager();
-        GeneralSettingsPage general = new GeneralSettingsPage();
-        mgr.addToRoot(new PreferenceNode("general", general));
-        mgr.addTo("general", new PreferenceNode("profiles", new ServerProfilesPage()));
-        mgr.addTo("general", new PreferenceNode("shortcuts", new ShortcutsPage()));
-        
+        PreferenceManager mgr = PreferenceUtilities
+                .getDefaultPreferenceManager();
+        mgr.addTo("general", new PreferenceNode("shortcuts",
+                new ShortcutsPage()));
+
         // Set the preference store
-        File prefFile = new File("minutes-editor.properties");
-        if(!prefFile.exists()) {
-            prefFile.createNewFile();
-        }
+        File prefFile = new File(PreferenceUtilities.SETTINGS_FOLDER
+                + "/minutes-editor.properties"); //$NON-NLS-1$
+        PreferenceUtilities.checkPreferenceFile(prefFile);
         PreferenceStore ps = new PreferenceStore(prefFile.getAbsolutePath());
         ps.load();
 
         // Create the preferences dialog
-        //PreferenceDialog dlg = new PreferenceDialog(new Shell(), mgr);
-        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(), mgr);
+        // PreferenceDialog dlg = new PreferenceDialog(new Shell(), mgr);
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(
+                new Shell(), mgr);
         dlg.setPreferenceStore(ps);
         dlg.setHelpAvailable(true);
         dlg.open();
