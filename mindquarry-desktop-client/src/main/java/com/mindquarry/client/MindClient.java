@@ -14,14 +14,10 @@
 package com.mindquarry.client;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
+import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -41,13 +37,12 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.client.ballon.MindClientBallonWidget;
-import com.mindquarry.client.options.ProfileList;
-import com.mindquarry.client.options.dialog.OptionsDialog;
 import com.mindquarry.client.util.os.OperatingSystem;
 import com.mindquarry.client.util.widgets.IconActionThread;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.DesktopConstants;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
+import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -73,15 +68,13 @@ public class MindClient {
 
     private final BeanFactory factory;
 
-    private ProfileList profileList;
-
     private File prefFile;
 
     private static TrayItem item;
 
     private static IconActionThread iconAction;
 
-    private PreferenceStore ps;
+    private PreferenceStore store;
 
     public MindClient() throws IOException {
         factory = new ClassPathXmlApplicationContext(
@@ -90,14 +83,13 @@ public class MindClient {
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 DesktopConstants.MINDQUARRY_ICON));
 
-        // init settings file & name
-        profileList = new ProfileList();
+        // init settings
         prefFile = new File(PREF_FILE);
 
         // load preferences
         PreferenceUtilities.checkPreferenceFile(prefFile);
-        ps = new PreferenceStore(prefFile.getAbsolutePath());
-        ps.load();
+        store = new PreferenceStore(prefFile.getAbsolutePath());
+        store.load();
     }
 
     public static void main(String[] args) throws IOException {
@@ -125,14 +117,14 @@ public class MindClient {
         if ((args.length == 3) && (prefFile.exists())) {
             loadOptions();
             addNewProfile(args[0], args[1], args[2]);
-            showOptionsDlg();
+            showPreferenceDialog();
         } else if ((args.length == 3) && (!prefFile.exists())) {
             addNewProfile(args[0], args[1], args[2]);
-            showOptionsDlg();
+            showPreferenceDialog();
         } else if (!prefFile.exists()) {
             addNewProfile(Messages.getString("MindClient.8"), "http://server", //$NON-NLS-1$ //$NON-NLS-2$
                     "your login name"); //$NON-NLS-1$
-            showOptionsDlg();
+            showPreferenceDialog();
         } else {
             loadOptions();
         }
@@ -146,7 +138,7 @@ public class MindClient {
         profile.setLogin(login);
         profile.setPassword(""); //$NON-NLS-1$
         profile.setWorkspaceFolder(""); //$NON-NLS-1$
-        return profileList.addProfile(profile);
+        return Profile.addProfile(store, profile);
     }
 
     private void createTrayIconAndMenu(Display display) {
@@ -205,10 +197,9 @@ public class MindClient {
         menuItem.setText(Messages.getString("MindClient.10")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                if (profileList.selectedProfile() != null) {
-                    Program
-                            .launch(profileList.selectedProfile()
-                                    .getServerURL());
+                if (Profile.getSelectedProfile(store) != null) {
+                    Program.launch(Profile.getSelectedProfile(store)
+                            .getServerURL());
                 }
             }
         });
@@ -227,7 +218,7 @@ public class MindClient {
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 try {
-                    showOptionsDlg();
+                    showPreferenceDialog();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -252,39 +243,29 @@ public class MindClient {
 
     private void loadOptions() {
         try {
-            ObjectInputStream is = new ObjectInputStream(new FileInputStream(
-                    prefFile));
-            profileList = (ProfileList) is.readObject();
-            is.close();
+            store.load();
         } catch (Exception e) {
             showErrorMessage(Messages.getString("MindClient.5")); //$NON-NLS-1$
         }
-        // if no profile is selected, use the first one
-        if (profileList.selectedProfile() == null && profileList.size() > 0) {
-            profileList.select(profileList.get(0));
-        }
     }
 
-    private void showOptionsDlg() throws IOException {
-        // request option values from user
-        OptionsDialog dlg = new OptionsDialog(MindClient.getShell(), icon,
-                profileList);
-        dlg.setBlockOnOpen(true);
-        if (dlg.open() == Window.OK) {
-            saveOptions();
-        }
+    private void showPreferenceDialog() throws IOException {
+        // request preference values from user
+        PreferenceManager mgr = PreferenceUtilities
+                .getDefaultPreferenceManager();
+
+        // Create the preferences dialog
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
+                mgr);
+        dlg.setPreferenceStore(store);
+        dlg.setHelpAvailable(true);
+        dlg.open();
+        saveOptions();
     }
 
     public void saveOptions() {
         try {
-            if (!prefFile.exists()) {
-                prefFile.getParentFile().mkdirs();
-                prefFile.createNewFile();
-            }
-            ObjectOutputStream os = new ObjectOutputStream(
-                    new FileOutputStream(prefFile));
-            os.writeObject(profileList);
-            os.close();
+            store.save();
         } catch (Exception e) {
             showErrorMessage(Messages.getString("MindClient.7")); //$NON-NLS-1$
         }
@@ -301,8 +282,8 @@ public class MindClient {
         return icon;
     }
 
-    public ProfileList getProfileList() {
-        return profileList;
+    public PreferenceStore getPreferenceStore() {
+        return store;
     }
 
     public static Shell getShell() {

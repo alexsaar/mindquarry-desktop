@@ -13,6 +13,8 @@
  */
 package com.mindquarry.client.ballon;
 
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
@@ -112,21 +114,22 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         // add profiles and select selected profile in combo box
         int selected = -1;
-        for (Profile profile : client.getProfileList().getProfiles()) {
+        for (Profile profile : Profile
+                .loadProfiles(client.getPreferenceStore())) {
             profileSelector.add(profile.getName());
 
             selected++;
-            if ((client.getProfileList().selectedProfile() != null)
-                    && (profile.getName().equals(client.getProfileList()
-                            .selectedProfile().getName()))) {
+            if ((Profile.getSelectedProfile(client.getPreferenceStore()) != null)
+                    && (profile.getName().equals(Profile.getSelectedProfile(
+                            client.getPreferenceStore()).getName()))) {
                 profileSelector.select(selected);
             }
         }
         // select first profile, if no selected profile is specified
+        List<Profile> profiles = Profile.loadProfiles(client
+                .getPreferenceStore());
         if ((profileSelector.getSelectionIndex() == -1)
-                && (client.getProfileList().getProfiles().length > 0)) {
-            client.getProfileList().select(
-                    client.getProfileList().getProfiles()[0]);
+                && (profiles.size() > 0)) {
             profileSelector.select(0);
         }
     }
@@ -205,7 +208,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 for (int i = 0; i < items.length; i++) {
                     if (items[i].equals(profileSelector.getItem(profileSelector
                             .getSelectionIndex()))) {
-                        client.getProfileList().select(items[i]);
+                        Profile.selectProfile(client.getPreferenceStore(),
+                                items[i]);
                         tman.asyncRefresh();
                     }
                 }
@@ -227,10 +231,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
         label.setBackground(group.getBackground());
         label.setText(Messages.getString("MindClientBallonWidget.1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
-        
+
         SynchronizeWidget synArea = new SynchronizeWidget(group);
         synArea.setVisible(false);
-                
+
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages.getString("MindClientBallonWidget.4")); //$NON-NLS-1$
         syncButton.setToolTipText(Messages
@@ -315,7 +319,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
     //
     // Button clearButton = new Button(group, SWT.NONE);
     // clearButton.setText("Clear");
-    // clearButton.setToolTipText("Use this button to clear the text in the Wiki textbox."));
+    // clearButton.setToolTipText("Use this button to clear the text in the Wiki
+    // textbox."));
     // clearButton
     // .setImage(new Image(
     // Display.getCurrent(),

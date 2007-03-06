@@ -134,6 +134,9 @@ public class TaskManager {
         tasks.remove(task);
         taskTableViewer.refresh();
 
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
         // set task content to status "done"
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         Source xmlSource = new DocumentSource(task.getContent());
@@ -141,8 +144,7 @@ public class TaskManager {
         try {
             taskDoneXSLTrans.transform(xmlSource, new StreamResult(result));
 
-            HttpUtil.putAsXML(client.getProfileList().selectedProfile()
-                    .getLogin(), client.getProfileList().selectedProfile()
+            HttpUtil.putAsXML(selectedProfile.getLogin(), selectedProfile
                     .getPassword(), task.getId(), result.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -203,9 +205,11 @@ public class TaskManager {
         setRefreshStatus(false);
         tasks.clear();
 
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
         // check profile
-        Profile profile = client.getProfileList().selectedProfile();
-        if (profile == null) {
+        if (selectedProfile == null) {
             refreshing = false;
             setRefreshStatus(true);
             return;
@@ -214,8 +218,10 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(profile.getLogin(), profile
-                    .getPassword(), profile.getServerURL() + "/tasks"); //$NON-NLS-1$
+            content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                    selectedProfile.getPassword(), selectedProfile
+                            .getServerURL()
+                            + "/tasks"); //$NON-NLS-1$
         } catch (Exception e) {
             // nothing todo here, task list widgets shows
             e.printStackTrace();
@@ -246,11 +252,10 @@ public class TaskManager {
         for (String taskURI : tlTransformer.getTaskURIs()) {
             content = null;
             try {
-                content = HttpUtil.getContentAsXML(client.getProfileList()
-                        .selectedProfile().getLogin(), client.getProfileList()
-                        .selectedProfile().getPassword(), client
-                        .getProfileList().selectedProfile().getServerURL()
-                        + "/tasks/" + taskURI); //$NON-NLS-1$
+                content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                        selectedProfile.getPassword(), selectedProfile
+                                .getServerURL()
+                                + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 continue;
             }

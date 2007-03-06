@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Widget;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Listener that is responsible for receiving and handling workspace
@@ -110,7 +111,10 @@ public class WorkspaceSynchronizeListener implements Listener {
      * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
      */
     public void handleEvent(Event event) {
-        if (client.getProfileList().selectedProfile() == null) {
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
+        if (selectedProfile == null) {
             MindClient.showErrorMessage(Messages
                     .getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
             return;

@@ -26,6 +26,7 @@ import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.client.MindClient;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -43,10 +44,12 @@ public class PublishOperation extends SvnOperation {
     public void run() {
         resetProgress();
         setMessage(Messages.getString("PublishOperation.0")); //$NON-NLS-1$
-        
+
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
         // get directory for workspaces
-        File teamspacesDir = new File(client.getProfileList().selectedProfile()
-                .getWorkspaceFolder());
+        File teamspacesDir = new File(selectedProfile.getWorkspaceFolder());
 
         // list directories
         File[] directories = teamspacesDir.listFiles(new FilenameFilter() {
@@ -57,10 +60,8 @@ public class PublishOperation extends SvnOperation {
             }
         });
         // init SVN client API types
-        svnClient
-                .username(client.getProfileList().selectedProfile().getLogin());
-        svnClient.password(client.getProfileList().selectedProfile()
-                .getPassword());
+        svnClient.username(selectedProfile.getLogin());
+        svnClient.password(selectedProfile.getPassword());
 
         // loop existing workspace directories
         HashMap<String, File> changed = new HashMap<String, File>();
@@ -101,7 +102,7 @@ public class PublishOperation extends SvnOperation {
                         // commit changes
                         try {
                             updateProgress();
-                            setMessage(Messages.getString("PublishOperation.4") + " ("  //$NON-NLS-1$//$NON-NLS-2$
+                            setMessage(Messages.getString("PublishOperation.4") + " (" //$NON-NLS-1$//$NON-NLS-2$
                                     + tmpTsNbr + " of " //$NON-NLS-1$
                                     + tsCount + ")"); //$NON-NLS-1$
 

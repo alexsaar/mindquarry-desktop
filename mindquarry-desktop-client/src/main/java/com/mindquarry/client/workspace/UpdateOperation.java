@@ -29,6 +29,7 @@ import com.mindquarry.client.util.network.HttpUtil;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.client.workspace.xml.TeamListTransformer;
 import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Updates the local working copy of the workspaces.
@@ -59,17 +60,18 @@ public class UpdateOperation extends SvnOperation {
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
         setMessage(Messages.getString("UpdateOperation.1")); //$NON-NLS-1$
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(client.getProfileList()
-                    .selectedProfile().getLogin(), client.getProfileList()
-                    .selectedProfile().getPassword(), client.getProfileList()
-                    .selectedProfile().getServerURL()
-                    + "/teams"); //$NON-NLS-1$
+            content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                    selectedProfile.getPassword(), selectedProfile
+                            .getServerURL()
+                            + "/teams"); //$NON-NLS-1$
         } catch (Exception e) {
-            MindClient.showErrorMessage(Messages
-                    .getString("UpdateOperation.2")); //$NON-NLS-1$
+            MindClient
+                    .showErrorMessage(Messages.getString("UpdateOperation.2")); //$NON-NLS-1$
             return false;
         }
         // check if some contant was received
@@ -82,8 +84,8 @@ public class UpdateOperation extends SvnOperation {
         try {
             doc = reader.read(content);
         } catch (DocumentException e) {
-            MindClient.showErrorMessage(Messages
-                    .getString("UpdateOperation.4")); //$NON-NLS-1$
+            MindClient
+                    .showErrorMessage(Messages.getString("UpdateOperation.4")); //$NON-NLS-1$
             return false;
         }
         // create a transformer for teamspace list
@@ -98,16 +100,15 @@ public class UpdateOperation extends SvnOperation {
 
         // loop teamspace descriptions
         for (String tsID : listTrans.getTeamspaces()) {
-            setMessage(Messages.getString("UpdateOperation.0") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            setMessage(Messages.getString("UpdateOperation.0") + " (" + ++tsNbr + " of " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     + tsCount + ")..."); //$NON-NLS-1$
 
             content = null;
             try {
-                content = HttpUtil.getContentAsXML(client.getProfileList()
-                        .selectedProfile().getLogin(), client.getProfileList()
-                        .selectedProfile().getPassword(), client
-                        .getProfileList().selectedProfile().getServerURL()
-                        + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
+                content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                        selectedProfile.getPassword(), selectedProfile
+                                .getServerURL()
+                                + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
             } catch (Exception e) {
                 MindClient.showErrorMessage(Messages
                         .getString("UpdateOperation.6") //$NON-NLS-1$
@@ -132,15 +133,15 @@ public class UpdateOperation extends SvnOperation {
     }
 
     private void updateWorkspaces(HashMap<String, String> workspaces) {
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
         // init SVN client API types
-        svnClient
-                .username(client.getProfileList().selectedProfile().getLogin());
-        svnClient.password(client.getProfileList().selectedProfile()
-                .getPassword());
+        svnClient.username(selectedProfile.getLogin());
+        svnClient.password(selectedProfile.getPassword());
 
         // get directory for workspaces
-        File teamspacesDir = new File(client.getProfileList().selectedProfile()
-                .getWorkspaceFolder());
+        File teamspacesDir = new File(selectedProfile.getWorkspaceFolder());
 
         // check if teamspace dir already exists, if not create it
         if (!teamspacesDir.exists()) {
@@ -149,7 +150,7 @@ public class UpdateOperation extends SvnOperation {
         // init progress steps for progress dialog
         int tsCount = workspaces.size();
         int tsNbr = 0;
-        
+
         setProgressSteps(tsCount);
 
         // loop existing workspace directories
@@ -159,7 +160,7 @@ public class UpdateOperation extends SvnOperation {
                 // remove entry from workspace list
                 workspaces.remove(id);
 
-                setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                         + tsCount + ")"); //$NON-NLS-1$
 
                 // update workspace
@@ -170,7 +171,7 @@ public class UpdateOperation extends SvnOperation {
         }
         // add additional workspace directories
         for (String id : workspaces.keySet()) {
-            setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of "  //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+            setMessage(Messages.getString("UpdateOperation.12") + " (" + ++tsNbr + " of " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     + tsCount + ")"); //$NON-NLS-1$
 
             // create directory for the new workspace
