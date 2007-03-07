@@ -9,15 +9,15 @@
 		<key>29</key>
 		<string>420 613 381 44 0 0 1920 1178 </string>
 		<key>474</key>
-		<string>805 684 313 230 0 0 1920 1178 </string>
+		<string>805 670 313 230 0 0 1920 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>474</integer>
 		<integer>342</integer>
 		<integer>21</integer>
+		<integer>474</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L2127</string>
