@@ -34,6 +34,8 @@ enum {
 	
 }
 
+- (void)afterWakeFromNib;
+
 - (IBAction)toggleInspector:(id)sender;
 
 - (IBAction)setDone:(id)sender;

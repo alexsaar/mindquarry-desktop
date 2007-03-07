@@ -6,6 +6,21 @@
 	objectVersion = 42;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		DD2EDB040B9F2180000238CE /* Disk Image */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DD2EDD970B9F21B5000238CE /* Build configuration list for PBXAggregateTarget "Disk Image" */;
+			buildPhases = (
+				DD2EDB030B9F2180000238CE /* ShellScript */,
+			);
+			dependencies = (
+				DD2EDD940B9F2197000238CE /* PBXTargetDependency */,
+			);
+			name = "Disk Image";
+			productName = "Disk Image";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		770B37ED0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */; };
 		77C8280E06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */; };
@@ -36,6 +51,16 @@
 		DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */; };
 		DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DD2EDD930B9F2197000238CE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D1107260486CEB800E47090 /* Mindquarry Desktop Client */;
+			remoteInfo = "Mindquarry Desktop Client";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -243,6 +268,7 @@
 			projectDirPath = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
+				DD2EDB040B9F2180000238CE /* Disk Image */,
 			);
 		};
 /* End PBXProject section */
@@ -272,6 +298,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		DD2EDB030B9F2180000238CE /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here\n\n# shell script goes here\n\nexport REV=`/opt/local/bin/svn info Mindquarry\\ Desktop\\ Client.xcodeproj/jonas.mode1 | grep Revision | cut -d: -f2 | cut -d\\  -f2`\n\nexport TITLE=\"Mindquarry Desktop Client\"\nexport FOLDER=\"${BUILT_PRODUCTS_DIR}/$TITLE\"\nexport DMG=\"${BUILT_PRODUCTS_DIR}/$TITLE r$REV.dmg\"\nexport DMGPRE=\"${BUILT_PRODUCTS_DIR}/$TITLE.pre.dmg\"\n\ntest -d \"$FOLDER\" && rm -rf \"$FOLDER\"\n\nmkdir \"$FOLDER\"\n\ntest -f AppHardLink && rm -f AppHardLink\nopen AppHardLink.zip\nsleep 0.5\ncp -v AppHardLink \"$FOLDER/Applications\"\n\ncp -r \"${BUILT_PRODUCTS_DIR}/Mindquarry Desktop Client.app\" \"$FOLDER/\"\n\ntest -f \"$DMG\" && rm \"$DMG\"\ntest -f \"$DMGPRE\" && rm \"$DMGPRE\"\n\nhdiutil makehybrid -hfs -hfs-volume-name \"$TITLE\" -hfs-openfolder \"$FOLDER\" \"$FOLDER\" -o \"$DMGPRE\" || exit 1\n\nhdiutil convert \"$DMGPRE\" -format UDBZ -o \"$DMG\" || exit 1\n\ntest -f \"$DMGPRE\" && rm \"$DMGPRE\"\n\ntest -d \"$FOLDER\" && rm -rf \"$FOLDER\"\n\nexit 0";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -293,6 +335,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DD2EDD940B9F2197000238CE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D1107260486CEB800E47090 /* Mindquarry Desktop Client */;
+			targetProxy = DD2EDD930B9F2197000238CE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -372,6 +422,28 @@
 			};
 			name = Release;
 		};
+		DD2EDD980B9F21B5000238CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Disk Image";
+			};
+			name = Debug;
+		};
+		DD2EDD990B9F21B5000238CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = "Disk Image";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -389,6 +461,15 @@
 			buildConfigurations = (
 				26FC0A890875C7B200E6366F /* Debug */,
 				26FC0A8A0875C7B200E6366F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD2EDD970B9F21B5000238CE /* Build configuration list for PBXAggregateTarget "Disk Image" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD2EDD980B9F21B5000238CE /* Debug */,
+				DD2EDD990B9F21B5000238CE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

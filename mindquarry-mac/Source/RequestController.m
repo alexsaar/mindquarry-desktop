@@ -17,6 +17,9 @@
 
 - (void)awakeFromNib
 {
+	[serversController fetchWithRequest:nil merge:NO error:nil];
+	[tasksController fetchWithRequest:nil merge:NO error:nil];
+	
 	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
 	[taskColumn setDataCell:cell];
 
@@ -59,6 +62,17 @@
 //	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
 //	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
 	
+	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
+	
+//	[self afterWakeFromNib];
+	
+}
+
+- (void)afterWakeFromNib
+{
+//	[self refresh:nil];
+	
+	[MQTask setAutoSaveEnabled:YES];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
@@ -114,7 +128,7 @@
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
-    return [NSArray arrayWithObjects:@"MQRefresh", @"MQSave", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
+    return [NSArray arrayWithObjects:@"MQRefresh", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {

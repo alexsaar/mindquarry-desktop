@@ -10,15 +10,34 @@
 
 #import "MQUpdateRequest.h"
 
+static BOOL autosave_enabled = NO;
+
 @implementation MQTask
 
 + (void)initialize
 {
+	[self setAutoSaveEnabled:NO];
+	
 	[self setKeys:[NSArray arrayWithObject:@"status"] triggerChangeNotificationsForDependentKey:@"statusIndex"];
 	[self setKeys:[NSArray arrayWithObject:@"priority"] triggerChangeNotificationsForDependentKey:@"priorityIndex"];
 	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", @"date", nil] triggerChangeNotificationsForDependentKey:@"self"];
 	
 //	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", nil] triggerChangeNotificationsForDependentKey:@"importantData"];
+}
+
++ (void)setAutoSaveEnabled:(BOOL)enabled
+{
+	autosave_enabled = enabled;
+//	NSLog(@"autosave %d", enabled);
+}
+
+- (void)dealloc
+{
+	[saveTimer invalidate];
+	[saveTimer release];
+	saveTimer = nil;
+	
+	[super dealloc];
 }
 
 - (int)statusIndex
@@ -115,7 +134,7 @@
 
 - (void)save
 {
-	NSLog(@"saving: %@", [self valueForKey:@"title"]);
+	NSLog(@"saving task \"%@\"", [self valueForKey:@"title"]);
 	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithController:nil forServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
 	[request performSelectorOnMainThread:@selector(startRequest) withObject:nil waitUntilDone:YES];
 	[request autorelease];
@@ -133,9 +152,16 @@
 	
 	int days = ceil(delta / 60 / 60 / 24);
 	
+	if (days == 0)
+		return @"today";
+	else if (days == 1)
+		return @"tomorrow";
+	else if (days == -1)
+		return @"yesterday";
+	
 	NSString *timeString = nil;
 //	if (days < 10)
-		timeString = [NSString stringWithFormat:@"%d day%@", days, days > 1 ? @"s" : @""];
+		timeString = [NSString stringWithFormat:@"%d day%@", ABS(days), ABS(days) > 1 ? @"s" : @""];
 //	else
 		
 	if (delta > 0)
@@ -154,10 +180,20 @@
 //	[self save];
 //}
 //
-//- (void)didChangeValueForKey:(NSString *)key
-//{
-//	[super didChangeValueForKey:key];
+- (void)didChangeValueForKey:(NSString *)key
+{
+	[super didChangeValueForKey:key];
+	if (!autosave_enabled)
+		return;
+	
+	if (saveTimer) {
+		[saveTimer invalidate];
+		[saveTimer release];
+	}
+	
+	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(save) userInfo:nil repeats:NO] retain];
+	
 //	NSLog(@"%@ change val for key %@", [self valueForKey:@"title"], key);
-//}
+}
 
 @end

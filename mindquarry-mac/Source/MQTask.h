@@ -11,7 +11,11 @@
 
 @interface MQTask : NSManagedObject {
 
+	NSTimer *saveTimer;
+	
 }
+
++ (void)setAutoSaveEnabled:(BOOL)enabled;
 
 - (int)statusIndex;
 
