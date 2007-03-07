@@ -18,7 +18,7 @@ static NSDictionary *statusImages;
 
 + (void)initialize
 {
-#define ICONSIZE NSMakeSize(32, 32)
+#define ICONSIZE NSMakeSize(26, 26)
 	statusImages = [[NSDictionary alloc] initWithObjectsAndKeys:
 		MQSmoothResize([NSImage imageNamed:@"task-new"], ICONSIZE), @"new",
 		MQSmoothResize([NSImage imageNamed:@"task-done"], ICONSIZE), @"done",
@@ -78,9 +78,7 @@ static NSDictionary *statusImages;
 	NSImage *statusImage = [statusImages objectForKey:status];
 	if (!statusImage)
 		statusImage = [statusImages objectForKey:@"new"];
-	
-	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 37) operation:NSCompositeSourceOver];
-
+	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 34) operation:NSCompositeSourceOver];
 	
 	// due
 	NSDate *date = [[self objectValue] valueForKey:@"date"];

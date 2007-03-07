@@ -214,6 +214,7 @@
 	NSManagedObject *task = [[MQTask alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 	[task setValue:task_id forKey:@"id"];
 	[task setValue:team forKey:@"team"];
+	[task setValue:[team valueForKey:@"server"] forKey:@"server"];
 	
 	return task;
 }

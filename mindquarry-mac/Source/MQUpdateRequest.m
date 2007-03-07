@@ -48,6 +48,20 @@
 		[root addChild:element];
 	}
 	
+	if ([task valueForKey:@"date"]) {
+		NSDateFormatter *formatter = [[NSDateFormatter alloc] initWithDateFormat:@"%m/%d/%Y" allowNaturalLanguage:NO];
+		[formatter setFormatterBehavior:NSDateFormatterBehavior10_0];
+		NSString *dateString = [formatter stringFromDate:[task valueForKey:@"date"]];
+		if (dateString) {
+			element = [[[NSXMLElement alloc] initWithName:@"date"] autorelease];
+			[element setStringValue:dateString];
+			[root addChild:element];
+		}
+		else
+			NSLog(@"Warning: failed to generate string from date %@", [task valueForKey:@"date"]);
+		[formatter release];
+	}
+	
 	NSXMLDocument *document = [[NSXMLDocument alloc] initWithRootElement:root];
 	[root release];
 	

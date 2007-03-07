@@ -185,13 +185,16 @@ static BOOL autosave_enabled = NO;
 	[super didChangeValueForKey:key];
 	if (!autosave_enabled)
 		return;
+
+	if ([key isEqualToString:@"server"] || [key isEqualToString:@"team"])
+		return;
 	
 	if (saveTimer) {
 		[saveTimer invalidate];
 		[saveTimer release];
 	}
 	
-	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(save) userInfo:nil repeats:NO] retain];
+	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(save) userInfo:nil repeats:NO] retain];
 	
 //	NSLog(@"%@ change val for key %@", [self valueForKey:@"title"], key);
 }

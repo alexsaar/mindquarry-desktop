@@ -42,7 +42,7 @@
 {
 	NSXMLElement *root = [document rootElement];
 
-//	NSLog(@"xml %@", root);
+	NSLog(@"xml %@", root);
 	
 	NSString *title = nil;
 	NSString *status = nil;
