@@ -62,6 +62,11 @@
 //	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
 //	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
 	
+	if ([[serversController arrangedObjects] count] == 0) {
+		[serversController add:nil];
+		[serverDrawer toggle:nil];
+	}
+	
 	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
 	
 //	[self afterWakeFromNib];
@@ -206,7 +211,7 @@
 	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSEntityDescription *entity = [[[[NSApp delegate] managedObjectModel] entitiesByName] objectForKey:@"Task"];
 
-	NSManagedObject *task = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+	NSManagedObject *task = [[MQTask alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 	[task setValue:task_id forKey:@"id"];
 	[task setValue:team forKey:@"team"];
 	
