@@ -54,14 +54,27 @@
 
 - (void)startRequest
 {
+//	[self retain];
+
 	[self setValue:[self url] forKey:@"url"];
+//	NSLog(@"url %@", [[self valueForKey:@"url"] absoluteString]);
 	
 	[responseData release];
 	responseData = [[NSMutableData alloc] init];
 	
-	connection = [NSURLConnection connectionWithRequest:[self xmlRequestForURL:url] delegate:self];
-	if (connection)
-		[self retain];
+	connection = [[NSURLConnection connectionWithRequest:[self request] delegate:self] retain];
+//	if (!connection)
+//		[self autorelease];
+}
+
+- (void)handleResponseData:(NSData *)data
+{
+	NSError *error;
+	NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error]; 
+
+	[self parseXMLResponse:document];
+	
+	[document release];
 }
 
 - (void)parseXMLResponse:(NSXMLDocument *)document
@@ -89,6 +102,11 @@
 	return [NSURL URLWithString:path relativeToURL:[self currentBaseURL]];
 }
 
+- (NSURLRequest *)request
+{
+	return [self xmlRequestForURL:url];
+}
+
 - (NSURLRequest *)xmlRequestForURL:(NSURL *)_url
 {
 	NSMutableURLRequest *_request = [[NSMutableURLRequest alloc] init];
@@ -96,7 +114,6 @@
 	[_request setValue:@"text/xml" forHTTPHeaderField:@"accept"];
 	return [_request autorelease];
 }
-
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
@@ -110,26 +127,22 @@
 	[responseData release];
 	responseData = nil;
 	
-	[self autorelease];
+//	[self autorelease];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {	
 //	NSLog(@"connection finished loading");
 	
-	NSError *error;
-	NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:responseData options:0 error:&error]; 
+	[self handleResponseData:responseData];
 	
 	[responseData release];
 	responseData = nil;
 	
-	[self parseXMLResponse:document];
-	
-	[document release];	
-	
 	[self finishRequest];
 	
-	[self autorelease];
+	// TODO
+//	[self autorelease];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
@@ -139,5 +152,9 @@
 //	NSLog(@"credentials sent %@:%@", username, password);
 }
 
+- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+{
+	return request;
+}
 
 @end

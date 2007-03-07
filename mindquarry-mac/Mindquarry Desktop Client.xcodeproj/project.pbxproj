@@ -13,6 +13,12 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
+		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
+		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
+		DD2ED36C0B9ECFF4000238CE /* task-important.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3680B9ECFF4000238CE /* task-important.png */; };
+		DD2ED36D0B9ECFF4000238CE /* task-low.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3690B9ECFF4000238CE /* task-low.png */; };
+		DD2ED36E0B9ECFF4000238CE /* task-medium.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED36A0B9ECFF4000238CE /* task-medium.png */; };
 		DD39F4FB0B9D7FD200384D0C /* RequestController.m in Sources */ = {isa = PBXBuildFile; fileRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */; };
 		DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD86617F0B9D95E3000C7B66 /* MQRequest.m */; };
 		DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */; };
@@ -41,6 +47,14 @@
 		77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mindquarry_Desktop_Client_AppDelegate.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mindquarry Desktop Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
+		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
+		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
+		DD2ED2D40B9EC8D2000238CE /* MQTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTask.m; sourceTree = "<group>"; };
+		DD2ED3670B9ECFF4000238CE /* task-critical.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-critical.png"; path = "Resources/task-critical.png"; sourceTree = "<group>"; };
+		DD2ED3680B9ECFF4000238CE /* task-important.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-important.png"; path = "Resources/task-important.png"; sourceTree = "<group>"; };
+		DD2ED3690B9ECFF4000238CE /* task-low.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-low.png"; path = "Resources/task-low.png"; sourceTree = "<group>"; };
+		DD2ED36A0B9ECFF4000238CE /* task-medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-medium.png"; path = "Resources/task-medium.png"; sourceTree = "<group>"; };
 		DD39F4F90B9D7FD200384D0C /* RequestController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestController.h; sourceTree = "<group>"; };
 		DD39F4FA0B9D7FD200384D0C /* RequestController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestController.m; sourceTree = "<group>"; };
 		DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQRequest.h; sourceTree = "<group>"; };
@@ -93,6 +107,10 @@
 				DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */,
 				DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */,
 				DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */,
+				DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */,
+				DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */,
+				DD2ED2D30B9EC8D2000238CE /* MQTask.h */,
+				DD2ED2D40B9EC8D2000238CE /* MQTask.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -153,6 +171,10 @@
 				DD86655E0B9DB2F7000C7B66 /* task-new.png */,
 				DD86655F0B9DB2F7000C7B66 /* task-paused.png */,
 				DD8665600B9DB2F7000C7B66 /* task-running.png */,
+				DD2ED3670B9ECFF4000238CE /* task-critical.png */,
+				DD2ED3680B9ECFF4000238CE /* task-important.png */,
+				DD2ED3690B9ECFF4000238CE /* task-low.png */,
+				DD2ED36A0B9ECFF4000238CE /* task-medium.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
@@ -225,6 +247,10 @@
 				DD8665630B9DB2F7000C7B66 /* task-new.png in Resources */,
 				DD8665640B9DB2F7000C7B66 /* task-paused.png in Resources */,
 				DD8665650B9DB2F7000C7B66 /* task-running.png in Resources */,
+				DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */,
+				DD2ED36C0B9ECFF4000238CE /* task-important.png in Resources */,
+				DD2ED36D0B9ECFF4000238CE /* task-low.png in Resources */,
+				DD2ED36E0B9ECFF4000238CE /* task-medium.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +271,8 @@
 				DD8663CC0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m in Sources */,
 				DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */,
 				DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */,
+				DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */,
+				DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

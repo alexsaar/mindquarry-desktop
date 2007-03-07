@@ -39,7 +39,11 @@
 
 - (NSURL *)currentURLForPath:(NSString *)path;
 
+- (void)handleResponseData:(NSData *)data;
+
 - (void)parseXMLResponse:(NSXMLDocument *)document;
+
+- (NSURLRequest *)request;
 
 - (NSURLRequest *)xmlRequestForURL:(NSURL *)_url;
 

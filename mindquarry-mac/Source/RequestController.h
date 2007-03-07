@@ -18,10 +18,17 @@ enum {
 		
 	IBOutlet id serversController;
 
+	IBOutlet id tasksController;
 	
+	IBOutlet id statusButton;
+	
+	IBOutlet id priorityButton;
+
 }
 
 - (IBAction)refresh:(id)sender;
+
+- (IBAction)saveTask:(id)sender;
 
 - (id)selectedServer;
 

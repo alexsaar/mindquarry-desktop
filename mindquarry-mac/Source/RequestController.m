@@ -10,6 +10,8 @@
 
 #import "MQTeamsRequest.h"
 #import "MQTaskCell.h"
+#import "MQUpdateRequest.h"
+#import "MQTask.h"
 
 @implementation RequestController
 
@@ -17,8 +19,33 @@
 {
 	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
 	[taskColumn setDataCell:cell];
+
+#define MENU_ICON_SIZE NSMakeSize(16, 16)
 	
-//	[self refresh:nil];
+#define ADD_MENU_ITEM(menu, title, icon_name) 	item = [[NSMenuItem alloc] init]; \
+[item setTitle:title]; \
+[item setImage:MQSmoothResize([NSImage imageNamed:icon_name], MENU_ICON_SIZE)]; \
+[menu addItem:item]; \
+[item release];
+
+	NSMenuItem *item = nil;
+
+	NSMenu *menu = [[NSMenu alloc] init];
+	ADD_MENU_ITEM(menu, @"New", @"task-new");
+	ADD_MENU_ITEM(menu, @"Running", @"task-running");
+	ADD_MENU_ITEM(menu, @"Paused", @"task-paused");
+	ADD_MENU_ITEM(menu, @"Done", @"task-done");
+	[statusButton setMenu:menu];
+	[menu release];
+	
+	menu = [[NSMenu alloc] init];
+	ADD_MENU_ITEM(menu, @"Low", @"task-low");
+	ADD_MENU_ITEM(menu, @"Medium", @"task-medium");
+	ADD_MENU_ITEM(menu, @"Important", @"task-important");
+	ADD_MENU_ITEM(menu, @"Critical", @"task-critical");
+	[priorityButton setMenu:menu];
+	[menu release];
+
 }
 
 - (IBAction)refresh:(id)sender
@@ -28,6 +55,15 @@
 	MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithController:self forServer:currentServer];
 	[request startRequest];
 	[request autorelease];
+}
+
+- (IBAction)saveTask:(id)sender
+{
+	NSArray *tasks = [tasksController selectedObjects];
+	if ([tasks count] == 0)
+		return;
+	
+	[[tasks objectAtIndex:0] save];
 }
 
 - (id)selectedServer

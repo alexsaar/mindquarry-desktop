@@ -10,10 +10,16 @@
         }, 
         {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
-            ACTIONS = {refresh = id; }; 
+            ACTIONS = {refresh = id; saveTask = id; }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {serversController = id; taskColumn = id; }; 
+            OUTLETS = {
+                priorityButton = id; 
+                serversController = id; 
+                statusButton = id; 
+                taskColumn = id; 
+                tasksController = id; 
+            }; 
             SUPERCLASS = NSObject; 
         }
     ); 

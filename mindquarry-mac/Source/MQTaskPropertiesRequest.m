@@ -42,43 +42,66 @@
 {
 	NSXMLElement *root = [document rootElement];
 
+	NSLog(@"xml %@", root);
+	
+	NSString *title = nil;
+	NSString *status = nil;
+	NSString *priority = nil;
+	NSString *summary = nil;
+	NSString *description = nil;
+	NSString *date = nil;
+	
 	int i;
 	int count = [root childCount];
 	for (i = 0; i < count; i++) {
 		id node = [root childAtIndex:i];
 		
-		if ([[node name] isEqualToString:@"title"]) {
-			[task setValue:[node stringValue] forKey:@"title"];
-		}
-		else if ([[node name] isEqualToString:@"status"]) {
-			[task setValue:[node stringValue] forKey:@"status"];
-		}
-		else if ([[node name] isEqualToString:@"priority"]) {
-			[task setValue:[node stringValue] forKey:@"priority"];
-		}
-		else if ([[node name] isEqualToString:@"summary"]) {
-			[task setValue:[node stringValue] forKey:@"summary"];
-		}
-		else if ([[node name] isEqualToString:@"description"]) {
-			NSString *descVal = [node stringValue];
-			[self performSelector:@selector(setDescription:) withObject:descVal afterDelay:0.1];
-		}	
-		else if ([[node name] isEqualToString:@"date"]) {
-			NSString *dateVal = [node stringValue];
-			NSDate *date = [NSDate dateWithNaturalLanguageString:dateVal];
-			if (date)
-				[task setValue:date forKey:@"date"];
-		}
+		if ([[node name] isEqualToString:@"title"])			
+			title = [node stringValue];
+
+		else if ([[node name] isEqualToString:@"status"])
+			status = [node stringValue];
+		
+		else if ([[node name] isEqualToString:@"priority"])
+			priority = [node stringValue];
+			
+		else if ([[node name] isEqualToString:@"summary"])
+			summary = [node stringValue];
+		
+		else if ([[node name] isEqualToString:@"description"])
+			description = [node stringValue];
+		
+		else if ([[node name] isEqualToString:@"date"])
+			date = [node stringValue];
 	}
+	
+	[task setValue:title forKey:@"title"];
+	[task setValue:status forKey:@"status"];
+	[task setValue:priority forKey:@"priority"];
+	[task setValue:summary forKey:@"summary"];
+
+	[task setValue:description forKey:@"descHTML"];
+	[self performSelector:@selector(setDescription:) withObject:description afterDelay:0.1];
+
+	if (date)
+		[task setValue:[NSDate dateWithNaturalLanguageString:date] forKey:@"date"];
+	else 
+		[task setValue:nil forKey:@"date"];
+
 }
 
 - (void)setDescription:(NSString *)desc
 {
-	NSData *data = [desc dataUsingEncoding:NSUTF8StringEncoding];
-	NSAttributedString *string = [[NSAttributedString alloc] initWithHTML:data documentAttributes:nil];
-	NSData *sdata = [string RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil];
-	[task setValue:sdata forKey:@"desc"];
-	[string release];
+	if (!desc)
+		[task setValue:nil forKey:@"desc"];
+
+	else {
+		NSData *data = [desc dataUsingEncoding:NSUTF8StringEncoding];
+		NSAttributedString *string = [[NSAttributedString alloc] initWithHTML:data documentAttributes:nil];
+		NSData *sdata = [string RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil];
+		[task setValue:sdata forKey:@"desc"];
+		[string release];		
+	}
 }
 
 @end

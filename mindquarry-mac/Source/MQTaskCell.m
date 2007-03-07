@@ -63,7 +63,7 @@ static NSDictionary *statusImages;
 	NSString *status = [[self objectValue] valueForKey:@"status"];
 	NSImage *statusImage = [statusImages objectForKey:status];
 	if (!statusImage)
-		statusImage = [statusImages objectForKey:@"task-new"];
+		statusImage = [statusImages objectForKey:@"new"];
 	
 	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 30) operation:NSCompositeSourceOver];
 
