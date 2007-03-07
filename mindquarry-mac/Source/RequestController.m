@@ -46,6 +46,85 @@
 	[priorityButton setMenu:menu];
 	[menu release];
 
+	
+	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"MQDesktopMainToolbar"];
+	[toolbar setDelegate:self];
+	[toolbar setAllowsUserCustomization:YES];
+	[toolbar setAutosavesConfiguration:YES];
+	
+	[window setToolbar:toolbar];
+	[toolbar release];
+	
+	[taskTable setTarget:inspectorWindow];
+	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
+	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
+	
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
+	
+	NSToolbarItem *item = nil;
+	
+	if ([itemIdentifier isEqualToString:@"MQDone"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQDone"];
+		[item setLabel:@"Mark Done"];
+		[item setPaletteLabel:@"Mark Done"];
+		[item setImage:[NSImage imageNamed:@"task-done"]];
+		[item setTarget:self];
+		[item setAction:@selector(setDone:)];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQInfo"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQInfo"];
+		[item setLabel:@"Inspector"];
+		[item setPaletteLabel:@"Inspector"];
+		[item setImage:[NSImage imageNamed:@"info"]];
+		[item setTarget:self];
+		[item setAction:@selector(toggleInspector:)];
+	}
+	else if  ([itemIdentifier isEqualToString:@"MQRefresh"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQRefresh"];
+		[item setLabel:@"Reload"];
+		[item setPaletteLabel:@"Reload"];
+		[item setImage:[NSImage imageNamed:@"synchronize-vertical"]];
+		[item setTarget:self];
+		[item setAction:@selector(refresh:)];
+	}
+	else if  ([itemIdentifier isEqualToString:@"MQSave"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQSave"];
+		[item setLabel:@"Save Task"];
+		[item setPaletteLabel:@"Save Task"];
+		[item setImage:[NSImage imageNamed:@"task-edit"]];
+		[item setTarget:self];
+		[item setAction:@selector(saveTask:)];
+	}
+	
+	return [item autorelease];
+}
+
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)_toolbar {
+    return [self toolbarAllowedItemIdentifiers:_toolbar];
+}
+
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
+    return [NSArray arrayWithObjects:@"MQRefresh", @"MQSave", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQInfo", nil]; 
+}
+
+- (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {
+    return nil;
+}
+
+
+- (IBAction)toggleInspector:(id)sender
+{
+	if ([inspectorWindow isVisible])
+		[inspectorWindow orderOut:sender];
+	else
+		[inspectorWindow makeKeyAndOrderFront:sender];
+}
+
+- (IBAction)setDone:(id)sender
+{
+	[[tasksController selection] setValue:[NSNumber numberWithInt:3] forKey:@"statusIndex"];
 }
 
 - (IBAction)refresh:(id)sender

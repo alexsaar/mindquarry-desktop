@@ -24,7 +24,17 @@ enum {
 	
 	IBOutlet id priorityButton;
 
+	IBOutlet id window;
+
+	IBOutlet id inspectorWindow;
+	
+	IBOutlet id taskTable;
+	
 }
+
+- (IBAction)toggleInspector:(id)sender;
+
+- (IBAction)setDone:(id)sender;
 
 - (IBAction)refresh:(id)sender;
 

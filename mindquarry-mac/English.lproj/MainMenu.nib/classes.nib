@@ -10,15 +10,18 @@
         }, 
         {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
-            ACTIONS = {refresh = id; saveTask = id; }; 
+            ACTIONS = {refresh = id; saveTask = id; setDone = id; toggleInspector = id; }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                inspectorWindow = id; 
                 priorityButton = id; 
                 serversController = id; 
                 statusButton = id; 
                 taskColumn = id; 
+                taskTable = id; 
                 tasksController = id; 
+                window = id; 
             }; 
             SUPERCLASS = NSObject; 
         }
