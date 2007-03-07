@@ -45,7 +45,6 @@
 	ADD_MENU_ITEM(menu, @"Critical", @"task-critical");
 	[priorityButton setMenu:menu];
 	[menu release];
-
 	
 	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"MQDesktopMainToolbar"];
 	[toolbar setDelegate:self];
@@ -54,10 +53,11 @@
 	
 	[window setToolbar:toolbar];
 	[toolbar release];
-	
-	[taskTable setTarget:inspectorWindow];
-	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
-	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
+
+	// TODO
+//	[taskTable setTarget:inspectorWindow];
+//	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
+//	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
 	
 }
 
@@ -97,6 +97,14 @@
 		[item setTarget:self];
 		[item setAction:@selector(saveTask:)];
 	}
+	else if  ([itemIdentifier isEqualToString:@"MQServer"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQServer"];
+		[item setLabel:@"Servers"];
+		[item setPaletteLabel:@"Servers"];
+		[item setImage:[NSImage imageNamed:@"servers"]];
+		[item setTarget:serverDrawer];
+		[item setAction:@selector(toggle:)];
+	}
 	
 	return [item autorelease];
 }
@@ -106,7 +114,7 @@
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
-    return [NSArray arrayWithObjects:@"MQRefresh", @"MQSave", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQInfo", nil]; 
+    return [NSArray arrayWithObjects:@"MQRefresh", @"MQSave", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {

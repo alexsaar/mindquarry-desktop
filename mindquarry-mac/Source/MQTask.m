@@ -16,7 +16,7 @@
 {
 	[self setKeys:[NSArray arrayWithObject:@"status"] triggerChangeNotificationsForDependentKey:@"statusIndex"];
 	[self setKeys:[NSArray arrayWithObject:@"priority"] triggerChangeNotificationsForDependentKey:@"priorityIndex"];
-	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", nil] triggerChangeNotificationsForDependentKey:@"self"];
+	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", @"date", nil] triggerChangeNotificationsForDependentKey:@"self"];
 	
 //	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", nil] triggerChangeNotificationsForDependentKey:@"importantData"];
 }
@@ -119,6 +119,29 @@
 	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithController:nil forServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
 	[request performSelectorOnMainThread:@selector(startRequest) withObject:nil waitUntilDone:YES];
 	[request autorelease];
+}
+
+- (NSString *)dueDescription
+{
+	NSDate *due = [self valueForKey:@"date"];
+	if (!due)
+		return nil;
+	
+	NSDate *now = [NSDate date];
+	
+	NSTimeInterval delta = [due timeIntervalSinceDate:now];
+	
+	int days = ceil(delta / 60 / 60 / 24);
+	
+	NSString *timeString = nil;
+//	if (days < 10)
+		timeString = [NSString stringWithFormat:@"%d day%@", days, days > 1 ? @"s" : @""];
+//	else
+		
+	if (delta > 0)
+		return [NSString stringWithFormat:@"%@ left", timeString];
+	else
+		return [NSString stringWithFormat:@"%@ ago", timeString];
 }
 
 //- (id)importantData

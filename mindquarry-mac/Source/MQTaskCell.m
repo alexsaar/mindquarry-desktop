@@ -8,6 +8,8 @@
 
 #import "MQTaskCell.h"
 
+#import "MQTask.h"
+
 #define _disabledFraction 0.50
 
 static NSDictionary *statusImages;
@@ -16,7 +18,7 @@ static NSDictionary *statusImages;
 
 + (void)initialize
 {
-#define ICONSIZE NSMakeSize(28, 28)
+#define ICONSIZE NSMakeSize(32, 32)
 	statusImages = [[NSDictionary alloc] initWithObjectsAndKeys:
 		MQSmoothResize([NSImage imageNamed:@"task-new"], ICONSIZE), @"new",
 		MQSmoothResize([NSImage imageNamed:@"task-done"], ICONSIZE), @"done",
@@ -57,16 +59,40 @@ static NSDictionary *statusImages;
 		grayColor = [NSColor grayColor];
 	}
 	
+	// title
 	NSString *title = [[self objectValue] valueForKey:@"title"];
-	[title drawAtPoint:NSMakePoint(cellFrame.origin.x + 36, cellFrame.origin.y + 6) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, nil]];
+	NSDictionary *titleDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, nil];
+	NSSize titleSize = [title sizeWithAttributes:titleDict];
+	[title drawAtPoint:NSMakePoint(cellFrame.origin.x + 40, cellFrame.origin.y + 4) withAttributes:titleDict];
 	
+	// summary
+	NSString *sum = [[self objectValue] valueForKey:@"summary"];
+	if (sum) {
+		NSMutableString *summary = [NSMutableString stringWithString:sum];
+		[summary replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0, [summary length])];
+		[summary drawAtPoint:NSMakePoint(cellFrame.origin.x + 44, cellFrame.origin.y + 21) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];		
+	}
+	
+	// status icon
 	NSString *status = [[self objectValue] valueForKey:@"status"];
 	NSImage *statusImage = [statusImages objectForKey:status];
 	if (!statusImage)
 		statusImage = [statusImages objectForKey:@"new"];
 	
-	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 30) operation:NSCompositeSourceOver];
+	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 37) operation:NSCompositeSourceOver];
 
+	
+	// due
+	NSDate *date = [[self objectValue] valueForKey:@"date"];
+	if (date) {
+		NSString *dateDesc = [NSString stringWithFormat:@" - %@", [[self objectValue] dueDescription]];
+		NSDictionary *dateDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil];
+//		NSSize dateSize = [dateDesc sizeWithAttributes:dateDict];
+		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + titleSize.width + 42, cellFrame.origin.y + 6) withAttributes:dateDict];
+		
+//		[@"due:" drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 35 - dateSize.width, cellFrame.origin.y + 10) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
+	}
+	
 }
 
 @end

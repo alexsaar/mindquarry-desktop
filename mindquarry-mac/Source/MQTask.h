@@ -23,6 +23,8 @@
 
 - (void)save;
 
+- (NSString *)dueDescription;
+
 //- (id)importantData;
 //
 //- (void)setImportantData:(id)data;

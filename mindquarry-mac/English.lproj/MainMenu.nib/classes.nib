@@ -8,6 +8,7 @@
             OUTLETS = {window = NSWindow; }; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             ACTIONS = {refresh = id; saveTask = id; setDone = id; toggleInspector = id; }; 
@@ -16,6 +17,7 @@
             OUTLETS = {
                 inspectorWindow = id; 
                 priorityButton = id; 
+                serverDrawer = id; 
                 serversController = id; 
                 statusButton = id; 
                 taskColumn = id; 

@@ -30,6 +30,8 @@ enum {
 	
 	IBOutlet id taskTable;
 	
+	IBOutlet id serverDrawer;
+	
 }
 
 - (IBAction)toggleInspector:(id)sender;
