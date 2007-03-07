@@ -190,5 +190,9 @@
     [super dealloc];
 }
 
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+	[window makeKeyAndOrderFront:nil];
+}
 
 @end
