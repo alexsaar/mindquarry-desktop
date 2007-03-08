@@ -2,6 +2,12 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            CLASS = LRFilterBar; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {originalSender = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
             ACTIONS = {saveAction = id; }; 
             CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
             LANGUAGE = ObjC; 
@@ -20,6 +26,7 @@
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                filterBar = id; 
                 inspectorWindow = id; 
                 priorityButton = id; 
                 serverDrawer = id; 

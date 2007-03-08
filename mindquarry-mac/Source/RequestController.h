@@ -32,9 +32,13 @@ enum {
 	
 	IBOutlet id serverDrawer;
 	
+	IBOutlet id filterBar;
+	
 }
 
 - (void)afterWakeFromNib;
+
+- (void)titlebarSelectionChanged:(id)sender;
 
 - (IBAction)toggleInspector:(id)sender;
 
@@ -49,5 +53,7 @@ enum {
 - (id)teamWithId:(NSString *)team_id forServer:(id)server;
 
 - (id)taskWithId:(NSString *)task_id forTeam:(id)team;
+
+- (void)objectsDidChange:(NSNotification *)note;
 
 @end

@@ -12,11 +12,17 @@
 #import "MQTaskCell.h"
 #import "MQUpdateRequest.h"
 #import "MQTask.h"
+#import "LRFilterBar.h"
 
 @implementation RequestController
 
++ (void)initialize {
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:0], @"sortBy", nil]];
+}
+
 - (void)awakeFromNib
 {
+	
 	[serversController fetchWithRequest:nil merge:NO error:nil];
 	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
 	
@@ -27,6 +33,8 @@
 	[serversController didChangeValueForKey:@"selection"];
 	
 	[taskTable reloadData];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(objectsDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:[[NSApp delegate] managedObjectContext]];
 	
 	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
 	[taskColumn setDataCell:cell];
@@ -64,7 +72,12 @@
 	
 	[window setToolbar:toolbar];
 	[toolbar release];
-
+	
+	NSArray *labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Title", @"Due Date", @"Status", @"Priority", NULL] autorelease];
+	[filterBar addItemsWithTitles:labels withSelector:@selector(titlebarSelectionChanged:) withSender:self];
+	[filterBar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"]];
+	[self titlebarSelectionChanged:nil];
+	
 	// TODO
 //	[taskTable setTarget:inspectorWindow];
 //	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
@@ -154,6 +167,52 @@
     return nil;
 }
 
+- (void)titlebarSelectionChanged:(id)sender
+{
+	int tag;
+	if (sender)
+		tag = [sender tag];
+	else
+		tag = [[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:tag forKey:@"sortBy"];
+	
+//	NSLog(@"change %@ %d", sender, tag);
+	
+	NSString *key = nil;
+	if (tag == 0)
+		key = @"title";
+	else if (tag == 1)
+		key = @"date";
+	else if (tag == 2)
+		key = @"statusIndex";
+	else if (tag == 3)
+		key = @"priorityIndex";
+	
+	if (!key)
+		return;
+	
+	NSMutableArray *desc = [[tasksController sortDescriptors] mutableCopy];
+	
+	int i;
+	int count = [desc count];
+	id remove = nil;
+	for (i = 0; i < count; i++) {
+		NSSortDescriptor *sd = [desc objectAtIndex:i];
+		if ([[sd key] isEqualToString:key])
+			remove = sd;
+	}
+	if (remove)
+		[desc removeObject:remove];
+	
+	[desc insertObject:[[[NSSortDescriptor alloc] initWithKey:key ascending:YES] autorelease] atIndex:0];
+	
+	[tasksController setSortDescriptors:desc];
+	[desc release];
+	
+	[taskTable reloadData];
+	
+}
 
 - (IBAction)toggleInspector:(id)sender
 {
@@ -231,6 +290,33 @@
 	[task setValue:[team valueForKey:@"server"] forKey:@"server"];
 	
 	return task;
+}
+
+- (void)objectsDidChange:(NSNotification *)note
+{
+    NSArray *insertedEntities = [[[note userInfo] valueForKey:NSInsertedObjectsKey] valueForKeyPath:@"entity.name"];
+    NSArray *updatedEntities  = [[[note userInfo] valueForKey:NSUpdatedObjectsKey] valueForKeyPath:@"entity.name"];
+    NSArray *deletedEntities  = [[[note userInfo] valueForKey:NSDeletedObjectsKey] valueForKeyPath:@"entity.name"];
+    
+    // Use whatever entity name, or use an NSEntityDescription and key path @"entity" above
+    if ([insertedEntities containsObject:@"Task"] ||
+        [updatedEntities containsObject:@"Task"] ||
+        [deletedEntities containsObject:@"Task"])
+    {
+        [tasksController rearrangeObjects];
+    }
+    else if ([insertedEntities containsObject:@"Server"] ||
+			 [updatedEntities containsObject:@"Server"] ||
+			 [deletedEntities containsObject:@"Server"])
+    {
+        [serversController rearrangeObjects];
+    }
+//    else if ([insertedEntities containsObject:@"Action"] ||
+//             [updatedEntities containsObject:@"Action"] ||
+//             [deletedEntities containsObject:@"Action"])
+//    {
+//        [actionController rearrangeObjects];
+//    }
 }
 
 @end

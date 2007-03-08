@@ -29,6 +29,11 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		DD09A09C0BA0070A002FD5DD /* StatusBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = DD09A09B0BA0070A002FD5DD /* StatusBackground.png */; };
+		DD09A3130BA01E6D002FD5DD /* LRFilterBar.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A30A0BA01E6D002FD5DD /* LRFilterBar.m */; };
+		DD09A3140BA01E6D002FD5DD /* LRFilterButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A30C0BA01E6D002FD5DD /* LRFilterButton.m */; };
+		DD09A3150BA01E6D002FD5DD /* LRFilterButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A30E0BA01E6D002FD5DD /* LRFilterButtonCell.m */; };
+		DD09A3160BA01E6D002FD5DD /* LROverflowButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A3100BA01E6D002FD5DD /* LROverflowButton.m */; };
+		DD09A3170BA01E6D002FD5DD /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A3120BA01E6D002FD5DD /* CTGradient.m */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -78,6 +83,16 @@
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mindquarry Desktop Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD09A09B0BA0070A002FD5DD /* StatusBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StatusBackground.png; path = Resources/StatusBackground.png; sourceTree = "<group>"; };
+		DD09A3090BA01E6D002FD5DD /* LRFilterBar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LRFilterBar.h; sourceTree = "<group>"; };
+		DD09A30A0BA01E6D002FD5DD /* LRFilterBar.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LRFilterBar.m; sourceTree = "<group>"; };
+		DD09A30B0BA01E6D002FD5DD /* LRFilterButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LRFilterButton.h; sourceTree = "<group>"; };
+		DD09A30C0BA01E6D002FD5DD /* LRFilterButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LRFilterButton.m; sourceTree = "<group>"; };
+		DD09A30D0BA01E6D002FD5DD /* LRFilterButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LRFilterButtonCell.h; sourceTree = "<group>"; };
+		DD09A30E0BA01E6D002FD5DD /* LRFilterButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LRFilterButtonCell.m; sourceTree = "<group>"; };
+		DD09A30F0BA01E6D002FD5DD /* LROverflowButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LROverflowButton.h; sourceTree = "<group>"; };
+		DD09A3100BA01E6D002FD5DD /* LROverflowButton.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LROverflowButton.m; sourceTree = "<group>"; };
+		DD09A3110BA01E6D002FD5DD /* CTGradient.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CTGradient.h; sourceTree = "<group>"; };
+		DD09A3120BA01E6D002FD5DD /* CTGradient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CTGradient.m; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -146,6 +161,7 @@
 				DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */,
 				DD2ED2D30B9EC8D2000238CE /* MQTask.h */,
 				DD2ED2D40B9EC8D2000238CE /* MQTask.m */,
+				DD09A3190BA01E70002FD5DD /* Filter bar */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -247,6 +263,23 @@
 			name = GFX;
 			sourceTree = "<group>";
 		};
+		DD09A3190BA01E70002FD5DD /* Filter bar */ = {
+			isa = PBXGroup;
+			children = (
+				DD09A3090BA01E6D002FD5DD /* LRFilterBar.h */,
+				DD09A30A0BA01E6D002FD5DD /* LRFilterBar.m */,
+				DD09A30B0BA01E6D002FD5DD /* LRFilterButton.h */,
+				DD09A30C0BA01E6D002FD5DD /* LRFilterButton.m */,
+				DD09A30D0BA01E6D002FD5DD /* LRFilterButtonCell.h */,
+				DD09A30E0BA01E6D002FD5DD /* LRFilterButtonCell.m */,
+				DD09A30F0BA01E6D002FD5DD /* LROverflowButton.h */,
+				DD09A3100BA01E6D002FD5DD /* LROverflowButton.m */,
+				DD09A3110BA01E6D002FD5DD /* CTGradient.h */,
+				DD09A3120BA01E6D002FD5DD /* CTGradient.m */,
+			);
+			name = "Filter bar";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -343,6 +376,11 @@
 				DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */,
 				DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */,
 				DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */,
+				DD09A3130BA01E6D002FD5DD /* LRFilterBar.m in Sources */,
+				DD09A3140BA01E6D002FD5DD /* LRFilterButton.m in Sources */,
+				DD09A3150BA01E6D002FD5DD /* LRFilterButtonCell.m in Sources */,
+				DD09A3160BA01E6D002FD5DD /* LROverflowButton.m in Sources */,
+				DD09A3170BA01E6D002FD5DD /* CTGradient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
