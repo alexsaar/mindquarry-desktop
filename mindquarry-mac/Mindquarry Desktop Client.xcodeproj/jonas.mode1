@@ -296,7 +296,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>7</integer>
+									<integer>9</integer>
 									<integer>3</integer>
 									<integer>0</integer>
 								</array>
@@ -321,7 +321,7 @@
 							<real>409</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>476 150 1417 876 0 0 1920 1178 </string>
+						<string>454 103 1417 876 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -339,7 +339,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RequestController.m</string>
+								<string>MQRequest.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -347,11 +347,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RequestController.m</string>
+										<string>MQRequest.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD09A5590BA03BF3002FD5DD</string>
+										<string>DD09A6030BA040EE002FD5DD</string>
 										<key>history</key>
 										<array>
 											<string>DD8666110B9DB70E000C7B66</string>
@@ -364,9 +364,7 @@
 											<string>DD4D80730B9F34A600B327A2</string>
 											<string>DD099D4D0B9FFF54002FD5DD</string>
 											<string>DD09A1120BA00A94002FD5DD</string>
-											<string>DD09A1130BA00A94002FD5DD</string>
 											<string>DD09A19C0BA0158B002FD5DD</string>
-											<string>DD09A31B0BA01E7B002FD5DD</string>
 											<string>DD09A3A20BA0211D002FD5DD</string>
 											<string>DD09A44A0BA024CF002FD5DD</string>
 											<string>DD09A4990BA02711002FD5DD</string>
@@ -377,8 +375,12 @@
 											<string>DD09A5340BA03A6C002FD5DD</string>
 											<string>DD09A53F0BA03B15002FD5DD</string>
 											<string>DD09A5400BA03B15002FD5DD</string>
-											<string>DD09A5570BA03BF3002FD5DD</string>
-											<string>DD09A5320BA03A6C002FD5DD</string>
+											<string>DD09A5A80BA03F2C002FD5DD</string>
+											<string>DD09A5A90BA03F2C002FD5DD</string>
+											<string>DD09A5AA0BA03F2C002FD5DD</string>
+											<string>DD09A5AB0BA03F2C002FD5DD</string>
+											<string>DD09A6000BA040EE002FD5DD</string>
+											<string>DD09A6010BA040EE002FD5DD</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -407,21 +409,9 @@
 											<string>DD09A3570BA02044002FD5DD</string>
 											<string>DD09A37E0BA020C2002FD5DD</string>
 											<string>DD09A3A40BA0211D002FD5DD</string>
-											<string>DD09A4700BA025DC002FD5DD</string>
-											<string>DD09A49B0BA02711002FD5DD</string>
-											<string>DD09A49C0BA02711002FD5DD</string>
-											<string>DD09A49D0BA02711002FD5DD</string>
-											<string>DD09A4DE0BA037A8002FD5DD</string>
-											<string>DD09A4DF0BA037A8002FD5DD</string>
-											<string>DD09A4FA0BA0383F002FD5DD</string>
-											<string>DD09A4FB0BA0383F002FD5DD</string>
-											<string>DD09A4FC0BA0383F002FD5DD</string>
-											<string>DD09A5360BA03A6C002FD5DD</string>
-											<string>DD09A5370BA03A6C002FD5DD</string>
-											<string>DD09A5380BA03A6C002FD5DD</string>
-											<string>DD09A5410BA03B15002FD5DD</string>
-											<string>DD09A5420BA03B15002FD5DD</string>
-											<string>DD09A5580BA03BF3002FD5DD</string>
+											<string>DD09A5AE0BA03F2C002FD5DD</string>
+											<string>DD09A5AF0BA03F2C002FD5DD</string>
+											<string>DD09A6020BA040EE002FD5DD</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -435,7 +425,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {986, 830}}</string>
 								<key>RubberWindowFrame</key>
-								<string>476 150 1417 876 0 0 1920 1178 </string>
+								<string>454 103 1417 876 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -455,7 +445,7 @@
 								<key>Frame</key>
 								<string>{{0, 835}, {986, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>476 150 1417 876 0 0 1920 1178 </string>
+								<string>454 103 1417 876 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -479,9 +469,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD09A4720BA025DC002FD5DD</string>
+				<string>DD09A6040BA040EE002FD5DD</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD09A4730BA025DC002FD5DD</string>
+				<string>DD09A6050BA040EE002FD5DD</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -600,7 +590,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195050483.58226299</real>
+	<real>195051758.14369401</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -615,13 +605,11 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>DD39F5060B9D807800384D0C</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jonas/Desktop/mindquarry/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>476 150 1417 876 0 0 1920 1178 </string>
+	<string>454 103 1417 876 0 0 1920 1178 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -637,14 +625,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQTaskCell.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -700,7 +686,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD09A46B0BA025DC002FD5DD</string>
+				<string>DD09A5FD0BA040ED002FD5DD</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -840,14 +826,12 @@
 							<key>Dock</key>
 							<array>
 								<dict>
-									<key>BecomeActive</key>
-									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>LRFilterBar.m</string>
+										<string>MQServer.m</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -868,6 +852,8 @@
 							<string>287pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -903,8 +889,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>DD09A4930BA02711002FD5DD</string>
-				<string>DD09A4940BA02711002FD5DD</string>
+				<string>DD09A58B0BA03E9A002FD5DD</string>
+				<string>DD09A58C0BA03E9A002FD5DD</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -1062,9 +1048,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>DD09A4620BA0251A002FD5DD</string>
+				<string>DD09A5610BA03C13002FD5DD</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>DD09A4630BA0251A002FD5DD</string>
+				<string>DD09A5620BA03C13002FD5DD</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
@@ -1073,7 +1059,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

@@ -8,40 +8,22 @@
 
 #import "MQRequest.h"
 
-static NSMutableArray *request_queue = nil;
-static NSLock *request_queue_lock = nil;
-static int request_running_count = 0;
+#import "MQServer.h"
 
-#define MAX_CONNECTION 2
+static NSLock *spinner_lock = nil;
+static int request_running_count = 0;
 
 @implementation MQRequest
 
 + (void)initialize
 {
-	request_queue = [[NSMutableArray alloc] init];
-	request_queue_lock = [[NSLock alloc] init];
-}
-
-+ (void)runFromQueueIfNeeded
-{
-	id request = nil;
-	
-	[request_queue_lock lock];
-	if ([request_queue count] > 0) {
-		request = [[request_queue objectAtIndex:0] retain]; 
-		[request_queue removeObjectAtIndex:0];
-	}
-	[request_queue_lock unlock];
-	
-	if (request) {
-		[self increaseRequestCount:request];
-		[request startRequest];
-		[request autorelease];
-	}
+	spinner_lock = [[NSLock alloc] init];
 }
 
 + (void)increaseRequestCount:(id)sender
 {
+	[spinner_lock lock];
+	
 	request_running_count++;
 	
 	id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
@@ -60,10 +42,14 @@ static int request_running_count = 0;
 	id field = [[NSApp delegate] valueForKey:@"statusField"];
 	[field setStringValue:message];
 	[field setHidden:NO];
+	
+	[spinner_lock unlock];
 }
 
 + (void)decreaseRequestCount
 {
+	[spinner_lock lock];
+	
 	request_running_count--;
 
 	if (request_running_count == 0) {
@@ -74,6 +60,8 @@ static int request_running_count = 0;
 		id field = [[NSApp delegate] valueForKey:@"statusField"];
 		[field setHidden:YES];
 	}
+	
+	[spinner_lock unlock];
 }
 
 - (id)initWithController:(RequestController *)_controller forServer:(id)_server
@@ -119,18 +107,7 @@ static int request_running_count = 0;
 
 - (void)addToQueue
 {
-	[request_queue_lock lock];
-	
-	if (request_running_count < MAX_CONNECTION) {
-		[[self class] increaseRequestCount:self];
-		[self startRequest];
-	}
-	else {
-//		NSLog(@"enqueuing request");
-		[request_queue addObject:self];		
-	}
-	
-	[request_queue_lock unlock];
+	[[self valueForKey:@"server"] enqueueRequest:self];
 }
 
 - (void)startRequest
@@ -173,11 +150,8 @@ static int request_running_count = 0;
 
 - (void)finishRequest
 {
-	[[self class] runFromQueueIfNeeded];
-	
-	[request_queue_lock lock];
+	[[self valueForKey:@"server"] runFromQueueIfNeeded];
 	[[self class] decreaseRequestCount];
-	[request_queue_lock unlock];
 }
 
 - (NSURL *)url

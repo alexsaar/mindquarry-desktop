@@ -298,7 +298,7 @@
     NSArray *updatedEntities  = [[[note userInfo] valueForKey:NSUpdatedObjectsKey] valueForKeyPath:@"entity.name"];
     NSArray *deletedEntities  = [[[note userInfo] valueForKey:NSDeletedObjectsKey] valueForKeyPath:@"entity.name"];
     
-	NSLog(@"change");
+//	NSLog(@"change");
 	
     // Use whatever entity name, or use an NSEntityDescription and key path @"entity" above
     if ([insertedEntities containsObject:@"Task"] ||

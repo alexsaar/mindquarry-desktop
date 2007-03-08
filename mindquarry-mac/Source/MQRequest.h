@@ -10,6 +10,8 @@
 
 @class RequestController;
 
+#define MAX_CONNECTION 2
+
 @interface MQRequest : NSObject {
 
 	@protected
@@ -26,8 +28,6 @@
 	NSMutableData *responseData;
 	
 }
-
-+ (void)runFromQueueIfNeeded;
 
 + (void)increaseRequestCount:(id)sender;
 
