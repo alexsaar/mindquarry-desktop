@@ -8,9 +8,9 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeExecutable = DD39F4E70B9D7CCC00384D0C /* Mindquarry Desktop Client */;
-		activeTarget = DD2EDB040B9F2180000238CE /* Disk Image */;
+		activeTarget = 8D1107260486CEB800E47090 /* Mindquarry Desktop Client */;
 		addToTargets = (
 			8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
 		);
@@ -43,6 +43,20 @@
 					PBXBreakpointsDataSource_LocationID,
 					PBXBreakpointsDataSource_ConditionID,
 					PBXBreakpointsDataSource_ContinueID,
+				);
+			};
+			PBXConfiguration.PBXFileTableDataSource3.PBXErrorsWarningsDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXErrorsWarningsDataSource_LocationID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					300,
+					637,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXErrorsWarningsDataSource_TypeID,
+					PBXErrorsWarningsDataSource_MessageID,
+					PBXErrorsWarningsDataSource_LocationID,
 				);
 			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
@@ -89,8 +103,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 195041623;
-			PBXWorkspaceStateSaveDate = 195041623;
+			PBXPerProjectTemplateStateSaveDate = 195041929;
+			PBXWorkspaceStateSaveDate = 195041929;
 		};
 		perUserProjectItems = {
 			DD099D4D0B9FFF54002FD5DD /* PBXTextBookmark */ = DD099D4D0B9FFF54002FD5DD /* PBXTextBookmark */;
@@ -106,8 +120,9 @@
 			DD09A2120BA01789002FD5DD /* PBXTextBookmark */ = DD09A2120BA01789002FD5DD /* PBXTextBookmark */;
 			DD09A2230BA01800002FD5DD /* PBXTextBookmark */ = DD09A2230BA01800002FD5DD /* PBXTextBookmark */;
 			DD09A2670BA018FB002FD5DD /* PBXTextBookmark */ = DD09A2670BA018FB002FD5DD /* PBXTextBookmark */;
-			DD09A2870BA01940002FD5DD /* PBXTextBookmark */ = DD09A2870BA01940002FD5DD /* PBXTextBookmark */;
-			DD09A2A60BA019A1002FD5DD /* PBXTextBookmark */ = DD09A2A60BA019A1002FD5DD /* PBXTextBookmark */;
+			DD09A2B00BA01AD1002FD5DD /* PBXTextBookmark */ = DD09A2B00BA01AD1002FD5DD /* PBXTextBookmark */;
+			DD09A2B10BA01AD1002FD5DD /* PBXTextBookmark */ = DD09A2B10BA01AD1002FD5DD /* PBXTextBookmark */;
+			DD09A2B20BA01AD1002FD5DD /* PBXTextBookmark */ = DD09A2B20BA01AD1002FD5DD /* PBXTextBookmark */;
 			DD2ED1C20B9EC231000238CE /* PBXTextBookmark */ = DD2ED1C20B9EC231000238CE /* PBXTextBookmark */;
 			DD2ED1CE0B9EC231000238CE /* PBXTextBookmark */ = DD2ED1CE0B9EC231000238CE /* PBXTextBookmark */;
 			DD2ED1CF0B9EC231000238CE /* PBXTextBookmark */ = DD2ED1CF0B9EC231000238CE /* PBXTextBookmark */;
@@ -466,17 +481,7 @@
 		vrLen = 828;
 		vrLoc = 0;
 	};
-	DD09A2870BA01940002FD5DD /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */;
-		name = "RequestController.m: 82";
-		rLen = 0;
-		rLoc = 2487;
-		rType = 0;
-		vrLen = 1300;
-		vrLoc = 4529;
-	};
-	DD09A2A60BA019A1002FD5DD /* PBXTextBookmark */ = {
+	DD09A2B00BA01AD1002FD5DD /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */;
 		name = "RequestController.m: 82";
@@ -485,6 +490,26 @@
 		rType = 0;
 		vrLen = 1012;
 		vrLoc = 4529;
+	};
+	DD09A2B10BA01AD1002FD5DD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */;
+		name = "RequestController.m: 82";
+		rLen = 0;
+		rLoc = 2487;
+		rType = 0;
+		vrLen = 1012;
+		vrLoc = 4529;
+	};
+	DD09A2B20BA01AD1002FD5DD /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */;
+		name = "MQTaskCell.m: 81";
+		rLen = 0;
+		rLoc = 2789;
+		rType = 0;
+		vrLen = 1321;
+		vrLoc = 409;
 	};
 	DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {
 		uiCtxt = {
@@ -834,9 +859,9 @@
 	};
 	DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {939, 1862}}";
-			sepNavSelRange = "{1935, 0}";
-			sepNavVisRect = "{{0, 624}, {939, 813}}";
+			sepNavIntBoundsRect = "{{0, 0}, {939, 1834}}";
+			sepNavSelRange = "{2789, 0}";
+			sepNavVisRect = "{{0, 319}, {939, 564}}";
 		};
 	};
 	DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */ = {
