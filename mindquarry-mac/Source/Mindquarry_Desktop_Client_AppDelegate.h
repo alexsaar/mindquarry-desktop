@@ -19,7 +19,10 @@
 	
 	IBOutlet id taskController;
 	IBOutlet id taskTable;
-    
+	
+	id refreshToolbarItem;
+    id stopToolbarItem;
+	
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;

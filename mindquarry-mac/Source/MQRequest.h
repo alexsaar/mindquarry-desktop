@@ -24,7 +24,7 @@
 	NSString *password;
 	
 	@private
-	NSURLConnection *connection;
+	NSURLConnection *_connection;
 	NSMutableData *responseData;
 	
 }
@@ -40,6 +40,8 @@
 - (void)startRequest;
 
 - (void)finishRequest;
+
+- (void)cancel;
 
 - (NSURL *)url;
 

@@ -12,6 +12,7 @@
 #import "MQTaskCell.h"
 #import "MQUpdateRequest.h"
 #import "MQTask.h"
+#import "MQServer.h"
 #import "LRFilterBar.h"
 
 @implementation RequestController
@@ -65,7 +66,7 @@
 	[priorityButton setMenu:menu];
 	[menu release];
 	
-	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"MQDesktopMainToolbar"];
+	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"MQDesktopMainToolbar2"];
 	[toolbar setDelegate:self];
 	[toolbar setAllowsUserCustomization:YES];
 	[toolbar setAutosavesConfiguration:YES];
@@ -134,6 +135,8 @@
 		[item setImage:[NSImage imageNamed:@"synchronize-vertical"]];
 		[item setTarget:self];
 		[item setAction:@selector(refresh:)];
+		[item setAutovalidates:NO];
+		[[NSApp delegate] setValue:item forKey:@"refreshToolbarItem"];
 	}
 	else if  ([itemIdentifier isEqualToString:@"MQSave"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQSave"];
@@ -151,6 +154,18 @@
 		[item setTarget:serverDrawer];
 		[item setAction:@selector(toggle:)];
 	}
+	else if ([itemIdentifier isEqualToString:@"MQStop"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQStop"];
+		[item setLabel:@"Stop"];
+		[item setPaletteLabel:@"Stop"];
+		[item setImage:[NSImage imageNamed:@"AlertStopIcon"]];
+		[item setTarget:self];
+		[item setAction:@selector(stopTasks:)];
+		[item setAutovalidates:NO];
+		[item setEnabled:NO];
+
+		[[NSApp delegate] setValue:item forKey:@"stopToolbarItem"];
+	}
 	
 	return [item autorelease];
 }
@@ -160,7 +175,7 @@
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
-    return [NSArray arrayWithObjects:@"MQRefresh", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
+    return [NSArray arrayWithObjects:@"MQRefresh", @"MQStop", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {
@@ -232,8 +247,17 @@
 	id currentServer = [self selectedServer];	
 	
 	MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithController:self forServer:currentServer];
-	[request startRequest];
+	[request addToQueue];
 	[request autorelease];
+}
+
+- (IBAction)stopTasks:(id)sender
+{
+	NSEnumerator *servers = [[serversController arrangedObjects] objectEnumerator];
+	id server;
+	while (server = [servers nextObject]) {
+		[server cancelAll];
+	}
 }
 
 - (IBAction)saveTask:(id)sender

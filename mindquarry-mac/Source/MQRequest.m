@@ -24,24 +24,40 @@ static int request_running_count = 0;
 {
 	[spinner_lock lock];
 	
+	BOOL wasZero = request_running_count == 0;
+//	NSLog(@"request_running_count %d" ,request_running_count);
+	
 	request_running_count++;
 	
-	id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
-	[spinner setHidden:NO];
-	[spinner startAnimation:self];
-	
-	NSString *message = nil;
-	
-	if ([sender respondsToSelector:@selector(statusString)])
-		message = [sender statusString];
-	else {
-//		NSLog(@"sender %@ has no msg", sender);
-		message = @"request...";		
+	if (wasZero) {
+		
+//		NSLog(@" === start busy");
+		
+		id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
+		[spinner setHidden:NO];
+		[spinner startAnimation:self];
+		
+		NSString *message = nil;
+		
+		if ([sender respondsToSelector:@selector(statusString)])
+			message = [sender statusString];
+		else {
+			//		NSLog(@"sender %@ has no msg", sender);
+			message = @"request...";		
+		}
+		
+		id field = [[NSApp delegate] valueForKey:@"statusField"];
+		[field setStringValue:message];
+		[field setHidden:NO];		
+		
+		id tbItem = [[NSApp delegate] valueForKey:@"refreshToolbarItem"];		
+		[tbItem setEnabled:NO];
+//		[tbItem setImage:[NSImage imageNamed:@"AlertStopIcon"]];
+//		[tbItem setLabel:@"Stop"];
+		
+		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
+		[stopItem setEnabled:YES];
 	}
-	
-	id field = [[NSApp delegate] valueForKey:@"statusField"];
-	[field setStringValue:message];
-	[field setHidden:NO];
 	
 	[spinner_lock unlock];
 }
@@ -51,14 +67,23 @@ static int request_running_count = 0;
 	[spinner_lock lock];
 	
 	request_running_count--;
-
+	
 	if (request_running_count == 0) {
+		
+//		NSLog(@" === stop busy");
+		
 		id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
 		[spinner stopAnimation:self];
 		[spinner setHidden:YES];
 		
 		id field = [[NSApp delegate] valueForKey:@"statusField"];
 		[field setHidden:YES];
+		
+		id tbItem = [[NSApp delegate] valueForKey:@"refreshToolbarItem"];		
+		[tbItem setEnabled:YES];
+
+		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
+		[stopItem setEnabled:NO];
 	}
 	
 	[spinner_lock unlock];
@@ -80,9 +105,9 @@ static int request_running_count = 0;
 
 - (void)dealloc
 {
-	[connection cancel];
-	[connection release];
-	connection = nil;
+	[_connection cancel];
+	[_connection autorelease];
+	_connection = nil;
 	
 	[responseData release];
 	responseData = nil;
@@ -128,7 +153,9 @@ static int request_running_count = 0;
 	[responseData release];
 	responseData = [[NSMutableData alloc] init];
 	
-	connection = [[NSURLConnection connectionWithRequest:[self request] delegate:self] retain];
+	[_connection autorelease];
+	_connection = nil;
+	_connection = [[NSURLConnection connectionWithRequest:[self request] delegate:self] retain];
 //	if (!connection)
 //		[self autorelease];
 }
@@ -152,6 +179,13 @@ static int request_running_count = 0;
 {
 	[[self valueForKey:@"server"] runFromQueueIfNeeded];
 	[[self class] decreaseRequestCount];
+}
+
+- (void)cancel
+{
+	[_connection cancel];
+	[_connection autorelease];
+	_connection = nil;
 }
 
 - (NSURL *)url
@@ -202,10 +236,13 @@ static int request_running_count = 0;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	NSLog(@"connection failed loading error %@", error);
+//	NSLog(@"connection failed loading error %@", error);
 	
 	[responseData release];
 	responseData = nil;
+	
+	[_connection autorelease];
+	_connection = nil;
 	
 //	[self autorelease];
 }
@@ -220,6 +257,9 @@ static int request_running_count = 0;
 	responseData = nil;
 	
 	[self finishRequest];
+	
+	[_connection autorelease];
+	_connection = nil;
 	
 	// TODO
 //	[self autorelease];

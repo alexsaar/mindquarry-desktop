@@ -38,6 +38,10 @@
 		requestQueue = [[NSMutableArray alloc] init];
 	if (!requestLock)
 		requestLock = [[NSLock alloc] init];
+	if (!runningLock)
+		runningLock = [[NSLock alloc] init];
+	if (!runningRequests)
+		runningRequests = [[NSMutableArray alloc] init];
 }
 
 - (void)enqueueRequest:(MQRequest *)req
@@ -46,8 +50,12 @@
 	
 	if (requestRunningCount < MAX_CONNECTION) {
 		requestRunningCount++;
-		[MQRequest increaseRequestCount:self];
-		[req startRequest];
+		[MQRequest increaseRequestCount:req];
+		
+		[runningLock lock];
+		[req startRequest];		
+		[runningRequests addObject:req];
+		[runningLock unlock];
 	}
 	else {
 		//		NSLog(@"enqueuing request");
@@ -70,9 +78,16 @@
 	[requestLock unlock];
 	
 	if (request) {
+		[requestLock lock];
+		requestRunningCount++;
 		[MQRequest increaseRequestCount:request];
+		[requestLock unlock];
+		
+		[runningLock lock];
 		[request startRequest];
-		[request autorelease];
+		[request autorelease];		
+		[runningRequests addObject:request];
+		[runningLock unlock];
 	}
 }
 
@@ -84,6 +99,26 @@
 - (NSLock *)requestLock
 {
 	return requestLock;
+}
+
+- (void)cancelAll
+{
+	[requestLock lock];
+	[runningLock lock];
+	
+	[requestQueue removeAllObjects];
+	
+	NSEnumerator *rreqs = [runningRequests objectEnumerator];
+	id req;
+	while (req = [rreqs nextObject]) {
+		[req cancel];
+		[MQRequest decreaseRequestCount];
+	}
+	
+	[runningRequests removeAllObjects];
+	
+	[runningLock unlock];
+	[requestLock unlock];
 }
 
 @end

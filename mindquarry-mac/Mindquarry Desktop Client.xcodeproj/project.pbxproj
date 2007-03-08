@@ -35,6 +35,7 @@
 		DD09A3160BA01E6D002FD5DD /* LROverflowButton.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A3100BA01E6D002FD5DD /* LROverflowButton.m */; };
 		DD09A3170BA01E6D002FD5DD /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A3120BA01E6D002FD5DD /* CTGradient.m */; };
 		DD09A5660BA03C26002FD5DD /* MQServer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A5650BA03C26002FD5DD /* MQServer.m */; };
+		DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -96,6 +97,7 @@
 		DD09A3120BA01E6D002FD5DD /* CTGradient.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CTGradient.m; sourceTree = "<group>"; };
 		DD09A5640BA03C26002FD5DD /* MQServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQServer.h; sourceTree = "<group>"; };
 		DD09A5650BA03C26002FD5DD /* MQServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQServer.m; sourceTree = "<group>"; };
+		DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AlertStopIcon.icns; path = Resources/AlertStopIcon.icns; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 		DD099E060BA006B2002FD5DD /* GFX */ = {
 			isa = PBXGroup;
 			children = (
+				DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */,
 				DD09A09B0BA0070A002FD5DD /* StatusBackground.png */,
 				DD86655C0B9DB2F7000C7B66 /* DesktopClientAppIcon.icns */,
 				DD86655D0B9DB2F7000C7B66 /* task-done.png */,
@@ -343,6 +346,7 @@
 				DD2ED7100B9EDDFA000238CE /* task-edit.png in Resources */,
 				DD2EDA190B9EE460000238CE /* servers.png in Resources */,
 				DD09A09C0BA0070A002FD5DD /* StatusBackground.png in Resources */,
+				DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

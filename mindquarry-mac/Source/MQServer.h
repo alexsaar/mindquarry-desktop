@@ -16,6 +16,9 @@
 	NSLock *requestLock;
 	int requestRunningCount;
 	
+	NSLock *runningLock;
+	NSMutableArray *runningRequests;
+	
 }
 
 - (void)initRequestQueue;
@@ -27,5 +30,7 @@
 - (NSMutableArray *)requestQueue;
 
 - (NSLock *)requestLock;
+
+- (void)cancelAll;
 
 @end

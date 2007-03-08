@@ -33,7 +33,7 @@ enum {
 	IBOutlet id serverDrawer;
 	
 	IBOutlet id filterBar;
-	
+		
 }
 
 - (void)afterWakeFromNib;
@@ -45,6 +45,8 @@ enum {
 - (IBAction)setDone:(id)sender;
 
 - (IBAction)refresh:(id)sender;
+
+- (IBAction)stopTasks:(id)sender;
 
 - (IBAction)saveTask:(id)sender;
 
