@@ -238,7 +238,7 @@
 		NSSize buttonSize = [[labelField cell] cellSizeForBounds: NSMakeRect(0,0,2000,2000)];
 		
 		int buttonYCoordinate = (([self frame].size.height - buttonSize.height) / 2);
-		[labelField setFrameOrigin:NSMakePoint(buttonX,buttonYCoordinate)];
+		[labelField setFrameOrigin:NSMakePoint(buttonX,buttonYCoordinate + 1)];
 		[labelField setFrameSize:buttonSize];
 
 		buttonX += buttonSize.width + kSpacing;

@@ -14,6 +14,8 @@
 
 static NSDictionary *statusImages;
 
+static NSDictionary *prioImages;
+
 @implementation MQTaskCell
 
 + (void)initialize
@@ -24,6 +26,14 @@ static NSDictionary *statusImages;
 		MQSmoothResize([NSImage imageNamed:@"task-done"], ICONSIZE), @"done",
 		MQSmoothResize([NSImage imageNamed:@"task-paused"], ICONSIZE), @"paused",
 		MQSmoothResize([NSImage imageNamed:@"task-running"], ICONSIZE), @"running",
+		nil];
+	
+#define PRIOSIZE NSMakeSize(16, 16)
+	prioImages = [[NSDictionary alloc] initWithObjectsAndKeys:
+		MQSmoothResize([NSImage imageNamed:@"task-low"], PRIOSIZE), @"low",
+		MQSmoothResize([NSImage imageNamed:@"task-medium"], PRIOSIZE), @"medium",
+		MQSmoothResize([NSImage imageNamed:@"task-important"], PRIOSIZE), @"important",
+		MQSmoothResize([NSImage imageNamed:@"task-critical"], PRIOSIZE), @"critical",
 		nil];
 }
 
@@ -98,6 +108,12 @@ static NSDictionary *statusImages;
 	if (!statusImage)
 		statusImage = [statusImages objectForKey:@"new"];
 	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 34) operation:NSCompositeSourceOver];
+	
+	// prio icon
+	NSString *prio = [[self objectValue] valueForKey:@"priority"];
+	NSImage *prioImage = [prioImages objectForKey:prio];
+	if (prioImage)
+		[prioImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 21, cellFrame.origin.y + 36) operation:NSCompositeSourceOver];	
 	
 	// due
 	
