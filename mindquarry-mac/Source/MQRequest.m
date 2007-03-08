@@ -238,7 +238,7 @@ static int request_running_count = 0;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {	
-	NSLog(@"connection finished loading %@", [url absoluteString]);
+//	NSLog(@"connection finished loading %@", [url absoluteString]);
 	
 	[self handleResponseData:responseData];
 	

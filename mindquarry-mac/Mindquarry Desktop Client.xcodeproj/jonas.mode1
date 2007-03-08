@@ -295,7 +295,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>17</integer>
+									<integer>9</integer>
 									<integer>3</integer>
 									<integer>0</integer>
 								</array>
@@ -331,12 +331,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQTaskCell.m</string>
+								<string>MQRequest.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -344,11 +346,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MQTaskCell.m</string>
+										<string>MQRequest.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD09A2B20BA01AD1002FD5DD</string>
+										<string>DD09A2F80BA01E46002FD5DD</string>
 										<key>history</key>
 										<array>
 											<string>DD8666110B9DB70E000C7B66</string>
@@ -365,14 +367,14 @@
 											<string>DD09A19A0BA0158B002FD5DD</string>
 											<string>DD09A19C0BA0158B002FD5DD</string>
 											<string>DD09A1DA0BA01607002FD5DD</string>
-											<string>DD09A1F00BA016E2002FD5DD</string>
 											<string>DD09A20B0BA0172D002FD5DD</string>
-											<string>DD09A2110BA01789002FD5DD</string>
 											<string>DD09A2120BA01789002FD5DD</string>
 											<string>DD09A2230BA01800002FD5DD</string>
 											<string>DD09A2670BA018FB002FD5DD</string>
 											<string>DD09A2B00BA01AD1002FD5DD</string>
-											<string>DD4D7FF40B9F30A500B327A2</string>
+											<string>DD09A2F30BA01E46002FD5DD</string>
+											<string>DD09A2F40BA01E46002FD5DD</string>
+											<string>DD09A2F50BA01E46002FD5DD</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -398,7 +400,8 @@
 											<string>DD4D801D0B9F314100B327A2</string>
 											<string>DD4D80A30B9F370000B327A2</string>
 											<string>DD09A1160BA00A94002FD5DD</string>
-											<string>DD09A2B10BA01AD1002FD5DD</string>
+											<string>DD09A2F60BA01E46002FD5DD</string>
+											<string>DD09A2F70BA01E46002FD5DD</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -420,8 +423,6 @@
 							<string>581pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -458,9 +459,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD09A2B30BA01AD1002FD5DD</string>
+				<string>DD09A2D20BA01C26002FD5DD</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD09A2B40BA01AD1002FD5DD</string>
+				<string>DD09A2D30BA01C26002FD5DD</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -579,7 +580,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195041929.08960301</real>
+	<real>195042886.149243</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -594,6 +595,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>DD39F5060B9D807800384D0C</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jonas/Desktop/mindquarry/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
@@ -614,12 +616,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>MQTaskCell.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -636,8 +640,6 @@
 							<string>468pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -677,7 +679,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD09A2930BA0196F002FD5DD</string>
+				<string>DD09A2C20BA01BBE002FD5DD</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1039,9 +1041,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>DD09A2B50BA01AD1002FD5DD</string>
+				<string>DD09A2C30BA01BBE002FD5DD</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>DD09A2B60BA01AD1002FD5DD</string>
+				<string>DD09A2C40BA01BBE002FD5DD</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

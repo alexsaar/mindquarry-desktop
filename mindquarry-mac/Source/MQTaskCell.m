@@ -59,18 +59,37 @@ static NSDictionary *statusImages;
 		grayColor = [NSColor grayColor];
 	}
 	
+	NSMutableParagraphStyle *pstyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
+	[pstyle setLineBreakMode:NSLineBreakByTruncatingTail];
+	
+	NSSize dueSize = NSMakeSize(0, 0);
+	NSString *dateDesc = nil;
+	NSDictionary *dateDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil];	
+	NSDate *date = [[self objectValue] valueForKey:@"date"];
+	if (date) {
+		dateDesc = [NSString stringWithFormat:@" - %@", [[self objectValue] dueDescription]];
+		dueSize = [dateDesc sizeWithAttributes:dateDict];
+	}
+	
 	// title
 	NSString *title = [[self objectValue] valueForKey:@"title"];
-	NSDictionary *titleDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, nil];
+	NSDictionary *titleDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
+
 	NSSize titleSize = [title sizeWithAttributes:titleDict];
-	[title drawAtPoint:NSMakePoint(cellFrame.origin.x + 40, cellFrame.origin.y + 4) withAttributes:titleDict];
+	int maxSize = cellFrame.size.width - dueSize.width - 50;
+	if (titleSize.width > maxSize)
+		titleSize.width = maxSize;
+	[title drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 4, maxSize, 16) withAttributes:titleDict];
+	
+//	[title drawAtPoint:NSMakePoint(cellFrame.origin.x + 40, cellFrame.origin.y + 4) withAttributes:titleDict];
 	
 	// summary
 	NSString *sum = [[self objectValue] valueForKey:@"summary"];
 	if (sum) {
 		NSMutableString *summary = [NSMutableString stringWithString:sum];
 		[summary replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0, [summary length])];
-		[summary drawAtPoint:NSMakePoint(cellFrame.origin.x + 44, cellFrame.origin.y + 21) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];		
+		
+		[summary drawInRect:NSMakeRect(cellFrame.origin.x + 44, cellFrame.origin.y + 21, cellFrame.size.width - 55, 14) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:pstyle, NSParagraphStyleAttributeName, [NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
 	}
 	
 	// status icon
@@ -81,15 +100,12 @@ static NSDictionary *statusImages;
 	[statusImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 34) operation:NSCompositeSourceOver];
 	
 	// due
-	NSDate *date = [[self objectValue] valueForKey:@"date"];
-	if (date) {
-		NSString *dateDesc = [NSString stringWithFormat:@" - %@", [[self objectValue] dueDescription]];
-		NSDictionary *dateDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil];
-//		NSSize dateSize = [dateDesc sizeWithAttributes:dateDict];
+	
+	if (dateDesc)
 		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + titleSize.width + 42, cellFrame.origin.y + 6) withAttributes:dateDict];
 		
 //		[@"due:" drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 35 - dateSize.width, cellFrame.origin.y + 10) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
-	}
+	
 	
 }
 
