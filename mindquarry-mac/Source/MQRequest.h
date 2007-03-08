@@ -10,7 +10,7 @@
 
 @class RequestController;
 
-#define MAX_CONNECTION 2
+#define MAX_CONNECTION 1
 
 @interface MQRequest : NSObject {
 

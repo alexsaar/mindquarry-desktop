@@ -41,6 +41,13 @@
 
 - (void)parseXMLResponse:(NSXMLDocument *)document
 {
+	
+	// mark all tasks stale	
+	NSEnumerator *taskEnum = [[[team valueForKey:@"tasks"] allObjects] objectEnumerator];
+	id task;
+	while (task = [taskEnum nextObject])
+		[task setValue:[NSNumber numberWithBool:NO] forKey:@"upToDate"];
+		
 	NSXMLElement *root = [document rootElement];
 	
 	int i;
@@ -60,11 +67,25 @@
 //		NSLog(@"task %@ name %@", node, obj_id);
 		
 		id taskobj = [controller taskWithId:obj_id forTeam:team];
-				
+		[taskobj setValue:[NSNumber numberWithBool:YES] forKey:@"upToDate"];	
+		
 		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithController:controller forServer:server forTask:taskobj];
 		[req addToQueue];
 		[req autorelease];
 	}
+
+	// delete stale tasks
+	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
+	taskEnum = [[[team valueForKey:@"tasks"] allObjects] objectEnumerator];
+	task;
+	while (task = [taskEnum nextObject]) {
+		if (![[task valueForKey:@"upToDate"] boolValue]) {
+//			NSLog(@"stale %@", [task valueForKey:@"title"]);
+			[context deleteObject:task];		
+		}
+	}	
+	[[NSApp delegate] performSelectorOnMainThread:@selector(reloadTasks) withObject:nil waitUntilDone:NO]; 
+//	NSLog(@"refreshed");
 	
 }
 
