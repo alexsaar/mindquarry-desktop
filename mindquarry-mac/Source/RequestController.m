@@ -246,6 +246,8 @@
 {
 	id currentServer = [self selectedServer];	
 	
+//	NSLog(@"refresh %@", currentServer);
+	
 	MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithController:self forServer:currentServer];
 	[request addToQueue];
 	[request autorelease];

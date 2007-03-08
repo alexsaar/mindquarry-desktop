@@ -27,6 +27,8 @@
 	NSURLConnection *_connection;
 	NSMutableData *responseData;
 	
+	BOOL didFree;
+	
 }
 
 + (void)increaseRequestCount:(id)sender;

@@ -25,7 +25,7 @@
 
 - (void)enqueueRequest:(MQRequest *)req;
 
-- (void)runFromQueueIfNeeded;
+- (void)runFromQueueIfNeeded:(id)sender;
 
 - (NSMutableArray *)requestQueue;
 

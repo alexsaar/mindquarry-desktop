@@ -65,8 +65,14 @@
 	[requestLock unlock];
 }
 
-- (void)runFromQueueIfNeeded
+- (void)runFromQueueIfNeeded:(id)sender;
 {
+	if (sender) {
+		[runningLock lock];
+		[runningRequests removeObject:sender];
+		[runningLock unlock];	
+	}
+	
 	id request = nil;
 	
 	[requestLock lock];
@@ -85,8 +91,8 @@
 		
 		[runningLock lock];
 		[request startRequest];
-		[request autorelease];		
 		[runningRequests addObject:request];
+		[request release];		
 		[runningLock unlock];
 	}
 }

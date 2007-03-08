@@ -25,7 +25,7 @@ static int request_running_count = 0;
 	[spinner_lock lock];
 	
 	BOOL wasZero = request_running_count == 0;
-//	NSLog(@"request_running_count %d" ,request_running_count);
+//	NSLog(@"++ request_running_count %d" ,request_running_count);
 	
 	request_running_count++;
 	
@@ -66,6 +66,8 @@ static int request_running_count = 0;
 {
 	[spinner_lock lock];
 	
+//	NSLog(@"-- request_running_count %d" ,request_running_count);
+	
 	request_running_count--;
 	
 	if (request_running_count == 0) {
@@ -93,6 +95,8 @@ static int request_running_count = 0;
 {
 	if (![super init])
 		return nil;
+	
+	didFree = YES;
 	
 	controller = [_controller retain];
 	server = [_server retain];
@@ -137,9 +141,6 @@ static int request_running_count = 0;
 
 - (void)startRequest
 {
-	
-//	[self retain];
-
 	[self setValue:[self url] forKey:@"url"];
 //	NSLog(@"url %@", [[self valueForKey:@"url"] absoluteString]);
 	
@@ -147,6 +148,11 @@ static int request_running_count = 0;
 		[self finishRequest];
 		return;
 	}
+	
+//	NSLog(@"%@ retcount %d", self, [self retainCount]);
+	
+	didFree = NO;
+	[self retain];
 	
 //	NSLog(@"starting request %@", [[self valueForKey:@"url"] absoluteString]);
 	
@@ -156,15 +162,20 @@ static int request_running_count = 0;
 	[_connection autorelease];
 	_connection = nil;
 	_connection = [[NSURLConnection connectionWithRequest:[self request] delegate:self] retain];
-//	if (!connection)
-//		[self autorelease];
+	if (!_connection) {
+		[self finishRequest];
+	}
 }
 
 - (void)handleResponseData:(NSData *)data
 {
+//	NSLog(@"data %@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
+	
 	NSError *error;
 	NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error]; 
 
+//	NSLog(@"%@", document);
+	
 	[self parseXMLResponse:document];
 	
 	[document release];
@@ -177,8 +188,14 @@ static int request_running_count = 0;
 
 - (void)finishRequest
 {
-	[[self valueForKey:@"server"] runFromQueueIfNeeded];
-	[[self class] decreaseRequestCount];
+	if (!didFree) {
+		[[self valueForKey:@"server"] runFromQueueIfNeeded:self];
+		[[self class] decreaseRequestCount];
+		
+		[self autorelease];
+//		NSLog(@"release");
+		didFree = YES;
+	}
 }
 
 - (void)cancel
@@ -186,6 +203,12 @@ static int request_running_count = 0;
 	[_connection cancel];
 	[_connection autorelease];
 	_connection = nil;
+	
+//	[self finishRequest];
+	if (!didFree) {
+		[self autorelease];
+		didFree = YES;
+	}
 }
 
 - (NSURL *)url
@@ -236,15 +259,17 @@ static int request_running_count = 0;
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-//	NSLog(@"connection failed loading error %@", error);
+	NSLog(@"URL request failed: %@", error);
 	
 	[responseData release];
 	responseData = nil;
 	
+	[self finishRequest];
+	
 	[_connection autorelease];
 	_connection = nil;
 	
-//	[self autorelease];
+	[self finishRequest];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -261,8 +286,7 @@ static int request_running_count = 0;
 	[_connection autorelease];
 	_connection = nil;
 	
-	// TODO
-//	[self autorelease];
+	[self finishRequest];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
@@ -275,6 +299,22 @@ static int request_running_count = 0;
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
 {
 	return request;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+	if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+		int status = [(NSHTTPURLResponse *)response statusCode];
+		if (status >= 400) {			
+			[_connection cancel];
+			[_connection autorelease];
+			_connection = nil;
+			
+			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Server returned status code %d", status], NSLocalizedDescriptionKey, [url absoluteString], NSErrorFailingURLStringKey, nil];
+			NSError *statusError = [NSError errorWithDomain:NSHTTPPropertyStatusCodeKey code:status userInfo:errorInfo];
+			[self connection:connection didFailWithError:statusError];
+		}
+	}
 }
 
 @end
