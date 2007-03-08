@@ -18,7 +18,15 @@
 - (void)awakeFromNib
 {
 	[serversController fetchWithRequest:nil merge:NO error:nil];
+	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
+	
+	[tasksController bind:@"contentSet" toObject:serversController withKeyPath:@"selection.tasks" options:nil];
 	[tasksController fetchWithRequest:nil merge:NO error:nil];
+
+	[serversController willChangeValueForKey:@"selection"];
+	[serversController didChangeValueForKey:@"selection"];
+	
+	[taskTable reloadData];
 	
 	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
 	[taskColumn setDataCell:cell];
@@ -70,14 +78,20 @@
 	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
 	
 //	[self afterWakeFromNib];
+
+	[window makeKeyAndOrderFront:self];
 	
 }
 
 - (void)afterWakeFromNib
 {
+
 //	[self refresh:nil];
 	
 	[MQTask setAutoSaveEnabled:YES];
+	
+	[NSTimer scheduledTimerWithTimeInterval:120 target:self selector:@selector(refresh:) userInfo:nil repeats:YES];
+	[self performSelector:@selector(refresh:) withObject:nil afterDelay:3];
 }
 
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {

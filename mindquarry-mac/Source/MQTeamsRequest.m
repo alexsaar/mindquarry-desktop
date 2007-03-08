@@ -44,7 +44,7 @@
 		[teamobj setValue:name forKey:@"name"];
 				
 		MQTasksRequest *treq = [[MQTasksRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
-		[treq startRequest];
+		[treq addToQueue];
 		[treq autorelease];
 	}
 }

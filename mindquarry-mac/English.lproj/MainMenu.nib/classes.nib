@@ -5,7 +5,12 @@
             ACTIONS = {saveAction = id; }; 
             CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
             LANGUAGE = ObjC; 
-            OUTLETS = {window = NSWindow; }; 
+            OUTLETS = {
+                serverController = id; 
+                statusField = id; 
+                statusSpinner = id; 
+                window = NSWindow; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 

@@ -62,7 +62,7 @@
 		id taskobj = [controller taskWithId:obj_id forTeam:team];
 				
 		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithController:controller forServer:server forTask:taskobj];
-		[req startRequest];
+		[req addToQueue];
 		[req autorelease];
 	}
 	

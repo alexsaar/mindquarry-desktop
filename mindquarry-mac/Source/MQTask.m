@@ -10,7 +10,7 @@
 
 #import "MQUpdateRequest.h"
 
-static BOOL autosave_enabled = NO;
+static BOOL global_autosave_enabled = NO;
 
 @implementation MQTask
 
@@ -27,8 +27,23 @@ static BOOL autosave_enabled = NO;
 
 + (void)setAutoSaveEnabled:(BOOL)enabled
 {
-	autosave_enabled = enabled;
+	global_autosave_enabled = enabled;
 //	NSLog(@"autosave %d", enabled);
+}
+
+- (void)setAutoSaveEnabled:(BOOL)enabled
+{
+	autosave_enabled = enabled;
+}
+
+- (id)init
+{
+	if (![super init])
+		return self;
+	
+	autosave_enabled = YES;
+	
+	return self;
 }
 
 - (void)dealloc
@@ -134,9 +149,12 @@ static BOOL autosave_enabled = NO;
 
 - (void)save
 {
-	NSLog(@"saving task \"%@\"", [self valueForKey:@"title"]);
+	if ([self valueForKey:@"title"] == nil)
+		return;
+	
+	NSLog(@"saving task %@ \"%@\"", [self valueForKey:@"id"], [self valueForKey:@"title"]);
 	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithController:nil forServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
-	[request performSelectorOnMainThread:@selector(startRequest) withObject:nil waitUntilDone:YES];
+	[request performSelectorOnMainThread:@selector(addToQueue) withObject:nil waitUntilDone:YES];
 	[request autorelease];
 }
 
@@ -183,7 +201,7 @@ static BOOL autosave_enabled = NO;
 - (void)didChangeValueForKey:(NSString *)key
 {
 	[super didChangeValueForKey:key];
-	if (!autosave_enabled)
+	if (!global_autosave_enabled || !autosave_enabled)
 		return;
 
 	if ([key isEqualToString:@"server"] || [key isEqualToString:@"team"])

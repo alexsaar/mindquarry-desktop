@@ -8,6 +8,7 @@
 
 #import "MQTaskPropertiesRequest.h"
 
+#import "MQTask.h"
 
 @implementation MQTaskPropertiesRequest
 
@@ -75,23 +76,29 @@
 			date = [node stringValue];
 	}
 	
+	[task setAutoSaveEnabled:NO];
+	
 	[task setValue:title forKey:@"title"];
 	[task setValue:status forKey:@"status"];
 	[task setValue:priority forKey:@"priority"];
 	[task setValue:summary forKey:@"summary"];
 
 	[task setValue:description forKey:@"descHTML"];
-	[self performSelector:@selector(setDescription:) withObject:description afterDelay:0.1];
 
 	if (date)
 		[task setValue:[NSDate dateWithNaturalLanguageString:date] forKey:@"date"];
 	else 
 		[task setValue:nil forKey:@"date"];
 
+	[task setAutoSaveEnabled:YES];
+
+	[self performSelector:@selector(setDescription:) withObject:description afterDelay:0.1];
 }
 
 - (void)setDescription:(NSString *)desc
-{
+{	
+	[task setAutoSaveEnabled:NO];
+
 	if (!desc)
 		[task setValue:nil forKey:@"desc"];
 
@@ -102,6 +109,8 @@
 		[task setValue:sdata forKey:@"desc"];
 		[string release];		
 	}
+	
+	[task setAutoSaveEnabled:YES];
 }
 
 @end

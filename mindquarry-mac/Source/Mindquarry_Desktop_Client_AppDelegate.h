@@ -11,6 +11,11 @@
 @interface Mindquarry_Desktop_Client_AppDelegate : NSObject 
 {
     IBOutlet NSWindow *window;
+	
+	IBOutlet id statusSpinner;
+	IBOutlet id statusField;
+	
+	IBOutlet id serverController;
     
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     NSManagedObjectModel *managedObjectModel;

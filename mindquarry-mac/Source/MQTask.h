@@ -13,9 +13,13 @@
 
 	NSTimer *saveTimer;
 	
+	BOOL autosave_enabled;
+	
 }
 
 + (void)setAutoSaveEnabled:(BOOL)enabled;
+
+- (void)setAutoSaveEnabled:(BOOL)enabled;
 
 - (int)statusIndex;
 

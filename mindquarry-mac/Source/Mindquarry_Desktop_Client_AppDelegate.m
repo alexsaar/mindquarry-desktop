@@ -177,6 +177,10 @@
     return reply;
 }
 
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+	[[NSUserDefaults standardUserDefaults] setInteger:[serverController selectionIndex] forKey:@"selectedServer"];
+}
 
 /**
     Implementation of dealloc, to release the retained variables.
@@ -193,6 +197,7 @@
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
 {
 	[window makeKeyAndOrderFront:nil];
+	return YES;
 }
 
 @end

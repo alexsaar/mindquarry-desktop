@@ -27,7 +27,15 @@
 	
 }
 
++ (void)runFromQueueIfNeeded;
+
++ (void)increaseRequestCount:(id)sender;
+
++ (void)decreaseRequestCount;
+
 - (id)initWithController:(RequestController *)_controller forServer:(id)_server;
+
+- (void)addToQueue;
 
 - (void)startRequest;
 
@@ -38,6 +46,8 @@
 - (NSURL *)currentBaseURL;
 
 - (NSURL *)currentURLForPath:(NSString *)path;
+
+- (NSString *)statusString;
 
 - (void)handleResponseData:(NSData *)data;
 

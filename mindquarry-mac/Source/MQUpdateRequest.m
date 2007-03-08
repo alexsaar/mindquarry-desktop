@@ -11,6 +11,15 @@
 
 @implementation MQUpdateRequest
 
+- (void)startRequest
+{
+	if (![task valueForKey:@"title"]) {
+		NSLog(@"Warning: task %@ has no title", [self url]);
+		return;
+	}
+	[super startRequest];
+}
+
 - (NSData *)putData
 {
 	NSXMLElement *root = [[NSXMLElement alloc] initWithName:@"task"];
@@ -18,31 +27,31 @@
 	
 	NSXMLElement *element = nil;
 	
-	if ([task valueForKey:@"title"] && [[task valueForKey:@"title"] length] > 0) {
+	if ([task valueForKey:@"title"]) {
 		element = [[[NSXMLElement alloc] initWithName:@"title"] autorelease];
 		[element setStringValue:[task valueForKey:@"title"]];
 		[root addChild:element];
 	}
 	
-	if ([task valueForKey:@"priority"] && [[task valueForKey:@"priority"] length] > 0) {
+	if ([task valueForKey:@"priority"]) {
 		element = [[[NSXMLElement alloc] initWithName:@"priority"] autorelease];
 		[element setStringValue:[task valueForKey:@"priority"]];
 		[root addChild:element];
 	}
 	
-	if ([task valueForKey:@"summary"] && [[task valueForKey:@"summary"] length] > 0) {
+	if ([task valueForKey:@"summary"]) {
 		element = [[[NSXMLElement alloc] initWithName:@"summary"] autorelease];
 		[element setStringValue:[task valueForKey:@"summary"]];
 		[root addChild:element];
 	}
 
-	if ([task valueForKey:@"status"] && [[task valueForKey:@"status"] length] > 0) {
+	if ([task valueForKey:@"status"]) {
 		element = [[[NSXMLElement alloc] initWithName:@"status"] autorelease];
 		[element setStringValue:[task valueForKey:@"status"]];
 		[root addChild:element];
 	}
 	
-	if ([task valueForKey:@"descHTML"] && [[task valueForKey:@"descHTML"] length] > 0) {
+	if ([task valueForKey:@"descHTML"]) {
 		element = [[[NSXMLElement alloc] initWithName:@"description"] autorelease];
 		[element setStringValue:[task valueForKey:@"descHTML"]];
 		[root addChild:element];
@@ -92,6 +101,11 @@
 - (void)handleResponseData:(NSData *)data
 {
 
+}
+
+- (NSString *)statusString
+{
+	return @"Saving changes...";
 }
 
 @end
