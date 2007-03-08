@@ -200,4 +200,10 @@
 	return YES;
 }
 
+- (void)reloadTasks
+{
+	[taskController rearrangeObjects];
+	[taskTable reloadData];
+}
+
 @end

@@ -16,6 +16,9 @@
 	IBOutlet id statusField;
 	
 	IBOutlet id serverController;
+	
+	IBOutlet id taskController;
+	IBOutlet id taskTable;
     
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     NSManagedObjectModel *managedObjectModel;
@@ -27,5 +30,7 @@
 - (NSManagedObjectContext *)managedObjectContext;
 
 - (IBAction)saveAction:sender;
+
+- (void)reloadTasks;
 
 @end

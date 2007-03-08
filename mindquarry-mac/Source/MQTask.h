@@ -33,6 +33,12 @@
 
 - (NSString *)dueDescription;
 
+- (NSDate *)sortDate;
+
+- (NSDate *)inspectorDate;
+
+- (void)setInspectorDate:(NSDate *)date;
+
 //- (id)importantData;
 //
 //- (void)setImportantData:(id)data;

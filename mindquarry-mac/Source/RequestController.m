@@ -17,7 +17,7 @@
 @implementation RequestController
 
 + (void)initialize {
-	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:0], @"sortBy", nil]];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1], @"sortBy", nil]];
 }
 
 - (void)awakeFromNib
@@ -183,7 +183,7 @@
 	if (tag == 0)
 		key = @"title";
 	else if (tag == 1)
-		key = @"date";
+		key = @"sortDate";
 	else if (tag == 2)
 		key = @"statusIndex";
 	else if (tag == 3)
@@ -205,7 +205,7 @@
 	if (remove)
 		[desc removeObject:remove];
 	
-	[desc insertObject:[[[NSSortDescriptor alloc] initWithKey:key ascending:YES] autorelease] atIndex:0];
+	[desc insertObject:[[[NSSortDescriptor alloc] initWithKey:key ascending:tag != 3] autorelease] atIndex:0];
 	
 	[tasksController setSortDescriptors:desc];
 	[desc release];
@@ -298,18 +298,21 @@
     NSArray *updatedEntities  = [[[note userInfo] valueForKey:NSUpdatedObjectsKey] valueForKeyPath:@"entity.name"];
     NSArray *deletedEntities  = [[[note userInfo] valueForKey:NSDeletedObjectsKey] valueForKeyPath:@"entity.name"];
     
+	NSLog(@"change");
+	
     // Use whatever entity name, or use an NSEntityDescription and key path @"entity" above
     if ([insertedEntities containsObject:@"Task"] ||
         [updatedEntities containsObject:@"Task"] ||
         [deletedEntities containsObject:@"Task"])
     {
-        [tasksController rearrangeObjects];
+        [tasksController performSelectorOnMainThread:@selector(rearrangeObjects) withObject:nil waitUntilDone:YES];
+		[taskTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:YES];
     }
     else if ([insertedEntities containsObject:@"Server"] ||
 			 [updatedEntities containsObject:@"Server"] ||
 			 [deletedEntities containsObject:@"Server"])
     {
-        [serversController rearrangeObjects];
+		[serversController performSelectorOnMainThread:@selector(rearrangeObjects) withObject:nil waitUntilDone:YES];
     }
 //    else if ([insertedEntities containsObject:@"Action"] ||
 //             [updatedEntities containsObject:@"Action"] ||

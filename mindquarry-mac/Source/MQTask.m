@@ -22,6 +22,9 @@ static BOOL global_autosave_enabled = NO;
 	[self setKeys:[NSArray arrayWithObject:@"priority"] triggerChangeNotificationsForDependentKey:@"priorityIndex"];
 	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", @"date", nil] triggerChangeNotificationsForDependentKey:@"self"];
 	
+	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"sortDate"];
+	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"inspectorDate"];
+	
 //	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", nil] triggerChangeNotificationsForDependentKey:@"importantData"];
 }
 
@@ -215,6 +218,27 @@ static BOOL global_autosave_enabled = NO;
 	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(save) userInfo:nil repeats:NO] retain];
 	
 //	NSLog(@"%@ change val for key %@", [self valueForKey:@"title"], key);
+}
+
+- (NSDate *)sortDate
+{
+	NSDate *d = [self valueForKey:@"date"];
+	if (!d)
+		return [NSDate distantFuture];
+	return d;
+}
+
+- (NSDate *)inspectorDate
+{
+	NSDate *d = [self valueForKey:@"date"];
+	if (!d)
+		return [NSDate date];
+	return d;
+}
+
+- (void)setInspectorDate:(NSDate *)date
+{
+	[self setValue:date forKey:@"date"];
 }
 
 @end

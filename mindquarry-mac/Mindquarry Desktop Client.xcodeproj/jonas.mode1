@@ -247,8 +247,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -298,13 +296,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>56</integer>
-									<integer>38</integer>
+									<integer>7</integer>
+									<integer>3</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 407}, {409, 817}}</string>
+							<string>{{0, 0}, {409, 817}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -334,12 +332,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>LRFilterBar.m</string>
+								<string>RequestController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -347,11 +347,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>LRFilterBar.m</string>
+										<string>RequestController.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD09A4D20BA0276B002FD5DD</string>
+										<string>DD09A5590BA03BF3002FD5DD</string>
 										<key>history</key>
 										<array>
 											<string>DD8666110B9DB70E000C7B66</string>
@@ -365,20 +365,20 @@
 											<string>DD099D4D0B9FFF54002FD5DD</string>
 											<string>DD09A1120BA00A94002FD5DD</string>
 											<string>DD09A1130BA00A94002FD5DD</string>
-											<string>DD09A19A0BA0158B002FD5DD</string>
 											<string>DD09A19C0BA0158B002FD5DD</string>
-											<string>DD09A1DA0BA01607002FD5DD</string>
-											<string>DD09A20B0BA0172D002FD5DD</string>
-											<string>DD09A2120BA01789002FD5DD</string>
-											<string>DD09A2230BA01800002FD5DD</string>
-											<string>DD09A2F40BA01E46002FD5DD</string>
 											<string>DD09A31B0BA01E7B002FD5DD</string>
 											<string>DD09A3A20BA0211D002FD5DD</string>
 											<string>DD09A44A0BA024CF002FD5DD</string>
-											<string>DD09A46E0BA025DC002FD5DD</string>
 											<string>DD09A4990BA02711002FD5DD</string>
 											<string>DD09A49A0BA02711002FD5DD</string>
-											<string>DD09A4C30BA02746002FD5DD</string>
+											<string>DD09A4DC0BA037A8002FD5DD</string>
+											<string>DD09A4DD0BA037A8002FD5DD</string>
+											<string>DD09A5330BA03A6C002FD5DD</string>
+											<string>DD09A5340BA03A6C002FD5DD</string>
+											<string>DD09A53F0BA03B15002FD5DD</string>
+											<string>DD09A5400BA03B15002FD5DD</string>
+											<string>DD09A5570BA03BF3002FD5DD</string>
+											<string>DD09A5320BA03A6C002FD5DD</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -411,6 +411,17 @@
 											<string>DD09A49B0BA02711002FD5DD</string>
 											<string>DD09A49C0BA02711002FD5DD</string>
 											<string>DD09A49D0BA02711002FD5DD</string>
+											<string>DD09A4DE0BA037A8002FD5DD</string>
+											<string>DD09A4DF0BA037A8002FD5DD</string>
+											<string>DD09A4FA0BA0383F002FD5DD</string>
+											<string>DD09A4FB0BA0383F002FD5DD</string>
+											<string>DD09A4FC0BA0383F002FD5DD</string>
+											<string>DD09A5360BA03A6C002FD5DD</string>
+											<string>DD09A5370BA03A6C002FD5DD</string>
+											<string>DD09A5380BA03A6C002FD5DD</string>
+											<string>DD09A5410BA03B15002FD5DD</string>
+											<string>DD09A5420BA03B15002FD5DD</string>
+											<string>DD09A5580BA03BF3002FD5DD</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -589,7 +600,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195045227.183294</real>
+	<real>195050483.58226299</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -1062,7 +1073,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>
-			<false/>
+			<true/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

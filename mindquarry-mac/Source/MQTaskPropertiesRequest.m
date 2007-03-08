@@ -9,6 +9,7 @@
 #import "MQTaskPropertiesRequest.h"
 
 #import "MQTask.h"
+#import "Mindquarry_Desktop_Client_AppDelegate.h"
 
 @implementation MQTaskPropertiesRequest
 
@@ -111,6 +112,8 @@
 	}
 	
 	[task setAutoSaveEnabled:YES];
+	
+	[[NSApp delegate] reloadTasks];
 }
 
 @end
