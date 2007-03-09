@@ -204,6 +204,9 @@
 {
 	[taskController rearrangeObjects];
 	[taskTable reloadData];
+//	[taskTable setNeedsDisplay:YES];
+//	[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+//	NSLog(@"full task reload");
 }
 
 @end

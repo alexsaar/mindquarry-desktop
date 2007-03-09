@@ -91,6 +91,8 @@
 	else 
 		[task setValue:nil forKey:@"date"];
 
+	[task setValue:server forKey:@"server"];
+	
 	[task setAutoSaveEnabled:YES];
 
 	[self performSelector:@selector(setDescription:) withObject:description afterDelay:0.1];

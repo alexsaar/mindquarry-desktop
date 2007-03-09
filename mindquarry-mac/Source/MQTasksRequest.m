@@ -41,7 +41,6 @@
 
 - (void)parseXMLResponse:(NSXMLDocument *)document
 {
-	
 	// mark all tasks stale	
 	NSEnumerator *taskEnum = [[[team valueForKey:@"tasks"] allObjects] objectEnumerator];
 	id task;
@@ -77,16 +76,18 @@
 	// delete stale tasks
 	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	taskEnum = [[[team valueForKey:@"tasks"] allObjects] objectEnumerator];
-	task;
+	BOOL deleted = NO;
 	while (task = [taskEnum nextObject]) {
 		if (![[task valueForKey:@"upToDate"] boolValue]) {
-//			NSLog(@"stale %@", [task valueForKey:@"title"]);
+//			NSLog(@"task is stale: %@", [task valueForKey:@"title"]);
+			[task setValue:nil forKey:@"server"];
+			[task setValue:nil forKey:@"team"];
 			[context deleteObject:task];		
+			deleted = YES;
 		}
-	}	
-	[[NSApp delegate] performSelectorOnMainThread:@selector(reloadTasks) withObject:nil waitUntilDone:NO]; 
-//	NSLog(@"refreshed");
-	
+	}
+	if (deleted)
+		[[NSApp delegate] performSelectorOnMainThread:@selector(reloadTasks) withObject:nil waitUntilDone:NO]; 
 }
 
 @end
