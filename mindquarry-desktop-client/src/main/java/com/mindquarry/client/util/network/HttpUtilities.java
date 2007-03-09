@@ -32,7 +32,7 @@ import com.mindquarry.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class HttpUtil {
+public class HttpUtilities {
     public static InputStream getContentAsXML(String login, String pwd,
             String address) throws HttpException, IOException {
         HttpClient client = createHttpClient(login, pwd, address);

@@ -27,7 +27,7 @@ import dax.Transformer;
  */
 public class TaskTransformer extends Transformer {
     private Task task = null;
-    
+
     @Override
     public void init() {
         task = new Task();
@@ -44,20 +44,35 @@ public class TaskTransformer extends Transformer {
         }
         applyTemplates(node);
     }
-    
+
     @Path("title")
     public void title(Node node) {
         task.setTitle(node.getStringValue().trim());
     }
-    
+
     @Path("status")
     public void status(Node node) {
         task.setStatus(node.getStringValue().trim());
     }
-    
+
+    @Path("priority")
+    public void priority(Node node) {
+        task.setPriority(node.getStringValue().trim());
+    }
+
     @Path("summary")
     public void summary(Node node) {
         task.setSummary(node.getStringValue().trim());
+    }
+
+    @Path("description")
+    public void description(Node node) {
+        task.setDescription(node.getStringValue().trim());
+    }
+
+    @Path("date")
+    public void date(Node node) {
+        task.setDate(node.getStringValue().trim());
     }
 
     public Task getTask() {

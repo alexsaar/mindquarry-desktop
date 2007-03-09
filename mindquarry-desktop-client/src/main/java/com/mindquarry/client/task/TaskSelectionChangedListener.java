@@ -27,16 +27,12 @@ import org.eclipse.swt.widgets.Button;
  *         Saar</a>
  */
 public class TaskSelectionChangedListener implements ISelectionChangedListener {
-    private final TaskManager tman;
-
     private final TableViewer taskTableViewer;
 
     private final Button button;
 
-    public TaskSelectionChangedListener(final TaskManager tman,
-            final TableViewer taskTableViewer, final Button button) {
+    public TaskSelectionChangedListener(final TableViewer taskTableViewer, final Button button) {
         this.button = button;
-        this.tman = tman;
         this.taskTableViewer = taskTableViewer;
     }
 
@@ -51,16 +47,11 @@ public class TaskSelectionChangedListener implements ISelectionChangedListener {
             Object element = structsel.getFirstElement();
 
             if (element instanceof Task) {
-                Task task = (Task) element;
-                if (task.isActive()) {
-                    tman.stopTask((Task) element);
-                    button.setEnabled(false);
-                } else {
-                    tman.startTask((Task) element);
-                    button.setEnabled(true);
-                }
-                taskTableViewer.refresh();
+                button.setEnabled(true);
+            } else {
+                button.setEnabled(false);
             }
+            taskTableViewer.refresh();
         }
     }
 }

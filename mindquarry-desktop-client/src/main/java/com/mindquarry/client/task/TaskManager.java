@@ -31,7 +31,12 @@ import org.dom4j.io.DocumentSource;
 import org.dom4j.io.SAXReader;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -41,12 +46,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.task.dialog.TaskDialog;
 import com.mindquarry.client.task.widgets.NoTasksComposite;
 import com.mindquarry.client.task.widgets.TaskErrorComposite;
 import com.mindquarry.client.task.widgets.TaskUpdateComposite;
 import com.mindquarry.client.task.xml.TaskListTransformer;
 import com.mindquarry.client.task.xml.TaskTransformer;
-import com.mindquarry.client.util.network.HttpUtil;
+import com.mindquarry.client.util.network.HttpUtilities;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -119,17 +125,6 @@ public class TaskManager {
         return instance;
     }
 
-    public void startTask(Task t) {
-        for (Task task : tasks) {
-            task.setActive(false);
-        }
-        t.setActive(true);
-    }
-
-    public void stopTask(Task t) {
-        t.setActive(false);
-    }
-
     public void setDone(Task task) {
         tasks.remove(task);
         taskTableViewer.refresh();
@@ -139,12 +134,12 @@ public class TaskManager {
 
         // set task content to status "done"
         ByteArrayOutputStream result = new ByteArrayOutputStream();
-        Source xmlSource = new DocumentSource(task.getContent());
+        Source xmlSource = new DocumentSource(task.getContentAsXML());
 
         try {
             taskDoneXSLTrans.transform(xmlSource, new StreamResult(result));
 
-            HttpUtil.putAsXML(selectedProfile.getLogin(), selectedProfile
+            HttpUtilities.putAsXML(selectedProfile.getLogin(), selectedProfile
                     .getPassword(), task.getId(), result.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
@@ -218,7 +213,7 @@ public class TaskManager {
 
         InputStream content = null;
         try {
-            content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+            content = HttpUtilities.getContentAsXML(selectedProfile.getLogin(),
                     selectedProfile.getPassword(), selectedProfile
                             .getServerURL()
                             + "/tasks"); //$NON-NLS-1$
@@ -255,7 +250,7 @@ public class TaskManager {
         for (String taskURI : tlTransformer.getTaskURIs()) {
             content = null;
             try {
-                content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                content = HttpUtilities.getContentAsXML(selectedProfile.getLogin(),
                         selectedProfile.getPassword(), selectedProfile
                                 .getServerURL()
                                 + "/tasks/" + taskURI); //$NON-NLS-1$
@@ -277,10 +272,9 @@ public class TaskManager {
             TaskTransformer tTransformer = new TaskTransformer();
             tTransformer.execute(doc);
 
-            // get initialized teask and set content
+            // get initialized task
             Task newTask = tTransformer.getTask();
-            newTask.setContent(doc);
-
+            
             // add task to internal list of tasks, if not yet exist
             if ((!tasks.contains(newTask))
                     && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
@@ -377,7 +371,25 @@ public class TaskManager {
                             .setContentProvider(new TaskTableContentProvider());
                     taskTableViewer
                             .addSelectionChangedListener(new TaskSelectionChangedListener(
-                                    myself, taskTableViewer, doneButton));
+                                    taskTableViewer, doneButton));
+                    taskTableViewer.addDoubleClickListener(new IDoubleClickListener() {
+                        public void doubleClick(DoubleClickEvent event) {
+                            ISelection selection = event.getSelection();
+
+                            if (selection instanceof StructuredSelection) {
+                                StructuredSelection structsel = (StructuredSelection) selection;
+                                Object element = structsel.getFirstElement();
+
+                                if (element instanceof Task) {
+                                    TaskDialog dlg = new TaskDialog(MindClient.getShell(), (Task)element);
+                                    if(dlg.open() == Window.OK) {
+                                        // TODO change task data
+                                    }
+                                }
+                                taskTableViewer.refresh();
+                            }
+                        }
+                    });
                 } else if (!error && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksComposite(taskContainer,

@@ -25,9 +25,9 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 
 import com.mindquarry.client.MindClient;
-import com.mindquarry.client.util.network.HttpUtil;
+import com.mindquarry.client.teamspace.TeamspaceUtilities;
+import com.mindquarry.client.util.network.HttpUtilities;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
-import com.mindquarry.client.workspace.xml.TeamListTransformer;
 import com.mindquarry.client.workspace.xml.TeamspaceTransformer;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
@@ -43,9 +43,6 @@ public class UpdateOperation extends SvnOperation {
         super(client, synAreas);
     }
 
-    /**
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         resetProgress();
         HashMap<String, String> teamspaces = new HashMap<String, String>();
@@ -63,49 +60,28 @@ public class UpdateOperation extends SvnOperation {
         Profile selectedProfile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
-        InputStream content = null;
+        List<String> teamspaceList;
         try {
-            content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
-                    selectedProfile.getPassword(), selectedProfile
-                            .getServerURL()
-                            + "/teams"); //$NON-NLS-1$
+            teamspaceList = TeamspaceUtilities.getTeamspaceNamesForProfile(selectedProfile);
         } catch (Exception e) {
             MindClient
                     .showErrorMessage(Messages.getString("UpdateOperation.2")); //$NON-NLS-1$
             return false;
         }
-        // check if some contant was received
-        if (content == null) {
-            return false;
-        }
-        // parse teamspace list
-        SAXReader reader = new SAXReader();
-        Document doc;
-        try {
-            doc = reader.read(content);
-        } catch (DocumentException e) {
-            MindClient
-                    .showErrorMessage(Messages.getString("UpdateOperation.4")); //$NON-NLS-1$
-            return false;
-        }
-        // create a transformer for teamspace list
-        TeamListTransformer listTrans = new TeamListTransformer();
-        listTrans.execute(doc);
-
         // init progress steps for progress dialog
-        int tsCount = listTrans.getTeamspaces().size();
+        int tsCount = teamspaceList.size();
         int tsNbr = 0;
         setProgressSteps(tsCount + 1);
         updateProgress();
 
         // loop teamspace descriptions
-        for (String tsID : listTrans.getTeamspaces()) {
+        for (String tsID : teamspaceList) {
             setMessage(Messages.getString("UpdateOperation.0") + " (" + ++tsNbr + " of " //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                     + tsCount + ")..."); //$NON-NLS-1$
 
-            content = null;
+            InputStream content = null;
             try {
-                content = HttpUtil.getContentAsXML(selectedProfile.getLogin(),
+                content = HttpUtilities.getContentAsXML(selectedProfile.getLogin(),
                         selectedProfile.getPassword(), selectedProfile
                                 .getServerURL()
                                 + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -116,7 +92,9 @@ public class UpdateOperation extends SvnOperation {
                 return false;
             }
             // parse teamspace description
+            Document doc;
             try {
+                SAXReader reader = new SAXReader();
                 doc = reader.read(content);
             } catch (DocumentException e) {
                 e.printStackTrace();

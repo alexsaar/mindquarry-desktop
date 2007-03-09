@@ -25,13 +25,21 @@ import org.eclipse.swt.widgets.Display;
  *         Saar</a>
  */
 public class TaskTableLabelProvider implements ITableLabelProvider {
-    private Image running = new Image(Display.getCurrent(), getClass()
+    private Image newTask = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/org/tango-project/tango-icon-theme/16x16/actions/media-playback-start.png")); //$NON-NLS-1$
+                    "/com/mindquarry/icons/16x16/status/task-new.png")); //$NON-NLS-1$
 
-    private Image paused = new Image(Display.getCurrent(), getClass()
+    private Image runningTask = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
-                    "/org/tango-project/tango-icon-theme/16x16/actions/media-playback-pause.png")); //$NON-NLS-1$
+                    "/com/mindquarry/icons/16x16/status/task-running.png")); //$NON-NLS-1$
+
+    private Image pausedTask = new Image(Display.getCurrent(), getClass()
+            .getResourceAsStream(
+                    "/com/mindquarry/icons/16x16/status/task-paused.png")); //$NON-NLS-1$
+
+    private Image doneTask = new Image(Display.getCurrent(), getClass()
+            .getResourceAsStream(
+                    "/com/mindquarry/icons/16x16/status/task-done.png")); //$NON-NLS-1$
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
@@ -39,10 +47,16 @@ public class TaskTableLabelProvider implements ITableLabelProvider {
      */
     public Image getColumnImage(Object element, int columnIndex) {
         Task task = (Task) element;
-        if (task.isActive()) {
-            return running;
+        if (task.getStatus().equals(Task.STATUS_NEW)) {
+            return newTask;
+        } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
+            return runningTask;
+        } else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
+            return pausedTask;
+        } else if (task.getStatus().equals(Task.STATUS_DONE)) {
+            return doneTask;
         }
-        return paused;
+        return null;
     }
 
     /**
@@ -51,9 +65,9 @@ public class TaskTableLabelProvider implements ITableLabelProvider {
      */
     public String getColumnText(Object element, int columnIndex) {
         Task task = (Task) element;
-        
+
         String text = ""; //$NON-NLS-1$
-        if(columnIndex == 0) {
+        if (columnIndex == 0) {
             text = task.getTitle();
         } else if (columnIndex == 1) {
             text = task.getStatus();

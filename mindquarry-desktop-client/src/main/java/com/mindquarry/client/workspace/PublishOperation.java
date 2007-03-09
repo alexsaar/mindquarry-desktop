@@ -38,9 +38,6 @@ public class PublishOperation extends SvnOperation {
         super(client, synAreas);
     }
 
-    /**
-     * @see java.lang.Runnable#run()
-     */
     public void run() {
         resetProgress();
         setMessage(Messages.getString("PublishOperation.0")); //$NON-NLS-1$
@@ -93,9 +90,6 @@ public class PublishOperation extends SvnOperation {
 
             final int tmpTsNbr = ++tsNbr;
             MindClient.getShell().getDisplay().syncExec(new Runnable() {
-                /**
-                 * @see java.lang.Runnable#run()
-                 */
                 public void run() {
                     dlg.setBlockOnOpen(true);
                     if (dlg.open() == Dialog.OK) {

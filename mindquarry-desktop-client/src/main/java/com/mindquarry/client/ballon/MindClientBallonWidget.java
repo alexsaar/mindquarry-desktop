@@ -13,8 +13,11 @@
  */
 package com.mindquarry.client.ballon;
 
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpException;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,9 +37,12 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
 import com.mindquarry.client.MindClient;
+import com.mindquarry.client.task.Task;
 import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskRefreshListener;
+import com.mindquarry.client.task.dialog.TaskDialog;
+import com.mindquarry.client.util.network.HttpUtilities;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -244,12 +250,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
         final Group group = new Group(container, SWT.NONE);
         group.setBackground(container.getBackground());
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-        group.setLayout(new GridLayout(2, false));
+        group.setLayout(new GridLayout(3, false));
         group.setText(Messages.getString("MindClientBallonWidget.6")); //$NON-NLS-1$
 
         Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
-                true, 2, 0));
+                true, 3, 0));
         ((GridData) taskContainer.getLayoutData()).heightHint = 150;
         taskContainer.setBackground(taskContainer.getDisplay().getSystemColor(
                 SWT.COLOR_WHITE));
@@ -259,6 +265,39 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginHeight = 0;
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
+        Button createTaskButton = new Button(group, SWT.NONE);
+        createTaskButton.setText("Create Task...");
+        createTaskButton.setToolTipText("Creates a new task");
+        createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
+                false));
+        createTaskButton
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
+        createTaskButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                Task task = new Task();
+                task.setStatus("new"); //$NON-NLS-1$
+                task.setTitle("new task");
+                task.setSummary("summary of the task");
+                
+                TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
+                if(dlg.open() == Window.OK) {
+                    Profile selectedProfile = Profile.getSelectedProfile(client
+                            .getPreferenceStore());
+                    
+                    byte[] taskData = new byte[0];
+                    try {
+                        HttpUtilities.putAsXML(selectedProfile.getLogin(), selectedProfile
+                                .getPassword(), task.getId(), taskData);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         Button refreshButton = new Button(group, SWT.NONE);
         refreshButton.setText(Messages.getString("MindClientBallonWidget.11")); //$NON-NLS-1$
         refreshButton.setToolTipText(Messages

@@ -14,42 +14,43 @@
 package com.mindquarry.client.task;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
 public class Task {
-    private String id;
+    public static final String STATUS_NEW = "new"; //$NON-NLS-1$
 
-    private Document content;
+    public static final String STATUS_RUNNING = "running"; //$NON-NLS-1$
+
+    public static final String STATUS_PAUSED = "paused"; //$NON-NLS-1$
+
+    public static final String STATUS_DONE = "done"; //$NON-NLS-1$
+
+    private String id;
 
     private String title;
 
     private String status;
-    
+
+    private String priority;
+
     private String summary;
 
-    private boolean active;
+    private String description;
+
+    private String date;
 
     public Task() {
-        active = false;
     }
 
-    public Task(String id, Document content, String title, String status) {
+    public Task(String id, String title, String status) {
         this.id = id;
-        this.content = content;
         this.title = title;
         this.status = status;
-        active = false;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public String getTitle() {
@@ -58,14 +59,6 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Document getContent() {
-        return content;
-    }
-
-    public void setContent(Document content) {
-        this.content = content;
     }
 
     public String getId() {
@@ -83,7 +76,7 @@ public class Task {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+
     public String getSummary() {
         return summary;
     }
@@ -94,8 +87,6 @@ public class Task {
 
     /**
      * Task are equal if there IDs are equal.
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object obj) {
@@ -105,5 +96,59 @@ public class Task {
             }
         }
         return false;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public Document getContentAsXML() {
+        Document doc = DocumentHelper.createDocument();
+        Element task = doc.addElement("task"); //$NON-NLS-1$
+
+        Element title = task.addElement("title"); //$NON-NLS-1$
+        title.setText(getTitle());
+
+        if ((getPriority() != null) && (!getPriority().equals(""))) { //$NON-NLS-1$
+            Element priority = task.addElement("priority"); //$NON-NLS-1$
+            priority.setText(getPriority());
+        }
+        if ((getSummary() != null) && (!getSummary().equals(""))) { //$NON-NLS-1$
+            Element summary = task.addElement("summary"); //$NON-NLS-1$
+            summary.setText(getSummary());
+        }
+        if ((getStatus() != null) && (!getStatus().equals(""))) { //$NON-NLS-1$
+            Element status = task.addElement("status"); //$NON-NLS-1$
+            status.setText(getStatus());
+        }
+        if ((getDate() != null) && (!getDate().equals(""))) { //$NON-NLS-1$
+            Element date = task.addElement("date"); //$NON-NLS-1$
+            date.setText(getDate());
+        }
+        if ((getDescription() != null) && (!getDescription().equals(""))) { //$NON-NLS-1$
+            Element description = task.addElement("description"); //$NON-NLS-1$
+            description.setText(getDescription());
+        }
+        return doc;
     }
 }
