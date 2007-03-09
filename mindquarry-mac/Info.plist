@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>22</string>
 	<key>CFBundleShortVersionString</key>
-	<string>beta 1</string>
+	<string>beta 2</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

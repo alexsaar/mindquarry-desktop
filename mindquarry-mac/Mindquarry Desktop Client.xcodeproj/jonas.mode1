@@ -289,15 +289,15 @@
 								<string>DD0B4A410BA165700075798B</string>
 								<string>29B97317FDCFA39411CA2CEA</string>
 								<string>1C37FBAC04509CD000000102</string>
+								<string>DD0B4C200BA1779F0075798B</string>
 								<string>1C37FABC05509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
-									<integer>13</integer>
-									<integer>3</integer>
-									<integer>0</integer>
+									<integer>37</integer>
+									<integer>35</integer>
+									<integer>33</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
@@ -338,7 +338,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQRequest.m</string>
+								<string>Info.plist</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -346,16 +346,15 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MQRequest.m</string>
+										<string>Info.plist</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD0B4C0D0BA176F70075798B</string>
+										<string>DD0B4C290BA177D50075798B</string>
 										<key>history</key>
 										<array>
 											<string>DD2EDA320B9EE53A000238CE</string>
 											<string>DD2EDE140B9F2772000238CE</string>
-											<string>DD2EE0CB0B9F2913000238CE</string>
 											<string>DD09A3A20BA0211D002FD5DD</string>
 											<string>DD09A49A0BA02711002FD5DD</string>
 											<string>DD09A4DC0BA037A8002FD5DD</string>
@@ -374,7 +373,8 @@
 											<string>DD0B4BC00BA1753E0075798B</string>
 											<string>DD0B4BDE0BA175630075798B</string>
 											<string>DD0B4C070BA176C30075798B</string>
-											<string>DD0B4C080BA176C30075798B</string>
+											<string>DD0B4C160BA177180075798B</string>
+											<string>DD0B4C210BA1779F0075798B</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -400,10 +400,7 @@
 											<string>DD09A3A40BA0211D002FD5DD</string>
 											<string>DD09A5AE0BA03F2C002FD5DD</string>
 											<string>DD0B4BC20BA1753E0075798B</string>
-											<string>DD0B4BF50BA175EC0075798B</string>
-											<string>DD0B4BF60BA175EC0075798B</string>
-											<string>DD0B4BFC0BA1764A0075798B</string>
-											<string>DD0B4C090BA176C30075798B</string>
+											<string>DD0B4C180BA177180075798B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -415,14 +412,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {986, 830}}</string>
+								<string>{{0, 0}, {986, 581}}</string>
 								<key>RubberWindowFrame</key>
 								<string>398 89 1417 876 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>830pt</string>
+							<string>581pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -435,14 +432,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 835}, {986, 0}}</string>
+								<string>{{0, 586}, {986, 249}}</string>
 								<key>RubberWindowFrame</key>
 								<string>398 89 1417 876 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>0pt</string>
+							<string>249pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -461,9 +458,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD0B4BEE0BA175BF0075798B</string>
+				<string>DD0B4C1A0BA177180075798B</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD0B4BEF0BA175BF0075798B</string>
+				<string>DD0B4C1B0BA177180075798B</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -582,7 +579,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>195131127.77918899</real>
+	<real>195131349.190386</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -598,7 +595,6 @@
 	<key>WindowOrderList</key>
 	<array>
 		<string>DD39F5060B9D807800384D0C</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jonas/Desktop/mindquarry/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -679,7 +675,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD0B4BE90BA175BD0075798B</string>
+				<string>DD0B4C150BA177110075798B</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
