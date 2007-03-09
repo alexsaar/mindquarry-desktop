@@ -30,6 +30,14 @@ public class Task {
 
     public static final String STATUS_DONE = "done"; //$NON-NLS-1$
 
+    public static final String PRIORITY_LOW = "low"; //$NON-NLS-1$
+
+    public static final String PRIORITY_MEDIUM = "medium"; //$NON-NLS-1$
+
+    public static final String PRIORITY_IMPORTANT = "important"; //$NON-NLS-1$
+
+    public static final String PRIORITY_CRITICAL = "critical"; //$NON-NLS-1$
+
     private String id;
 
     private String title;

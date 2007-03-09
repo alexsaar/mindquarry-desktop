@@ -47,6 +47,8 @@ public class TaskDialog extends TitleAreaDialog {
 
     private CCombo priority = null;
 
+    private DateTime calendar;
+
     private Task task;
 
     public TaskDialog(Shell shell, Task task) {
@@ -135,7 +137,7 @@ public class TaskDialog extends TitleAreaDialog {
         label = new Label(composite, SWT.LEFT);
         label.setText("Due Date:");
 
-        DateTime calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
+        calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
         calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
 
@@ -160,6 +162,7 @@ public class TaskDialog extends TitleAreaDialog {
     private void initTask() {
         title.setText(task.getTitle());
         summary.setText(task.getSummary());
+        description.setText(task.getDate());
 
         if (task.getStatus().equals(Task.STATUS_NEW)) {
             status.select(0);
@@ -170,5 +173,31 @@ public class TaskDialog extends TitleAreaDialog {
         } else if (task.getStatus().equals(Task.STATUS_DONE)) {
             status.select(3);
         }
+        if (task.getStatus().equals(Task.PRIORITY_LOW)) {
+            status.select(0);
+        } else if (task.getStatus().equals(Task.PRIORITY_MEDIUM)) {
+            status.select(1);
+        } else if (task.getStatus().equals(Task.PRIORITY_IMPORTANT)) {
+            status.select(2);
+        } else if (task.getStatus().equals(Task.PRIORITY_CRITICAL)) {
+            status.select(3);
+        }
+        String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
+        calendar.setDay(Integer.valueOf(dateParts[1]));
+        calendar.setMonth(Integer.valueOf(dateParts[0]));
+        calendar.setYear(Integer.valueOf(dateParts[2]));
+    }
+
+    public Task getTask() {
+        Task task = new Task();
+        task.setTitle(title.getText());
+        task.setStatus(status.getText());
+        task.setSummary(summary.getText());
+        task.setDescription(description.getText());
+        task.setPriority(priority.getText());
+        task.setDate(calendar.getMonth() + "/" //$NON-NLS-1$
+                + calendar.getDay() + "/" //$NON-NLS-1$
+                + calendar.getYear());
+        return task;
     }
 }

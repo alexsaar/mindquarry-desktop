@@ -13,10 +13,8 @@
  */
 package com.mindquarry.client.ballon;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.httpclient.HttpException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -42,7 +40,8 @@ import com.mindquarry.client.task.TaskDoneListener;
 import com.mindquarry.client.task.TaskManager;
 import com.mindquarry.client.task.TaskRefreshListener;
 import com.mindquarry.client.task.dialog.TaskDialog;
-import com.mindquarry.client.util.network.HttpUtilities;
+import com.mindquarry.client.teamspace.TeamspaceUtilities;
+import com.mindquarry.client.teamspace.dialog.TeamSelectionDialog;
 import com.mindquarry.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -285,13 +284,25 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 
                 TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
                 if(dlg.open() == Window.OK) {
-                    Profile selectedProfile = Profile.getSelectedProfile(client
-                            .getPreferenceStore());
-                    
-                    byte[] taskData = new byte[0];
                     try {
-                        HttpUtilities.putAsXML(selectedProfile.getLogin(), selectedProfile
-                                .getPassword(), task.getId(), taskData);
+                        Profile prof = Profile.getSelectedProfile(client
+                                .getPreferenceStore());
+
+                        List<String> teamspaceList;
+                        try {
+                            teamspaceList = TeamspaceUtilities
+                                    .getTeamspaceNamesForProfile(prof);
+                        } catch (Exception e) {
+                            MindClient
+                                    .showErrorMessage("Error while retrieving list of teams.");
+                            return;
+                        }
+                        TeamSelectionDialog tsDlg = new TeamSelectionDialog(
+                                MindClient.getShell(), teamspaceList);
+
+                        if (tsDlg.open() == Window.OK) {
+                            System.out.println(tsDlg.getSelectedTeam());
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -372,6 +383,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
+    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }
