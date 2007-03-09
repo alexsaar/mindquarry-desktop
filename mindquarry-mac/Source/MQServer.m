@@ -127,4 +127,30 @@
 	[requestLock unlock];
 }
 
+- (void)setUsername:(NSString *)username
+{
+	[self willChangeValueForKey:@"username"];
+	[self setPrimitiveValue:username forKey:@"username"];
+	[self clearCredentials];
+	[self didChangeValueForKey:@"username"];
+}
+
+- (void)setPassword:(NSString *)password
+{
+	[self willChangeValueForKey:@"password"];
+	[self setPrimitiveValue:password forKey:@"password"];
+	[self clearCredentials];
+	[self didChangeValueForKey:@"password"];
+}
+
+- (void)clearCredentials
+{
+	if (credential && protectionSpace) {
+		NSURLCredentialStorage *store = [NSURLCredentialStorage sharedCredentialStorage];
+		[store removeCredential:credential forProtectionSpace:protectionSpace];
+		[self setValue:nil forKey:@"credential"];
+		[self setValue:nil forKey:@"protectionSpace"];
+	}
+}
+
 @end

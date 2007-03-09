@@ -67,6 +67,7 @@
 		
 		id taskobj = [controller taskWithId:obj_id forTeam:team];
 		[taskobj setValue:[NSNumber numberWithBool:YES] forKey:@"upToDate"];	
+		[taskobj setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];	
 		
 		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithController:controller forServer:server forTask:taskobj];
 		[req addToQueue];

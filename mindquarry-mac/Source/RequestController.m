@@ -163,8 +163,15 @@
 		[item setAction:@selector(stopTasks:)];
 		[item setAutovalidates:NO];
 		[item setEnabled:NO];
-
 		[[NSApp delegate] setValue:item forKey:@"stopToolbarItem"];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQCreateTask"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQCreateTask"];
+		[item setLabel:@"New Task"];
+		[item setPaletteLabel:@"New Task"];
+		[item setImage:[NSImage imageNamed:@"task-add"]];
+		[item setTarget:self];
+		[item setAction:@selector(createTask:)];
 	}
 	
 	return [item autorelease];
@@ -175,7 +182,7 @@
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
-    return [NSArray arrayWithObjects:@"MQRefresh", @"MQStop", @"MQDone", NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
+    return [NSArray arrayWithObjects:@"MQCreateTask", @"MQDone", NSToolbarSeparatorItemIdentifier, @"MQRefresh", @"MQStop",  NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {
@@ -269,6 +276,39 @@
 		return;
 	
 	[[tasks objectAtIndex:0] save];
+}
+
+- (IBAction)createTask:(id)sender
+{
+	if (![createTaskSheet isVisible]) {
+		[createTaskTitle setStringValue:@"New Task"];
+		[NSApp beginSheet:createTaskSheet modalForWindow:window modalDelegate:self didEndSelector:nil contextInfo:nil];		
+	}
+}
+
+- (IBAction)finishCreateTask:(id)sender
+{
+	[self cancelCreateTask:sender];
+	
+	int teamIndex = [createTaskTeamButton indexOfSelectedItem];
+	id team = [[teamsController arrangedObjects] objectAtIndex:teamIndex];
+	NSString *title = [createTaskTitle stringValue];
+	
+	id task = [tasksController newObject];
+	[task setValue:team forKey:@"team"];
+	[task setValue:[team valueForKey:@"server"] forKey:@"server"];
+	[task setValue:title forKey:@"title"];
+		
+	[tasksController setSelectedObjects:[NSArray arrayWithObject:task]];
+	
+	[task performSelectorOnMainThread:@selector(save) withObject:nil waitUntilDone:NO];
+	[task setAutoSaveEnabled:YES];
+}
+
+- (IBAction)cancelCreateTask:(id)sender
+{
+	[createTaskSheet orderOut:self];
+    [NSApp endSheet:createTaskSheet];
 }
 
 - (id)selectedServer

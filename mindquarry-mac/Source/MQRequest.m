@@ -268,8 +268,6 @@ static int request_running_count = 0;
 	
 	[_connection autorelease];
 	_connection = nil;
-	
-	[self finishRequest];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -285,15 +283,32 @@ static int request_running_count = 0;
 	
 	[_connection autorelease];
 	_connection = nil;
-	
-	[self finishRequest];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
+	if ([challenge previousFailureCount] > 0) {
+		NSLog(@"Authentication failed (username: %@)", username);
+		[[challenge sender] cancelAuthenticationChallenge:challenge];
+		return;
+	}
+	
+	if (!username || [username length] == 0) {
+//		NSLog(@"no username, trying without auth");
+		[[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+		return;
+	}
+	
+	if (!password)
+		password = @"";
+	
 	NSURLCredential *cred = [NSURLCredential credentialWithUser:username password:password persistence:NSURLCredentialPersistenceForSession];
 	[[challenge sender] useCredential:cred forAuthenticationChallenge:challenge];
-//	NSLog(@"credentials sent %@:%@", username, password);
+	
+	[server setValue:cred forKey:@"credential"];
+	[server setValue:[challenge protectionSpace] forKey:@"protectionSpace"];
+	
+//	NSLog(@"credentials sent <%@:%@>", username, password);
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
@@ -309,12 +324,16 @@ static int request_running_count = 0;
 			[_connection cancel];
 			[_connection autorelease];
 			_connection = nil;
-			
-			NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Server returned status code %d", status], NSLocalizedDescriptionKey, [url absoluteString], NSErrorFailingURLStringKey, nil];
-			NSError *statusError = [NSError errorWithDomain:NSHTTPPropertyStatusCodeKey code:status userInfo:errorInfo];
-			[self connection:connection didFailWithError:statusError];
+			[self handleHTTPErrorCode:status];
 		}
 	}
+}
+
+- (void)handleHTTPErrorCode:(int)statusCode
+{
+	NSDictionary *errorInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Server returned status code %d", statusCode], NSLocalizedDescriptionKey, [url absoluteString], NSErrorFailingURLStringKey, nil];
+	NSError *statusError = [NSError errorWithDomain:NSHTTPPropertyStatusCodeKey code:statusCode userInfo:errorInfo];
+	[self connection:nil didFailWithError:statusError];
 }
 
 @end

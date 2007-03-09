@@ -83,6 +83,16 @@
 	return data;
 }
 
+- (NSURL *)url
+{
+	if ([[task valueForKey:@"existsOnServer"] boolValue])
+		return [super url];
+	NSString *teamID = [[task valueForKey:@"team"] valueForKey:@"id"];
+	if (!teamID)
+		return nil;
+	return [self currentURLForPath:[NSString stringWithFormat:@"tasks/%@/new", teamID]];
+}
+
 - (NSURLRequest *)request
 {
 	return [self putRequestForURL:url withData:[self putData]];
@@ -98,14 +108,28 @@
 	return [_request autorelease];
 }
 
+- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse
+{
+	if (![[task valueForKey:@"existsOnServer"] boolValue]) {
+		NSString *taskID = [[[request URL] absoluteString] lastPathComponent];
+		[task setValue:taskID forKey:@"id"];
+	}
+	return request;
+}
+
 - (void)handleResponseData:(NSData *)data
 {
-
+	[task setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
 }
 
 - (NSString *)statusString
 {
 	return @"Saving changes...";
+}
+
+- (void)handleHTTPErrorCode:(int)statusCode
+{
+	[self finishRequest];
 }
 
 @end

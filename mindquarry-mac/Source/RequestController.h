@@ -20,6 +20,8 @@ enum {
 
 	IBOutlet id tasksController;
 	
+	IBOutlet id teamsController;
+	
 	IBOutlet id statusButton;
 	
 	IBOutlet id priorityButton;
@@ -33,6 +35,12 @@ enum {
 	IBOutlet id serverDrawer;
 	
 	IBOutlet id filterBar;
+	
+	IBOutlet id createTaskSheet;
+	
+	IBOutlet id createTaskTeamButton;
+	
+	IBOutlet id createTaskTitle;
 		
 }
 
@@ -49,6 +57,12 @@ enum {
 - (IBAction)stopTasks:(id)sender;
 
 - (IBAction)saveTask:(id)sender;
+
+- (IBAction)createTask:(id)sender;
+
+- (IBAction)finishCreateTask:(id)sender;
+
+- (IBAction)cancelCreateTask:(id)sender;
 
 - (id)selectedServer;
 

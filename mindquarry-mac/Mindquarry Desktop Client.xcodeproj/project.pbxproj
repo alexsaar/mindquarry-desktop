@@ -36,6 +36,7 @@
 		DD09A3170BA01E6D002FD5DD /* CTGradient.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A3120BA01E6D002FD5DD /* CTGradient.m */; };
 		DD09A5660BA03C26002FD5DD /* MQServer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A5650BA03C26002FD5DD /* MQServer.m */; };
 		DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */; };
+		DD0B4A560BA166D60075798B /* task-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DD0B4A550BA166D60075798B /* task-add.png */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -98,6 +99,7 @@
 		DD09A5640BA03C26002FD5DD /* MQServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQServer.h; sourceTree = "<group>"; };
 		DD09A5650BA03C26002FD5DD /* MQServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQServer.m; sourceTree = "<group>"; };
 		DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AlertStopIcon.icns; path = Resources/AlertStopIcon.icns; sourceTree = "<group>"; };
+		DD0B4A550BA166D60075798B /* task-add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-add.png"; path = "Resources/task-add.png"; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -150,25 +152,9 @@
 				77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */,
 				DD39F4F90B9D7FD200384D0C /* RequestController.h */,
 				DD39F4FA0B9D7FD200384D0C /* RequestController.m */,
-				DD86617E0B9D95E3000C7B66 /* MQRequest.h */,
-				DD86617F0B9D95E3000C7B66 /* MQRequest.m */,
-				DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */,
-				DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */,
-				DD8662770B9D9BBD000C7B66 /* MQTasksRequest.h */,
-				DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */,
-				DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */,
-				DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */,
-				DD8665B70B9DB5A4000C7B66 /* MQTaskCell.h */,
-				DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */,
-				DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */,
-				DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */,
-				DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */,
-				DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */,
-				DD2ED2D30B9EC8D2000238CE /* MQTask.h */,
-				DD2ED2D40B9EC8D2000238CE /* MQTask.m */,
-				DD09A5640BA03C26002FD5DD /* MQServer.h */,
-				DD09A5650BA03C26002FD5DD /* MQServer.m */,
-				DD09A3190BA01E70002FD5DD /* Filter bar */,
+				DD0B4A420BA1657D0075798B /* Model */,
+				DD0B4A410BA165700075798B /* Requests */,
+				DD0B4A430BA165880075798B /* Interface */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -252,6 +238,7 @@
 		DD099E060BA006B2002FD5DD /* GFX */ = {
 			isa = PBXGroup;
 			children = (
+				DD0B4A550BA166D60075798B /* task-add.png */,
 				DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */,
 				DD09A09B0BA0070A002FD5DD /* StatusBackground.png */,
 				DD86655C0B9DB2F7000C7B66 /* DesktopClientAppIcon.icns */,
@@ -286,6 +273,46 @@
 				DD09A3120BA01E6D002FD5DD /* CTGradient.m */,
 			);
 			name = "Filter bar";
+			sourceTree = "<group>";
+		};
+		DD0B4A410BA165700075798B /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				DD86617E0B9D95E3000C7B66 /* MQRequest.h */,
+				DD86617F0B9D95E3000C7B66 /* MQRequest.m */,
+				DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */,
+				DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */,
+				DD8662770B9D9BBD000C7B66 /* MQTasksRequest.h */,
+				DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */,
+				DD8663CA0B9DA28E000C7B66 /* MQTaskPropertiesRequest.h */,
+				DD8663CB0B9DA28E000C7B66 /* MQTaskPropertiesRequest.m */,
+				DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */,
+				DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */,
+			);
+			name = Requests;
+			sourceTree = "<group>";
+		};
+		DD0B4A420BA1657D0075798B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				DD2ED2D30B9EC8D2000238CE /* MQTask.h */,
+				DD2ED2D40B9EC8D2000238CE /* MQTask.m */,
+				DD09A5640BA03C26002FD5DD /* MQServer.h */,
+				DD09A5650BA03C26002FD5DD /* MQServer.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		DD0B4A430BA165880075798B /* Interface */ = {
+			isa = PBXGroup;
+			children = (
+				DD8665B70B9DB5A4000C7B66 /* MQTaskCell.h */,
+				DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */,
+				DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */,
+				DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */,
+				DD09A3190BA01E70002FD5DD /* Filter bar */,
+			);
+			name = Interface;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -347,6 +374,7 @@
 				DD2EDA190B9EE460000238CE /* servers.png in Resources */,
 				DD09A09C0BA0070A002FD5DD /* StatusBackground.png in Resources */,
 				DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */,
+				DD0B4A560BA166D60075798B /* task-add.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

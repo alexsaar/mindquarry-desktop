@@ -24,10 +24,23 @@
         {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
-            ACTIONS = {refresh = id; saveTask = id; setDone = id; toggleInspector = id; }; 
+            ACTIONS = {
+                cancelCreateTask = id; 
+                createTask = id; 
+                finishCreateTask = id; 
+                refresh = id; 
+                saveTask = id; 
+                setDone = id; 
+                stopTasks = id; 
+                titlebarSelectionChanged = id; 
+                toggleInspector = id; 
+            }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                createTaskSheet = id; 
+                createTaskTeamButton = id; 
+                createTaskTitle = id; 
                 filterBar = id; 
                 inspectorWindow = id; 
                 priorityButton = id; 
@@ -37,6 +50,7 @@
                 taskColumn = id; 
                 taskTable = id; 
                 tasksController = id; 
+                teamsController = id; 
                 window = id; 
             }; 
             SUPERCLASS = NSObject; 

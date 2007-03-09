@@ -19,6 +19,9 @@
 	NSLock *runningLock;
 	NSMutableArray *runningRequests;
 	
+	NSURLCredential *credential;
+	NSURLProtectionSpace *protectionSpace;
+	
 }
 
 - (void)initRequestQueue;
@@ -32,5 +35,11 @@
 - (NSLock *)requestLock;
 
 - (void)cancelAll;
+
+- (void)setUsername:(NSString *)username;
+
+- (void)setPassword:(NSString *)password;
+
+- (void)clearCredentials;
 
 @end

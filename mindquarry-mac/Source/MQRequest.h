@@ -28,7 +28,6 @@
 	NSMutableData *responseData;
 	
 	BOOL didFree;
-	
 }
 
 + (void)increaseRequestCount:(id)sender;
@@ -56,6 +55,8 @@
 - (void)handleResponseData:(NSData *)data;
 
 - (void)parseXMLResponse:(NSXMLDocument *)document;
+
+- (void)handleHTTPErrorCode:(int)statusCode;
 
 - (NSURLRequest *)request;
 
