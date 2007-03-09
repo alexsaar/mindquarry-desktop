@@ -207,7 +207,11 @@ static BOOL global_autosave_enabled = NO;
 	if (!global_autosave_enabled || !autosave_enabled)
 		return;
 
-	if ([key isEqualToString:@"server"] || [key isEqualToString:@"team"] || [key isEqualToString:@"upToDate"] || [key isEqualToString:@"existsOnServer"])
+	if ([key isEqualToString:@"server"] || 
+		[key isEqualToString:@"team"] || 
+		[key isEqualToString:@"upToDate"] || 
+		[key isEqualToString:@"id"] || 
+		[key isEqualToString:@"existsOnServer"])
 		return;
 	
 	if (saveTimer) {
