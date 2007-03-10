@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.minutes.editor.action;
+package com.mindquarry.desktop.minutes.editor.action;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -23,15 +23,15 @@ import org.eclipse.swt.widgets.Display;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class NewConversationAction extends ActionBase {
-    private static final String TEXT = "Create new conversation";
+public class OpenConversationAction extends ActionBase {
+    private static final String TEXT = "Open existing conversation";
 
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
-            NewConversationAction.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/document-new.png")); //$NON-NLS-1$
+            OpenConversationAction.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/document-open.png")); //$NON-NLS-1$
 
-    public NewConversationAction() {
+    public OpenConversationAction() {
         setText(TEXT);
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }

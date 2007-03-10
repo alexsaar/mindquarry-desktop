@@ -13,7 +13,7 @@
  */
 package org.eclipse.swt;
 
-import com.mindquarry.minutes.editor.MinutesEditor;
+import com.mindquarry.desktop.minutes.editor.MinutesEditor;
 
 /**
  * MacOSX wrapper for the minutes editor.

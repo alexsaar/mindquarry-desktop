@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.minutes.editor.widget;
+package com.mindquarry.desktop.minutes.editor.widget;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class PeopleWidget extends EditorWidget {
     /**
      * {@inheritDoc}
      * 
-     * @see com.mindquarry.minutes.editor.widget.EditorWidget#createContents(org.eclipse.swt.widgets.Composite)
+     * @see com.mindquarry.desktop.minutes.editor.widget.EditorWidget#createContents(org.eclipse.swt.widgets.Composite)
      */
     protected void createContents(Composite parent) {
         Table table = new Table(parent, SWT.MULTI);

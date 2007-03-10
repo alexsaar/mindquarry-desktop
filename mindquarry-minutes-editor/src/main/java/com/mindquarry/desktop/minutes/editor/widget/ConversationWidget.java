@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.minutes.editor.widget;
+package com.mindquarry.desktop.minutes.editor.widget;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.JFaceResources;
@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 
-import com.mindquarry.minutes.editor.MinutesEditor;
-import com.mindquarry.minutes.editor.action.AddMemberAction;
+import com.mindquarry.desktop.minutes.editor.MinutesEditor;
+import com.mindquarry.desktop.minutes.editor.action.AddMemberAction;
 
 /**
  * Add summary documentation here.
@@ -42,7 +42,7 @@ public class ConversationWidget extends EditorWidget {
     /**
      * {@inheritDoc}
      * 
-     * @see com.mindquarry.minutes.editor.widget.EditorWidget#createContents(org.eclipse.swt.widgets.Composite)
+     * @see com.mindquarry.desktop.minutes.editor.widget.EditorWidget#createContents(org.eclipse.swt.widgets.Composite)
      */
     @Override
     protected void createContents(Composite parent) {

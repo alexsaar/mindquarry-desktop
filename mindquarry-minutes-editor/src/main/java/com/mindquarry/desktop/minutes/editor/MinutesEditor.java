@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.minutes.editor;
+package com.mindquarry.desktop.minutes.editor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +32,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.minutes.editor.action.ActionBase;
-import com.mindquarry.minutes.editor.action.AddMemberAction;
-import com.mindquarry.minutes.editor.action.EditPreferencesAction;
-import com.mindquarry.minutes.editor.action.NewConversationAction;
-import com.mindquarry.minutes.editor.action.OpenConversationAction;
-import com.mindquarry.minutes.editor.splash.SplashScreen;
-import com.mindquarry.minutes.editor.widget.ConversationWidget;
-import com.mindquarry.minutes.editor.widget.PeopleWidget;
+import com.mindquarry.desktop.minutes.editor.action.ActionBase;
+import com.mindquarry.desktop.minutes.editor.action.AddMemberAction;
+import com.mindquarry.desktop.minutes.editor.action.EditPreferencesAction;
+import com.mindquarry.desktop.minutes.editor.action.NewConversationAction;
+import com.mindquarry.desktop.minutes.editor.action.OpenConversationAction;
+import com.mindquarry.desktop.minutes.editor.splash.SplashScreen;
+import com.mindquarry.desktop.minutes.editor.widget.ConversationWidget;
+import com.mindquarry.desktop.minutes.editor.widget.PeopleWidget;
 
 /**
  * Main class for the minutes editor.

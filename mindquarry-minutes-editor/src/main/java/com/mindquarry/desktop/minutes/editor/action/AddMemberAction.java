@@ -11,17 +11,13 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.minutes.editor.action;
+package com.mindquarry.desktop.minutes.editor.action;
 
-import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-
-import com.mindquarry.desktop.preferences.PreferenceUtilities;
-import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
+import org.eclipse.swt.widgets.Shell;
 
 /**
  * Add summary documentation here.
@@ -29,17 +25,17 @@ import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class EditPreferencesAction extends ActionBase {
-    private static final String TEXT = "Edit options";
-
-    private static final String DESCRIPTION = "Configure the minutes editor by editing its preferences.";
+public class AddMemberAction extends ActionBase {
+    private static final String TEXT = "Add member to conversation";
+    
+    private static final String DESCRIPTION = "Adds a member from the team to the conversation.";
 
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
-            EditPreferencesAction.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/categories/preferences-system.png")); //$NON-NLS-1$
+            AddMemberAction.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/actions/contact-new.png")); //$NON-NLS-1$
 
-    public EditPreferencesAction() {
+    public AddMemberAction() {
         setText(TEXT);
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }
@@ -65,10 +61,6 @@ public class EditPreferencesAction extends ActionBase {
      */
     @Override
     public void run() {
-        PreferenceManager mgr = PreferenceUtilities
-                .getDefaultPreferenceManager();
-        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(null, mgr);
-        dlg.setPreferenceStore(new PreferenceStore("minutes-editor.properties")); //$NON-NLS-1$
-        dlg.open();
+        MessageDialog.openInformation(new Shell(), "INFO", TEXT);
     }
 }
