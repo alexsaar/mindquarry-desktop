@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -65,7 +66,6 @@ public class TaskDialog extends TitleAreaDialog {
         setMessage(
                 "Please enter the tasks data and press OK for adding/changing the task.",
                 IMessageProvider.INFORMATION);
-
         getShell().setText("Edit Task Data");
 
         return contents;

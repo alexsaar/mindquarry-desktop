@@ -13,6 +13,8 @@
  */
 package com.mindquarry.client.ballon;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.jface.window.Window;
@@ -269,21 +271,26 @@ public class MindClientBallonWidget extends BalloonWindow implements
         createTaskButton.setToolTipText("Creates a new task");
         createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
                 false));
-        createTaskButton
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
+        createTaskButton.setImage(new Image(Display.getCurrent(), getClass()
+                .getResourceAsStream(
+                        "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
         createTaskButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
+                Calendar cal = new GregorianCalendar();
+                String date = cal.get(Calendar.MONTH) + "/" //$NON-NLS-1$
+                        + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
+                        + cal.get(Calendar.YEAR);
+
                 Task task = new Task();
                 task.setStatus("new"); //$NON-NLS-1$
+                task.setPriority("low"); //$NON-NLS-1$
                 task.setTitle("new task");
                 task.setSummary("summary of the task");
-                
+                task.setDescription("description of the task");
+                task.setDate(date);
+
                 TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
-                if(dlg.open() == Window.OK) {
+                if (dlg.open() == Window.OK) {
                     try {
                         Profile prof = Profile.getSelectedProfile(client
                                 .getPreferenceStore());
@@ -383,7 +390,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // postButton.setEnabled(false);
     // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
     // }
-    
     public void handleEvent(Event event) {
         this.toggleBalloon();
     }
