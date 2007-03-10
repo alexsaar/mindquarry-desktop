@@ -53,6 +53,7 @@ public class Task {
     private String date;
 
     public Task() {
+        // empty constructor
     }
 
     public Task(String id, String title, String status) {
