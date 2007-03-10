@@ -13,13 +13,15 @@
  */
 package com.mindquarry.minutes.editor.action;
 
+import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.minutes.editor.dialog.PreferencesDialog;
+import com.mindquarry.desktop.preferences.PreferenceUtilities;
+import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 
 /**
  * Add summary documentation here.
@@ -29,7 +31,7 @@ import com.mindquarry.minutes.editor.dialog.PreferencesDialog;
  */
 public class EditPreferencesAction extends ActionBase {
     private static final String TEXT = "Edit options";
-    
+
     private static final String DESCRIPTION = "Configure the minutes editor by editing its preferences.";
 
     private static final Image IMAGE = new Image(
@@ -63,9 +65,10 @@ public class EditPreferencesAction extends ActionBase {
      */
     @Override
     public void run() {
-        PreferencesDialog dlg = new PreferencesDialog(new Shell());
-        if(dlg.open() == Window.OK) {
-            
-        }
+        PreferenceManager mgr = PreferenceUtilities
+                .getDefaultPreferenceManager();
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(null, mgr);
+        dlg.setPreferenceStore(new PreferenceStore("minutes-editor.properties")); //$NON-NLS-1$
+        dlg.open();
     }
 }
