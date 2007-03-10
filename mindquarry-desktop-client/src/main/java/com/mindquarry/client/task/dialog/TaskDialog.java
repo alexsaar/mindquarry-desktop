@@ -162,7 +162,7 @@ public class TaskDialog extends TitleAreaDialog {
     private void initTask() {
         title.setText(task.getTitle());
         summary.setText(task.getSummary());
-        description.setText(task.getDate());
+        description.setText(task.getDescription());
 
         if (task.getStatus().equals(Task.STATUS_NEW)) {
             status.select(0);
