@@ -22,6 +22,7 @@ import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.ApplicationWindow;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.FontData;
@@ -132,6 +133,7 @@ public class MinutesEditor extends ApplicationWindow {
         sashForm.setWeights(new int[] { 1, 3 });
 
         // init window shell
+        Window.setDefaultImage(JFaceResources.getImage(EDITOR_IMG_KEY));
         getShell().setImage(JFaceResources.getImage(EDITOR_IMG_KEY));
         getShell().setText(EDITOR_TITLE);
         getShell().setSize(600, 400);
