@@ -20,6 +20,8 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -37,13 +39,15 @@ public class TeamSelectionDialog extends TitleAreaDialog {
     private CCombo teamWidget = null;
 
     private List<String> teams;
+    
+    private String selected;
 
     public TeamSelectionDialog(Shell shell, List<String> teams) {
         super(shell);
         setBlockOnOpen(true);
         this.teams = teams;
     }
-
+    
     @Override
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
@@ -70,7 +74,17 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         for (String team : teams) {
             teamWidget.add(team);
         }
+        teamWidget.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // don't need this
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                setSelected(teamWidget.getItem(teamWidget.getSelectionIndex()));
+            }
+        });
         teamWidget.select(0);
+        setSelected(teams.get(0));
         return composite;
     }
 
@@ -85,7 +99,21 @@ public class TeamSelectionDialog extends TitleAreaDialog {
                 true);
     }
 
+    /**
+     * Getter for selected.
+     *
+     * @return the selected
+     */
     public String getSelectedTeam() {
-        return teamWidget.getItem(teamWidget.getSelectionIndex());
+        return selected;
+    }
+
+    /**
+     * Setter for selected.
+     *
+     * @param selected the selected to set
+     */
+    private void setSelected(String selected) {
+        this.selected = selected;
     }
 }

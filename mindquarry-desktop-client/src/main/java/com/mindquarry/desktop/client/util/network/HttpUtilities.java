@@ -25,6 +25,7 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.dom4j.DocumentException;
 
 import com.mindquarry.desktop.client.MindClient;
 
@@ -34,7 +35,7 @@ import com.mindquarry.desktop.client.MindClient;
  */
 public class HttpUtilities {
     public static InputStream getContentAsXML(String login, String pwd,
-            String address) throws HttpException, IOException {
+            String address) throws HttpException, IOException, DocumentException {
         HttpClient client = createHttpClient(login, pwd, address);
         GetMethod get = createAndExecuteGetMethod(address, client);
 

@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
+import sun.misc.MessageUtils;
+
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.task.Task;
 import com.mindquarry.desktop.client.task.TaskDoneListener;
@@ -44,6 +46,7 @@ import com.mindquarry.desktop.client.task.TaskRefreshListener;
 import com.mindquarry.desktop.client.task.dialog.TaskDialog;
 import com.mindquarry.desktop.client.teamspace.TeamspaceUtilities;
 import com.mindquarry.desktop.client.teamspace.dialog.TeamSelectionDialog;
+import com.mindquarry.desktop.client.util.network.HttpUtilities;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -281,6 +284,25 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
                         + cal.get(Calendar.YEAR);
 
+                Profile prof = Profile.getSelectedProfile(client
+                        .getPreferenceStore());
+
+                // get teamspace list
+                List<String> teamspaceList;
+                try {
+                    teamspaceList = TeamspaceUtilities
+                            .getTeamspaceNamesForProfile(prof);
+                } catch (Exception e) {
+                    MindClient
+                            .showErrorMessage("Error while retrieving list of teams.");
+                    return;
+                }
+                if (teamspaceList.size() == 0) {
+                    MindClient
+                            .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
+                }
+
+                // create initial task
                 Task task = new Task();
                 task.setStatus("new"); //$NON-NLS-1$
                 task.setPriority("low"); //$NON-NLS-1$
@@ -292,23 +314,17 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
                 if (dlg.open() == Window.OK) {
                     try {
-                        Profile prof = Profile.getSelectedProfile(client
-                                .getPreferenceStore());
-
-                        List<String> teamspaceList;
-                        try {
-                            teamspaceList = TeamspaceUtilities
-                                    .getTeamspaceNamesForProfile(prof);
-                        } catch (Exception e) {
-                            MindClient
-                                    .showErrorMessage("Error while retrieving list of teams.");
-                            return;
-                        }
                         TeamSelectionDialog tsDlg = new TeamSelectionDialog(
                                 MindClient.getShell(), teamspaceList);
 
                         if (tsDlg.open() == Window.OK) {
-                            System.out.println(tsDlg.getSelectedTeam());
+                            System.out.println(task.getContentAsXML().asXML());
+                            
+                            HttpUtilities.putAsXML(prof.getLogin(), prof
+                                    .getPassword(), prof.getServerURL()
+                                    + "/tasks/" //$NON-NLS-1$
+                                    + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
+                                    task.getContentAsXML().asXML().getBytes());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
