@@ -279,11 +279,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
         createTaskButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                Calendar cal = new GregorianCalendar();
-                String date = cal.get(Calendar.MONTH) + "/" //$NON-NLS-1$
-                        + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
-                        + cal.get(Calendar.YEAR);
-
                 Profile prof = Profile.getSelectedProfile(client
                         .getPreferenceStore());
 
@@ -301,6 +296,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
                     MindClient
                             .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
                 }
+                Calendar cal = new GregorianCalendar();
+                String date = (cal.get(Calendar.MONTH) + 1) +"/" //$NON-NLS-1$
+                        + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
+                        + cal.get(Calendar.YEAR);
 
                 // create initial task
                 Task task = new Task();

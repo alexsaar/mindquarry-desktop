@@ -17,7 +17,10 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.client.task.Task;
+import com.mindquarry.desktop.client.util.widgets.ImageCombo;
 
 /**
  * Dialog adding new tasks to a team.
@@ -44,18 +48,22 @@ public class TaskDialog extends TitleAreaDialog {
 
     private Text description = null;
 
-    private CCombo status = null;
+    private ImageCombo status = null;
 
-    private CCombo priority = null;
+    private ImageCombo priority = null;
 
     private DateTime calendar;
 
     private Task task;
 
+    private Task backupTask;
+
     public TaskDialog(Shell shell, Task task) {
         super(shell);
         setBlockOnOpen(true);
+
         this.task = task;
+        backupTask = task;
     }
 
     @Override
@@ -78,6 +86,7 @@ public class TaskDialog extends TitleAreaDialog {
 
         createTaskDataSection(composite);
         initTask();
+        registerListeners();
         return composite;
     }
 
@@ -91,27 +100,33 @@ public class TaskDialog extends TitleAreaDialog {
         label = new Label(composite, SWT.LEFT);
         label.setText("Status:");
 
-        status = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY | SWT.FLAT);
+        status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
+                | SWT.FLAT);
         status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         status.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
-        status.add("New");
-        status.add("Running");
-        status.add("Paused");
-        status.add("Done");
+        status.add("New", new Image(null, getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/status/task-new.png"))); //$NON-NLS-1$
+        status.add("Running", new Image(null, getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/status/task-running.png"))); //$NON-NLS-1$
+        status.add("Paused", new Image(null, getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/status/task-paused.png"))); //$NON-NLS-1$
+        status.add("Done", new Image(null, getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/status/task-done.png"))); //$NON-NLS-1$
         status.select(0);
 
         label = new Label(composite, SWT.LEFT);
         label.setText("Priority:");
 
-        priority = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY | SWT.FLAT);
+        priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
+                | SWT.FLAT);
         priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         priority.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
-        priority.add("Low");
-        priority.add("Medium");
-        priority.add("Important");
-        priority.add("Critical");
+        priority.add("Low", null);
+        priority.add("Medium", null);
+        priority.add("Important", null);
+        priority.add("Critical", null);
         priority.select(0);
 
         label = new Label(composite, SWT.LEFT);
@@ -154,11 +169,6 @@ public class TaskDialog extends TitleAreaDialog {
                 IDialogConstants.CANCEL_LABEL, true);
     }
 
-    /**
-     * Setter for task.
-     * 
-     * @param task the task to set
-     */
     private void initTask() {
         title.setText(task.getTitle());
         summary.setText(task.getSummary());
@@ -184,20 +194,51 @@ public class TaskDialog extends TitleAreaDialog {
         }
         String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
         calendar.setDay(Integer.valueOf(dateParts[1]));
-        calendar.setMonth(Integer.valueOf(dateParts[0]));
+        calendar.setMonth(Integer.valueOf(dateParts[0]) - 1);
         calendar.setYear(Integer.valueOf(dateParts[2]));
     }
 
-    public Task getTask() {
-        Task task = new Task();
-        task.setTitle(title.getText());
-        task.setStatus(status.getText());
-        task.setSummary(summary.getText());
-        task.setDescription(description.getText());
-        task.setPriority(priority.getText());
-        task.setDate(calendar.getMonth() + "/" //$NON-NLS-1$
-                + calendar.getDay() + "/" //$NON-NLS-1$
-                + calendar.getYear());
-        return task;
+    private void registerListeners() {
+        title.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                task.setTitle(title.getText());
+            }
+        });
+        status.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                task.setStatus(status.getText().toLowerCase());
+            }
+        });
+        summary.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                task.setSummary(summary.getText());
+            }
+        });
+        description.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                task.setDescription(description.getText());
+            }
+        });
+        priority.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                task.setPriority(priority.getText().toLowerCase());
+            }
+        });
+        calendar.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                task.setDate((calendar.getMonth() + 1) + "/" //$NON-NLS-1$
+                        + calendar.getDay() + "/" //$NON-NLS-1$
+                        + calendar.getYear());
+            }
+        });
+    }
+
+    /**
+     * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
+     */
+    @Override
+    protected void cancelPressed() {
+        super.cancelPressed();
+        task = backupTask;
     }
 }
