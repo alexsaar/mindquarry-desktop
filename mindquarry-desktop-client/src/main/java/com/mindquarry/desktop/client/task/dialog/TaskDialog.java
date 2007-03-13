@@ -183,14 +183,14 @@ public class TaskDialog extends TitleAreaDialog {
         } else if (task.getStatus().equals(Task.STATUS_DONE)) {
             status.select(3);
         }
-        if (task.getStatus().equals(Task.PRIORITY_LOW)) {
-            status.select(0);
-        } else if (task.getStatus().equals(Task.PRIORITY_MEDIUM)) {
-            status.select(1);
-        } else if (task.getStatus().equals(Task.PRIORITY_IMPORTANT)) {
-            status.select(2);
-        } else if (task.getStatus().equals(Task.PRIORITY_CRITICAL)) {
-            status.select(3);
+        if (task.getPriority().equals(Task.PRIORITY_LOW)) {
+            priority.select(0);
+        } else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
+            priority.select(1);
+        } else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
+            priority.select(2);
+        } else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
+            priority.select(3);
         }
         String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
         calendar.setDay(Integer.valueOf(dateParts[1]));

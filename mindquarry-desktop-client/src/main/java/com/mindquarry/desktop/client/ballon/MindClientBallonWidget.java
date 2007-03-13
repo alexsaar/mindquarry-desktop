@@ -36,8 +36,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
-import sun.misc.MessageUtils;
-
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.task.Task;
 import com.mindquarry.desktop.client.task.TaskDoneListener;
@@ -277,60 +275,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         createTaskButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream(
                         "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
-        createTaskButton.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                Profile prof = Profile.getSelectedProfile(client
-                        .getPreferenceStore());
-
-                // get teamspace list
-                List<String> teamspaceList;
-                try {
-                    teamspaceList = TeamspaceUtilities
-                            .getTeamspaceNamesForProfile(prof);
-                } catch (Exception e) {
-                    MindClient
-                            .showErrorMessage("Error while retrieving list of teams.");
-                    return;
-                }
-                if (teamspaceList.size() == 0) {
-                    MindClient
-                            .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
-                }
-                Calendar cal = new GregorianCalendar();
-                String date = (cal.get(Calendar.MONTH) + 1) +"/" //$NON-NLS-1$
-                        + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
-                        + cal.get(Calendar.YEAR);
-
-                // create initial task
-                Task task = new Task();
-                task.setStatus("new"); //$NON-NLS-1$
-                task.setPriority("low"); //$NON-NLS-1$
-                task.setTitle("new task");
-                task.setSummary("summary of the task");
-                task.setDescription("description of the task");
-                task.setDate(date);
-
-                TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
-                if (dlg.open() == Window.OK) {
-                    try {
-                        TeamSelectionDialog tsDlg = new TeamSelectionDialog(
-                                MindClient.getShell(), teamspaceList);
-
-                        if (tsDlg.open() == Window.OK) {
-                            System.out.println(task.getContentAsXML().asXML());
-                            
-                            HttpUtilities.putAsXML(prof.getLogin(), prof
-                                    .getPassword(), prof.getServerURL()
-                                    + "/tasks/" //$NON-NLS-1$
-                                    + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
-                                    task.getContentAsXML().asXML().getBytes());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
+        createTaskButton.addListener(SWT.Selection, new CreateTaskListener());
         Button refreshButton = new Button(group, SWT.NONE);
         refreshButton.setText(Messages.getString("MindClientBallonWidget.11")); //$NON-NLS-1$
         refreshButton.setToolTipText(Messages
@@ -407,5 +352,58 @@ public class MindClientBallonWidget extends BalloonWindow implements
     // }
     public void handleEvent(Event event) {
         this.toggleBalloon();
+    }
+
+    class CreateTaskListener implements Listener {
+        public void handleEvent(Event event) {
+            Profile prof = Profile.getSelectedProfile(client
+                    .getPreferenceStore());
+
+            // get teamspace list
+            List<String> teamspaceList;
+            try {
+                teamspaceList = TeamspaceUtilities
+                        .getTeamspaceNamesForProfile(prof);
+            } catch (Exception e) {
+                MindClient
+                        .showErrorMessage("Error while retrieving list of teams.");
+                return;
+            }
+            if (teamspaceList.size() == 0) {
+                MindClient
+                        .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
+            }
+            Calendar cal = new GregorianCalendar();
+            String date = (cal.get(Calendar.MONTH) + 1) + "/" //$NON-NLS-1$
+                    + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
+                    + cal.get(Calendar.YEAR);
+
+            // create initial task
+            Task task = new Task();
+            task.setStatus("new"); //$NON-NLS-1$
+            task.setPriority("low"); //$NON-NLS-1$
+            task.setTitle("new task");
+            task.setSummary("summary of the task");
+            task.setDescription("description of the task");
+            task.setDate(date);
+
+            TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
+            if (dlg.open() == Window.OK) {
+                try {
+                    TeamSelectionDialog tsDlg = new TeamSelectionDialog(
+                            MindClient.getShell(), teamspaceList);
+
+                    if (tsDlg.open() == Window.OK) {
+                        HttpUtilities.putAsXML(prof.getLogin(), prof
+                                .getPassword(), prof.getServerURL() + "/tasks/" //$NON-NLS-1$
+                                + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
+                                task.getContentAsXML().asXML().getBytes());
+                    }
+                } catch (Exception e) {
+                    MindClient.showErrorMessage("Could not create the task.");
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

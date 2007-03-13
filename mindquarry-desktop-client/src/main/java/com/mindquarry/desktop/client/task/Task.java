@@ -13,6 +13,9 @@
  */
 package com.mindquarry.desktop.client.task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -51,12 +54,43 @@ public class Task {
     private String description;
 
     private String date;
+    
+    private List<Person> people;
+    
+    private List<Dependency> dependencies;
+    
+    class Person {
+        public String pid;
+        public String role;
+    }
+    
+    class Dependency {
+        public String tid;
+        public String role;
+    }
+    
+    public void addPerson(String pid, String role) {
+        Person person = new Person();
+        person.pid = pid;
+        person.role = role;
+        people.add(person);
+    }
+    
+    public void addDependency(String tid, String role) {
+        Dependency dependency = new Dependency();
+        dependency.tid = tid;
+        dependency.role = role;
+        dependencies.add(dependency);
+    }
 
     public Task() {
-        // empty constructor
+        people = new ArrayList<Person>();
+        dependencies = new ArrayList<Dependency>();
     }
 
     public Task(String id, String title, String status) {
+        super();
+        
         this.id = id;
         this.title = title;
         this.status = status;
@@ -157,6 +191,51 @@ public class Task {
         if ((getDescription() != null) && (!getDescription().equals(""))) { //$NON-NLS-1$
             Element description = task.addElement("description"); //$NON-NLS-1$
             description.setText(getDescription());
+        }
+        if(people.size() >0) {
+            int count = 0;
+            Element peopleEl = task.addElement("people"); //$NON-NLS-1$
+            for(Person person : people) {
+                Element itemEl = peopleEl.addElement("item");
+                itemEl.addAttribute("position", String.valueOf(count));
+                
+                Element personEl = itemEl.addElement("person");
+                personEl.addText(person.pid);
+                Element roleEl = itemEl.addElement("role");
+                roleEl.addText(person.role);
+                
+                count++;
+            }
+        }
+        if(people.size() >0) {
+            int count = 0;
+            Element peopleEl = task.addElement("people"); //$NON-NLS-1$
+            for(Person person : people) {
+                Element itemEl = peopleEl.addElement("item"); //$NON-NLS-1$
+                itemEl.addAttribute("position", String.valueOf(count)); //$NON-NLS-1$
+                
+                Element personEl = itemEl.addElement("person"); //$NON-NLS-1$
+                personEl.addText(person.pid);
+                Element roleEl = itemEl.addElement("role"); //$NON-NLS-1$
+                roleEl.addText(person.role);
+                
+                count++;
+            }
+        }
+        if(dependencies.size() >0) {
+            int count = 0;
+            Element dependenciesEl = task.addElement("dependencies"); //$NON-NLS-1$
+            for(Dependency dependency : dependencies) {
+                Element itemEl = dependenciesEl.addElement("item"); //$NON-NLS-1$
+                itemEl.addAttribute("position", String.valueOf(count)); //$NON-NLS-1$
+                
+                Element taskEl = itemEl.addElement("task"); //$NON-NLS-1$
+                taskEl.addText(dependency.tid);
+                Element roleEl = itemEl.addElement("role"); //$NON-NLS-1$
+                roleEl.addText(dependency.role);
+                
+                count++;
+            }
         }
         return doc;
     }

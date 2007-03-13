@@ -250,10 +250,9 @@ public class TaskManager {
         for (String taskURI : tlTransformer.getTaskURIs()) {
             content = null;
             try {
-                content = HttpUtilities.getContentAsXML(selectedProfile.getLogin(),
-                        selectedProfile.getPassword(), selectedProfile
-                                .getServerURL()
-                                + "/tasks/" + taskURI); //$NON-NLS-1$
+                content = HttpUtilities.getContentAsXML(selectedProfile
+                        .getLogin(), selectedProfile.getPassword(),
+                        selectedProfile.getServerURL() + "/tasks/" + taskURI); //$NON-NLS-1$
             } catch (Exception e) {
                 continue;
             }
@@ -274,7 +273,7 @@ public class TaskManager {
 
             // get initialized task
             Task newTask = tTransformer.getTask();
-            
+
             // add task to internal list of tasks, if not yet exist
             if ((!tasks.contains(newTask))
                     && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
@@ -372,24 +371,8 @@ public class TaskManager {
                     taskTableViewer
                             .addSelectionChangedListener(new TaskSelectionChangedListener(
                                     taskTableViewer, doneButton));
-                    taskTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-                        public void doubleClick(DoubleClickEvent event) {
-                            ISelection selection = event.getSelection();
-
-                            if (selection instanceof StructuredSelection) {
-                                StructuredSelection structsel = (StructuredSelection) selection;
-                                Object element = structsel.getFirstElement();
-
-                                if (element instanceof Task) {
-                                    TaskDialog dlg = new TaskDialog(MindClient.getShell(), (Task)element);
-                                    if(dlg.open() == Window.OK) {
-                                        // TODO change task data
-                                    }
-                                }
-                                taskTableViewer.refresh();
-                            }
-                        }
-                    });
+                    taskTableViewer
+                            .addDoubleClickListener(new TaskTableDoubleClickListener());
                 } else if (!error && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksComposite(taskContainer,
@@ -432,5 +415,38 @@ public class TaskManager {
      */
     public boolean isInitialized() {
         return initialized;
+    }
+
+    class TaskTableDoubleClickListener implements IDoubleClickListener {
+        public void doubleClick(DoubleClickEvent event) {
+            Profile prof = Profile.getSelectedProfile(client
+                    .getPreferenceStore());
+
+            ISelection selection = event.getSelection();
+
+            if (selection instanceof StructuredSelection) {
+                StructuredSelection structsel = (StructuredSelection) selection;
+                Object element = structsel.getFirstElement();
+
+                if (element instanceof Task) {
+                    Task task = (Task) element;
+
+                    try {
+                        TaskDialog dlg = new TaskDialog(MindClient.getShell(),
+                                task);
+                        if (dlg.open() == Window.OK) {
+                            HttpUtilities.putAsXML(prof.getLogin(), prof
+                                    .getPassword(), task.getId(), task
+                                    .getContentAsXML().asXML().getBytes());
+                        }
+                    } catch (Exception e) {
+                        MindClient
+                                .showErrorMessage("Could not update the task.");
+                        e.printStackTrace();
+                    }
+                }
+                taskTableViewer.refresh();
+            }
+        }
     }
 }
