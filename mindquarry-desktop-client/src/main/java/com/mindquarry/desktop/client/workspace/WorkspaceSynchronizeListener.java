@@ -128,6 +128,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                 try {
                     ListWorkspacesOperation listOp = new ListWorkspacesOperation(
                             client, synAreas);
+                    listOp.run();
 
                     // need to sync workspaces first (for merging, up-to-date
                     // working copies and so on)

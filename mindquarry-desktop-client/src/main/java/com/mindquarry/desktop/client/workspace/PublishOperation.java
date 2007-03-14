@@ -24,7 +24,6 @@ import org.tigris.subversion.javahl.Status;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
-import com.mindquarry.desktop.workspace.SVNHelper;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
@@ -56,7 +55,7 @@ public class PublishOperation extends SvnOperation {
 
         for (String id : workspaces.keySet()) {
             setMessage(Messages.getString("PublishOperation.4") + " (" //$NON-NLS-1$//$NON-NLS-2$
-                    + wsNbr + " of " //$NON-NLS-1$
+                    + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
             File wsDir = new File(wsHome.getAbsolutePath() + "/" //$NON-NLS-1$ 
