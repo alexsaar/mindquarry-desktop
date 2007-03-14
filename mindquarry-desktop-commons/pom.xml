@@ -29,10 +29,23 @@
 	<name>Mindquarry Desktop Commons</name>
 	
 	<dependencies>
+		<!-- Jakarta commons -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>1.3</version>
+		</dependency>
+		
+		<!-- SVN libs -->
+		<dependency>
+			<groupId>org.tigris.subversion</groupId>
+			<artifactId>javahl-api</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.svnkit</groupId>
+			<artifactId>svnkit</artifactId>
+			<version>1.1.0</version>
 		</dependency>
 	</dependencies>
 
