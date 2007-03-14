@@ -40,30 +40,6 @@
 			<artifactId>mindquarry-desktop-commons</artifactId>
 			<version>1.0-M2-SNAPSHOT</version>
 		</dependency>
-		
-		<!-- SVN libs -->
-		<dependency>
-			<groupId>org.tigris.subversion</groupId>
-			<artifactId>javahl-api</artifactId>
-			<version>1.4.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.svnkit</groupId>
-			<artifactId>svnkit</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		
-		<!-- spring libs -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>2.0.1</version>
-		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -154,7 +130,7 @@
 					</descriptors>
 				</configuration>
 			</plugin-->
-		</plugins>
+			</plugins>
 	</build>
 	<pluginRepositories>
 		<pluginRepository>

@@ -31,8 +31,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.desktop.DesktopConstants;
 import com.mindquarry.desktop.client.ballon.MindClientBallonWidget;
@@ -61,8 +59,6 @@ public class MindClient {
 
     private final Image icon;
 
-    private final BeanFactory factory;
-
     private File prefFile;
 
     private static TrayItem item;
@@ -72,9 +68,6 @@ public class MindClient {
     private PreferenceStore store;
 
     public MindClient() throws IOException {
-        factory = new ClassPathXmlApplicationContext(
-                new String[] { "applicationContext.xml" }); //$NON-NLS-1$
-
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 DesktopConstants.MINDQUARRY_ICON));
         Window.setDefaultImage(icon);
@@ -259,10 +252,6 @@ public class MindClient {
 
     public static Shell getShell() {
         return shell;
-    }
-
-    public BeanFactory getFactory() {
-        return factory;
     }
 
     public static IconActionThread getIconActionHandler() {
