@@ -13,15 +13,9 @@
  */
 package com.mindquarry.desktop.client.workspace;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.BeanFactory;
-import org.tigris.subversion.javahl.ClientException;
-import org.tigris.subversion.javahl.SVNClientInterface;
 import org.tigris.subversion.javahl.Status;
-import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
@@ -33,53 +27,12 @@ import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 public abstract class SvnOperation implements Runnable {
     protected final MindClient client;
 
-    protected final SVNClientInterface svnClient;
-
     protected final List<SynchronizeWidget> synAreas;
 
     public SvnOperation(final MindClient client,
             List<SynchronizeWidget> synAreas) {
         this.client = client;
         this.synAreas = synAreas;
-
-        // get SVN client interface component
-        BeanFactory factory = client.getFactory();
-        svnClient = (SVNClientInterface) factory
-                .getBean(SVNClientInterface.class.getName());
-    }
-
-    protected boolean isFolderVersionControled(File item) {
-        // retrieve local status
-        Status status;
-        try {
-            status = svnClient.singleStatus(item.getAbsolutePath(), false);
-        } catch (ClientException e) {
-            e.printStackTrace();
-            return false;
-        }
-        // check if the item is managed by SVN
-        if (status.isManaged()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected Status[] checkStatus(File item) {
-        try {
-            Status[] stati = svnClient.status(item.getPath(), true, false,
-                    false);
-            for (Status status : stati) {
-                // check if the item is managed by SVN; if not, add it
-                if (!status.isManaged()) {
-                    svnClient.add(status.getPath(), true);
-                }
-            }
-            return stati;
-        } catch (ClientException e1) {
-            e1.printStackTrace();
-            return null;
-        }
     }
 
     protected String getStatiDescription(Status[] stati, String pathPrefix) {
@@ -100,29 +53,6 @@ public abstract class SvnOperation implements Runnable {
             }
         }
         return msg.toString();
-    }
-
-    protected String[] getConflictedFiles(File item) {
-        List<String> conflicted = new ArrayList<String>();
-
-        // retrieve local status
-        Status[] stati;
-        try {
-            stati = svnClient
-                    .status(item.getAbsolutePath(), true, false, false);
-        } catch (ClientException e) {
-            e.printStackTrace();
-            return conflicted.toArray(new String[0]);
-        }
-        for (Status status : stati) {
-            // check if the item is in conflict
-            if (status.isManaged()) {
-                if (status.getTextStatus() == StatusKind.conflicted) {
-                    conflicted.add(status.getConflictWorking());
-                }
-            }
-        }
-        return conflicted.toArray(new String[0]);
     }
 
     public void setProgressSteps(final int value) {

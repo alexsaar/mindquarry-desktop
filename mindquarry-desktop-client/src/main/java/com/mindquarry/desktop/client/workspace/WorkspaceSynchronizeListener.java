@@ -86,7 +86,8 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
     }
 
-    private void enableTriggerWidgets(final boolean enable, final List<Widget> widgets) {
+    private void enableTriggerWidgets(final boolean enable,
+            final List<Widget> widgets) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
                 for (Widget widget : widgets) {
@@ -125,12 +126,17 @@ public class WorkspaceSynchronizeListener implements Listener {
                 enableSynAreas(true, synAreas);
 
                 try {
+                    ListWorkspacesOperation listOp = new ListWorkspacesOperation(
+                            client, synAreas);
+
                     // need to sync workspaces first (for merging, up-to-date
                     // working copies and so on)
-                    SvnOperation op = new UpdateOperation(client, synAreas);
+                    SvnOperation op = new UpdateOperation(client, synAreas,
+                            listOp.getWorkspaces());
                     op.run();
                     // share workspace changes
-                    op = new PublishOperation(client, synAreas);
+                    op = new PublishOperation(client, synAreas, listOp
+                            .getWorkspaces());
                     op.run();
                 } catch (Exception e) {
                     e.printStackTrace();

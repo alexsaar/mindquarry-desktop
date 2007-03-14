@@ -14,100 +14,79 @@
 package com.mindquarry.desktop.client.workspace;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.workspace.SVNHelper;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class PublishOperation extends SvnOperation {
+    private HashMap<String, String> workspaces;
+
     public PublishOperation(final MindClient client,
-            List<SynchronizeWidget> synAreas) {
+            List<SynchronizeWidget> synAreas, HashMap<String, String> workspaces) {
         super(client, synAreas);
+        this.workspaces = workspaces;
     }
 
     public void run() {
         resetProgress();
         setMessage(Messages.getString("PublishOperation.0")); //$NON-NLS-1$
 
-        Profile selectedProfile = Profile.getSelectedProfile(client
+        Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
         // get directory for workspaces
-        File teamspacesDir = new File(selectedProfile.getWorkspaceFolder());
+        File wsHome = new File(profile.getWorkspaceFolder());
 
-        // list directories
-        File[] directories = teamspacesDir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                File file = new File(dir, name);
-                // check if folder is really a workspace folder
-                return file.isDirectory() && isFolderVersionControled(file);
-            }
-        });
-        // init SVN client API types
-        svnClient.username(selectedProfile.getLogin());
-        svnClient.password(selectedProfile.getPassword());
-
-        // loop existing workspace directories
-        HashMap<String, File> changed = new HashMap<String, File>();
-        for (final File tsDir : directories) {
-            Status[] stati = checkStatus(tsDir);
-            if (stati != null && stati.length > 0) {
-                // build message with list of changes
-                String msg = Messages.getString("PublishOperation.2") //$NON-NLS-1$
-                        + tsDir.getName() + ":\n\n" //$NON-NLS-1$
-                        + getStatiDescription(stati, tsDir.getPath());
-                changed.put(msg, tsDir);
-            }
-        }
         // init progress steps for progress dialog
-        final int tsCount = changed.keySet().size();
-        int tsNbr = 0;
+        final int wsCount = workspaces.keySet().size();
+        setProgressSteps(wsCount);
+        int wsNbr = 0;
 
-        setProgressSteps(tsCount);
+        for (String id : workspaces.keySet()) {
+            setMessage(Messages.getString("PublishOperation.4") + " (" //$NON-NLS-1$//$NON-NLS-2$
+                    + wsNbr + " of " //$NON-NLS-1$
+                    + wsCount + ")"); //$NON-NLS-1$
 
-        Iterator<String> changedIt = changed.keySet().iterator();
-        while (changedIt.hasNext()) {
-            String msg = changedIt.next();
-            final File dir = changed.get(msg);
+            File wsDir = new File(wsHome.getAbsolutePath() + "/" //$NON-NLS-1$ 
+                    + id);
+            JavaSVNHelper svnHelper = new JavaSVNHelper(workspaces.get(id),
+                    wsDir.getAbsolutePath(), profile.getLogin(), profile
+                            .getPassword());
+            try {
+                Status[] changes = svnHelper.getLocalChanges();
+                List<String> changedPaths = new ArrayList<String>();
+                if (changedPaths.size() > 0) {
+                    StringBuffer commitInfo = new StringBuffer();
+                    commitInfo.append(Messages.getString("PublishOperation.2") //$NON-NLS-1$
+                            + id + ":\n\n"); //$NON-NLS-1$
+                    commitInfo.append(getStatiDescription(changes, wsDir
+                            .getPath()));
 
-            // retrieve (asynchronously) commit message
-            final InputDialog dlg = new InputDialog(MindClient.getShell(),
-                    Messages.getString("PublishOperation.1"), //$NON-NLS-1$
-                    msg, Messages.getString("PublishOperation.3"), null); //$NON-NLS-1$
-
-            final int tmpTsNbr = ++tsNbr;
-            MindClient.getShell().getDisplay().syncExec(new Runnable() {
-                public void run() {
-                    dlg.setBlockOnOpen(true);
-                    if (dlg.open() == Dialog.OK) {
-                        // commit changes
-                        try {
-                            updateProgress();
-                            setMessage(Messages.getString("PublishOperation.4") + " (" //$NON-NLS-1$//$NON-NLS-2$
-                                    + tmpTsNbr + " of " //$NON-NLS-1$
-                                    + tsCount + ")"); //$NON-NLS-1$
-
-                            svnClient.commit(new String[] { dir
-                                    .getAbsolutePath() }, dlg.getValue(), true);
-                        } catch (ClientException e) {
-                            e.printStackTrace();
-                        }
+                    for (Status change : changes) {
+                        changedPaths.add(change.getPath());
                     }
+                    svnHelper.setCommitInfo(commitInfo.toString());
+                    svnHelper.commit(changedPaths.toArray(new String[0]));
                 }
-            });
+            } catch (ClientException e) {
+                MindClient
+                        .showErrorMessage("Could not publish workspace changes "
+                                + id);
+                e.printStackTrace();
+            }
+            updateProgress();
         }
         resetProgress();
     }
