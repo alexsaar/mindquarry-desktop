@@ -17,13 +17,13 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 
 /**
- * Specilization of the {@link SVNHelper} for Mac OS related clients.
+ * Specilization of the {@link SVNHelper} for Java clients.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class MacSVNHelper extends SVNHelper {
-    public MacSVNHelper(String repositoryURL, String localPath,
+public class JavaSVNHelper extends SVNHelper {
+    public JavaSVNHelper(String repositoryURL, String localPath,
             String username, String password) {
         super(repositoryURL, localPath, username, password);
     }
@@ -39,5 +39,4 @@ public class MacSVNHelper extends SVNHelper {
     protected String getCommitMessage() {
         return "generic commit message";
     }
-
 }
