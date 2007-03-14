@@ -86,7 +86,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
     }
 
-    private void enableWidgets(final boolean enable, final List<Widget> widgets) {
+    private void enableTriggerWidgets(final boolean enable, final List<Widget> widgets) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
                 for (Widget widget : widgets) {
@@ -121,7 +121,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
         new Thread(new Runnable() {
             public void run() {
-                enableWidgets(false, triggerWidgets);
+                enableTriggerWidgets(false, triggerWidgets);
                 enableSynAreas(true, synAreas);
 
                 try {
@@ -137,7 +137,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     MindClient.showErrorMessage(Messages
                             .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
                 }
-                enableWidgets(true, triggerWidgets);
+                enableTriggerWidgets(true, triggerWidgets);
                 enableSynAreas(false, synAreas);
             }
         }).start();
