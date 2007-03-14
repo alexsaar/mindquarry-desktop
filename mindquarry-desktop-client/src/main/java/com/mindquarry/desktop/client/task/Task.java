@@ -207,21 +207,6 @@ public class Task {
                 count++;
             }
         }
-        if(people.size() >0) {
-            int count = 0;
-            Element peopleEl = task.addElement("people"); //$NON-NLS-1$
-            for(Person person : people) {
-                Element itemEl = peopleEl.addElement("item"); //$NON-NLS-1$
-                itemEl.addAttribute("position", String.valueOf(count)); //$NON-NLS-1$
-                
-                Element personEl = itemEl.addElement("person"); //$NON-NLS-1$
-                personEl.addText(person.pid);
-                Element roleEl = itemEl.addElement("role"); //$NON-NLS-1$
-                roleEl.addText(person.role);
-                
-                count++;
-            }
-        }
         if(dependencies.size() >0) {
             int count = 0;
             Element dependenciesEl = task.addElement("dependencies"); //$NON-NLS-1$

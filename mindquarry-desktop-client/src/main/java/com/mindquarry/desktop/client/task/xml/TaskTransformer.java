@@ -75,6 +75,20 @@ public class TaskTransformer extends Transformer {
         task.setDate(node.getStringValue().trim());
     }
 
+    @Path("people/item")
+    public void people(Node node) {
+        Node personID = node.selectSingleNode("./person"); //$NON-NLS-1$
+        Node role = node.selectSingleNode("./role"); //$NON-NLS-1$
+        task.addPerson(personID.getText(), role.getText());
+    }
+
+    @Path("dependencies/item")
+    public void dependencies(Node node) {
+        Node taskID = node.selectSingleNode("./task"); //$NON-NLS-1$
+        Node role = node.selectSingleNode("./role"); //$NON-NLS-1$
+        task.addDependency(taskID.getText(), role.getText());
+    }
+
     public Task getTask() {
         return task;
     }
