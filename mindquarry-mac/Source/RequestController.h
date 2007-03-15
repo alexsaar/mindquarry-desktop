@@ -41,7 +41,7 @@ enum {
 	IBOutlet id createTaskTeamButton;
 	
 	IBOutlet id createTaskTitle;
-		
+	
 }
 
 - (void)afterWakeFromNib;
@@ -71,5 +71,7 @@ enum {
 - (id)taskWithId:(NSString *)task_id forTeam:(id)team;
 
 - (void)objectsDidChange:(NSNotification *)note;
+
+- (IBAction)updateRepositories:(id)sender;
 
 @end

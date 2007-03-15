@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!-- build file for Java-Test program -->
+<!-- Created by: Jonas Witt &lt;&gt;  -->
+
+<project name="Java-Test" default="run" basedir=".">
+  <property name="src" value="./src"/>
+  <property name="build" value="./build"/>
+  <property name="compile.debug"       value="true"/>
+
+  <path id="compile.classpath">
+      <pathelement location="./lib/svnkit.jar"/>
+      <pathelement location="./lib/svnkit-javahl.jar"/>
+  </path>
+
+<!-- 
+Build all Java source files into destdir.  This is common in Java
+projects: the compile target is trivial, since it just says to build
+everything.  Fancier compiler targets are easy if you want to build
+just one file at a time.
+ -->
+    <target name="build" depends="init">
+        <javac srcdir="${src}" 
+               destdir="${build}"
+               debug="${compile.debug}"
+               source="1.5">
+           <classpath refid="compile.classpath"/>
+        </javac>
+    </target>
+
+<!--
+init is a target that sets things up for the build.  Since we use the
+built-in ant function mkdir, it will only make the directory if it
+does not already exist.
+-->
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="dist" />
+  </target>
+  
+  <target name="checkDist">
+    <uptodate property="dist.notRequired" targetfile="dist/mindquarry-mac-svn.jar" >
+      <srcfiles dir= "${src}" includes="**/*.java"/>
+    </uptodate>
+  </target>
+
+  <target name="dist" depends="checkDist, build" unless="dist.notRequired">
+      <unzip src="lib/svnkit.jar" dest="build" />
+      <unzip src="lib/svnkit-javahl.jar" dest="build" /> 
+      
+      <delete dir="build/META-INF" />
+      <delete file="build/JAVAHL-LICENSE" />
+      <delete file="build/SEQUENCE-LICENSE" />
+      <delete file="build/COPYING" />
+      <delete file="build/svnkit.build.properties" />
+      
+      <jar basedir="build" destfile="dist/mindquarry-mac-svn.jar" />
+  </target>
+
+  <target name="run" depends="dist, build">
+    <java classname="com.mindquarry.client_mac.SVNTest"  
+        fork="true" 
+        dir="${build}" 
+        classpath="${build}" 
+        maxmemory="500m">
+        
+    </java>
+    </target>
+<!--
+Always include a clean target to get rid of all the extra files
+created by the build process, so you can save storage safely, without
+thinking.  Also: sometimes you'll want to do a completely fresh build,
+such as when changing to a new version of the JDK.
+-->
+  <target name="clean" description="Removes previous build">
+    <delete verbose="true">
+      <fileset dir="${build}"/>
+    </delete>
+  </target>
+
+</project>
+

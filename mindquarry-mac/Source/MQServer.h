@@ -40,6 +40,10 @@
 
 - (void)setPassword:(NSString *)password;
 
+- (void)setLocalPath:(NSString *)localPath;
+
 - (void)clearCredentials;
+
+- (void)updateAllRepositories;
 
 @end

@@ -10,6 +10,7 @@
 
 #import "RequestController.h"
 #import "MQTasksRequest.h"
+#import "MQTaskInfoRequest.h"
 
 @implementation MQTeamsRequest
 
@@ -21,7 +22,7 @@
 - (void)parseXMLResponse:(NSXMLDocument *)document
 {
 	NSXMLElement *root = [document rootElement];
-
+	
 	int i;
 	int count = [root childCount];
 	for (i = 0; i < count; i++) {
@@ -43,6 +44,10 @@
 		
 		[teamobj setValue:name forKey:@"name"];
 				
+		MQTaskInfoRequest *ireq = [[MQTaskInfoRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
+		[ireq addToQueue];
+		[ireq autorelease];
+		
 		MQTasksRequest *treq = [[MQTasksRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
 		[treq addToQueue];
 		[treq autorelease];

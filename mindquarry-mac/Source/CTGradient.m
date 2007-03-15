@@ -108,7 +108,7 @@ void resolveHSV(float *color1, float *color2);
 {
 	[self _commonInit];
 	
-	[self setBlendingMode:[coder decodeIntForKey:@"CTGradientBlendingMode"]];
+	[self setBlendingMode:(CTGradientBlendingMode)[coder decodeIntForKey:@"CTGradientBlendingMode"]];
 	unsigned count = [coder decodeIntForKey:@"CTGradientElementCount"];
 	
 	while(count != 0)

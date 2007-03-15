@@ -138,7 +138,7 @@
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
 
     NSError *error;
-    int reply = NSTerminateNow;
+    NSApplicationTerminateReply reply = NSTerminateNow;
     
     if (managedObjectContext != nil) {
         if ([managedObjectContext commitEditing]) {

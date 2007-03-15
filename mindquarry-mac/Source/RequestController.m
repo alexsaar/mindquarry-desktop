@@ -14,6 +14,10 @@
 #import "MQTask.h"
 #import "MQServer.h"
 #import "LRFilterBar.h"
+#import "StatusTransformer.h"
+#import "IconTransformer.h"
+#import "StatusColorTransformer.h"
+#import "MQTeam.h"
 
 @implementation RequestController
 
@@ -23,6 +27,9 @@
 
 - (void)awakeFromNib
 {
+	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
+	[NSValueTransformer setValueTransformer:[[[IconTransformer alloc] init] autorelease] forName:@"IconTransformer"];
+	[NSValueTransformer setValueTransformer:[[[StatusColorTransformer alloc] init] autorelease] forName:@"StatusColorTransformer"];	
 	
 	[serversController fetchWithRequest:nil merge:NO error:nil];
 	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
@@ -92,7 +99,7 @@
 	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
 	
 //	[self afterWakeFromNib];
-
+	
 	[window makeKeyAndOrderFront:self];
 	
 }
@@ -332,7 +339,7 @@
 	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSEntityDescription *entity = [[[[NSApp delegate] managedObjectModel] entitiesByName] objectForKey:@"Team"];
 	
-	NSManagedObject *team = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+	MQTeam *team = [[MQTeam alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 	[team setValue:team_id forKey:@"id"];
 	[team setValue:server forKey:@"server"];
 	
@@ -385,6 +392,11 @@
 //    {
 //        [actionController rearrangeObjects];
 //    }
+}
+
+- (IBAction)updateRepositories:(id)sender
+{
+	[[self selectedServer] updateAllRepositories];
 }
 
 @end

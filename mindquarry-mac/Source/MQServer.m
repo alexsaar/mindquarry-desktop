@@ -9,6 +9,7 @@
 #import "MQServer.h"
 
 #import "MQRequest.h"
+#import "MQTeam.h"
 
 @implementation MQServer
 
@@ -143,6 +144,18 @@
 	[self didChangeValueForKey:@"password"];
 }
 
+- (void)setLocalPath:(NSString *)localPath
+{
+	[self willChangeValueForKey:@"localPath"];
+	[self setPrimitiveValue:localPath forKey:@"localPath"];
+	NSEnumerator *teamEnum = [[self valueForKey:@"teams"] objectEnumerator];
+	id team;
+	while (team = [teamEnum nextObject]) {
+		[team updateLocalPath];
+	}
+	[self didChangeValueForKey:@"localPath"];
+}
+
 - (void)clearCredentials
 {
 	if (credential && protectionSpace) {
@@ -150,6 +163,15 @@
 		[store removeCredential:credential forProtectionSpace:protectionSpace];
 		[self setValue:nil forKey:@"credential"];
 		[self setValue:nil forKey:@"protectionSpace"];
+	}
+}
+
+- (void)updateAllRepositories
+{
+	NSEnumerator *teamEnum = [[self valueForKey:@"teams"] objectEnumerator];
+	id team;
+	while (team = [teamEnum nextObject]) {
+		[team update];
 	}
 }
 

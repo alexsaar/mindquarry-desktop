@@ -13,7 +13,7 @@ typedef struct {
 
 void _linearColorBlendFunction(void *info, const float *in, float *out)
 {
-	_twoColorsType *twoColors = info;
+	_twoColorsType *twoColors = (_twoColorsType*) info;
 	
 	out[0] = (1.0 - *in) * twoColors->red1 + *in * twoColors->red2;
 	out[1] = (1.0 - *in) * twoColors->green1 + *in * twoColors->green2;
@@ -96,7 +96,7 @@ static const CGFunctionCallbacks linearFunctionCallbacks = {0,
 	
 	// Set up the helper function for drawing washes
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-	_twoColorsType *twoColors = malloc(sizeof(_twoColorsType)); // We malloc() the helper data because we may draw this wash during printing, in which case it won't necessarily be evaluated immediately. We need for all the data the shading function needs to draw to potentially outlive us.
+	_twoColorsType *twoColors = (_twoColorsType*) malloc(sizeof(_twoColorsType)); // We malloc() the helper data because we may draw this wash during printing, in which case it won't necessarily be evaluated immediately. We need for all the data the shading function needs to draw to potentially outlive us.
 	[lighterColor getRed:&twoColors->red1 green:&twoColors->green1
 					blue:&twoColors->blue1 alpha:&twoColors->alpha1];
 	[darkerColor getRed:&twoColors->red2 green:&twoColors->green2
@@ -125,7 +125,7 @@ static const CGFunctionCallbacks linearFunctionCallbacks = {0,
         NSRectFill(topBar);
         
         // Draw a soft wash underneath it
-        CGContextRef context = [[NSGraphicsContext currentContext]
+        CGContextRef context = (CGContextRef) [[NSGraphicsContext currentContext]
             graphicsPort];
         CGContextSaveGState(context); 
                 

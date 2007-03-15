@@ -34,6 +34,7 @@
                 stopTasks = id; 
                 titlebarSelectionChanged = id; 
                 toggleInspector = id; 
+                updateRepositories = id; 
             }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
