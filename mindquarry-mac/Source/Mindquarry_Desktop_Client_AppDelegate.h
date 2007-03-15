@@ -12,6 +12,8 @@
 {
     IBOutlet NSWindow *window;
 	
+	IBOutlet id controller;
+	
 	IBOutlet id statusSpinner;
 	IBOutlet id statusField;
 	
@@ -19,6 +21,8 @@
 	
 	IBOutlet id taskController;
 	IBOutlet id taskTable;
+	
+	IBOutlet id changesController;
 	
 	id refreshToolbarItem;
     id stopToolbarItem;
@@ -35,5 +39,6 @@
 - (IBAction)saveAction:sender;
 
 - (void)reloadTasks;
+- (void)reloadChanges;
 
 @end

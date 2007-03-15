@@ -12,9 +12,13 @@
             CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                changesController = id; 
+                controller = id; 
+                refreshToolbarItem = id; 
                 serverController = id; 
                 statusField = id; 
                 statusSpinner = id; 
+                stopToolbarItem = id; 
                 taskController = id; 
                 taskTable = id; 
                 window = NSWindow; 
@@ -30,6 +34,7 @@
                 finishCreateTask = id; 
                 refresh = id; 
                 saveTask = id; 
+                selectMode = id; 
                 setDone = id; 
                 stopTasks = id; 
                 titlebarSelectionChanged = id; 
@@ -39,20 +44,25 @@
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                changeColumn = id; 
+                changesController = id; 
                 createTaskSheet = id; 
                 createTaskTeamButton = id; 
                 createTaskTitle = id; 
                 filterBar = id; 
                 inspectorWindow = id; 
                 priorityButton = id; 
+                rootView = id; 
                 serverDrawer = id; 
                 serversController = id; 
                 statusButton = id; 
                 taskColumn = id; 
                 taskTable = id; 
                 tasksController = id; 
+                tasksView = id; 
                 teamsController = id; 
                 window = id; 
+                workspaceView = id; 
             }; 
             SUPERCLASS = NSObject; 
         }

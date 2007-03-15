@@ -38,6 +38,13 @@
 	[self initJVM];
 	NSMutableArray *changes;
 	[svn getLocalChanges:&changes returnError:nil];
+	
+	NSEnumerator *cEnum = [changes objectEnumerator];
+	id change;
+	while (change = [cEnum nextObject]) {
+		[change setObject:self forKey:@"team"];
+	}
+	
 	return changes;
 }
 

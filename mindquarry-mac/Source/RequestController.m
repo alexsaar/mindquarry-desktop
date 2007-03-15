@@ -18,6 +18,11 @@
 #import "IconTransformer.h"
 #import "StatusColorTransformer.h"
 #import "MQTeam.h"
+#import "MQChangeCell.h"
+#import "MQSVNUpdateJob.h"
+
+#define TASKS_TOOLBAR_ID @"MQDesktopMainToolbar2"
+#define FILES_TOOLBAR_ID @"MQDesktopWorkToolbar2"
 
 @implementation RequestController
 
@@ -44,8 +49,9 @@
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(objectsDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:[[NSApp delegate] managedObjectContext]];
 	
-	MQTaskCell *cell = [[[MQTaskCell alloc] init] autorelease];
-	[taskColumn setDataCell:cell];
+	[taskColumn setDataCell:[[[MQTaskCell alloc] init] autorelease]];
+	
+	[changeColumn setDataCell:[[[MQChangeCell alloc] init] autorelease]];
 
 #define MENU_ICON_SIZE NSMakeSize(16, 16)
 	
@@ -73,13 +79,20 @@
 	[priorityButton setMenu:menu];
 	[menu release];
 	
-	NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@"MQDesktopMainToolbar2"];
-	[toolbar setDelegate:self];
-	[toolbar setAllowsUserCustomization:YES];
-	[toolbar setAutosavesConfiguration:YES];
+	tasksToolbar = [[NSToolbar alloc] initWithIdentifier:TASKS_TOOLBAR_ID];
+	[tasksToolbar setDelegate:self];
+	[tasksToolbar setAllowsUserCustomization:YES];
+	[tasksToolbar setAutosavesConfiguration:YES];
+	[tasksToolbar setSelectedItemIdentifier:@"MQTasks"];
+	[window setToolbar:tasksToolbar];
 	
-	[window setToolbar:toolbar];
-	[toolbar release];
+	workspaceToolbar = [[NSToolbar alloc] initWithIdentifier:FILES_TOOLBAR_ID];
+	[workspaceToolbar setDelegate:self];
+	[workspaceToolbar setAllowsUserCustomization:YES];
+	[workspaceToolbar setAutosavesConfiguration:YES];
+	[workspaceToolbar setSelectedItemIdentifier:@"MQFiles"];
+		
+	[self selectMode:nil];
 	
 	NSArray *labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Title", @"Due Date", @"Status", @"Priority", NULL] autorelease];
 	[filterBar addItemsWithTitles:labels withSelector:@selector(titlebarSelectionChanged:) withSender:self];
@@ -115,8 +128,15 @@
 	[self performSelector:@selector(refresh:) withObject:nil afterDelay:3];
 }
 
-- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
+- (void)dealloc
+{
+	[tasksToolbar release];
+	[workspaceToolbar release];
 	
+	[super dealloc];
+}
+
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
 	NSToolbarItem *item = nil;
 	
 	if ([itemIdentifier isEqualToString:@"MQDone"]) {
@@ -135,7 +155,7 @@
 		[item setTarget:self];
 		[item setAction:@selector(toggleInspector:)];
 	}
-	else if  ([itemIdentifier isEqualToString:@"MQRefresh"]) {
+	else if ([itemIdentifier isEqualToString:@"MQRefresh"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQRefresh"];
 		[item setLabel:@"Reload"];
 		[item setPaletteLabel:@"Reload"];
@@ -145,7 +165,7 @@
 		[item setAutovalidates:NO];
 		[[NSApp delegate] setValue:item forKey:@"refreshToolbarItem"];
 	}
-	else if  ([itemIdentifier isEqualToString:@"MQSave"]) {
+	else if ([itemIdentifier isEqualToString:@"MQSave"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQSave"];
 		[item setLabel:@"Save Task"];
 		[item setPaletteLabel:@"Save Task"];
@@ -153,7 +173,7 @@
 		[item setTarget:self];
 		[item setAction:@selector(saveTask:)];
 	}
-	else if  ([itemIdentifier isEqualToString:@"MQServer"]) {
+	else if ([itemIdentifier isEqualToString:@"MQServer"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQServer"];
 		[item setLabel:@"Servers"];
 		[item setPaletteLabel:@"Servers"];
@@ -180,6 +200,32 @@
 		[item setTarget:self];
 		[item setAction:@selector(createTask:)];
 	}
+	else if ([itemIdentifier isEqualToString:@"MQTasks"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQTasks"];
+		[item setLabel:@" Tasks    "];
+		[item setPaletteLabel:@"Tasks"];
+		[item setImage:[NSImage imageNamed:@"mindquarry-tasks"]];
+		[item setTarget:self];
+		[item setTag:0];
+		[item setAction:@selector(selectMode:)];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQFiles"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQFiles"];
+		[item setLabel:@"Workspace"];
+		[item setPaletteLabel:@"Workspace"];
+		[item setImage:[NSImage imageNamed:@"mindquarry-documents"]];
+		[item setTarget:self];
+		[item setTag:1];
+		[item setAction:@selector(selectMode:)];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQCommit"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQCommit"];
+		[item setLabel:@"Commit"];
+		[item setPaletteLabel:@"Commit"];
+//		[item setImage:[NSImage imageNamed:@"mindquarry-documents"]];
+		[item setTarget:self];
+		[item setAction:@selector(commitFiles:)];
+	}
 	
 	return [item autorelease];
 }
@@ -189,11 +235,28 @@
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
-    return [NSArray arrayWithObjects:@"MQCreateTask", @"MQDone", NSToolbarSeparatorItemIdentifier, @"MQRefresh", @"MQStop",  NSToolbarFlexibleSpaceItemIdentifier, @"MQServer", @"MQInfo", nil]; 
+	NSMutableArray *items = [NSMutableArray arrayWithObjects:@"MQTasks", @"MQFiles", NSToolbarSeparatorItemIdentifier, nil];
+	if ([[_toolbar identifier] isEqualToString:TASKS_TOOLBAR_ID]) {
+		[items addObject:@"MQCreateTask"];
+		[items addObject:@"MQDone"];
+	}
+	else if ([[_toolbar identifier] isEqualToString:FILES_TOOLBAR_ID]) {
+		[items addObject:@"MQCommit"];
+	}
+	
+	[items addObject:NSToolbarFlexibleSpaceItemIdentifier];
+	[items addObject:@"MQRefresh"];
+	[items addObject:@"MQStop"];
+	
+	[items addObject:NSToolbarSeparatorItemIdentifier];
+	[items addObject:@"MQServer"];
+	[items addObject:@"MQInfo"];
+	
+    return items; 
 }
 
 - (NSArray *)toolbarSelectableItemIdentifiers:(NSToolbar*)_toolbar {
-    return nil;
+    return [NSArray arrayWithObjects:@"MQTasks", @"MQFiles", nil];
 }
 
 - (void)titlebarSelectionChanged:(id)sender
@@ -259,12 +322,16 @@
 - (IBAction)refresh:(id)sender
 {
 	id currentServer = [self selectedServer];	
-	
-//	NSLog(@"refresh %@", currentServer);
-	
-	MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithController:self forServer:currentServer];
-	[request addToQueue];
-	[request autorelease];
+
+	if (mode == 0) {
+		MQTeamsRequest *request = [[MQTeamsRequest alloc] initWithServer:currentServer];
+		[request addToQueue];
+		[request autorelease];		
+	}
+	else if (mode == 1) {
+		MQSVNUpdateJob *job = [[[MQSVNUpdateJob alloc] initWithServer:currentServer] autorelease];
+		[job addToQueue];
+	}
 }
 
 - (IBAction)stopTasks:(id)sender
@@ -318,6 +385,43 @@
     [NSApp endSheet:createTaskSheet];
 }
 
+- (IBAction)selectMode:(id)sender
+{
+	int tag = [sender tag];
+	mode = tag;
+	NSLog(@"mode: %d", tag);
+	
+	if ([[rootView subviews] count] > 0)
+		[[[rootView subviews] objectAtIndex:0] removeFromSuperview];
+	
+	NSView *newView = nil;
+	if (tag == 0) {
+		newView = tasksView;
+	}
+	else if (tag == 1) {
+		newView = workspaceView;
+	}
+	
+	if (newView) {
+		[newView setFrame:[rootView bounds]];
+		[rootView addSubview:newView];		
+	}
+	
+	if (tag == 0) {
+		[window setToolbar:tasksToolbar];
+		[tasksToolbar setSelectedItemIdentifier:@"MQTasks"];
+	}
+	else if (tag == 1) {
+		[window setToolbar:workspaceToolbar];
+		[workspaceToolbar setSelectedItemIdentifier:@"MQFiles"];
+	}
+}
+
+- (IBAction)commitFiles:(id)sender
+{
+	
+}
+
 - (id)selectedServer
 {
 	NSArray *servers = [serversController selectedObjects];
@@ -369,9 +473,7 @@
     NSArray *insertedEntities = [[[note userInfo] valueForKey:NSInsertedObjectsKey] valueForKeyPath:@"entity.name"];
     NSArray *updatedEntities  = [[[note userInfo] valueForKey:NSUpdatedObjectsKey] valueForKeyPath:@"entity.name"];
     NSArray *deletedEntities  = [[[note userInfo] valueForKey:NSDeletedObjectsKey] valueForKeyPath:@"entity.name"];
-    
-//	NSLog(@"change dele %@", deletedEntities);
-	
+    	
     // Use whatever entity name, or use an NSEntityDescription and key path @"entity" above
     if ([insertedEntities containsObject:@"Task"] ||
         [updatedEntities containsObject:@"Task"] ||
@@ -386,17 +488,6 @@
     {
 		[serversController performSelectorOnMainThread:@selector(rearrangeObjects) withObject:nil waitUntilDone:YES];
     }
-//    else if ([insertedEntities containsObject:@"Action"] ||
-//             [updatedEntities containsObject:@"Action"] ||
-//             [deletedEntities containsObject:@"Action"])
-//    {
-//        [actionController rearrangeObjects];
-//    }
-}
-
-- (IBAction)updateRepositories:(id)sender
-{
-	[[self selectedServer] updateAllRepositories];
 }
 
 @end

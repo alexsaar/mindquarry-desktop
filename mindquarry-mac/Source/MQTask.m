@@ -156,7 +156,7 @@ static BOOL global_autosave_enabled = NO;
 		return;
 	
 //	NSLog(@"saving task %@ \"%@\"", [self valueForKey:@"id"], [self valueForKey:@"title"]);
-	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithController:nil forServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
+	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
 	[request performSelectorOnMainThread:@selector(addToQueue) withObject:nil waitUntilDone:YES];
 	[request autorelease];
 }

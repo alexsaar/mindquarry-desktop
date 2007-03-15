@@ -10,14 +10,12 @@
 
 #import "MQRequest.h"
 
-@class RequestController;
-
 @interface MQTasksRequest : MQRequest {
 
 	id team;
 	
 }
 
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server forTeam:(id)_team;
+- (id)initWithServer:(id)_server forTeam:(id)_team;
 
 @end

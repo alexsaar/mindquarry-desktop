@@ -42,6 +42,22 @@ enum {
 	
 	IBOutlet id createTaskTitle;
 	
+	IBOutlet id rootView;
+
+	IBOutlet id tasksView;
+	
+	IBOutlet id workspaceView;
+	
+	IBOutlet id changesController;
+	
+	IBOutlet id changeColumn;
+	
+	IBOutlet id tasksToolbar;
+	
+	IBOutlet id workspaceToolbar;
+	
+	int mode;
+	
 }
 
 - (void)afterWakeFromNib;
@@ -64,6 +80,10 @@ enum {
 
 - (IBAction)cancelCreateTask:(id)sender;
 
+- (IBAction)selectMode:(id)sender;
+
+- (IBAction)commitFiles:(id)sender;
+
 - (id)selectedServer;
 
 - (id)teamWithId:(NSString *)team_id forServer:(id)server;
@@ -71,7 +91,5 @@ enum {
 - (id)taskWithId:(NSString *)task_id forTeam:(id)team;
 
 - (void)objectsDidChange:(NSNotification *)note;
-
-- (IBAction)updateRepositories:(id)sender;
 
 @end

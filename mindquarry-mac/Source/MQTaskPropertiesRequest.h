@@ -10,15 +10,13 @@
 
 #import "MQRequest.h"
 
-@class RequestController;
-
 @interface MQTaskPropertiesRequest : MQRequest {
 
 	id task;
 	
 }
 
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server forTask:(id)_task;
+- (id)initWithServer:(id)_server forTask:(id)_task;
 
 - (void)setDescription:(NSString *)desc;
 

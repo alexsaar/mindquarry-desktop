@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "MQRequest.h"
+#import "MQJob.h"
 
 @interface MQServer : NSManagedObject {
 
@@ -26,7 +26,7 @@
 
 - (void)initRequestQueue;
 
-- (void)enqueueRequest:(MQRequest *)req;
+- (void)enqueueRequest:(MQJob *)req;
 
 - (void)runFromQueueIfNeeded:(id)sender;
 

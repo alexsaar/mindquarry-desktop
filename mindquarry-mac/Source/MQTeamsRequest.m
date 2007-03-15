@@ -40,15 +40,15 @@
 		
 //		NSLog(@"team %@ name %@", team_id, name);
 
-		id teamobj = [controller teamWithId:team_id forServer:server];
+		id teamobj = [[[NSApp delegate] valueForKey:@"controller"] teamWithId:team_id forServer:server];
 		
 		[teamobj setValue:name forKey:@"name"];
 				
-		MQTaskInfoRequest *ireq = [[MQTaskInfoRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
+		MQTaskInfoRequest *ireq = [[MQTaskInfoRequest alloc] initWithServer:server forTeam:teamobj];
 		[ireq addToQueue];
 		[ireq autorelease];
 		
-		MQTasksRequest *treq = [[MQTasksRequest alloc] initWithController:controller forServer:server forTeam:teamobj];
+		MQTasksRequest *treq = [[MQTasksRequest alloc] initWithServer:server forTeam:teamobj];
 		[treq addToQueue];
 		[treq autorelease];
 	}

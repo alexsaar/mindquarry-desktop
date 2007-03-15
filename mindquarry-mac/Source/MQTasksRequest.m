@@ -13,9 +13,9 @@
 
 @implementation MQTasksRequest
 
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server forTeam:(id)_team;
+- (id)initWithServer:(id)_server forTeam:(id)_team;
 {
-	if (![super initWithController:_controller forServer:_server])
+	if (![super initWithServer:_server])
 		return nil;
 	
 	team = [_team retain];
@@ -65,11 +65,11 @@
 		
 //		NSLog(@"task %@ name %@", node, obj_id);
 		
-		id taskobj = [controller taskWithId:obj_id forTeam:team];
+		id taskobj = [[[NSApp delegate] valueForKey:@"controller"] taskWithId:obj_id forTeam:team];
 		[taskobj setValue:[NSNumber numberWithBool:YES] forKey:@"upToDate"];	
 		[taskobj setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];	
 		
-		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithController:controller forServer:server forTask:taskobj];
+		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithServer:server forTask:taskobj];
 		[req addToQueue];
 		[req autorelease];
 	}

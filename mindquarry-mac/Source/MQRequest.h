@@ -10,16 +10,13 @@
 
 @class RequestController;
 
-#define MAX_CONNECTION 1
+#import "MQJob.h"
 
-@interface MQRequest : NSObject {
+@interface MQRequest : MQJob {
 
 	@protected
-	RequestController *controller;
 	NSURL *url;
-	
-	id server;
-	
+		
 	NSString *username;
 	NSString *password;
 	
@@ -27,30 +24,13 @@
 	NSURLConnection *_connection;
 	NSMutableData *responseData;
 	
-	BOOL didFree;
 }
-
-+ (void)increaseRequestCount:(id)sender;
-
-+ (void)decreaseRequestCount;
-
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server;
-
-- (void)addToQueue;
-
-- (void)startRequest;
-
-- (void)finishRequest;
-
-- (void)cancel;
 
 - (NSURL *)url;
 
 - (NSURL *)currentBaseURL;
 
 - (NSURL *)currentURLForPath:(NSString *)path;
-
-- (NSString *)statusString;
 
 - (void)handleResponseData:(NSData *)data;
 

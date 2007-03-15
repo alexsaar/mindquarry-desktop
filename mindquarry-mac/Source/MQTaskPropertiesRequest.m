@@ -13,9 +13,9 @@
 
 @implementation MQTaskPropertiesRequest
 
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server forTask:(id)_task
+- (id)initWithServer:(id)_server forTask:(id)_task
 {
-	if (![super initWithController:_controller forServer:_server])
+	if (![super initWithServer:_server])
 		return nil;
 	
 	task = [_task retain];

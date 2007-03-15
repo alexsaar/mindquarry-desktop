@@ -120,7 +120,6 @@ extern JNIEnv *env;
 	}
 	
 	jsize len = env->GetArrayLength(changesArray);
-	NSLog(@"%d changes", len);
 	
 	static jclass statusClass = nil;
 	if (!statusClass) {
@@ -161,11 +160,9 @@ extern JNIEnv *env;
 		jstring jpath = (jstring) env->GetObjectField(item, pathField);
 		NSString *path = jstring_to_nsstring(env, jpath);
 		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithInt:statusCode], @"status", [NSNumber numberWithBool:statusCode != 9], @"enabled", [path substringFromIndex:[localPath length]], @"displayPath", nil];
+		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithInt:statusCode], @"status", [NSNumber numberWithBool:statusCode != 9], @"enabled", [path substringFromIndex:[localPath length] + 1], @"displayPath", nil];
 		
 		[changeList addObject:dict];
-		
-		NSLog(@"path: %@ status: %d", path, statusCode);
 	}
 	
 	if (changes)

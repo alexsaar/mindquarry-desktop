@@ -45,13 +45,13 @@
 		runningRequests = [[NSMutableArray alloc] init];
 }
 
-- (void)enqueueRequest:(MQRequest *)req
+- (void)enqueueRequest:(MQJob *)req
 {
 	[requestLock lock];
 	
 	if (requestRunningCount < MAX_CONNECTION) {
 		requestRunningCount++;
-		[MQRequest increaseRequestCount:req];
+		[MQJob increaseRequestCount:req];
 		
 		[runningLock lock];
 		[req startRequest];		
@@ -87,7 +87,7 @@
 	if (request) {
 		[requestLock lock];
 		requestRunningCount++;
-		[MQRequest increaseRequestCount:request];
+		[MQJob increaseRequestCount:request];
 		[requestLock unlock];
 		
 		[runningLock lock];
@@ -119,7 +119,7 @@
 	id req;
 	while (req = [rreqs nextObject]) {
 		[req cancel];
-		[MQRequest decreaseRequestCount];
+		[MQJob decreaseRequestCount];
 	}
 	
 	[runningRequests removeAllObjects];

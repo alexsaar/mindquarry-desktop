@@ -10,99 +10,16 @@
 
 #import "MQServer.h"
 
-static NSLock *spinner_lock = nil;
-static int request_running_count = 0;
-
 @implementation MQRequest
 
-+ (void)initialize
+- (id)initWithServer:(id)_server;
 {
-	spinner_lock = [[NSLock alloc] init];
-}
-
-+ (void)increaseRequestCount:(id)sender
-{
-	[spinner_lock lock];
-	
-	BOOL wasZero = request_running_count == 0;
-//	NSLog(@"++ request_running_count %d" ,request_running_count);
-	
-	request_running_count++;
-	
-	if (wasZero) {
-		
-//		NSLog(@" === start busy");
-		
-		id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
-		[spinner setHidden:NO];
-		[spinner startAnimation:self];
-		
-		NSString *message = nil;
-		
-		if ([sender respondsToSelector:@selector(statusString)])
-			message = [sender statusString];
-		else {
-			//		NSLog(@"sender %@ has no msg", sender);
-			message = @"request...";		
-		}
-		
-		id field = [[NSApp delegate] valueForKey:@"statusField"];
-		[field setStringValue:message];
-		[field setHidden:NO];		
-		
-		id tbItem = [[NSApp delegate] valueForKey:@"refreshToolbarItem"];		
-		[tbItem setEnabled:NO];
-//		[tbItem setImage:[NSImage imageNamed:@"AlertStopIcon"]];
-//		[tbItem setLabel:@"Stop"];
-		
-		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
-		[stopItem setEnabled:YES];
-	}
-	
-	[spinner_lock unlock];
-}
-
-+ (void)decreaseRequestCount
-{
-	[spinner_lock lock];
-	
-//	NSLog(@"-- request_running_count %d" ,request_running_count);
-	
-	request_running_count--;
-	
-	if (request_running_count == 0) {
-		
-//		NSLog(@" === stop busy");
-		
-		id spinner = [[NSApp delegate] valueForKey:@"statusSpinner"];
-		[spinner stopAnimation:self];
-		[spinner setHidden:YES];
-		
-		id field = [[NSApp delegate] valueForKey:@"statusField"];
-		[field setHidden:YES];
-		
-		id tbItem = [[NSApp delegate] valueForKey:@"refreshToolbarItem"];		
-		[tbItem setEnabled:YES];
-
-		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
-		[stopItem setEnabled:NO];
-	}
-	
-	[spinner_lock unlock];
-}
-
-- (id)initWithController:(RequestController *)_controller forServer:(id)_server
-{
-	if (![super init])
+	if (![super initWithServer:_server])
 		return nil;
 	
-	didFree = YES;
-	
-	controller = [_controller retain];
-	server = [_server retain];
-	
-	[self setValue:[server valueForKey:@"username"] forKey:@"username"];
-	[self setValue:[server valueForKey:@"password"] forKey:@"password"];
+		
+	[self setValue:[_server valueForKey:@"username"] forKey:@"username"];
+	[self setValue:[_server valueForKey:@"password"] forKey:@"password"];
 		
 	return self;
 }
@@ -125,18 +42,7 @@ static int request_running_count = 0;
 	[url release];
 	url = nil;
 	
-	[controller release];
-	controller = nil;
-
-	[server release];
-	server = nil;
-	
 	[super dealloc];
-}
-
-- (void)addToQueue
-{
-	[[self valueForKey:@"server"] enqueueRequest:self];
 }
 
 - (void)startRequest
@@ -184,18 +90,6 @@ static int request_running_count = 0;
 - (void)parseXMLResponse:(NSXMLDocument *)document
 {
 	
-}
-
-- (void)finishRequest
-{
-	if (!didFree) {
-		[[self valueForKey:@"server"] runFromQueueIfNeeded:self];
-		[[self class] decreaseRequestCount];
-		
-		[self autorelease];
-//		NSLog(@"release");
-		didFree = YES;
-	}
 }
 
 - (void)cancel
