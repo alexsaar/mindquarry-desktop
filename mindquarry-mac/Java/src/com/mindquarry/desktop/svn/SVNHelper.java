@@ -153,8 +153,10 @@ public abstract class SVNHelper implements Notify2 {
 				System.err.println("client exception: " + path);
 			}
 		}
-		
-		client.commit(paths, getCommitMessage(), true);
+		String message = getCommitMessage();
+		// if getCommitMessage returns null, we don't commit
+		if (message != null)
+			client.commit(paths, message, true);
 	}
 	
 	/**
@@ -172,6 +174,7 @@ public abstract class SVNHelper implements Notify2 {
 	
 	/**
 	 * Is called once before commiting to get the commit message.
+	 * Return null to cancel commit.
 	 */
 	protected abstract String getCommitMessage();
 	

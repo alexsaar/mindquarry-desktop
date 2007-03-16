@@ -61,6 +61,7 @@
 	id change;
 	while (change = [cEnum nextObject]) {
 		[change setValue:self forKey:@"team"];
+		[change setValue:[self valueForKey:@"server"] forKey:@"server"];
 	}
 	
 	return changes;

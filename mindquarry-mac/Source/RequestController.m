@@ -43,6 +43,9 @@
 	[tasksController bind:@"contentSet" toObject:serversController withKeyPath:@"selection.tasks" options:nil];
 	[tasksController fetchWithRequest:nil merge:NO error:nil];
 
+	[changesController bind:@"contentSet" toObject:serversController withKeyPath:@"selection.changes" options:nil];
+	[changesController fetchWithRequest:nil merge:NO error:nil];
+	
 	[serversController willChangeValueForKey:@"selection"];
 	[serversController didChangeValueForKey:@"selection"];
 	
@@ -489,6 +492,12 @@
 			 [deletedEntities containsObject:@"Server"])
     {
 		[serversController performSelectorOnMainThread:@selector(rearrangeObjects) withObject:nil waitUntilDone:YES];
+    }
+    else if ([insertedEntities containsObject:@"Change"] ||
+			 [updatedEntities containsObject:@"Change"] ||
+			 [deletedEntities containsObject:@"Change"])
+    {
+		[changesController performSelectorOnMainThread:@selector(rearrangeObjects) withObject:nil waitUntilDone:YES];
     }
 }
 

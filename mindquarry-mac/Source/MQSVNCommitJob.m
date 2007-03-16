@@ -49,4 +49,9 @@
 	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:YES];
 }
 
+- (NSString *)statusString
+{
+	return @"Commiting changes";
+}
+
 @end

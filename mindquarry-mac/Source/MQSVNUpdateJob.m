@@ -27,8 +27,19 @@
 		[team getSVNChanges];
 	}
 	
-	[[NSApp delegate] performSelectorOnMainThread:@selector(reloadChanges) withObject:nil waitUntilDone:YES];
-	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:YES];
+	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
+}
+
+- (void)finishRequest
+{
+	[super finishRequest];
+	
+//	[[NSApp delegate] reloadChanges];
+}
+
+- (NSString *)statusString
+{
+	return @"Updating working copy";
 }
 
 @end

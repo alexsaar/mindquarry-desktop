@@ -53,8 +53,14 @@
 	NSValueTransformer *trans = [NSValueTransformer valueTransformerForName:@"StatusTransformer"];
 	int status = [[[self objectValue] valueForKey:@"status"] intValue];
 	NSString *statusString = [[trans transformedValue:[[self objectValue] valueForKey:@"status"]] uppercaseString];
-	NSDictionary *statusDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, status == 5 ? redColor : grayColor, NSForegroundColorAttributeName, nil];
-	[statusString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 100, cellFrame.origin.y + 20) withAttributes:statusDict];
+	NSColor *statusColor = textColor;
+	if (status == 9)
+		statusColor = redColor;
+	else if (status > 2)
+		statusColor = grayColor;
+	NSDictionary *statusDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, statusColor, NSForegroundColorAttributeName, nil];
+	NSSize statusSize = [statusString sizeWithAttributes:statusDict];
+	[statusString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - statusSize.width - 5, cellFrame.origin.y + 14) withAttributes:statusDict];
 
 }
 

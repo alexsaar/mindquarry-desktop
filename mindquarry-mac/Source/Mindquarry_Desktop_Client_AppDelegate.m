@@ -217,6 +217,7 @@
 		return message;
 	
 	[commitMessageField setString:@"<message>"];
+	[commitMessageField setSelectedRange:NSMakeRange(0, [[commitMessageField string] length])];
 	if ([NSApp runModalForWindow:commitMessageWindow] == NSRunAbortedResponse) 
 		message = nil;
 	else 
@@ -247,6 +248,8 @@
 
 - (void)reloadChanges
 {
+//	NSLog(@"obj %@", [changesController arrangedObjects]);
+	
 	[changesController rearrangeObjects];
 	[changesTable reloadData];
 }
