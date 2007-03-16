@@ -11,19 +11,27 @@
 #import "MQTeam.h"
 #import "MQServer.h"
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
+#import "SVNController.h"
 
 @implementation MQSVNUpdateJob
 
 - (void)threadMethod
 {
-	[server updateAllRepositories];
-	
+
 	NSMutableArray *changes = [NSMutableArray array];
 	
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
 	id team;
 	while (team = [teamEnum nextObject]) {
+		
+		[team initJVM];
+		[[team svnController] attachCurrentThread];
+		
+		[team update];
+		
 		[changes addObjectsFromArray:[team changes]];
+		
+//		[team destroyJVM];
 	}
 
 //	NSLog(@"changes: %@", changes);

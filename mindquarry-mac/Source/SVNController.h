@@ -20,9 +20,15 @@
 	jclass helperClass;
 	jobject helperRef;
 	
+	JNIEnv *env;
+	
 }
 
 - (id)initWithRepository:(NSString *)_repo username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local;
+
+- (void)attachCurrentThread;
+
+- (void)setJavaEnv:(JNIEnv *)_env;
 
 - (BOOL)updateReturnError:(NSError **)error;
 

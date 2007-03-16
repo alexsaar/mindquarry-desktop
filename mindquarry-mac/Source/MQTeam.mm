@@ -19,6 +19,17 @@
 	}
 }
 
+- (void)destroyJVM
+{
+	[svn release];
+	svn = nil;
+}
+
+- (SVNController *)svnController
+{
+	return svn;
+}
+
 - (NSString *)localPath
 {
 	NSString *base = [[self valueForKey:@"server"] valueForKey:@"localPath"];

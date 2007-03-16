@@ -11,13 +11,24 @@
 #import "JNIHelper.h"
 #import "JVMController.h"
 
-extern JNIEnv *env;
-
 @implementation SVNController
 
 - (id)init 
 {
+	if (![super init])
+		return nil;
+	
+	BOOL attached = NO;
+	
+	if ([JVMController JavaVM]) {
+		[self attachCurrentThread];
+		attached = YES;
+	}
+	
 	[JVMController createJVMIfNeeded];
+
+	if (!attached)
+		[self attachCurrentThread];
 	
 	CHECK_EXCEPTION;
 	
@@ -41,7 +52,7 @@ extern JNIEnv *env;
 	[self setValue:_user forKey:@"username"];
 	[self setValue:_pass forKey:@"password"];
 	[self setValue:_local forKey:@"localPath"];
-	
+		
 	jmethodID helperConstructor = env->GetMethodID(helperClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 	CHECK_EXCEPTION;
 	if (!helperConstructor) {
@@ -70,10 +81,20 @@ extern JNIEnv *env;
 - (void)dealloc
 {
 	env->DeleteGlobalRef(helperRef);
-	
 	CHECK_EXCEPTION;
+	helperRef = nil;
 	
 	[super dealloc];
+}
+
+- (void)attachCurrentThread
+{
+	[JVMController JavaVM]->AttachCurrentThread((void **)&env, NULL);
+}
+
+- (void)setJavaEnv:(JNIEnv *)_env
+{
+	env = _env;
 }
 
 - (BOOL)updateReturnError:(NSError **)error
@@ -89,6 +110,7 @@ extern JNIEnv *env;
 	}
 	
 	env->CallVoidMethod(helperRef, updateMethod);
+	CHECK_EXCEPTION;
 	
 	if (env->ExceptionCheck() == JNI_TRUE) {
 		env->ExceptionDescribe();
@@ -156,9 +178,16 @@ extern JNIEnv *env;
 	int i;
 	for (i = 0; i < len; i++) {
 		jobject item = env->GetObjectArrayElement(changesArray, i);
+		CHECK_EXCEPTION;
+
 		jint statusCode = env->GetIntField(item, textStatusField);
+		CHECK_EXCEPTION;
+		
 		jstring jpath = (jstring) env->GetObjectField(item, pathField);
+		CHECK_EXCEPTION;
+		
 		NSString *path = jstring_to_nsstring(env, jpath);
+		CHECK_EXCEPTION;
 		
 		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithInt:statusCode], @"status", [NSNumber numberWithBool:statusCode != 9], @"enabled", [path substringFromIndex:[localPath length] + 1], @"displayPath", nil];
 		

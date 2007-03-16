@@ -166,13 +166,4 @@
 	}
 }
 
-- (void)updateAllRepositories
-{
-	NSEnumerator *teamEnum = [[self valueForKey:@"teams"] objectEnumerator];
-	id team;
-	while (team = [teamEnum nextObject]) {
-		[team update];
-	}
-}
-
 @end

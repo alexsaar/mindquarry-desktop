@@ -44,6 +44,4 @@
 
 - (void)clearCredentials;
 
-- (void)updateAllRepositories;
-
 @end

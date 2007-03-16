@@ -56,8 +56,8 @@ does not already exist.
       <jar basedir="build" destfile="dist/mindquarry-mac-svn.jar" />
   </target>
 
-  <target name="run" depends="dist, build">
-    <java classname="com.mindquarry.client_mac.SVNTest"  
+  <target name="run" depends="dist">
+    <java classname="com.mindquarry.desktop.svn.MacSVNHelper"  
         fork="true" 
         dir="${build}" 
         classpath="${build}" 

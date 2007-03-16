@@ -20,6 +20,10 @@
 
 - (void)initJVM;
 
+- (void)destroyJVM;
+
+- (SVNController *)svnController;
+
 - (NSString *)localPath;
 
 - (void)update;
