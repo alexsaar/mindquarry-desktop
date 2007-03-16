@@ -82,6 +82,7 @@ public abstract class SVNHelper implements Notify2 {
 	 * This includes files that have not been scheduled for addition to the repository.
 	 */
 	public Status[] getLocalChanges() throws ClientException {
+    try {
 		Status[] stati = client.status(localPath, true, false, true);
 		
 		// add all conflicted file paths to an array
@@ -113,6 +114,9 @@ public abstract class SVNHelper implements Notify2 {
 			}
 		}
 		return changes.toArray(new Status[0]);
+    } catch (ClientException ce) {
+      return new Status[0];
+    }
 	}
 	
 	/**
