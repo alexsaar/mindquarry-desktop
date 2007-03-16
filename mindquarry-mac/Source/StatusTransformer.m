@@ -23,7 +23,7 @@
 
 - (id)transformedValue:(id)value 
 {
-	if ([value intValue] == 5) 
+	if ([value intValue] == 5 || [value intValue] == 3) 
 		return @"new";
 	else if ([value intValue] == 2)
 		return @"modified";

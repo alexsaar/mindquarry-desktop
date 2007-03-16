@@ -17,7 +17,7 @@
 	
 	NSColor *textColor = [NSColor blackColor];
 	NSColor *grayColor = [NSColor colorWithCalibratedRed:16 / 255.0 green:144 / 255.0 blue:0 alpha:1];
-	NSColor *redColor = [NSColor colorWithCalibratedRed:144 / 255.0 green:16 / 255.0 blue:0 alpha:1];
+	NSColor *redColor = [NSColor colorWithCalibratedRed:200 / 255.0 green:16 / 255.0 blue:0 alpha:1];
 	if ([self isHighlighted] && isFocused) {
 		textColor = [NSColor colorWithCalibratedWhite:1 alpha:1.0];
 		grayColor = [grayColor highlightWithLevel:0.5];

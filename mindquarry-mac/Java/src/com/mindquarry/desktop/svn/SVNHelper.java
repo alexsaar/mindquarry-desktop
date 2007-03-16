@@ -137,7 +137,7 @@ public abstract class SVNHelper implements Notify2 {
 							
 						case CONFLICT_OVERRIDE_FROM_WC:
 							try {
-								copyFile(status.getConflictWorking(), status.getPath());
+								copyFile(status.getPath() + ".mine", status.getPath());
 								client.resolved(status.getPath(), false);
 							}
 							catch (IOException e) {

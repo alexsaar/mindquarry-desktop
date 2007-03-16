@@ -34,12 +34,12 @@
 {
 	[super finishRequest];
 	
-//	[[NSApp delegate] reloadChanges];
+	[[NSApp delegate] reloadChanges];
 }
 
 - (NSString *)statusString
 {
-	return @"Updating working copy";
+	return @"Updating working copy...";
 }
 
 @end

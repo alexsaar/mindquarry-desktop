@@ -51,7 +51,7 @@
 
 - (NSString *)statusString
 {
-	return @"Commiting changes";
+	return @"Commiting changes...";
 }
 
 @end
