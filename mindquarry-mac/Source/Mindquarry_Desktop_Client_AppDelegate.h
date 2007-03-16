@@ -23,9 +23,15 @@
 	IBOutlet id taskTable;
 	
 	IBOutlet id changesController;
+	IBOutlet id changesTable;
 	
 	id refreshToolbarItem;
     id stopToolbarItem;
+	
+	IBOutlet id commitMessageWindow;
+	IBOutlet id commitMessageField;
+	
+	NSString *cachedMessage;
 	
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     NSManagedObjectModel *managedObjectModel;
@@ -37,6 +43,9 @@
 - (NSManagedObjectContext *)managedObjectContext;
 
 - (IBAction)saveAction:sender;
+
+- (NSString *)getCommitMessage;
+- (IBAction)commit:(id)sender;
 
 - (void)reloadTasks;
 - (void)reloadChanges;

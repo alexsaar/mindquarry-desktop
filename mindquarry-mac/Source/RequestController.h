@@ -58,6 +58,8 @@ enum {
 	
 	int mode;
 	
+	IBOutlet id changesFilterbar;
+	
 }
 
 - (void)afterWakeFromNib;

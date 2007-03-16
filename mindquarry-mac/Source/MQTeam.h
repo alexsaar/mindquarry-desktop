@@ -28,7 +28,7 @@
 
 - (void)update;
 
-- (NSArray *)changes;
+- (NSArray *)getSVNChanges;
 
 - (void)commitChanges:(NSArray *)changes message:(NSString *)commitMessage;
 

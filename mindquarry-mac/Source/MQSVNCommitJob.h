@@ -1,18 +1,17 @@
 //
-//  MQChangeCell.h
+//  MQSVNCommitJob.h
 //  Mindquarry Desktop Client
 //
-//  Created by Jonas on 15.03.07.
+//  Created by Jonas on 16.03.07.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
 
+#import "MQThreadJob.h"
 
-@interface MQChangeCell : NSTextFieldCell {
+@interface MQSVNCommitJob : MQThreadJob {
 
-	id _change;
-	
 }
 
 @end

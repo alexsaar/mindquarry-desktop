@@ -189,9 +189,16 @@
 		NSString *path = jstring_to_nsstring(env, jpath);
 		CHECK_EXCEPTION;
 		
-		NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithInt:statusCode], @"status", [NSNumber numberWithBool:statusCode != 9], @"enabled", [path substringFromIndex:[localPath length] + 1], @"displayPath", nil];
+		NSManagedObject *change = [[NSManagedObject alloc] initWithEntity:[[[[NSApp delegate] managedObjectModel] entitiesByName] objectForKey:@"Change"] insertIntoManagedObjectContext:[[NSApp delegate] managedObjectContext]];
 		
-		[changeList addObject:dict];
+		[change setValue:path forKey:@"absPath"];
+		[change setValue:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];
+		[change setValue:[NSNumber numberWithBool:statusCode != 9] forKey:@"enabled"];
+		[change setValue:[NSNumber numberWithInt:statusCode] forKey:@"status"];
+				
+		[changeList addObject:change];
+		
+		[change release];
 	}
 	
 	if (changes)
@@ -235,7 +242,7 @@
 	
 	int i;
 	for (i = 0; i < count; i++) {
-		NSString *path = [[items objectAtIndex:i] valueForKey:@"path"];
+		NSString *path = [items objectAtIndex:i];
 		jstring jpath = nsstring_to_jstring(env, path);
 		CHECK_EXCEPTION;
 		

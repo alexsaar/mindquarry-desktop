@@ -44,8 +44,15 @@
 	[svn updateReturnError:nil];
 }
 
-- (NSArray *)changes
+- (NSArray *)getSVNChanges
 {
+	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
+	NSEnumerator *chEnum = [[self valueForKey:@"changes"] objectEnumerator];
+	id ch;
+	while (ch = [chEnum nextObject]) {
+		[context deleteObject:ch];
+	}
+	
 	[self initJVM];
 	NSMutableArray *changes;
 	[svn getLocalChanges:&changes returnError:nil];
@@ -53,7 +60,7 @@
 	NSEnumerator *cEnum = [changes objectEnumerator];
 	id change;
 	while (change = [cEnum nextObject]) {
-		[change setObject:self forKey:@"team"];
+		[change setValue:self forKey:@"team"];
 	}
 	
 	return changes;

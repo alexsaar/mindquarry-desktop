@@ -8,11 +8,14 @@
             SUPERCLASS = NSView; 
         }, 
         {
-            ACTIONS = {saveAction = id; }; 
+            ACTIONS = {commit = id; saveAction = id; }; 
             CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 changesController = id; 
+                changesTable = id; 
+                commitMessageField = id; 
+                commitMessageWindow = id; 
                 controller = id; 
                 refreshToolbarItem = id; 
                 serverController = id; 
@@ -30,6 +33,7 @@
         {
             ACTIONS = {
                 cancelCreateTask = id; 
+                commitFiles = id; 
                 createTask = id; 
                 finishCreateTask = id; 
                 refresh = id; 
@@ -39,13 +43,13 @@
                 stopTasks = id; 
                 titlebarSelectionChanged = id; 
                 toggleInspector = id; 
-                updateRepositories = id; 
             }; 
             CLASS = RequestController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 changeColumn = id; 
                 changesController = id; 
+                changesFilterbar = id; 
                 createTaskSheet = id; 
                 createTaskTeamButton = id; 
                 createTaskTitle = id; 
@@ -59,9 +63,11 @@
                 taskColumn = id; 
                 taskTable = id; 
                 tasksController = id; 
+                tasksToolbar = id; 
                 tasksView = id; 
                 teamsController = id; 
                 window = id; 
+                workspaceToolbar = id; 
                 workspaceView = id; 
             }; 
             SUPERCLASS = NSObject; 

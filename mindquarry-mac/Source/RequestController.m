@@ -20,6 +20,7 @@
 #import "MQTeam.h"
 #import "MQChangeCell.h"
 #import "MQSVNUpdateJob.h"
+#import "MQSVNCommitJob.h"
 
 #define TASKS_TOOLBAR_ID @"MQDesktopMainToolbar2"
 #define FILES_TOOLBAR_ID @"MQDesktopWorkToolbar2"
@@ -419,7 +420,8 @@
 
 - (IBAction)commitFiles:(id)sender
 {
-	
+	MQSVNCommitJob *job = [[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease];
+	[job addToQueue];	
 }
 
 - (id)selectedServer

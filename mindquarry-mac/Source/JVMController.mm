@@ -9,6 +9,7 @@
 #import "JVMController.h"
 
 #import "JNIHelper.h"
+#import "MacSVNHelperNative.h"
 
 static JavaVM *_jvm_controller_jvm = nil;
 
@@ -68,8 +69,33 @@ JNIEnv *env;
     }
     
     CHECK_EXCEPTION;
-		
+	
+	if (![self registerNatives])
+		return NO;
+
+	CHECK_EXCEPTION;
+	
 	return TRUE;
+}
+
++ (BOOL)registerNatives
+{
+	// JNIHandler methods
+    jclass jJNIHandler = env->FindClass("com/mindquarry/desktop/svn/MacSVNHelper");
+    if (!jJNIHandler) {
+        NSLog(@"Failed to find MacSVNClient class");
+        return FALSE;
+    }    
+    JNINativeMethod jniHandlerMethods[] = {
+		{ (char*)"getCommitMessage", (char*)"()Ljava/lang/String;", (void*)&Java_com_mindquarry_desktop_svn_MacSVNHelper_getCommitMessage },
+    };
+    if (env->RegisterNatives(jJNIHandler, jniHandlerMethods, sizeof(jniHandlerMethods) / sizeof(JNINativeMethod)) != 0) {
+        NSLog(@"could not register MacSVNClient native methods");
+        return FALSE;
+    }
+	CHECK_EXCEPTION;
+	
+	return YES;
 }
 
 + (BOOL)destroyJVM

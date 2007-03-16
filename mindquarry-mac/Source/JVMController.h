@@ -11,11 +11,6 @@
 #import <JavaVM/jni.h>
 
 @interface JVMController : NSObject {
-
-	@protected
-	NSString *classpath;
-	JavaVM *jvm;
-	JNIEnv *env;
 	
 }
 
@@ -23,6 +18,9 @@
 + (JavaVM *)JavaVM;
 
 + (BOOL)createJVMIfNeeded;
+
++ (BOOL)registerNatives;
+
 + (BOOL)destroyJVM;
 
 @end

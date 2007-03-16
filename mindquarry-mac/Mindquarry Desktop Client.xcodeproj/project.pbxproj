@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		DD1CD0870BAAF47400BF34BA /* Java Headers */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = DD1CD08F0BAAF47500BF34BA /* Build configuration list for PBXAggregateTarget "Java Headers" */;
+			buildPhases = (
+				DD1CD0860BAAF47400BF34BA /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Java Headers";
+			productName = "Java Headers";
+		};
 		DD2EDB040B9F2180000238CE /* Disk Image */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = DD2EDD970B9F21B5000238CE /* Build configuration list for PBXAggregateTarget "Disk Image" */;
@@ -48,6 +59,8 @@
 		DD09A5660BA03C26002FD5DD /* MQServer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A5650BA03C26002FD5DD /* MQServer.m */; };
 		DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */; };
 		DD0B4A560BA166D60075798B /* task-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DD0B4A550BA166D60075798B /* task-add.png */; };
+		DD1CD0230BAAEF1800BF34BA /* MQSVNCommitJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */; };
+		DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -134,6 +147,10 @@
 		DD09A5650BA03C26002FD5DD /* MQServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQServer.m; sourceTree = "<group>"; };
 		DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AlertStopIcon.icns; path = Resources/AlertStopIcon.icns; sourceTree = "<group>"; };
 		DD0B4A550BA166D60075798B /* task-add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-add.png"; path = "Resources/task-add.png"; sourceTree = "<group>"; };
+		DD1CD0210BAAEF1800BF34BA /* MQSVNCommitJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQSVNCommitJob.h; sourceTree = "<group>"; };
+		DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNCommitJob.m; sourceTree = "<group>"; };
+		DD1CD07A0BAAF3DA00BF34BA /* MacSVNHelperNative.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MacSVNHelperNative.h; sourceTree = "<group>"; };
+		DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacSVNHelperNative.mm; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -364,6 +381,8 @@
 				DD6D71790BA9A9F20071E035 /* MQThreadJob.m */,
 				DD6D71990BA9AEB50071E035 /* MQSVNUpdateJob.h */,
 				DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */,
+				DD1CD0210BAAEF1800BF34BA /* MQSVNCommitJob.h */,
+				DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */,
 			);
 			name = Requests;
 			sourceTree = "<group>";
@@ -398,6 +417,8 @@
 		DDE33FB50BA6D5FD00CE286B /* SVN */ = {
 			isa = PBXGroup;
 			children = (
+				DD1CD07A0BAAF3DA00BF34BA /* MacSVNHelperNative.h */,
+				DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */,
 				DDE33FB90BA6D60400CE286B /* JNIHelper.h */,
 				DDE33FBA0BA6D60400CE286B /* JNIHelper.mm */,
 				DDE33FBB0BA6D60400CE286B /* JVMController.h */,
@@ -449,6 +470,7 @@
 				8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
 				DD2EDB040B9F2180000238CE /* Disk Image */,
 				DDE33FD10BA6D61800CE286B /* Java Ant */,
+				DD1CD0870BAAF47400BF34BA /* Java Headers */,
 			);
 		};
 /* End PBXProject section */
@@ -485,6 +507,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		DD1CD0860BAAF47400BF34BA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here\n\njavah -classpath Java/build -o Source/MacSVNHelperNative.h com.mindquarry.desktop.svn.MacSVNHelper\n";
+		};
 		DD2EDB030B9F2180000238CE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -548,6 +583,8 @@
 				DD6D71080BA97CB80071E035 /* MQJob.m in Sources */,
 				DD6D717A0BA9A9F20071E035 /* MQThreadJob.m in Sources */,
 				DD6D719B0BA9AEB50071E035 /* MQSVNUpdateJob.m in Sources */,
+				DD1CD0230BAAEF1800BF34BA /* MQSVNCommitJob.m in Sources */,
+				DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -645,6 +682,28 @@
 			};
 			name = Release;
 		};
+		DD1CD0900BAAF47500BF34BA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Java Headers";
+			};
+			name = Debug;
+		};
+		DD1CD0910BAAF47500BF34BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = "Java Headers";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		DD2EDD980B9F21B5000238CE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -706,6 +765,15 @@
 			buildConfigurations = (
 				26FC0A890875C7B200E6366F /* Debug */,
 				26FC0A8A0875C7B200E6366F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DD1CD08F0BAAF47500BF34BA /* Build configuration list for PBXAggregateTarget "Java Headers" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DD1CD0900BAAF47500BF34BA /* Debug */,
+				DD1CD0910BAAF47500BF34BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

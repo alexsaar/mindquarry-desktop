@@ -33,21 +33,20 @@
 		textColor = [NSColor blackColor];
 //		grayColor = [NSColor colorWithCalibratedRed:0 green:0.5 blue:0 alpha:1];
 	}
-
 	
 	NSMutableParagraphStyle *pstyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
 	[pstyle setLineBreakMode:NSLineBreakByTruncatingTail];
 	
 	NSDictionary *titleDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
-	NSString *dpath = [[self objectValue] valueForKey:@"displayPath"];
+	NSString *dpath = [[self objectValue] valueForKey:@"relPath"];
 	[dpath drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 5, cellFrame.size.width - 45, 16) withAttributes:titleDict];
 	
-	NSString *path = [[self objectValue] valueForKey:@"path"];
+	NSString *path = [[self objectValue] valueForKey:@"absPath"];
 	NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:path];
 	[icon setSize:NSMakeSize(32, 32)];
 	[icon compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 36) operation:NSCompositeSourceOver];
 	
-	NSString *team = [[[[self objectValue] valueForKey:@"team"] valueForKey:@"name"] uppercaseString];
+	NSString *team = [[[self objectValue] valueForKey:@"team"] valueForKey:@"name"];
 	NSDictionary *teamDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
 	[team drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 22, cellFrame.size.width - 45, 16) withAttributes:teamDict];
 
@@ -57,6 +56,19 @@
 	NSDictionary *statusDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, status == 5 ? redColor : grayColor, NSForegroundColorAttributeName, nil];
 	[statusString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 100, cellFrame.origin.y + 20) withAttributes:statusDict];
 
+}
+
+- (id)objectValue
+{
+    return _change;
+}
+
+- (void)setObjectValue:(id)value
+{
+    if (NULL == value || value == _change)
+        return;
+    
+	_change = value;
 }
 
 @end

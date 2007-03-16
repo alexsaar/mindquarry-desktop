@@ -56,13 +56,16 @@ static NSDictionary *prioImages;
 	BOOL isFocused = [[controlView window] isKeyWindow] && [[controlView window] firstResponder] == controlView;
 	
 	NSColor *textColor = NULL, *grayColor = NULL;
+	NSColor *greenColor = [NSColor colorWithCalibratedRed:16 / 255.0 green:144 / 255.0 blue:0 alpha:1];
 	if ([self isHighlighted] && isFocused) {
 		textColor = [NSColor colorWithCalibratedWhite:1 alpha:1.0];
 		grayColor = [NSColor colorWithCalibratedWhite:1 alpha:0.7];
+		greenColor = [greenColor highlightWithLevel:0.5];
 	}
 	else if ([self isHighlighted]) {
 		textColor = [NSColor colorWithCalibratedWhite:1 alpha:0.8];
 		grayColor = [NSColor colorWithCalibratedWhite:1 alpha:0.6];
+		greenColor = [greenColor highlightWithLevel:0.7];
 	}
 	else {
 		textColor = [NSColor blackColor];
@@ -91,7 +94,10 @@ static NSDictionary *prioImages;
 		titleSize.width = maxSize;
 	[title drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 4, maxSize, 16) withAttributes:titleDict];
 	
-//	[title drawAtPoint:NSMakePoint(cellFrame.origin.x + 40, cellFrame.origin.y + 4) withAttributes:titleDict];
+	NSString *team = [[[self objectValue] valueForKey:@"team"] valueForKey:@"name"];
+	NSDictionary *teamDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, greenColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
+	NSSize teamSize = [team sizeWithAttributes:teamDict];
+	[team drawInRect:NSMakeRect(cellFrame.origin.x + 42, cellFrame.origin.y + 21, cellFrame.size.width - 55, 16) withAttributes:teamDict];	
 	
 	// summary
 	NSString *sum = [[self objectValue] valueForKey:@"summary"];
@@ -99,7 +105,7 @@ static NSDictionary *prioImages;
 		NSMutableString *summary = [NSMutableString stringWithString:sum];
 		[summary replaceOccurrencesOfString:@"\n" withString:@" " options:0 range:NSMakeRange(0, [summary length])];
 		
-		[summary drawInRect:NSMakeRect(cellFrame.origin.x + 44, cellFrame.origin.y + 21, cellFrame.size.width - 55, 14) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:pstyle, NSParagraphStyleAttributeName, [NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
+		[summary drawInRect:NSMakeRect(cellFrame.origin.x + 50 + teamSize.width, cellFrame.origin.y + 21, cellFrame.size.width - 61 - teamSize.width, 14) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:pstyle, NSParagraphStyleAttributeName, [NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
 	}
 	
 	// status icon
