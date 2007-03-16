@@ -74,6 +74,7 @@ such as when changing to a new version of the JDK.
   <target name="clean" description="Removes previous build">
     <delete verbose="true">
       <fileset dir="${build}"/>
+      <fileset dir="dist"/>
     </delete>
   </target>
 
