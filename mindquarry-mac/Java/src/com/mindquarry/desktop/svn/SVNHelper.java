@@ -82,41 +82,47 @@ public abstract class SVNHelper implements Notify2 {
 	 * This includes files that have not been scheduled for addition to the repository.
 	 */
 	public Status[] getLocalChanges() throws ClientException {
-    try {
-		Status[] stati = client.status(localPath, true, false, true);
+		try {
+			Status[] stati = client.status(localPath, true, false, true);
 		
-		// add all conflicted file paths to an array
-		ArrayList<String> conflicts = new ArrayList<String>();
-		for (Status stat : stati) {
-			if (stat.getTextStatus() == StatusKind.conflicted) {
-				conflicts.add(stat.getPath());
-			}
-		}
-		
-		// collect changes
-		ArrayList<Status> changes = new ArrayList<Status>();
-		for (Status stat : stati) {
-			// skip conflict related files (.mine, .rxyz)
-			boolean isConflictRelatedFile = false;
-			for (String conflict : conflicts) {
-				if (stat.getPath().startsWith(conflict + ".")) {
-					isConflictRelatedFile = true;
-					break;
+			// add all conflicted file paths to an array
+			ArrayList<String> conflicts = new ArrayList<String>();
+			for (Status stat : stati) {
+				if (stat.getTextStatus() == StatusKind.conflicted) {
+					conflicts.add(stat.getPath());
 				}
 			}
-			if (isConflictRelatedFile) {
-				continue;
+		
+			// collect changes
+			ArrayList<Status> changes = new ArrayList<Status>();
+			for (Status stat : stati) {
+				
+				// skip ignored files
+				if (stat.getTextStatus() == StatusKind.ignored || stat.getTextStatus() == StatusKind.external) {
+					continue;
+				}
+				
+				// skip conflict related files (.mine, .rxyz)
+				boolean isConflictRelatedFile = false;
+				for (String conflict : conflicts) {
+					if (stat.getPath().startsWith(conflict + ".")) {
+						isConflictRelatedFile = true;
+						break;
+					}
+				}
+				if (isConflictRelatedFile) {
+					continue;
+				}
+				
+				// add changed or modified files to the results array
+				if (stat.getTextStatus() > StatusKind.normal) {
+					changes.add(stat);
+				}
 			}
-
-			// add changed or modified files to the results array
-			if (stat.getTextStatus() > StatusKind.normal) {
-				changes.add(stat);
-			}
+			return changes.toArray(new Status[0]);
+		} catch (ClientException ce) {
+			return new Status[0];
 		}
-		return changes.toArray(new Status[0]);
-    } catch (ClientException ce) {
-      return new Status[0];
-    }
 	}
 	
 	/**
@@ -130,10 +136,10 @@ public abstract class SVNHelper implements Notify2 {
 			try {
 				Status status = client.singleStatus(path, false);
 				
-				if (status.getTextStatus() == 5) {
+				if (status.getTextStatus() == StatusKind.unversioned) {
 					client.add(path, false);
 				}
-				else if (status.getTextStatus() == 9) {
+				else if (status.getTextStatus() == StatusKind.conflicted) {
 					switch (resolveConflict(status)) {
 						case CONFLICT_RESET_FROM_SERVER:
 							// TODO

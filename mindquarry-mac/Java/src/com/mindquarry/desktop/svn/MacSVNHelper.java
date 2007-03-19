@@ -12,7 +12,7 @@ public class MacSVNHelper extends SVNHelper {
 	}
 	
 	public void onNotify(NotifyInformation info) {
-		System.out.println("mac notify: " + info.getPath());
+//		System.out.println("mac notify: " + info.getPath());
 	}
 	
 	protected int resolveConflict(Status status) {
