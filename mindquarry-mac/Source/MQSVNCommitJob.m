@@ -12,6 +12,7 @@
 #import "SVNController.h"
 
 #import "MQSVNUpdateJob.h"
+#import "Mindquarry_Desktop_Client_AppDelegate.h"
 
 @implementation MQSVNCommitJob
 
@@ -38,15 +39,12 @@
 //		[team update];
 //		[team getSVNChanges];
 	}
-	
-	[[NSApp delegate] performSelectorOnMainThread:@selector(reloadChanges) withObject:nil waitUntilDone:YES];
-	
-	MQSVNUpdateJob *job = [[[MQSVNUpdateJob alloc] initWithServer:server] autorelease];
-	[job addToQueue];
-	
+
 	[[NSApp delegate] setValue:nil forKey:@"cachedMessage"];
 	
-	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:YES];
+	[[[[MQSVNUpdateJob alloc] initWithServer:server] autorelease] addToQueue];
+	
+	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString

@@ -15,6 +15,16 @@
 
 @implementation MQSVNUpdateJob
 
+- (id)initWithServer:(id)_server updates:(BOOL)_update
+{
+	if (![super initWithServer:_server])
+		return nil;
+	
+	update = _update;
+	
+	return self;
+}
+
 - (void)threadMethod
 {
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
@@ -23,18 +33,12 @@
 		[team initJVM];
 		[[team svnController] attachCurrentThread];
 		
-		[team update];
+		if (update)
+			[team update];
 		[team getSVNChanges];
 	}
 	
 	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
-}
-
-- (void)finishRequest
-{
-	[super finishRequest];
-	
-	[[NSApp delegate] reloadChanges];
 }
 
 - (NSString *)statusString

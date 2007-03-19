@@ -70,6 +70,12 @@ enum {
 
 - (IBAction)setDone:(id)sender;
 
+- (void)refreshWorkspaceWithUpdate:(BOOL)update;
+
+- (void)backgroundRefresh;
+
+- (void)refreshTasks;
+
 - (IBAction)refresh:(id)sender;
 
 - (IBAction)stopTasks:(id)sender;
@@ -82,8 +88,6 @@ enum {
 
 - (IBAction)cancelCreateTask:(id)sender;
 
-- (IBAction)selectMode:(id)sender;
-
 - (IBAction)commitFiles:(id)sender;
 
 - (id)selectedServer;
@@ -93,5 +97,7 @@ enum {
 - (id)taskWithId:(NSString *)task_id forTeam:(id)team;
 
 - (void)objectsDidChange:(NSNotification *)note;
+
+- (IBAction)setServerLocalPath:(id)sender;
 
 @end

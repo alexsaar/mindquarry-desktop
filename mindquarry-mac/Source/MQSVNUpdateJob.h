@@ -12,6 +12,10 @@
 
 @interface MQSVNUpdateJob : MQThreadJob {
 
+	BOOL update;
+	
 }
+
+- (id)initWithServer:(id)_server updates:(BOOL)_update;
 
 @end

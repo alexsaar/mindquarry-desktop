@@ -38,8 +38,8 @@
                 finishCreateTask = id; 
                 refresh = id; 
                 saveTask = id; 
-                selectMode = id; 
                 setDone = id; 
+                setServerLocalPath = id; 
                 stopTasks = id; 
                 titlebarSelectionChanged = id; 
                 toggleInspector = id; 

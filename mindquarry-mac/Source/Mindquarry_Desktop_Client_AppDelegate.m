@@ -246,12 +246,4 @@
 //	NSLog(@"full task reload");
 }
 
-- (void)reloadChanges
-{
-//	NSLog(@"obj %@", [changesController arrangedObjects]);
-	
-	[changesController rearrangeObjects];
-	[changesTable reloadData];
-}
-
 @end

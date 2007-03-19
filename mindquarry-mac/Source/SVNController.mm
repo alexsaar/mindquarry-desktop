@@ -51,7 +51,7 @@
 	[self setValue:_repo forKey:@"repository"];
 	[self setValue:_user forKey:@"username"];
 	[self setValue:_pass forKey:@"password"];
-	[self setValue:_local forKey:@"localPath"];
+	[self setValue:[_local stringByExpandingTildeInPath] forKey:@"localPath"];
 		
 	jmethodID helperConstructor = env->GetMethodID(helperClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 	CHECK_EXCEPTION;
@@ -175,6 +175,8 @@
 	
 	NSMutableArray *changeList = [[NSMutableArray alloc] init];
 	
+	id changesController = [[NSApp delegate] valueForKey:@"changesController"];
+	
 	int i;
 	for (i = 0; i < len; i++) {
 		jobject item = env->GetObjectArrayElement(changesArray, i);
@@ -189,7 +191,7 @@
 		NSString *path = jstring_to_nsstring(env, jpath);
 		CHECK_EXCEPTION;
 		
-		NSManagedObject *change = [[NSManagedObject alloc] initWithEntity:[[[[NSApp delegate] managedObjectModel] entitiesByName] objectForKey:@"Change"] insertIntoManagedObjectContext:[[NSApp delegate] managedObjectContext]];
+		NSManagedObject *change = [changesController newObject];
 		
 		[change setValue:path forKey:@"absPath"];
 		[change setValue:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];

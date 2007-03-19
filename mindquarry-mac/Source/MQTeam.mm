@@ -46,11 +46,13 @@
 
 - (NSArray *)getSVNChanges
 {
-	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
+	id chController = [[NSApp delegate] valueForKey:@"changesController"];
+//	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
 	NSEnumerator *chEnum = [[self valueForKey:@"changes"] objectEnumerator];
 	id ch;
 	while (ch = [chEnum nextObject]) {
-		[context deleteObject:ch];
+//		[context performSelectorOnMainThread:@selector(deleteObject:) withObject:ch waitUntilDone:YES];
+		[chController performSelectorOnMainThread:@selector(removeObject:) withObject:ch waitUntilDone:YES];
 	}
 	
 	[self initJVM];

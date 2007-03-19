@@ -48,6 +48,5 @@
 - (IBAction)commit:(id)sender;
 
 - (void)reloadTasks;
-- (void)reloadChanges;
 
 @end
