@@ -13,8 +13,9 @@
  */
 package com.mindquarry.desktop.client.task;
 
-import org.eclipse.jface.viewers.BaseLabelProvider;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -24,7 +25,7 @@ import org.eclipse.swt.widgets.Display;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskTableLabelProvider extends BaseLabelProvider implements
+public class TaskTableTooltipProvider extends CellLabelProvider implements
         ITableLabelProvider {
     private Image newTask = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
@@ -72,5 +73,35 @@ public class TaskTableLabelProvider extends BaseLabelProvider implements
             text = task.getTitle();
         }
         return text;
+    }
+
+    /**
+     * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+     */
+    @Override
+    public void update(ViewerCell cell) {
+        // nothing to do here
+    }
+
+    /**
+     * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
+     */
+    @Override
+    public String getToolTipText(Object element) {
+        Task task = (Task) element;
+
+        String text = ""; //$NON-NLS-1$
+        text += "Title" + ": " + task.getTitle(); //$NON-NLS-1$ //$NON-NLS-2$ 
+        text += "\n" + "Status" + ": " + task.getStatus(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        text += "\n" + "Summary" + ": " + task.getSummary(); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+        return text;
+    }
+    
+    /**
+     * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipTimeDisplayed(java.lang.Object)
+     */
+    @Override
+    public int getToolTipTimeDisplayed(Object object) {
+        return 1000;
     }
 }

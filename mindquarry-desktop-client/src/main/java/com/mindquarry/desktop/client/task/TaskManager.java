@@ -30,18 +30,19 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.DocumentSource;
 import org.dom4j.io.SAXReader;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -333,26 +334,19 @@ public class TaskManager {
                     table.setLinesVisible(false);
                     table.setToolTipText(""); //$NON-NLS-1$
 
-                    // add a "fake" tooltip
-                    Listener labelListener = new TableItemTooltipListener(table);
-                    Listener tableListener = new TableTooltipListener(table,
-                            labelListener);
-                    table.addListener(SWT.Dispose, tableListener);
-                    table.addListener(SWT.KeyDown, tableListener);
-                    table.addListener(SWT.MouseMove, tableListener);
-                    table.addListener(SWT.MouseHover, tableListener);
-
                     // create table viewer
                     taskTableViewer = new TableViewer(table);
-                    TableColumn titleColumn = new TableColumn(table, SWT.NONE);
-                    titleColumn.setResizable(false);
-                    titleColumn.setWidth(100);
-                    titleColumn.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
 
-                    // create dummy columns for holding additional tooltip
-                    // content
-                    new TableColumn(table, SWT.NONE);
-                    new TableColumn(table, SWT.NONE);
+                    // create columns
+                    TableColumn titleCol = new TableColumn(table, SWT.NONE);
+                    titleCol.setResizable(false);
+                    titleCol.setWidth(100);
+                    titleCol.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+                    
+                    TableViewerColumn vCol = new TableViewerColumn(
+                            taskTableViewer, titleCol);
+                    vCol.setLabelProvider(new TaskTableTooltipProvider());
+                    taskTableViewer.setColumnPart(vCol, 0);
 
                     // create task list
                     CellEditor[] editors = new CellEditor[table
@@ -360,10 +354,9 @@ public class TaskManager {
                     editors[0] = new CheckboxCellEditor(table.getParent());
 
                     taskTableViewer.setCellEditors(editors);
-                    taskTableViewer
-                            .setColumnProperties(new String[] { TaskManager.TITLE_COLUMN });
                     taskTableViewer.getTable().getColumn(0).setWidth(300);
 
+                    taskTableViewer.activateCustomTooltips();
                     taskTableViewer
                             .setLabelProvider(new TaskTableLabelProvider());
                     taskTableViewer

@@ -99,22 +99,6 @@
 			 (see http://www.google.com/codesearch?hl=en&q=+org.codehaus.plexus.util.Os+show:ruAGdVsOOwU:4-AYRgF18sw:nLnBYU_72Vc&sa=N&cd=7&ct=rc&cs_p=http://ftp.debian.org/debian/pool/main/libp/libplexus-utils/libplexus-utils_1.0alpha1.orig.tar.gz&cs_f=libplexus-utils-1.0alpha1/src/main/java/org/codehaus/plexus/util/Os.java#a0)
 			-->
 		<profile>
-			<id>macosx</id>
-			<activation>
-				<os>
-					<name>mac os x</name>
-					<!--<family>mac</family>-->
-				</os>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-macosx</artifactId>
-					<version>3.3M4</version>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
 			<id>windows</id>
 			<activation>
 				<os>
@@ -125,7 +109,7 @@
 				<dependency>
 					<groupId>swt</groupId>
 					<artifactId>swt-windows</artifactId>
-					<version>3.3M4</version>
+					<version>3.3M5</version>
 				</dependency>
 			</dependencies>
 		</profile>
