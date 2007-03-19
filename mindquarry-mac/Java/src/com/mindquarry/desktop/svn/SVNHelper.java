@@ -114,6 +114,10 @@ public abstract class SVNHelper implements Notify2 {
 					continue;
 				}
 				
+				if (stat.getTextStatus() == StatusKind.missing) {
+					client.remove(new String[] { stat.getPath() }, null, true);
+				}
+				
 				// add changed or modified files to the results array
 				if (stat.getTextStatus() > StatusKind.normal) {
 					changes.add(stat);
@@ -138,9 +142,6 @@ public abstract class SVNHelper implements Notify2 {
 				
 				if (status.getTextStatus() == StatusKind.unversioned) {
 					client.add(path, false);
-				}
-				else if (status.getTextStatus() == StatusKind.missing) {
-					client.remove(new String[] { status.getPath() }, null, true);
 				}
 				else if (status.getTextStatus() == StatusKind.conflicted) {
 					switch (resolveConflict(status)) {

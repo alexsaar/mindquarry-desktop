@@ -325,7 +325,7 @@
 							<real>409</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>201 94 1431 1060 0 0 1920 1178 </string>
+						<string>192 109 1431 1060 0 0 1920 1178 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -355,7 +355,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD576EAE0BAEDBEB00460C68</string>
+										<string>DD576EC10BAEE0FF00460C68</string>
 										<key>history</key>
 										<array>
 											<string>DDF001120BA853160008C3AA</string>
@@ -399,7 +399,7 @@
 											<string>DD576E9D0BAEDB8500460C68</string>
 											<string>DD576E9E0BAEDB8500460C68</string>
 											<string>DD576EA90BAEDBB300460C68</string>
-											<string>DD576E800BAEDB1C00460C68</string>
+											<string>DD576EAE0BAEDBEB00460C68</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -444,75 +444,7 @@
 											<string>DD576B110BAE95CF00460C68</string>
 											<string>DD576B7E0BAEA31800460C68</string>
 											<string>DD576B7F0BAEA31800460C68</string>
-											<string>DD576D490BAEC55600460C68</string>
-											<string>DD576D4A0BAEC55600460C68</string>
-											<string>DD576D4B0BAEC55600460C68</string>
-											<string>DD576D4C0BAEC55600460C68</string>
-											<string>DD576D960BAEC81A00460C68</string>
-											<string>DD576D970BAEC81A00460C68</string>
 											<string>DD576D980BAEC81A00460C68</string>
-											<string>DD576D990BAEC81A00460C68</string>
-											<string>DD576D9A0BAEC81A00460C68</string>
-											<string>DD576D9B0BAEC81A00460C68</string>
-											<string>DD576D9C0BAEC81A00460C68</string>
-											<string>DD576D9D0BAEC81A00460C68</string>
-											<string>DD576D9E0BAEC81A00460C68</string>
-											<string>DD576D9F0BAEC81A00460C68</string>
-											<string>DD576DA00BAEC81A00460C68</string>
-											<string>DD576DA10BAEC81A00460C68</string>
-											<string>DD576DA20BAEC81A00460C68</string>
-											<string>DD576DA30BAEC81A00460C68</string>
-											<string>DD576DA40BAEC81A00460C68</string>
-											<string>DD576DA50BAEC81A00460C68</string>
-											<string>DD576DA60BAEC81A00460C68</string>
-											<string>DD576DA70BAEC81A00460C68</string>
-											<string>DD576DA80BAEC81A00460C68</string>
-											<string>DD576DA90BAEC81A00460C68</string>
-											<string>DD576DAA0BAEC81A00460C68</string>
-											<string>DD576DAB0BAEC81A00460C68</string>
-											<string>DD576DAC0BAEC81A00460C68</string>
-											<string>DD576DAD0BAEC81A00460C68</string>
-											<string>DD576DAE0BAEC81A00460C68</string>
-											<string>DD576DAF0BAEC81A00460C68</string>
-											<string>DD576DB00BAEC81A00460C68</string>
-											<string>DD576DB10BAEC81A00460C68</string>
-											<string>DD576DB20BAEC81A00460C68</string>
-											<string>DD576DB30BAEC81A00460C68</string>
-											<string>DD576DB40BAEC81A00460C68</string>
-											<string>DD576DC30BAEC86E00460C68</string>
-											<string>DD576DC40BAEC86E00460C68</string>
-											<string>DD576DE20BAEC97B00460C68</string>
-											<string>DD576DE30BAEC97B00460C68</string>
-											<string>DD576DE40BAEC97B00460C68</string>
-											<string>DD576DEF0BAEC9C900460C68</string>
-											<string>DD576DF90BAECAA800460C68</string>
-											<string>DD576E0A0BAECCED00460C68</string>
-											<string>DD576E1D0BAECE0600460C68</string>
-											<string>DD576E1E0BAECE0600460C68</string>
-											<string>DD576E2F0BAECE5300460C68</string>
-											<string>DD576E300BAECE5300460C68</string>
-											<string>DD576E460BAECF2400460C68</string>
-											<string>DD576E470BAECF2400460C68</string>
-											<string>DD576E480BAECF2400460C68</string>
-											<string>DD576E490BAECF2400460C68</string>
-											<string>DD576E4A0BAECF2400460C68</string>
-											<string>DD576E4B0BAECF2400460C68</string>
-											<string>DD576E4C0BAECF2400460C68</string>
-											<string>DD576E4D0BAECF2400460C68</string>
-											<string>DD576E530BAECF4A00460C68</string>
-											<string>DD576E540BAECF4A00460C68</string>
-											<string>DD576E710BAED6C200460C68</string>
-											<string>DD576E720BAED6C200460C68</string>
-											<string>DD576E730BAED6C200460C68</string>
-											<string>DD576E740BAED6C200460C68</string>
-											<string>DD576E820BAEDB1C00460C68</string>
-											<string>DD576EA00BAEDB8500460C68</string>
-											<string>DD576EA10BAEDB8500460C68</string>
-											<string>DD576EA20BAEDB8500460C68</string>
-											<string>DD576EA30BAEDB8500460C68</string>
-											<string>DD576EA40BAEDB8500460C68</string>
-											<string>DD576EA50BAEDB8500460C68</string>
-											<string>DD576EAA0BAEDBB300460C68</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -526,7 +458,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1000, 943}}</string>
 								<key>RubberWindowFrame</key>
-								<string>201 94 1431 1060 0 0 1920 1178 </string>
+								<string>192 109 1431 1060 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -546,7 +478,7 @@
 								<key>Frame</key>
 								<string>{{0, 948}, {1000, 71}}</string>
 								<key>RubberWindowFrame</key>
-								<string>201 94 1431 1060 0 0 1920 1178 </string>
+								<string>192 109 1431 1060 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -570,9 +502,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD576D4E0BAEC55600460C68</string>
+				<string>DD576EBA0BAEDCA200460C68</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD576D4F0BAEC55600460C68</string>
+				<string>DD576EBB0BAEDCA200460C68</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -691,7 +623,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>196008939.32304499</real>
+	<real>196010239.60424599</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -706,18 +638,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>DD576D5A0BAEC55600460C68</string>
-		<string>DD576D5B0BAEC55600460C68</string>
-		<string>DD39F5380B9D83AA00384D0C</string>
-		<string>1CD10A99069EF8BA00B06720</string>
-		<string>DD576D560BAEC55600460C68</string>
 		<string>DD39F5060B9D807800384D0C</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jonas/Desktop/mindquarry/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>201 94 1431 1060 0 0 1920 1178 </string>
+	<string>192 109 1431 1060 0 0 1920 1178 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
@@ -733,14 +659,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQSVNCommitJob.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -798,7 +722,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD576D440BAEC54C00460C68</string>
+				<string>DD576EB60BAEDCA100460C68</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1160,9 +1084,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>DD576D580BAEC55600460C68</string>
+				<string>DD576EB70BAEDCA100460C68</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>DD576D590BAEC55600460C68</string>
+				<string>DD576EB80BAEDCA100460C68</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
