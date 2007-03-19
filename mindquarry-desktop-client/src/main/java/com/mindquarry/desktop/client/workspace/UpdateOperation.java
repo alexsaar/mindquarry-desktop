@@ -71,13 +71,13 @@ public class UpdateOperation extends SvnOperation {
 
             // create directory for the new workspace
             File wsDir = new File(wsHome.getAbsolutePath() + "/" + id); //$NON-NLS-1$
-            if (!wsDir.exists()) {
-                wsDir.mkdir();
-            }
             SVNHelper svnHelper = new JavaSVNHelper(workspaces.get(id), wsDir
                     .getAbsolutePath(), profile.getLogin(), profile
                     .getPassword());
             try {
+                // TODO pipe local changes to commit operation
+                svnHelper.getLocalChanges();
+                
                 svnHelper.update();
             } catch (ClientException e) {
                 MindClient.showErrorMessage("Could not update workspace " + id);

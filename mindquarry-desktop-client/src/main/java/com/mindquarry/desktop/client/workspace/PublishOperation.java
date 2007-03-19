@@ -66,19 +66,18 @@ public class PublishOperation extends SvnOperation {
             try {
                 Status[] changes = svnHelper.getLocalChanges();
                 List<String> changedPaths = new ArrayList<String>();
-                if (changedPaths.size() > 0) {
-                    StringBuffer commitInfo = new StringBuffer();
-                    commitInfo.append(Messages.getString("PublishOperation.2") //$NON-NLS-1$
-                            + id + ":\n\n"); //$NON-NLS-1$
-                    commitInfo.append(getStatiDescription(changes, wsDir
-                            .getPath()));
 
-                    for (Status change : changes) {
-                        changedPaths.add(change.getPath());
-                    }
-                    svnHelper.setCommitInfo(commitInfo.toString());
-                    svnHelper.commit(changedPaths.toArray(new String[0]));
+                StringBuffer commitInfo = new StringBuffer();
+                commitInfo.append(Messages.getString("PublishOperation.2") //$NON-NLS-1$
+                        + id + ":\n\n"); //$NON-NLS-1$
+                commitInfo
+                        .append(getStatiDescription(changes, wsDir.getPath()));
+
+                for (Status change : changes) {
+                    changedPaths.add(change.getPath());
                 }
+                svnHelper.setCommitInfo(commitInfo.toString());
+                svnHelper.commit(changedPaths.toArray(new String[0]));
             } catch (ClientException e) {
                 MindClient
                         .showErrorMessage("Could not publish workspace changes "
