@@ -1,5 +1,5 @@
 //
-//  MQChange.h
+//  NSNumber+Additions.h
 //  Mindquarry Desktop Client
 //
 //  Created by Jonas on 19.03.07.
@@ -9,14 +9,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface MQChange : NSManagedObject {
+@interface NSNumber (Additions)
 
-	long fileSize;
-	
-}
-
-- (void)revealInFinder;
-
-- (long)fileSize;
+- (NSString *)humanReadableFilesize;
 
 @end

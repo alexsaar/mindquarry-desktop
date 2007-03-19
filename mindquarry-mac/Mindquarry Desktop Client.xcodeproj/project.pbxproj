@@ -102,6 +102,7 @@
 		DDF001050BA850C60008C3AA /* MQTaskInfoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF001040BA850C60008C3AA /* MQTaskInfoRequest.m */; };
 		DDF0016C0BA859530008C3AA /* JavaVM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDF0016B0BA859530008C3AA /* JavaVM.framework */; };
 		DDFA7D700BAEEF7F0081BB87 /* MQChange.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFA7D6F0BAEEF7F0081BB87 /* MQChange.m */; };
+		DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFA7E050BAF040D0081BB87 /* NSNumber+Additions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -216,6 +217,8 @@
 		DDF0016B0BA859530008C3AA /* JavaVM.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaVM.framework; path = /System/Library/Frameworks/JavaVM.framework; sourceTree = "<absolute>"; };
 		DDFA7D6E0BAEEF7F0081BB87 /* MQChange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQChange.h; sourceTree = "<group>"; };
 		DDFA7D6F0BAEEF7F0081BB87 /* MQChange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQChange.m; sourceTree = "<group>"; };
+		DDFA7E040BAF040D0081BB87 /* NSNumber+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNumber+Additions.h"; sourceTree = "<group>"; };
+		DDFA7E050BAF040D0081BB87 /* NSNumber+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+Additions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -239,6 +242,8 @@
 				DD0B4A420BA1657D0075798B /* Model */,
 				DD0B4A410BA165700075798B /* Requests */,
 				DD0B4A430BA165880075798B /* Interface */,
+				DDFA7E040BAF040D0081BB87 /* NSNumber+Additions.h */,
+				DDFA7E050BAF040D0081BB87 /* NSNumber+Additions.m */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -605,6 +610,7 @@
 				DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */,
 				DD576B5A0BAEA28C00460C68 /* RequestController+Toolbar.m in Sources */,
 				DDFA7D700BAEEF7F0081BB87 /* MQChange.m in Sources */,
+				DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
