@@ -333,9 +333,10 @@ public class TaskManager {
                             .getParent().getLayoutData()).heightHint;
                     table.setLinesVisible(false);
                     table.setToolTipText(""); //$NON-NLS-1$
-
+                    
                     // create table viewer
                     taskTableViewer = new TableViewer(table);
+                    taskTableViewer.activateCustomTooltips();
 
                     // create columns
                     TableColumn titleCol = new TableColumn(table, SWT.NONE);
@@ -345,7 +346,7 @@ public class TaskManager {
                     
                     TableViewerColumn vCol = new TableViewerColumn(
                             taskTableViewer, titleCol);
-                    vCol.setLabelProvider(new TaskTableTooltipProvider());
+                    vCol.setLabelProvider(new TaskTableLabelProvider());
                     taskTableViewer.setColumnPart(vCol, 0);
 
                     // create task list
@@ -355,10 +356,6 @@ public class TaskManager {
 
                     taskTableViewer.setCellEditors(editors);
                     taskTableViewer.getTable().getColumn(0).setWidth(300);
-
-                    taskTableViewer.activateCustomTooltips();
-                    taskTableViewer
-                            .setLabelProvider(new TaskTableLabelProvider());
                     taskTableViewer
                             .setContentProvider(new TaskTableContentProvider());
                     taskTableViewer
