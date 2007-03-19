@@ -38,4 +38,6 @@
 
 - (void)setLocalPath:(NSString *)path;
 
+- (BOOL)cancelReturnError:(NSError **)error;
+
 @end

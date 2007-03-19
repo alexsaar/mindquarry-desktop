@@ -13,6 +13,11 @@
 
 @implementation MQServer
 
++ (void)initialize
+{
+	[self setKeys:[NSArray arrayWithObject:@"localPath"] triggerChangeNotificationsForDependentKey:@"displayLocalPath"];
+}
+
 - (id)init
 {
 	if (![super init])
@@ -119,7 +124,7 @@
 	id req;
 	while (req = [rreqs nextObject]) {
 		[req cancel];
-		[MQJob decreaseRequestCount];
+		[MQJob decreaseRequestCount:nil];
 	}
 	
 	[runningRequests removeAllObjects];
@@ -164,6 +169,16 @@
 		[self setValue:nil forKey:@"credential"];
 		[self setValue:nil forKey:@"protectionSpace"];
 	}
+}
+
+- (NSString *)localPath
+{
+	return [[self primitiveValueForKey:@"localPath"] stringByExpandingTildeInPath];
+}
+
+- (NSString *)displayLocalPath
+{
+	return [[self valueForKey:@"localPath"] stringByAbbreviatingWithTildeInPath];
 }
 
 @end

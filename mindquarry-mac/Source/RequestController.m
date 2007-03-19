@@ -16,8 +16,6 @@
 #import "MQServer.h"
 #import "LRFilterBar.h"
 #import "StatusTransformer.h"
-#import "IconTransformer.h"
-#import "StatusColorTransformer.h"
 #import "MQTeam.h"
 #import "MQChangeCell.h"
 #import "MQSVNUpdateJob.h"
@@ -32,8 +30,6 @@
 - (void)awakeFromNib
 {
 	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
-	[NSValueTransformer setValueTransformer:[[[IconTransformer alloc] init] autorelease] forName:@"IconTransformer"];
-	[NSValueTransformer setValueTransformer:[[[StatusColorTransformer alloc] init] autorelease] forName:@"StatusColorTransformer"];	
 	
 	[serversController fetchWithRequest:nil merge:NO error:nil];
 	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
@@ -207,7 +203,7 @@
 	if (mode == 0)
 		[self refreshTasks];
 	else if (mode == 1)
-		[self refreshWorkspaceWithUpdate:YES];
+		[self refreshWorkspaceWithUpdate:NO];
 }
 
 - (IBAction)stopTasks:(id)sender
@@ -263,8 +259,17 @@
 
 - (IBAction)commitFiles:(id)sender
 {
-	MQSVNCommitJob *job = [[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease];
-	[job addToQueue];	
+	int tag = [sender tag];
+
+	if (tag == 0 || tag == 1) {
+		// down
+		[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:YES] autorelease] addToQueue];
+	}
+	
+	if (tag == 0 || tag == 2) {
+		// up
+		[[[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease] addToQueue];
+	}
 }
 
 - (id)selectedServer
@@ -348,7 +353,6 @@
 	
 	if ([[panel filenames] count] > 0) {
 		NSString *dir = [[panel filenames] objectAtIndex:0];
-		dir = [dir stringByAbbreviatingWithTildeInPath];
 		[[serversController selection] setValue:dir forKey:@"localPath"];
 	}
 }

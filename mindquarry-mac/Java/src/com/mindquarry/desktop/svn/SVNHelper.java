@@ -139,6 +139,9 @@ public abstract class SVNHelper implements Notify2 {
 				if (status.getTextStatus() == StatusKind.unversioned) {
 					client.add(path, false);
 				}
+				else if (status.getTextStatus() == StatusKind.missing) {
+					client.remove(new String[] { status.getPath() }, null, true);
+				}
 				else if (status.getTextStatus() == StatusKind.conflicted) {
 					switch (resolveConflict(status)) {
 						case CONFLICT_RESET_FROM_SERVER:
@@ -167,6 +170,17 @@ public abstract class SVNHelper implements Notify2 {
 		// if getCommitMessage returns null, we don't commit
 		if (message != null)
 			client.commit(paths, message, true);
+	}
+	
+	/**
+	 * Cancels the current SVN operation
+	 */
+	protected void cancelOperation() {
+		try {
+			client.cancelOperation();
+		}
+		catch (ClientException e) {
+		}
 	}
 	
 	/**

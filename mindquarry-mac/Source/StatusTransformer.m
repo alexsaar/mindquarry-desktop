@@ -27,6 +27,8 @@
 		return @"new";
 	else if ([value intValue] == 2)
 		return @"modified";
+	else if ([value intValue] == 6)
+		return @"deleted";
 	else if ([value intValue] == 9)
 		return @"conflict";
 	return [NSString stringWithFormat:@"code: %@", value];

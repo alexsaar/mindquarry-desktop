@@ -62,7 +62,7 @@ static int request_running_count = 0;
 	[spinner_lock unlock];
 }
 
-+ (void)decreaseRequestCount
++ (void)decreaseRequestCount:(id)sender
 {
 	[spinner_lock lock];
 	
@@ -86,6 +86,10 @@ static int request_running_count = 0;
 		
 		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
 		[stopItem setEnabled:NO];
+	}
+	else if (sender) {
+		id field = [[NSApp delegate] valueForKey:@"statusField"];
+		[field setStringValue:[sender statusString]];
 	}
 	
 	[spinner_lock unlock];
@@ -124,7 +128,7 @@ static int request_running_count = 0;
 {
 	if (!didFree) {
 		[server runFromQueueIfNeeded:self];
-		[MQJob decreaseRequestCount];
+		[MQJob decreaseRequestCount:self];
 
 		[self autorelease];
 		
@@ -135,7 +139,7 @@ static int request_running_count = 0;
 
 - (void)cancel
 {
-	
+	NSLog(@"Warning: cancel not implemented");
 }
 
 - (NSString *)statusString

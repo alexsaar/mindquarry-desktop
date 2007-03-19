@@ -14,6 +14,10 @@
 
 	BOOL update;
 	
+	BOOL cancel;
+	
+	id currentTeam;
+	
 }
 
 - (id)initWithServer:(id)_server updates:(BOOL)_update;

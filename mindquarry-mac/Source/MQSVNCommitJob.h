@@ -12,6 +12,10 @@
 
 @interface MQSVNCommitJob : MQThreadJob {
 
+	BOOL cancel;
+	
+	id currentTeam;
+	
 }
 
 @end

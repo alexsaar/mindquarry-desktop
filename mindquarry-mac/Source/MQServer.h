@@ -44,4 +44,8 @@
 
 - (void)clearCredentials;
 
+- (NSString *)localPath;
+
+- (NSString *)displayLocalPath;
+
 @end

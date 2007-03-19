@@ -21,7 +21,7 @@
 }
 
 + (void)increaseRequestCount:(id)sender;
-+ (void)decreaseRequestCount;
++ (void)decreaseRequestCount:(id)sender;
 
 - (id)initWithServer:(id)_server;
 

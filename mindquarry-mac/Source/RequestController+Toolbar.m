@@ -33,7 +33,7 @@
 {
 	int tag = [sender tag];
 	mode = tag;
-	NSLog(@"mode: %d", tag);
+//	NSLog(@"mode: %d", tag);
 	
 	if ([[rootView subviews] count] > 0)
 		[[[rootView subviews] objectAtIndex:0] removeFromSuperview];
@@ -84,8 +84,8 @@
 	}
 	else if ([itemIdentifier isEqualToString:@"MQRefresh"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQRefresh"];
-		[item setLabel:@"Reload"];
-		[item setPaletteLabel:@"Reload"];
+		[item setLabel:@"Refresh"];
+		[item setPaletteLabel:@"Refresh"];
 		[item setImage:[NSImage imageNamed:@"refresh"]];
 		[item setTarget:self];
 		[item setAction:@selector(refresh:)];
@@ -151,6 +151,25 @@
 		[item setPaletteLabel:@"Synchronize"];
 		[item setImage:[NSImage imageNamed:@"synchronize-vertical"]];
 		[item setTarget:self];
+		[item setTag:0];
+		[item setAction:@selector(commitFiles:)];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQDown"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQDown"];
+		[item setLabel:@"Download"];
+		[item setPaletteLabel:@"Download"];
+		[item setImage:[NSImage imageNamed:@"sync-down"]];
+		[item setTarget:self];
+		[item setTag:1];
+		[item setAction:@selector(commitFiles:)];
+	}
+	else if ([itemIdentifier isEqualToString:@"MQUp"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQUp"];
+		[item setLabel:@"Upload"];
+		[item setPaletteLabel:@"Upload"];
+		[item setImage:[NSImage imageNamed:@"sync-up"]];
+		[item setTarget:self];
+		[item setTag:2];
 		[item setAction:@selector(commitFiles:)];
 	}
 	
@@ -168,6 +187,8 @@
 		[items addObject:@"MQDone"];
 	}
 	else if ([[_toolbar identifier] isEqualToString:FILES_TOOLBAR_ID]) {
+		[items addObject:@"MQDown"];
+		[items addObject:@"MQUp"];
 		[items addObject:@"MQCommit"];
 	}
 	

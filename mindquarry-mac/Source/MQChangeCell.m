@@ -54,7 +54,7 @@
 	int status = [[[self objectValue] valueForKey:@"status"] intValue];
 	NSString *statusString = [[trans transformedValue:[[self objectValue] valueForKey:@"status"]] uppercaseString];
 	NSColor *statusColor = textColor;
-	if (status == 9)
+	if (status == 9 || status == 6)
 		statusColor = redColor;
 	else if (status > 2)
 		statusColor = grayColor;

@@ -21,6 +21,7 @@
 		return nil;
 	
 	update = _update;
+	cancel = NO;
 	
 	return self;
 }
@@ -28,22 +29,29 @@
 - (void)threadMethod
 {
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
-	id team;
-	while (team = [teamEnum nextObject]) {
-		[team initJVM];
-		[[team svnController] attachCurrentThread];
+	while (!cancel && (currentTeam = [teamEnum nextObject])) {
+		[currentTeam initJVM];
+		[[currentTeam svnController] attachCurrentThread];
 		
-		if (update)
-			[team update];
-		[team getSVNChanges];
+		if (!cancel && update)
+			[currentTeam update];
+		if (!cancel)
+			[currentTeam getSVNChanges];		
 	}
+	currentTeam = nil;
 	
 	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString
 {
-	return @"Updating working copy...";
+	return @"Downloading files...";
+}
+
+- (void)cancel
+{
+	cancel = YES;
+	[[currentTeam svnController] cancelReturnError:nil];
 }
 
 @end

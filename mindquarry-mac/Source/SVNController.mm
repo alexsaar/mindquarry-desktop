@@ -51,7 +51,7 @@
 	[self setValue:_repo forKey:@"repository"];
 	[self setValue:_user forKey:@"username"];
 	[self setValue:_pass forKey:@"password"];
-	[self setValue:[_local stringByExpandingTildeInPath] forKey:@"localPath"];
+	[self setValue:_local forKey:@"localPath"];
 		
 	jmethodID helperConstructor = env->GetMethodID(helperClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 	CHECK_EXCEPTION;
@@ -213,6 +213,9 @@
 
 - (BOOL)commitItems:(NSArray *)items message:(NSString *)message returnError:(NSError **)error
 {
+	if (!helperRef)
+		return NO;
+	
 	static jmethodID commitMethod = nil;
 	if (!commitMethod) {
 		commitMethod = env->GetMethodID(helperClass, "commit", "([Ljava/lang/String;)V");
@@ -274,6 +277,8 @@
 	localPath = [path copy];
 	
 	if (helperRef) {
+		[self attachCurrentThread];
+		
 		static jfieldID pathField = nil;
 		if (!pathField) {
 			pathField = env->GetFieldID(helperClass, "localPath", "Ljava/lang/String;");
@@ -289,6 +294,34 @@
 		
 		CHECK_EXCEPTION;
 	}
+}
+
+- (BOOL)cancelReturnError:(NSError **)error
+{
+	if (!helperRef)
+		return NO;
+	
+	[self attachCurrentThread];
+	
+	static jmethodID cancelMethod = nil;
+	if (!cancelMethod) {
+		cancelMethod = env->GetMethodID(helperClass, "cancelOperation", "()V");
+		CHECK_EXCEPTION;
+		if (!cancelMethod) {
+			NSLog(@"Warning: could not get cancel method ID");
+			return NO;
+		}
+	}
+	
+	env->CallVoidMethod(helperRef, cancelMethod);
+	
+	if (env->ExceptionCheck() == JNI_TRUE) {
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		return NO;
+	}
+	
+	return YES;
 }
 
 @end

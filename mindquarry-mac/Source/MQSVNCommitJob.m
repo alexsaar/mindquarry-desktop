@@ -16,40 +16,73 @@
 
 @implementation MQSVNCommitJob
 
+- (id)init
+{
+	if (![super init])
+		return nil;
+	
+	cancel = NO;
+	
+	return self;
+}
+
 - (void)threadMethod
 {
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
-	id team;
-	while (team = [teamEnum nextObject]) {
-		[team initJVM];
-		[[team svnController] attachCurrentThread];
+	while (!cancel && (currentTeam = [teamEnum nextObject])) {
+		[currentTeam initJVM];
+		[[currentTeam svnController] attachCurrentThread];
 
-		NSArray *changes = [[[team valueForKey:@"changes"] allObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled = TRUE"]];
+		if (cancel)
+			break;
+		
+//		[currentTeam update];
+		
+		if (cancel)
+			break;
+		
+		NSArray *changes = [[[currentTeam valueForKey:@"changes"] allObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled = TRUE"]];
+		
+		if (cancel)
+			break;
 		
 		NSMutableArray *paths = [NSMutableArray array];
 		NSEnumerator *chEnum = [changes objectEnumerator];
 		id change;
-		while (change = [chEnum nextObject]) {
+		while (!cancel && (change = [chEnum nextObject])) {
 			[paths addObject:[change valueForKey:@"absPath"]];
 		}
 				
-		if ([paths count] > 0)
-			[team commitChanges:paths message:nil];
+		if (cancel)
+			break;
 		
-//		[team update];
-//		[team getSVNChanges];
+		if ([paths count] > 0)
+			[currentTeam commitChanges:paths message:nil];
+		
+		if (cancel)
+			break;
+		
+		[currentTeam getSVNChanges];
+		
 	}
-
+	currentTeam = nil;
+	
 	[[NSApp delegate] setValue:nil forKey:@"cachedMessage"];
 	
-	[[[[MQSVNUpdateJob alloc] initWithServer:server] autorelease] addToQueue];
+//	[[[[MQSVNUpdateJob alloc] initWithServer:server updates:NO] autorelease] addToQueue];
 	
 	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString
 {
-	return @"Commiting changes...";
+	return @"Uploading changes...";
+}
+
+- (void)cancel
+{
+	cancel = YES;
+	[[currentTeam svnController] cancelReturnError:nil];
 }
 
 @end
