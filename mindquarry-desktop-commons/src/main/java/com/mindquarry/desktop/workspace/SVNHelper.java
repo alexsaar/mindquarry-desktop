@@ -64,6 +64,7 @@ public abstract class SVNHelper implements Notify2 {
                 client.password(password);
             }
         }
+
         // register for svn notifications on update and commit
         client.notification2(this);
     }
@@ -75,7 +76,7 @@ public abstract class SVNHelper implements Notify2 {
     public void update() throws ClientException {
         // check whether localPath is a working copy or not
         try {
-            client.singleStatus(localPath, false);
+            client.status(localPath, false, false, true);
         } catch (ClientException e) {
             // no working copy, checkout
             initialCheckout();
@@ -99,40 +100,52 @@ public abstract class SVNHelper implements Notify2 {
      * to the repository.
      */
     public Status[] getLocalChanges() throws ClientException {
-      try {
-        Status[] stati = client.status(localPath, true, false, true);
+        try {
+            Status[] stati = client.status(localPath, true, false, true);
 
-        // add all conflicted file paths to an array
-        ArrayList<String> conflicts = new ArrayList<String>();
-        for (Status stat : stati) {
-            if (stat.getTextStatus() == StatusKind.conflicted) {
-                conflicts.add(stat.getPath());
-            }
-        }
-        // collect changes
-        ArrayList<Status> changes = new ArrayList<Status>();
-        for (Status stat : stati) {
-            // skip conflict related files (.mine, .rxyz)
-            boolean isConflictRelatedFile = false;
-            for (String conflict : conflicts) {
-                if (stat.getPath().startsWith(conflict + ".")) {
-                    isConflictRelatedFile = true;
-                    break;
+            // add all conflicted file paths to an array
+            ArrayList<String> conflicts = new ArrayList<String>();
+            for (Status stat : stati) {
+                if (stat.getTextStatus() == StatusKind.conflicted) {
+                    conflicts.add(stat.getPath());
                 }
             }
-            if (isConflictRelatedFile) {
-                continue;
-            }
 
-            // add changed or modified files to the results array
-            if (stat.getTextStatus() > StatusKind.normal) {
-                changes.add(stat);
+            // collect changes
+            ArrayList<Status> changes = new ArrayList<Status>();
+            for (Status stat : stati) {
+
+                // skip ignored files
+                if (stat.getTextStatus() == StatusKind.ignored
+                        || stat.getTextStatus() == StatusKind.external) {
+                    continue;
+                }
+
+                // skip conflict related files (.mine, .rxyz)
+                boolean isConflictRelatedFile = false;
+                for (String conflict : conflicts) {
+                    if (stat.getPath().startsWith(conflict + ".")) {
+                        isConflictRelatedFile = true;
+                        break;
+                    }
+                }
+                if (isConflictRelatedFile) {
+                    continue;
+                }
+
+                if (stat.getTextStatus() == StatusKind.missing) {
+                    client.remove(new String[] { stat.getPath() }, null, true);
+                }
+
+                // add changed or modified files to the results array
+                if (stat.getTextStatus() > StatusKind.normal) {
+                    changes.add(stat);
+                }
             }
+            return changes.toArray(new Status[0]);
+        } catch (ClientException ce) {
+            return new Status[0];
         }
-        return changes.toArray(new Status[0]);
-      } catch (ClientException e) {
-        return new Status[0];
-      }
     }
 
     /**
@@ -145,9 +158,9 @@ public abstract class SVNHelper implements Notify2 {
             try {
                 Status status = client.singleStatus(path, false);
 
-                if (status.getTextStatus() == 5) {
-                    client.add(path, false);
-                } else if (status.getTextStatus() == 9) {
+                if (status.getTextStatus() == StatusKind.unversioned) {
+                    client.add(path, true, true);
+                } else if (status.getTextStatus() == StatusKind.conflicted) {
                     switch (resolveConflict(status)) {
                     case CONFLICT_RESET_FROM_SERVER:
                         // TODO
@@ -155,7 +168,7 @@ public abstract class SVNHelper implements Notify2 {
 
                     case CONFLICT_OVERRIDE_FROM_WC:
                         try {
-                            copyFile(status.getConflictWorking(), status
+                            copyFile(status.getPath() + ".mine", status
                                     .getPath());
                             client.resolved(status.getPath(), false);
                         } catch (IOException e) {
@@ -172,7 +185,20 @@ public abstract class SVNHelper implements Notify2 {
                 System.err.println("client exception: " + path);
             }
         }
-        client.commit(paths, getCommitMessage(), true);
+        String message = getCommitMessage();
+        // if getCommitMessage returns null, we don't commit
+        if (message != null)
+            client.commit(paths, message, true);
+    }
+
+    /**
+     * Cancels the current SVN operation
+     */
+    protected void cancelOperation() {
+        try {
+            client.cancelOperation();
+        } catch (ClientException e) {
+        }
     }
 
     /**
@@ -189,7 +215,8 @@ public abstract class SVNHelper implements Notify2 {
     protected abstract int resolveConflict(Status status);
 
     /**
-     * Is called once before commiting to get the commit message.
+     * Is called once before commiting to get the commit message. Return null to
+     * cancel commit.
      */
     protected abstract String getCommitMessage();
 
