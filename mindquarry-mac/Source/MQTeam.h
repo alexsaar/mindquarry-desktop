@@ -34,4 +34,6 @@
 
 - (void)updateLocalPath;
 
+- (NSURL *)tasksURL;
+
 @end

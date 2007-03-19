@@ -39,6 +39,8 @@
 
 - (void)setInspectorDate:(NSDate *)date;
 
+- (NSURL *)webURL;
+
 //- (id)importantData;
 //
 //- (void)setImportantData:(id)data;

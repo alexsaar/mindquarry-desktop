@@ -35,12 +35,14 @@
                 cancelCreateTask = id; 
                 commitFiles = id; 
                 createTask = id; 
+                fileDoubleClick = id; 
                 finishCreateTask = id; 
                 refresh = id; 
                 saveTask = id; 
                 setDone = id; 
                 setServerLocalPath = id; 
                 stopTasks = id; 
+                taskDoubleClick = id; 
                 titlebarSelectionChanged = id; 
                 toggleInspector = id; 
             }; 
@@ -67,6 +69,7 @@
                 tasksView = id; 
                 teamsController = id; 
                 window = id; 
+                workspaceTable = id; 
                 workspaceToolbar = id; 
                 workspaceView = id; 
             }; 

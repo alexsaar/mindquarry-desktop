@@ -80,4 +80,9 @@
 	[svn setLocalPath:[self localPath]];
 }
 
+- (NSURL *)tasksURL
+{
+	return [NSURL URLWithString:[NSString stringWithFormat:@"tasks/%@/", [self valueForKey:@"id"]] relativeToURL: [[self valueForKey:@"server"] webURL]];
+}
+
 @end

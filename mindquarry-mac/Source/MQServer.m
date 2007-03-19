@@ -181,4 +181,9 @@
 	return [[self valueForKey:@"localPath"] stringByAbbreviatingWithTildeInPath];
 }
 
+- (NSURL *)webURL
+{
+	return [NSURL URLWithString:[self valueForKey:@"baseURL"]];
+}
+
 @end

@@ -48,4 +48,6 @@
 
 - (NSString *)displayLocalPath;
 
+- (NSURL *)webURL;
+
 @end

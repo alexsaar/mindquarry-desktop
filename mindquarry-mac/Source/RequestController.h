@@ -52,13 +52,15 @@ enum {
 	
 	IBOutlet id changeColumn;
 	
-	IBOutlet id tasksToolbar;
+	id tasksToolbar;
 	
-	IBOutlet id workspaceToolbar;
+	id workspaceToolbar;
 	
 	int mode;
 	
 	IBOutlet id changesFilterbar;
+
+	IBOutlet id workspaceTable;
 	
 }
 
@@ -99,5 +101,9 @@ enum {
 - (void)objectsDidChange:(NSNotification *)note;
 
 - (IBAction)setServerLocalPath:(id)sender;
+
+- (IBAction)taskDoubleClick:(id)sender;
+
+- (IBAction)fileDoubleClick:(id)sender;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MQTask.h"
+#import "MQTeam.h"
 
 #import "MQUpdateRequest.h"
 
@@ -243,6 +244,11 @@ static BOOL global_autosave_enabled = NO;
 - (void)setInspectorDate:(NSDate *)date
 {
 	[self setValue:date forKey:@"date"];
+}
+
+- (NSURL *)webURL
+{
+	return [NSURL URLWithString:[self valueForKey:@"id"] relativeToURL: [[self valueForKey:@"team"] tasksURL]];
 }
 
 @end

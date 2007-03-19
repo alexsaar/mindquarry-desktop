@@ -20,6 +20,7 @@
 #import "MQChangeCell.h"
 #import "MQSVNUpdateJob.h"
 #import "MQSVNCommitJob.h"
+#import "MQChange.h"
 
 @implementation RequestController
 
@@ -84,10 +85,11 @@
 	[filterBar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"]];
 	[self titlebarSelectionChanged:nil];
 	
-	// TODO
-//	[taskTable setTarget:inspectorWindow];
-//	[taskTable setAction:@selector(makeKeyAndOrderFront:)];
-//	[taskTable setDoubleAction:@selector(makeKeyAndOrderFront:)];
+	[taskTable setTarget:self];
+	[taskTable setDoubleAction:@selector(taskDoubleClick:)];
+
+	[workspaceTable setTarget:self];
+	[workspaceTable setDoubleAction:@selector(fileDoubleClick:)];
 	
 	if ([[serversController arrangedObjects] count] == 0) {
 		[serversController add:nil];
@@ -96,10 +98,7 @@
 	
 	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
 	
-//	[self afterWakeFromNib];
-	
-	[window makeKeyAndOrderFront:self];
-	
+	[window makeKeyAndOrderFront:self];	
 }
 
 - (void)afterWakeFromNib
@@ -355,6 +354,31 @@
 		NSString *dir = [[panel filenames] objectAtIndex:0];
 		[[serversController selection] setValue:dir forKey:@"localPath"];
 	}
+}
+
+- (IBAction)taskDoubleClick:(id)sender
+{
+	if ([[tasksController selectedObjects] count] == 0)
+		return;
+	id task = [[tasksController selectedObjects] objectAtIndex:0];
+	
+	[[NSWorkspace sharedWorkspace] openURL:[task webURL]];
+}
+
+- (IBAction)fileDoubleClick:(id)sender
+{
+	if ([[changesController selectedObjects] count] == 0)
+		return;
+	id file = [[changesController selectedObjects] objectAtIndex:0];
+
+	[file revealInFinder];
+	
+//	BOOL isDir;
+//	if ([[NSFileManager defaultManager] fileExistsAtPath:file isDirectory:&isDir]) {
+//		if (!isDir)
+//			file = [file stringByDeletingLastPathComponent];
+//		[[NSWorkspace sharedWorkspace] openFile:file];
+//	}
 }
 
 @end
