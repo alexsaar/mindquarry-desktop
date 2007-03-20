@@ -29,6 +29,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.DocumentSource;
 import org.dom4j.io.SAXReader;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -54,6 +55,7 @@ import com.mindquarry.desktop.client.task.widgets.TaskUpdateComposite;
 import com.mindquarry.desktop.client.task.xml.TaskListTransformer;
 import com.mindquarry.desktop.client.task.xml.TaskTransformer;
 import com.mindquarry.desktop.client.util.network.HttpUtilities;
+import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -276,8 +278,15 @@ public class TaskManager {
             Task newTask = tTransformer.getTask();
 
             // add task to internal list of tasks, if not yet exist
-            if ((!tasks.contains(newTask))
-                    && (!newTask.getStatus().equals("done"))) { //$NON-NLS-1$
+            PreferenceStore store = client.getPreferenceStore();
+
+            boolean listTask = true;
+            if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
+                if (newTask.getStatus().equals(Task.STATUS_DONE)) {
+                    listTask = false;
+                }
+            }
+            if (listTask && (!tasks.contains(newTask))) {
                 tasks.add(newTask);
             }
         }
@@ -333,7 +342,7 @@ public class TaskManager {
                             .getParent().getLayoutData()).heightHint;
                     table.setLinesVisible(false);
                     table.setToolTipText(""); //$NON-NLS-1$
-                    
+
                     // create table viewer
                     taskTableViewer = new TableViewer(table);
                     taskTableViewer.activateCustomTooltips();
@@ -343,7 +352,7 @@ public class TaskManager {
                     titleCol.setResizable(false);
                     titleCol.setWidth(100);
                     titleCol.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
-                    
+
                     TableViewerColumn vCol = new TableViewerColumn(
                             taskTableViewer, titleCol);
                     vCol.setLabelProvider(new TaskTableLabelProvider());

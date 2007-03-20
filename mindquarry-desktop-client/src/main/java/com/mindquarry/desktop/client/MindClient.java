@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.jface.preference.PreferenceManager;
+import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -38,6 +39,8 @@ import com.mindquarry.desktop.client.util.widgets.IconActionThread;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
+import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
+import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -80,7 +83,7 @@ public class MindClient {
     }
 
     public static void main(String[] args) throws IOException {
-    	// init display & shell
+        // init display & shell
         Display display = new Display();
         Display.setAppName(APPLICATION_NAME);
         display.setWarnings(true);
@@ -206,13 +209,14 @@ public class MindClient {
         // request preference values from user
         PreferenceManager mgr = PreferenceUtilities
                 .getDefaultPreferenceManager();
-        
+        mgr.addToRoot(new PreferenceNode(TaskPage.NAME, new TaskPage()));
+
         // Create the preferences dialog
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
                 mgr);
         dlg.setPreferenceStore(store);
-        if(showProfiles) {
-            dlg.setSelectedNode(PreferenceUtilities.PROFILE_NODE);
+        if (showProfiles) {
+            dlg.setSelectedNode(ServerProfilesPage.NAME);
         }
         dlg.open();
         saveOptions();

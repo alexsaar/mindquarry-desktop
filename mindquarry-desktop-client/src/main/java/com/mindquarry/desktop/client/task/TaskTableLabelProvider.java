@@ -13,20 +13,19 @@
  */
 package com.mindquarry.desktop.client.task;
 
-import org.eclipse.jface.viewers.CellLabelProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 /**
+ * Label provider for the Task table.
+ * 
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskTableLabelProvider extends CellLabelProvider implements
-        ITableLabelProvider {
+public class TaskTableLabelProvider extends ColumnLabelProvider {
     private Image newTask = new Image(Display.getCurrent(), getClass()
             .getResourceAsStream(
                     "/com/mindquarry/icons/16x16/status/task-new.png")); //$NON-NLS-1$
@@ -44,10 +43,10 @@ public class TaskTableLabelProvider extends CellLabelProvider implements
                     "/com/mindquarry/icons/16x16/status/task-done.png")); //$NON-NLS-1$
 
     /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object,
-     *      int)
+     * @see org.eclipse.jface.viewers.ColumnLabelProvider#getImage(java.lang.Object)
      */
-    public Image getColumnImage(Object element, int columnIndex) {
+    @Override
+    public Image getImage(Object element) {
         Task task = (Task) element;
         if (task.getStatus().equals(Task.STATUS_NEW)) {
             return newTask;
@@ -62,36 +61,13 @@ public class TaskTableLabelProvider extends CellLabelProvider implements
     }
 
     /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object,
-     *      int)
-     */
-    public String getColumnText(Object element, int columnIndex) {
-        Task task = (Task) element;
-
-        String text = null;
-        if (columnIndex == 0) {
-            text = task.getTitle();
-        }
-        return text;
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.viewers.ViewerCell)
+     * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
      */
     @Override
-    public void update(ViewerCell cell) {
-        Task task = (Task) cell.getElement();
-        cell.setText(task.getTitle());
-        
-        if (task.getStatus().equals(Task.STATUS_NEW)) {
-            cell.setImage(newTask);
-        } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-            cell.setImage(runningTask);
-        } else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-            cell.setImage(pausedTask);
-        } else if (task.getStatus().equals(Task.STATUS_DONE)) {
-            cell.setImage(doneTask);
-        }
+    public String getText(Object element) {
+        Task task = (Task) element;
+        String text = task.getTitle();
+        return text;
     }
 
     /**
