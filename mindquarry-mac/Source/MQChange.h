@@ -13,6 +13,8 @@
 
 	long fileSize;
 	
+	NSString *kind;
+	
 }
 
 - (void)revealInFinder;

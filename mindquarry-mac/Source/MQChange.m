@@ -46,11 +46,13 @@
 
 - (NSString *)fileKind
 {
-	CFStringRef kind;
-	NSURL *url = [NSURL fileURLWithPath:[self valueForKey:@"absPath"]];
-	if (LSCopyKindStringForURL((CFURLRef)url, &kind) == noErr) 
-		return (NSString *)kind;
-	return nil;
+	if (!kind) {
+		CFStringRef newKind;
+		NSURL *url = [NSURL fileURLWithPath:[self valueForKey:@"absPath"]];
+		if (LSCopyKindStringForURL((CFURLRef)url, &newKind) == noErr) 
+			kind = [(NSString *)newKind copy];
+	}
+	return kind;
 }
 
 @end
