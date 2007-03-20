@@ -42,7 +42,7 @@ import com.mindquarry.desktop.client.task.TaskDoneListener;
 import com.mindquarry.desktop.client.task.TaskManager;
 import com.mindquarry.desktop.client.task.TaskRefreshListener;
 import com.mindquarry.desktop.client.task.dialog.TaskDialog;
-import com.mindquarry.desktop.client.teamspace.dialog.TeamSelectionDialog;
+import com.mindquarry.desktop.client.team.dialog.TeamSelectionDialog;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.model.task.Task;
