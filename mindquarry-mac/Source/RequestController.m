@@ -464,6 +464,8 @@
 	int i;
 	for (i = 0; i < count; i++) {
 		id name = [list objectAtIndex:i];
+		if (![name isKindOfClass:[NSString class]])
+			continue;
 		
 		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:name];
@@ -473,7 +475,8 @@
 			[item setKeyEquivalentModifierMask:NSCommandKeyMask];
 		}
 		
-		[menu addItem:item];
+		if (item)
+			[menu addItem:item];
 	}
 	
 	[tasksTeamSelector setMenu:menu];

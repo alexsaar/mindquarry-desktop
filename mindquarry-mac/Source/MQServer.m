@@ -173,12 +173,20 @@
 
 - (NSString *)localPath
 {
-	return [[self primitiveValueForKey:@"localPath"] stringByExpandingTildeInPath];
+	id value = [self primitiveValueForKey:@"localPath"];
+	if (!value)
+		return [[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"] stringByAppendingPathComponent:@"Mindquarry Workspace"];
+	return value;
 }
 
 - (NSString *)displayLocalPath
 {
 	return [[self valueForKey:@"localPath"] stringByAbbreviatingWithTildeInPath];
+}
+
+- (void)setDisplayLocalPath:(NSString *)path 
+{
+	[self setValue:[path stringByExpandingTildeInPath] forKey:@""];
 }
 
 - (NSURL *)webURL
