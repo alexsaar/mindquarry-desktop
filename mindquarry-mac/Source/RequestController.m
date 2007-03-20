@@ -80,7 +80,7 @@
 	
 	[self initToolbars];
 	
-	NSArray *labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Title", @"Due Date", @"Status", @"Priority", NULL] autorelease];
+	NSArray *labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Title", @"Due Date", @"Status", @"Priority", @"Team", NULL] autorelease];
 	[filterBar addItemsWithTitles:labels withSelector:@selector(titlebarSelectionChanged:) withSender:self];
 	[filterBar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"]];
 	[self titlebarSelectionChanged:nil];
@@ -142,6 +142,8 @@
 		key = @"statusIndex";
 	else if (tag == 3)
 		key = @"priorityIndex";
+	else if (tag == 4)
+		key = @"team.name";
 	
 	if (!key)
 		return;
