@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.mindquarry.desktop.model.team.Team;
+
 /**
  * Dialog adding new tasks to a team.
  * 
@@ -39,11 +41,11 @@ import org.eclipse.swt.widgets.Shell;
 public class TeamSelectionDialog extends TitleAreaDialog {
     private CCombo teamWidget = null;
 
-    private List<String> teams;
+    private List<Team> teams;
     
     private String selected;
 
-    public TeamSelectionDialog(Shell shell, List<String> teams) {
+    public TeamSelectionDialog(Shell shell, List<Team> teams) {
         super(shell);
         setBlockOnOpen(true);
         this.teams = teams;
@@ -75,8 +77,8 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         teamWidget.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
 
-        for (String team : teams) {
-            teamWidget.add(team);
+        for (Team team : teams) {
+            teamWidget.add(team.getName());
         }
         teamWidget.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -88,7 +90,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
             }
         });
         teamWidget.select(0);
-        setSelected(teams.get(0));
+        setSelected(teams.get(0).getName());
         return composite;
     }
 

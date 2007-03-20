@@ -14,7 +14,6 @@
 package com.mindquarry.desktop.client.task;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -25,13 +24,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.io.DocumentSource;
-import org.dom4j.io.SAXReader;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -52,11 +47,11 @@ import com.mindquarry.desktop.client.task.dialog.TaskDialog;
 import com.mindquarry.desktop.client.task.widgets.NoTasksComposite;
 import com.mindquarry.desktop.client.task.widgets.TaskErrorComposite;
 import com.mindquarry.desktop.client.task.widgets.TaskUpdateComposite;
-import com.mindquarry.desktop.client.task.xml.TaskListTransformer;
-import com.mindquarry.desktop.client.task.xml.TaskTransformer;
-import com.mindquarry.desktop.client.util.network.HttpUtilities;
+import com.mindquarry.desktop.model.task.Task;
+import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
  * Responsible class for managing tasks.
@@ -203,23 +198,21 @@ public class TaskManager {
         setRefreshStatus(false);
         tasks.clear();
 
-        Profile selectedProfile = Profile.getSelectedProfile(client
+        Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
         // check profile
-        if (selectedProfile == null) {
+        if (profile == null) {
             refreshing = false;
             setRefreshStatus(true);
             return;
         }
         updateTaskWidgetContents(true, false, false);
 
-        InputStream content = null;
+        TaskList taskList = null;
         try {
-            content = HttpUtilities.getContentAsXML(selectedProfile.getLogin(),
-                    selectedProfile.getPassword(), selectedProfile
-                            .getServerURL()
-                            + "/tasks"); //$NON-NLS-1$
+            taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
+                    profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
             updateTaskWidgetContents(false, true, false);
             setRefreshStatus(true);
@@ -227,67 +220,19 @@ public class TaskManager {
             e.printStackTrace();
             return;
         }
-        // check if some contant was received
-        if (content == null) {
-            updateTaskWidgetContents(false, true, false);
-            setRefreshStatus(true);
-            refreshing = false;
-            return;
-        }
-        SAXReader reader = new SAXReader();
-        Document doc;
-        try {
-            doc = reader.read(content);
-        } catch (DocumentException e) {
-            e.printStackTrace();
-
-            setRefreshStatus(true);
-            refreshing = false;
-            return;
-        }
-        // create and execute transformer for tasklist description
-        TaskListTransformer tlTransformer = new TaskListTransformer();
-        tlTransformer.execute(doc);
-
-        // get task descriptions
-        for (String taskURI : tlTransformer.getTaskURIs()) {
-            content = null;
-            try {
-                content = HttpUtilities.getContentAsXML(selectedProfile
-                        .getLogin(), selectedProfile.getPassword(),
-                        selectedProfile.getServerURL() + "/tasks/" + taskURI); //$NON-NLS-1$
-            } catch (Exception e) {
-                continue;
-            }
-            // check if some contant was received
-            if (content == null) {
-                setRefreshStatus(true);
-                updateTaskWidgetContents(false, true, false);
-                refreshing = false;
-                return;
-            }
-            try {
-                doc = reader.read(content);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
-            TaskTransformer tTransformer = new TaskTransformer();
-            tTransformer.execute(doc);
-
-            // get initialized task
-            Task newTask = tTransformer.getTask();
-
+        // loop and add tasks
+        for (Task task : taskList.getTasks()) {
             // add task to internal list of tasks, if not yet exist
             PreferenceStore store = client.getPreferenceStore();
 
             boolean listTask = true;
             if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
-                if (newTask.getStatus().equals(Task.STATUS_DONE)) {
+                if (task.getStatus().equals(Task.STATUS_DONE)) {
                     listTask = false;
                 }
             }
-            if (listTask && (!tasks.contains(newTask))) {
-                tasks.add(newTask);
+            if (listTask && (!tasks.contains(task))) {
+                tasks.add(task);
             }
         }
         if (tasks.isEmpty()) {
@@ -440,7 +385,8 @@ public class TaskManager {
                         }
                     } catch (Exception e) {
                         MindClient
-                                .showErrorMessage("Could not update the task.");
+                                .showErrorMessage("Could not update the task. "
+                                        + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 }

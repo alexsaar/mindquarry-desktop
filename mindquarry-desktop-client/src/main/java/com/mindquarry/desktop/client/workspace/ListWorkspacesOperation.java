@@ -13,19 +13,13 @@
  */
 package com.mindquarry.desktop.client.workspace;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.teamspace.TeamspaceUtilities;
-import com.mindquarry.desktop.client.util.network.HttpUtilities;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
-import com.mindquarry.desktop.client.workspace.xml.TeamspaceTransformer;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -54,59 +48,22 @@ public class ListWorkspacesOperation extends SvnOperation {
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
         setMessage(Messages.getString("ListWorkspacesOperation.0")); //$NON-NLS-1$
-        Profile selectedProfile = Profile.getSelectedProfile(client
+        Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
-        List<String> teamspaceList;
+        TeamList teamList = null;
         try {
-            teamspaceList = TeamspaceUtilities
-                    .getTeamspaceNamesForProfile(selectedProfile);
+            teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
+                    profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            MindClient
-                    .showErrorMessage(Messages.getString("ListWorkspacesOperation.3")); //$NON-NLS-1$
+            MindClient.showErrorMessage(e.getLocalizedMessage());
             return false;
         }
-        // init progress steps for progress dialog
-        int tsCount = teamspaceList.size();
-        int tsNbr = 0;
-        setProgressSteps(tsCount + 1);
-        updateProgress();
+        List<Team> teams = teamList.getTeams();
 
         // loop teamspace descriptions
-        for (String tsID : teamspaceList) {
-            setMessage(Messages.getString("ListWorkspacesOperation.4") //$NON-NLS-1$
-                    + " (" //$NON-NLS-1$
-                    + ++tsNbr + " of " //$NON-NLS-1$
-                    + tsCount + ")..."); //$NON-NLS-1$
-
-            InputStream content = null;
-            try {
-                content = HttpUtilities.getContentAsXML(selectedProfile
-                        .getLogin(), selectedProfile.getPassword(),
-                        selectedProfile.getServerURL()
-                                + "/teams/team/" + tsID + "/"); //$NON-NLS-1$ //$NON-NLS-2$
-            } catch (Exception e) {
-                MindClient.showErrorMessage(Messages
-                        .getString("ListWorkspacesOperation.1") //$NON-NLS-1$
-                        + tsID
-                        + Messages.getString("ListWorkspacesOperation.2")); //$NON-NLS-1$
-                return false;
-            }
-            // parse teamspace description
-            Document doc;
-            try {
-                SAXReader reader = new SAXReader();
-                doc = reader.read(content);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-                return false;
-            }
-            // create a transformer for teamspace description
-            TeamspaceTransformer tsTrans = new TeamspaceTransformer();
-            tsTrans.execute(doc);
-
-            teamspaces.put(tsID, tsTrans.getWorkspace());
-            updateProgress();
+        for (Team team : teams) {
+            workspaces.put(team.getName(), team.getWorkspaceURL());
         }
         return true;
     }

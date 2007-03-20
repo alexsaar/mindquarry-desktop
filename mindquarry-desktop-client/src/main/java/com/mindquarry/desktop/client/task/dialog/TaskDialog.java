@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.task.Task;
 import com.mindquarry.desktop.client.util.widgets.ImageCombo;
+import com.mindquarry.desktop.model.task.Task;
 
 /**
  * Dialog adding new tasks to a team.

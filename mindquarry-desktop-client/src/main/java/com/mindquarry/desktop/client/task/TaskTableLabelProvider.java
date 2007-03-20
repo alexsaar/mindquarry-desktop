@@ -17,6 +17,8 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.model.task.Task;
+
 /**
  * Label provider for the Task table.
  * 

@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.ballon;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -37,17 +38,18 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.task.Task;
 import com.mindquarry.desktop.client.task.TaskDoneListener;
 import com.mindquarry.desktop.client.task.TaskManager;
 import com.mindquarry.desktop.client.task.TaskRefreshListener;
 import com.mindquarry.desktop.client.task.dialog.TaskDialog;
-import com.mindquarry.desktop.client.teamspace.TeamspaceUtilities;
 import com.mindquarry.desktop.client.teamspace.dialog.TeamSelectionDialog;
-import com.mindquarry.desktop.client.util.network.HttpUtilities;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
+import com.mindquarry.desktop.model.task.Task;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
  * Specialized implementation of the ballon widget that contains all widgets for
@@ -356,20 +358,21 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     class CreateTaskListener implements Listener {
         public void handleEvent(Event event) {
-            Profile prof = Profile.getSelectedProfile(client
+            Profile profile = Profile.getSelectedProfile(client
                     .getPreferenceStore());
 
             // get teamspace list
-            List<String> teamspaceList;
+            InputStream content;
             try {
-                teamspaceList = TeamspaceUtilities
-                        .getTeamspaceNamesForProfile(prof);
+                content = HttpUtilities.getContentAsXML(profile.getLogin(),
+                        profile.getPassword(), profile.getServerURL() + "/teams"); //$NON-NLS-1$
             } catch (Exception e) {
-                MindClient
-                        .showErrorMessage("Error while retrieving list of teams.");
+                MindClient.showErrorMessage(e.getLocalizedMessage());
                 return;
             }
-            if (teamspaceList.size() == 0) {
+            TeamList teamList = new TeamList(content, profile.getLogin(), profile.getName());
+            List<Team> teams = teamList.getTeams();
+            if (teamList.getTeams().size() == 0) {
                 MindClient
                         .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
             }
@@ -390,12 +393,13 @@ public class MindClientBallonWidget extends BalloonWindow implements
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
             if (dlg.open() == Window.OK) {
                 try {
+                    
                     TeamSelectionDialog tsDlg = new TeamSelectionDialog(
-                            MindClient.getShell(), teamspaceList);
+                            MindClient.getShell(), teamList.getTeams());
 
                     if (tsDlg.open() == Window.OK) {
-                        HttpUtilities.putAsXML(prof.getLogin(), prof
-                                .getPassword(), prof.getServerURL() + "/tasks/" //$NON-NLS-1$
+                        HttpUtilities.putAsXML(profile.getLogin(), profile
+                                .getPassword(), profile.getServerURL() + "/tasks/" //$NON-NLS-1$
                                 + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
                                 task.getContentAsXML().asXML().getBytes());
                     }
