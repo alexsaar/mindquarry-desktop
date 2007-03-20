@@ -13,19 +13,19 @@
 		<key>597</key>
 		<string>701 602 521 366 0 0 1920 1178 </string>
 		<key>611</key>
-		<string>408 650 521 366 0 0 1920 1178 </string>
+		<string>701 602 521 366 0 0 1920 1178 </string>
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>342</integer>
-		<integer>597</integer>
+		<integer>29</integer>
+		<integer>611</integer>
 		<integer>569</integer>
 		<integer>474</integer>
-		<integer>29</integer>
+		<integer>597</integer>
 		<integer>21</integer>
-		<integer>611</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8P2137</string>

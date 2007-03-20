@@ -90,6 +90,11 @@
 	[changesFilterbar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"filesSortBy"]];
 	[self fileSortSelectionChanged:nil];
 	
+	[self bind:@"teamList" toObject:teamsController withKeyPath:@"arrangedObjects.name" options:nil];
+	
+	[tasksTeamSelector bind:@"selectedIndex" toObject:self withKeyPath:@"tasksTeamSelection" options:nil];
+	[filesTeamSelector bind:@"selectedIndex" toObject:self withKeyPath:@"filesTeamSelection" options:nil];
+	
 	[taskTable setTarget:self];
 	[taskTable setDoubleAction:@selector(taskDoubleClick:)];
 
@@ -108,9 +113,6 @@
 
 - (void)afterWakeFromNib
 {
-
-//	[self refresh:nil];
-	
 	[MQTask setAutoSaveEnabled:YES];
 	
 	[NSTimer scheduledTimerWithTimeInterval:600 target:self selector:@selector(backgroundRefresh) userInfo:nil repeats:YES];
@@ -122,6 +124,12 @@
 {
 	[tasksToolbar release];
 	[workspaceToolbar release];
+	
+	[tasksStringFilter release];
+	[tasksTeamFilter release];
+	[filesStringFilter release];
+	[filesTeamFilter release];
+	[oldTeamsList release];
 	
 	[super dealloc];
 }
@@ -425,13 +433,152 @@
 	id file = [[changesController selectedObjects] objectAtIndex:0];
 
 	[file revealInFinder];
+}
+
+#pragma mark - filter stuff
+
+- (id)teamList
+{
+	return nil;
+}
+
+- (void)setTeamList:(id)list
+{
+	if (oldTeamsList && [list isEqualToArray:oldTeamsList])
+		return;
 	
-//	BOOL isDir;
-//	if ([[NSFileManager defaultManager] fileExistsAtPath:file isDirectory:&isDir]) {
-//		if (!isDir)
-//			file = [file stringByDeletingLastPathComponent];
-//		[[NSWorkspace sharedWorkspace] openFile:file];
-//	}
+//	NSLog(@"teams: %@", list);
+	
+	NSMenu *menu = [[NSMenu alloc] init];
+	NSMenuItem *item = nil;
+	
+	item = [[[NSMenuItem alloc] init] autorelease];
+	[item setTitle:@"All Teams"];
+	[item setKeyEquivalent:@"0"];
+	[item setKeyEquivalentModifierMask:NSCommandKeyMask];
+	[menu addItem:item];
+	
+	[menu addItem:[NSMenuItem separatorItem]];
+	
+	int count = [list count];
+	int i;
+	for (i = 0; i < count; i++) {
+		id name = [list objectAtIndex:i];
+		
+		item = [[[NSMenuItem alloc] init] autorelease];
+		[item setTitle:name];
+		
+		if (i < 8) {
+			[item setKeyEquivalent:[NSString stringWithFormat:@"%d", i + 1]];
+			[item setKeyEquivalentModifierMask:NSCommandKeyMask];
+		}
+		
+		[menu addItem:item];
+	}
+	
+	[tasksTeamSelector setMenu:menu];
+	[self setTasksTeamSelection:0];
+	
+	[filesTeamSelector setMenu:[[menu copy] autorelease]];
+	[self setFilesTeamSelection:0];
+	
+	[menu release];
+	
+	[oldTeamsList release];
+	oldTeamsList = [list retain];
+}
+
+- (int)tasksTeamSelection
+{
+	return _tasksTeamSelection;
+}
+
+- (void)setTasksTeamSelection:(int)selection
+{
+	if (_tasksTeamSelection == selection)
+		return;
+
+	_tasksTeamSelection = selection;
+	
+	[tasksTeamFilter release];
+	tasksTeamFilter = [[self filterForTeamSelectorPosition:selection] retain];
+	[self setTasksFilter];}
+
+- (int)filesTeamSelection
+{
+	return _filesTeamSelection;
+}
+
+- (void)setFilesTeamSelection:(int)selection
+{
+	if (_filesTeamSelection == selection)
+		return;
+	
+	_filesTeamSelection = selection;
+	
+	[filesTeamFilter release];
+	filesTeamFilter = [[self filterForTeamSelectorPosition:selection] retain];
+	[self setFilesFilter];
+}
+
+- (NSPredicate *)filterForTeamSelectorPosition:(int)index
+{
+	if (index < 2)
+		return nil;
+	id team = [[teamsController arrangedObjects] objectAtIndex:index - 2];
+	return [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"team.id = \"%@\"", [team valueForKey:@"id"]]];
+}
+
+- (NSPredicate *)tasksStringFilter
+{
+	return tasksStringFilter;
+}
+
+- (void)setTasksStringFilter:(NSPredicate *)pred
+{
+	[tasksStringFilter release];
+	tasksStringFilter = [pred retain];
+	
+	[self setTasksFilter];
+}
+
+- (void)setTasksFilter
+{
+	NSPredicate *pred = nil;
+	if (tasksTeamFilter && tasksStringFilter)
+		pred = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"(%@) and (%@)", [tasksTeamFilter predicateFormat], [tasksStringFilter predicateFormat]]];
+	else if (tasksTeamFilter)
+		pred = tasksTeamFilter;
+	else if (tasksStringFilter)
+		pred = tasksStringFilter;
+		
+	[tasksController setFilterPredicate:pred];
+}
+
+- (NSPredicate *)filesStringFilter
+{
+	return filesStringFilter;
+}
+
+- (void)setFilesStringFilter:(NSPredicate *)pred
+{
+	[filesStringFilter release];
+	filesStringFilter = [pred retain];
+	
+	[self setFilesFilter];
+}
+
+- (void)setFilesFilter
+{
+	NSPredicate *pred = nil;
+	if (filesTeamFilter && filesStringFilter)
+		pred = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"(%@) and (%@)", [filesTeamFilter predicateFormat], [filesStringFilter predicateFormat]]];
+	else if (filesTeamFilter)
+		pred = filesTeamFilter;
+	else if (filesStringFilter)
+		pred = filesStringFilter;
+		
+	[changesController setFilterPredicate:pred];
 }
 
 @end

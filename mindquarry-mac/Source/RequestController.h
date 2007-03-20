@@ -62,6 +62,24 @@ enum {
 
 	IBOutlet id workspaceTable;
 	
+	IBOutlet id tasksTeamSelector;
+	
+	IBOutlet id filesTeamSelector;
+	
+	int _tasksTeamSelection;
+	
+	int _filesTeamSelection;
+	
+	NSPredicate *tasksStringFilter;
+	
+	NSPredicate *tasksTeamFilter;
+	
+	NSPredicate *filesStringFilter;
+	
+	NSPredicate *filesTeamFilter;
+	
+	NSArray *oldTeamsList;
+	
 }
 
 - (void)afterWakeFromNib;
@@ -107,5 +125,26 @@ enum {
 - (IBAction)taskDoubleClick:(id)sender;
 
 - (IBAction)fileDoubleClick:(id)sender;
+
+- (id)teamList;
+- (void)setTeamList:(id)list;
+
+- (int)tasksTeamSelection;
+- (void)setTasksTeamSelection:(int)selection;
+
+- (int)filesTeamSelection;
+- (void)setFilesTeamSelection:(int)selection;
+
+- (NSPredicate *)filterForTeamSelectorPosition:(int)index;
+
+- (NSPredicate *)tasksStringFilter;
+- (void)setTasksStringFilter:(NSPredicate *)pred;
+
+- (void)setTasksFilter;
+
+- (NSPredicate *)filesStringFilter;
+- (void)setFilesStringFilter:(NSPredicate *)pred;
+
+- (void)setFilesFilter;
 
 @end
