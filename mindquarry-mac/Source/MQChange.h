@@ -19,4 +19,6 @@
 
 - (long)fileSize;
 
+- (NSString *)fileKind;
+
 @end

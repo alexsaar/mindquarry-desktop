@@ -9,6 +9,14 @@
 #import <Cocoa/Cocoa.h>
 #import <JavaVM/jni.h>
 
+#define SVN_STATUS_NORMAL 1
+#define SVN_STATUS_MODIFIED 2
+#define SVN_STATUS_ADDED 3
+#define SVN_STATUS_DELETED 4
+#define SVN_STATUS_UNVERSIONED 5
+#define SVN_STATUS_MISSING 6
+#define SVN_STATUS_CONFLICTED 9
+
 @interface SVNController : NSObject {
 
 	NSString *repository;

@@ -11,6 +11,11 @@
 
 @implementation MQChange
 
++ (void)initialize
+{
+	[self setKeys:[NSArray arrayWithObjects:@"enabled", nil] triggerChangeNotificationsForDependentKey:@"self"];
+}
+
 - (void)revealInFinder
 {
 	NSAppleScript *revealScript = [[NSAppleScript alloc] initWithSource:[NSString stringWithFormat:@"tell application \"Finder\" to reveal posix file \"%@\"", [self valueForKey:@"absPath"]]];
@@ -37,6 +42,15 @@
 		return 0;
 	
 	return fileSize;
+}
+
+- (NSString *)fileKind
+{
+	CFStringRef kind;
+	NSURL *url = [NSURL fileURLWithPath:[self valueForKey:@"absPath"]];
+	if (LSCopyKindStringForURL((CFURLRef)url, &kind) == noErr) 
+		return (NSString *)kind;
+	return nil;
 }
 
 @end
