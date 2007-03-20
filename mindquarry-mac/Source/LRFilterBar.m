@@ -32,29 +32,41 @@
 
 - (id)initWithFrame:(NSRect)frame
 {
-	self = [super initWithFrame:frame];
-	if (self) {
+	if (![super initWithFrame:frame])
+		return nil;
 
-		buttonX = kLeftMargin;
+	[self setAutoresizesSubviews:YES];
+	buttonX = kLeftMargin;
 
-		// Create Button Arrays
-		buttons = [[NSMutableArray alloc] init];
-		[buttons addObject:[[[NSMutableArray alloc] init] autorelease]];
+	// Create Button Arrays
+	buttons = [[NSMutableArray alloc] init];
+	[buttons addObject:[[[NSMutableArray alloc] init] autorelease]];
 
-		// Create Overflow Button
-		overflowButton = [[LROverflowButton alloc] init];
-		[overflowButton setTarget:self];
-		
-		// Create Colors
-		topColor = NULL;
-		bottomColor = NULL;
-		
-		// Set Default Color
-		[self setBlueBackground];
-	}
-
+	// Create Overflow Button
+	overflowButton = [[LROverflowButton alloc] init];
+	[overflowButton setTarget:self];
+	
+	// Create Colors
+	topColor = NULL;
+	bottomColor = NULL;
+	
+	// Set Default Color
+	[self setBlueBackground];
+	
 	return self;
 }
+
+//- (void)awakeFromNib
+//{
+//	// add search field
+//	NSSearchField *field = [[NSSearchField alloc] init];
+//	[field setAutoresizingMask:NSViewMinXMargin | NSViewMinYMargin];
+//	[field setFrameOrigin:NSMakePoint([self bounds].size.width - 110, 1)];
+//	[field setFrameSize:NSMakeSize(100, 19)];
+//	[[field cell] setControlSize:NSSmallControlSize];
+//	[self addSubview:field];
+//	[field release];
+//}
 
 - (void) dealloc
 {
