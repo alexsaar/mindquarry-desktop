@@ -76,6 +76,7 @@
 		DD576B5A0BAEA28C00460C68 /* RequestController+Toolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = DD576B590BAEA28C00460C68 /* RequestController+Toolbar.m */; };
 		DD576E5C0BAED3F500460C68 /* sync-down.png in Resources */ = {isa = PBXBuildFile; fileRef = DD576E5A0BAED3F500460C68 /* sync-down.png */; };
 		DD576E5D0BAED3F500460C68 /* sync-up.png in Resources */ = {isa = PBXBuildFile; fileRef = DD576E5B0BAED3F500460C68 /* sync-up.png */; };
+		DD5F20D00BB036C400DF8699 /* PathAbbreviation.m in Sources */ = {isa = PBXBuildFile; fileRef = DD5F20CF0BB036C400DF8699 /* PathAbbreviation.m */; };
 		DD6D6FD60BA957E60071E035 /* mindquarry-documents.png in Resources */ = {isa = PBXBuildFile; fileRef = DD6D6FD40BA957E60071E035 /* mindquarry-documents.png */; };
 		DD6D6FD90BA958350071E035 /* mindquarry-tasks.png in Resources */ = {isa = PBXBuildFile; fileRef = DD6D6FD80BA958350071E035 /* mindquarry-tasks.png */; };
 		DD6D704E0BA968910071E035 /* MQChangeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D704D0BA968910071E035 /* MQChangeCell.m */; };
@@ -174,6 +175,8 @@
 		DD576B590BAEA28C00460C68 /* RequestController+Toolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RequestController+Toolbar.m"; sourceTree = "<group>"; };
 		DD576E5A0BAED3F500460C68 /* sync-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sync-down.png"; path = "Resources/sync-down.png"; sourceTree = "<group>"; };
 		DD576E5B0BAED3F500460C68 /* sync-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "sync-up.png"; path = "Resources/sync-up.png"; sourceTree = "<group>"; };
+		DD5F20CE0BB036C400DF8699 /* PathAbbreviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathAbbreviation.h; sourceTree = "<group>"; };
+		DD5F20CF0BB036C400DF8699 /* PathAbbreviation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PathAbbreviation.m; sourceTree = "<group>"; };
 		DD6D6FD40BA957E60071E035 /* mindquarry-documents.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mindquarry-documents.png"; path = "Resources/mindquarry-documents.png"; sourceTree = "<group>"; };
 		DD6D6FD80BA958350071E035 /* mindquarry-tasks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mindquarry-tasks.png"; path = "Resources/mindquarry-tasks.png"; sourceTree = "<group>"; };
 		DD6D704C0BA968910071E035 /* MQChangeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQChangeCell.h; sourceTree = "<group>"; };
@@ -423,6 +426,8 @@
 				DD09A3190BA01E70002FD5DD /* Filter bar */,
 				DD6D704C0BA968910071E035 /* MQChangeCell.h */,
 				DD6D704D0BA968910071E035 /* MQChangeCell.m */,
+				DD5F20CE0BB036C400DF8699 /* PathAbbreviation.h */,
+				DD5F20CF0BB036C400DF8699 /* PathAbbreviation.m */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -611,6 +616,7 @@
 				DD576B5A0BAEA28C00460C68 /* RequestController+Toolbar.m in Sources */,
 				DDFA7D700BAEEF7F0081BB87 /* MQChange.m in Sources */,
 				DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */,
+				DD5F20D00BB036C400DF8699 /* PathAbbreviation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

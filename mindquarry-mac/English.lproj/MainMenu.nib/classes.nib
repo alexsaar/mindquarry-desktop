@@ -38,6 +38,7 @@
                 fileDoubleClick = id; 
                 fileSortSelectionChanged = id; 
                 finishCreateTask = id; 
+                focusSearchField = id; 
                 refresh = id; 
                 saveTask = id; 
                 selectMode = id; 
@@ -57,6 +58,7 @@
                 createTaskSheet = id; 
                 createTaskTeamButton = id; 
                 createTaskTitle = id; 
+                filesSearchField = id; 
                 filesTeamSelector = id; 
                 filterBar = id; 
                 inspectorWindow = id; 
@@ -68,6 +70,7 @@
                 taskColumn = id; 
                 taskTable = id; 
                 tasksController = id; 
+                tasksSearchField = id; 
                 tasksTeamSelector = id; 
                 tasksToolbar = id; 
                 tasksView = id; 

@@ -21,17 +21,18 @@
 #import "MQSVNUpdateJob.h"
 #import "MQSVNCommitJob.h"
 #import "MQChange.h"
+#import "PathAbbreviation.h"
 
 @implementation RequestController
 
 + (void)initialize {
 	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1], @"sortBy", [NSNumber numberWithInt:0], @"filesSortBy", nil]];
+	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
+	[NSValueTransformer setValueTransformer:[[[PathAbbreviation alloc] init] autorelease] forName:@"PathAbbreviation"];
 }
 
 - (void)awakeFromNib
-{
-	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
-	
+{	
 	[serversController fetchWithRequest:nil merge:NO error:nil];
 	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
 	
@@ -582,6 +583,14 @@
 		pred = filesStringFilter;
 		
 	[changesController setFilterPredicate:pred];
+}
+
+- (IBAction)focusSearchField:(id)sender
+{
+	if (mode == 0)
+		[tasksSearchField becomeFirstResponder];
+	else if (mode == 1)
+		[filesSearchField becomeFirstResponder];
 }
 
 @end

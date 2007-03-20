@@ -13,11 +13,6 @@
 
 @implementation MQServer
 
-+ (void)initialize
-{
-	[self setKeys:[NSArray arrayWithObject:@"localPath"] triggerChangeNotificationsForDependentKey:@"displayLocalPath"];
-}
-
 - (id)init
 {
 	if (![super init])
@@ -174,19 +169,12 @@
 - (NSString *)localPath
 {
 	id value = [self primitiveValueForKey:@"localPath"];
-	if (!value)
-		return [[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"] stringByAppendingPathComponent:@"Mindquarry Workspace"];
+	if (!value) {
+		id newVal = [[NSHomeDirectory() stringByAppendingPathComponent:@"Desktop"] stringByAppendingPathComponent:@"Mindquarry Workspace"];
+		[self setPrimitiveValue:newVal forKey:@"localPath"];
+		return newVal;
+	}
 	return value;
-}
-
-- (NSString *)displayLocalPath
-{
-	return [[self valueForKey:@"localPath"] stringByAbbreviatingWithTildeInPath];
-}
-
-- (void)setDisplayLocalPath:(NSString *)path 
-{
-	[self setValue:[path stringByExpandingTildeInPath] forKey:@""];
 }
 
 - (NSURL *)webURL

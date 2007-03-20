@@ -46,10 +46,6 @@
 
 - (NSString *)localPath;
 
-- (NSString *)displayLocalPath;
-
-- (void)setDisplayLocalPath:(NSString *)path;
-
 - (NSURL *)webURL;
 
 @end

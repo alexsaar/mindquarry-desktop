@@ -80,6 +80,10 @@ enum {
 	
 	NSArray *oldTeamsList;
 	
+	IBOutlet id tasksSearchField;
+	
+	IBOutlet id filesSearchField;
+	
 }
 
 - (void)afterWakeFromNib;
@@ -146,5 +150,7 @@ enum {
 - (void)setFilesStringFilter:(NSPredicate *)pred;
 
 - (void)setFilesFilter;
+
+- (IBAction)focusSearchField:(id)sender;
 
 @end
