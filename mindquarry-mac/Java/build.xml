@@ -3,9 +3,11 @@
 <!-- Created by: Jonas Witt &lt;&gt;  -->
 
 <project name="Java-Test" default="run" basedir=".">
-  <property name="src" value="./src"/>
+    <!-- <property name="src" value="./src"/> -->
+  <property name="src" value="../../mindquarry-desktop-commons/src/main/java/com/mindquarry/desktop/workspace"/>
+
   <property name="build" value="./build"/>
-  <property name="compile.debug"       value="true"/>
+  <property name="compile.debug" value="true"/>
 
   <path id="compile.classpath">
       <pathelement location="./lib/svnkit.jar"/>

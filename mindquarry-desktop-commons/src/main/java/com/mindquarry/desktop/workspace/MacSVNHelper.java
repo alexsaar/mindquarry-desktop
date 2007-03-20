@@ -19,8 +19,7 @@ import org.tigris.subversion.javahl.Status;
 /**
  * Specilization of the {@link SVNHelper} for Mac OS related clients.
  * 
- * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
- *         Saar</a>
+ * @author <a href="mailto:jonas(at)metaquark(dot)de">Jonas Witt</a>
  */
 public class MacSVNHelper extends SVNHelper {
     public MacSVNHelper(String repositoryURL, String localPath,
@@ -36,8 +35,6 @@ public class MacSVNHelper extends SVNHelper {
         return CONFLICT_OVERRIDE_FROM_WC;
     }
 
-    protected String getCommitMessage() {
-        return "generic commit message";
-    }
+    protected native String getCommitMessage();
 
 }

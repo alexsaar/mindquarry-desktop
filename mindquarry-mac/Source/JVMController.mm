@@ -81,7 +81,7 @@ JNIEnv *env;
 + (BOOL)registerNatives
 {
 	// JNIHandler methods
-    jclass jJNIHandler = env->FindClass("com/mindquarry/desktop/svn/MacSVNHelper");
+    jclass jJNIHandler = env->FindClass("com/mindquarry/desktop/workspace/MacSVNHelper");
     if (!jJNIHandler) {
         NSLog(@"Failed to find MacSVNClient class");
         return FALSE;

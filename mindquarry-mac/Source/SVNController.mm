@@ -32,7 +32,7 @@
 	
 	CHECK_EXCEPTION;
 	
-	helperClass = env->FindClass("com/mindquarry/desktop/svn/MacSVNHelper");
+	helperClass = env->FindClass("com/mindquarry/desktop/workspace/MacSVNHelper");
 	if (!helperClass) {
 		NSLog(@"could not find MacSVNHelper class");
 		return nil;

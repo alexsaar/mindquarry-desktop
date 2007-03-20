@@ -31,10 +31,12 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 /**
  * Add summary documentation here.
  * 
+ * @author <a href="mailto:jonas(at)metaquark(dot)de">Jonas Witt</a>
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public abstract class SVNHelper implements Notify2 {
+
     protected static final int CONFLICT_RESET_FROM_SERVER = 0;
 
     protected static final int CONFLICT_OVERRIDE_FROM_WC = 1;
