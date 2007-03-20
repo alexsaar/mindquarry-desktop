@@ -24,8 +24,8 @@ import org.eclipse.swt.graphics.Image;
  *         Saar</a>
  */
 public class GeneralSettingsPage extends FieldEditorPreferencePage {
-    public static final String PREF_ENCRYPT = "com.mindquarry.desktop.encrypt"; //$NON-NLS-1$
-
+    public static final String NAME = "general"; //$NON-NLS-1$
+    
     /**
      * ShortcutsPage default constructor
      */
@@ -42,9 +42,5 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
 
     @Override
     protected void createFieldEditors() {
-//        BooleanFieldEditor encryptPasswords = new BooleanFieldEditor(
-//                PREF_ENCRYPT, "&" + //$NON-NLS-1$
-//                        "Encrypt sentitive data", getFieldEditorParent());
-//        addField(encryptPasswords);
     }
 }

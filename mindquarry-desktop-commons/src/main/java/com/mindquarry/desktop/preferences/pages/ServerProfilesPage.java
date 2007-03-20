@@ -17,7 +17,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -48,6 +47,8 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class ServerProfilesPage extends PreferencePage {
+    public static final String NAME = "profiles"; //$NON-NLS-1$
+
     private Text login;
 
     private Text pwd;

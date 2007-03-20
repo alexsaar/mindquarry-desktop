@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.Text;
  *         Saar</a>
  */
 public class ShortcutsPage extends PreferencePage {
+    public static final String NAME = "shortcuts"; //$NON-NLS-1$
+    
     public static final String SHORTCUT_KEY_BASE = "com.mindquarry.desktop.shortcut."; //$NON-NLS-1$
 
     private static final String CATEGORY_COL_ID = "category"; //$NON-NLS-1$
