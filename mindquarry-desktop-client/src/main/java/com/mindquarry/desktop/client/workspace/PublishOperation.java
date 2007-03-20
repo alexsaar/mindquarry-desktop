@@ -76,8 +76,10 @@ public class PublishOperation extends SvnOperation {
                 for (Status change : changes) {
                     changedPaths.add(change.getPath());
                 }
-                svnHelper.setCommitInfo(commitInfo.toString());
-                svnHelper.commit(changedPaths.toArray(new String[0]));
+                if (changedPaths.size() > 0) {
+                    svnHelper.setCommitInfo(commitInfo.toString());
+                    svnHelper.commit(changedPaths.toArray(new String[0]));
+                }
             } catch (ClientException e) {
                 MindClient
                         .showErrorMessage("Could not publish workspace changes "
