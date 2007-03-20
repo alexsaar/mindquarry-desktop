@@ -19,6 +19,8 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
+import com.mindquarry.desktop.util.HttpUtilities;
+
 /**
  * Abstract base class for all model types. Provides base functionality for
  * parsing model data from {@link InputStream}.
@@ -28,11 +30,34 @@ import org.dom4j.io.SAXReader;
  */
 public abstract class ModelBase {
     public ModelBase() {
-        // nothing to do here
+        initModel();
     }
 
     public ModelBase(InputStream data, TransformerBase transformer) {
+        initModel();
         parseInput(data, transformer);
+    }
+
+    public ModelBase(String url, String login, String password,
+            TransformerBase transformer) throws Exception {
+        initModel();
+        InputStream content = getContent(url, login, password);
+        parseInput(content, transformer);
+    }
+
+    /**
+     * Can be overidden by subclasses for initializing member variables when
+     * constructor initialization with transformer is used.
+     */
+    protected void initModel() {
+        // nothing to do here
+    }
+
+    private InputStream getContent(String url, String login, String password)
+            throws Exception {
+        InputStream content = HttpUtilities.getContentAsXML(login, password,
+                url);
+        return content;
     }
 
     private void parseInput(InputStream data, TransformerBase transformer) {

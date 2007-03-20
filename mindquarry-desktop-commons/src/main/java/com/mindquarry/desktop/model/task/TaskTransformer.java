@@ -26,13 +26,8 @@ import dax.Path;
  *         Saar</a>
  */
 public class TaskTransformer extends TransformerBase {
-    private Task task;
+    private Task task = null;
 
-    /**
-     * {@inheritJavaDoc}
-     * 
-     * @see com.mindquarry.minutes.editor.model.tranformer.TransformerBase#handleModelPart(com.mindquarry.minutes.editor.model.ModelBase)
-     */
     @Override
     protected void handleModelPart(ModelBase model) {
         task = (Task) model;
@@ -75,5 +70,23 @@ public class TaskTransformer extends TransformerBase {
     @Path("date")
     public void date(Node node) {
         task.setDate(node.getStringValue().trim());
+    }
+
+    @Path("people/item")
+    public void people(Node node) {
+        Node personID = node.selectSingleNode("./person"); //$NON-NLS-1$
+        Node role = node.selectSingleNode("./role"); //$NON-NLS-1$
+        task.addPerson(personID.getText(), role.getText());
+    }
+
+    @Path("dependencies/item")
+    public void dependencies(Node node) {
+        Node taskID = node.selectSingleNode("./task"); //$NON-NLS-1$
+        Node role = node.selectSingleNode("./role"); //$NON-NLS-1$
+        task.addDependency(taskID.getText(), role.getText());
+    }
+
+    public Task getTask() {
+        return task;
     }
 }
