@@ -40,7 +40,9 @@
 
 - (BOOL)updateReturnError:(NSError **)error;
 
-- (BOOL)getLocalChanges:(NSMutableArray **)changes returnError:(NSError **)error;
+- (BOOL)fetchLocalChangesForTeam:(id)team returnError:(NSError **)error;
+
+- (void)_mainThreadChangeInsert:(id)arg;
 
 - (BOOL)commitItems:(NSArray *)items message:(NSString *)message returnError:(NSError **)error;
 

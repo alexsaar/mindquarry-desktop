@@ -121,7 +121,7 @@
 	return YES;
 }
 
-- (BOOL)getLocalChanges:(NSMutableArray **)changes returnError:(NSError **)error
+- (BOOL)fetchLocalChangesForTeam:(id)team returnError:(NSError **)error;
 {
 	static jmethodID localChangesMethod = nil;
 	if (!localChangesMethod) {
@@ -175,8 +175,6 @@
 	
 	NSMutableArray *changeList = [[NSMutableArray alloc] init];
 	
-	id changesController = [[NSApp delegate] valueForKey:@"changesController"];
-	
 	int i;
 	for (i = 0; i < len; i++) {
 		jobject item = env->GetObjectArrayElement(changesArray, i);
@@ -191,24 +189,46 @@
 		NSString *path = jstring_to_nsstring(env, jpath);
 		CHECK_EXCEPTION;
 		
-		NSManagedObject *change = [changesController newObject];
+		NSMutableDictionary *change = [NSMutableDictionary dictionary];
 		
-		[change setValue:path forKey:@"absPath"];
-		[change setValue:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];
-		[change setValue:[NSNumber numberWithBool:statusCode != 9] forKey:@"enabled"];
-		[change setValue:[NSNumber numberWithInt:statusCode] forKey:@"status"];
+		[change setObject:path forKey:@"absPath"];
+		[change setObject:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];
+		[change setObject:[NSNumber numberWithBool:statusCode != SVN_STATUS_CONFLICTED] forKey:@"enabled"];
+		[change setObject:[NSNumber numberWithInt:statusCode] forKey:@"status"];
 				
 		[changeList addObject:change];
-		
-		[change release];
 	}
 	
-	if (changes)
-		*changes = changeList;
-	
-	[changeList autorelease];
+	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
+	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
+	[arg release];
 	
 	return YES;
+}
+
+- (void)_mainThreadChangeInsert:(id)arg
+{
+	id team = [arg objectForKey:@"team"];
+	
+	id changesController = [[NSApp delegate] valueForKey:@"changesController"];
+	id changeList = [arg objectForKey:@"changes"];
+	
+	int count = [changeList count];
+	int i;
+	for (i = 0; i < count; i++) {
+		id item = [changeList objectAtIndex:i];
+		
+		id change = [changesController newObject];
+		[change setValue:[item objectForKey:@"absPath"] forKey:@"absPath"];
+		[change setValue:[item objectForKey:@"relPath"] forKey:@"relPath"];
+		[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
+		[change setValue:[item objectForKey:@"status"] forKey:@"status"];
+		
+		[change setValue:team forKey:@"team"];
+		[change setValue:[team valueForKey:@"server"] forKey:@"server"];
+	}
+	
+	[changeList release];
 }
 
 - (BOOL)commitItems:(NSArray *)items message:(NSString *)message returnError:(NSError **)error

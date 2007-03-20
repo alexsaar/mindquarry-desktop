@@ -39,8 +39,6 @@
 			[currentTeam getSVNChanges];		
 	}
 	currentTeam = nil;
-	
-	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString

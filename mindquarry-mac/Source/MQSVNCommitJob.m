@@ -70,8 +70,6 @@
 	[[NSApp delegate] setValue:nil forKey:@"cachedMessage"];
 	
 //	[[[[MQSVNUpdateJob alloc] initWithServer:server updates:NO] autorelease] addToQueue];
-	
-	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString

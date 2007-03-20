@@ -9,6 +9,7 @@
 #import "MQTeam.h"
 
 #import "SVNController.h"
+#import "MQServer.h"
 
 @implementation MQTeam
 
@@ -44,7 +45,7 @@
 	[svn updateReturnError:nil];
 }
 
-- (NSArray *)getSVNChanges
+- (void)getSVNChanges
 {
 	id chController = [[NSApp delegate] valueForKey:@"changesController"];
 //	NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
@@ -56,17 +57,7 @@
 	}
 	
 	[self initJVM];
-	NSMutableArray *changes;
-	[svn getLocalChanges:&changes returnError:nil];
-	
-	NSEnumerator *cEnum = [changes objectEnumerator];
-	id change;
-	while (change = [cEnum nextObject]) {
-		[change setValue:self forKey:@"team"];
-		[change setValue:[self valueForKey:@"server"] forKey:@"server"];
-	}
-	
-	return changes;
+	[svn fetchLocalChangesForTeam:self returnError:nil];
 }
 
 - (void)commitChanges:(NSArray *)changes message:(NSString *)commitMessage

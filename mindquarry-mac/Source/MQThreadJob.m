@@ -24,7 +24,7 @@
 	[self retain];
 	
 	[self threadMethod];
-	
+
 	[self performSelectorOnMainThread:@selector(finishRequest) withObject:nil waitUntilDone:YES];
 	
 	[pool release];
