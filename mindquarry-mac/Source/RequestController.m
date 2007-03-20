@@ -25,7 +25,7 @@
 @implementation RequestController
 
 + (void)initialize {
-	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1], @"sortBy", nil]];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1], @"sortBy", [NSNumber numberWithInt:0], @"filesSortBy", nil]];
 }
 
 - (void)awakeFromNib
@@ -84,6 +84,11 @@
 	[filterBar addItemsWithTitles:labels withSelector:@selector(titlebarSelectionChanged:) withSender:self];
 	[filterBar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"]];
 	[self titlebarSelectionChanged:nil];
+	
+	labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Filename", @"Size", @"Kind", @"State", @"Team", NULL] autorelease];
+	[changesFilterbar addItemsWithTitles:labels withSelector:@selector(fileSortSelectionChanged:) withSender:self];
+	[changesFilterbar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"filesSortBy"]];
+	[self fileSortSelectionChanged:nil];
 	
 	[taskTable setTarget:self];
 	[taskTable setDoubleAction:@selector(taskDoubleClick:)];
@@ -168,6 +173,52 @@
 	
 	[taskTable reloadData];
 	
+}
+
+- (void)fileSortSelectionChanged:(id)sender
+{
+	int tag;
+	if (sender)
+		tag = [sender tag];
+	else
+		tag = [[NSUserDefaults standardUserDefaults] integerForKey:@"filesSortBy"];
+	
+	[[NSUserDefaults standardUserDefaults] setInteger:tag forKey:@"filesSortBy"];
+	
+	NSString *key = nil;
+	if (tag == 0)
+		key = @"relPath";
+	else if (tag == 1)
+		key = @"fileSize";
+	else if (tag == 2)
+		key = @"fileKind";
+	else if (tag == 3)
+		key = @"status";
+	else if (tag == 4)
+		key = @"team.name";
+	
+	if (!key)
+		return;
+	
+	NSMutableArray *desc = [[changesController sortDescriptors] mutableCopy];
+	
+	int i;
+	int count = [desc count];
+	id remove = nil;
+	for (i = 0; i < count; i++) {
+		NSSortDescriptor *sd = [desc objectAtIndex:i];
+		if ([[sd key] isEqualToString:key])
+			remove = sd;
+	}
+	if (remove)
+		[desc removeObject:remove];
+	
+	[desc insertObject:[[[NSSortDescriptor alloc] initWithKey:key ascending:YES] autorelease] atIndex:0];
+	
+	[changesController setSortDescriptors:desc];
+	[desc release];
+	
+	[workspaceTable reloadData];
 }
 
 - (IBAction)toggleInspector:(id)sender

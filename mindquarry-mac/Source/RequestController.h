@@ -68,6 +68,8 @@ enum {
 
 - (void)titlebarSelectionChanged:(id)sender;
 
+- (void)fileSortSelectionChanged:(id)sender;
+
 - (IBAction)toggleInspector:(id)sender;
 
 - (IBAction)setDone:(id)sender;
