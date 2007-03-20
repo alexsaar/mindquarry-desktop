@@ -84,6 +84,8 @@ enum {
 	
 	IBOutlet id filesSearchField;
 	
+	IBOutlet id passwordField;
+	
 }
 
 - (void)afterWakeFromNib;

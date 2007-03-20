@@ -62,6 +62,7 @@
                 filesTeamSelector = id; 
                 filterBar = id; 
                 inspectorWindow = id; 
+                passwordField = id; 
                 priorityButton = id; 
                 rootView = id; 
                 serverDrawer = id; 

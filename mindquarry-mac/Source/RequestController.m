@@ -407,12 +407,12 @@
 
 - (IBAction)setServerLocalPath:(id)sender
 {
+	[passwordField validateEditing];
+	
 	NSOpenPanel *panel = [NSOpenPanel openPanel];
 	[panel setCanChooseFiles:NO];
 	[panel setCanChooseDirectories:YES];
-	[panel runModal];
-	
-	if ([[panel filenames] count] > 0) {
+	if ([panel runModal] == NSFileHandlingPanelOKButton && [[panel filenames] count] > 0) {
 		NSString *dir = [[panel filenames] objectAtIndex:0];
 		[[serversController selection] setValue:dir forKey:@"localPath"];
 	}
@@ -471,7 +471,7 @@
 		item = [[[NSMenuItem alloc] init] autorelease];
 		[item setTitle:name];
 		
-		if (i < 8) {
+		if (i + 1 <= 9) {
 			[item setKeyEquivalent:[NSString stringWithFormat:@"%d", i + 1]];
 			[item setKeyEquivalentModifierMask:NSCommandKeyMask];
 		}
