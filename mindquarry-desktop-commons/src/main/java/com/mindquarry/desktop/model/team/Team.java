@@ -36,12 +36,8 @@ public class Team extends ModelBase {
         super();
     }
 
-    public Team(String id, String name, String workspaceURL) {
-        super();
-
-        this.id = id;
-        this.name = name;
-        this.workspaceURL = workspaceURL;
+    public Team(String url, String login, String password) throws Exception {
+        super(url, login, password, new TeamTransformer());
     }
 
     /**

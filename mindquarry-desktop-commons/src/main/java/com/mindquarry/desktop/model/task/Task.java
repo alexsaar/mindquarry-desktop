@@ -101,11 +101,9 @@ public class Task extends ModelBase {
     public Task() {
         super();
     }
-
-    public Task(String id, String title, String status) {
-        this.id = id;
-        this.title = title;
-        this.status = status;
+    
+    public Task(String url, String login, String password) throws Exception {
+        super(url, login, password, new TaskTransformer());
     }
 
     public String getTitle() {

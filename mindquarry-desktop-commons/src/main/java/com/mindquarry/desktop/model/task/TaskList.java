@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mindquarry.desktop.model.ModelBase;
-import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -43,7 +42,7 @@ public class TaskList extends ModelBase {
         super();
         this.tasks = tasks;
     }
-    
+
     @Override
     protected void initModel() {
         tasks = new ArrayList<Task>();
@@ -59,16 +58,12 @@ public class TaskList extends ModelBase {
     }
 
     public void add(String url, String login, String password) {
-        InputStream content = null;
+        // check if some contant was received
         try {
-            content = HttpUtilities.getContentAsXML(login, password, url);
+            tasks.add(new Task(url, login, password));
         } catch (Exception e) {
             e.printStackTrace();
             return;
-        }
-        // check if some contant was received
-        if (content != null) {
-            tasks.add(new Task(content));
         }
     }
 }
