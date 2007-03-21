@@ -56,7 +56,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         Control contents = super.createContents(parent);
 
         setTitle("Select a Team");
-        setMessage("Please select on of your teams.",
+        setMessage("Please select one of your teams.",
                 IMessageProvider.INFORMATION);
 
         getShell().setText("Select a Team");
@@ -69,7 +69,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         composite.setLayout(new GridLayout(1, true));
 
         Label label = new Label(composite, SWT.LEFT);
-        label.setText("Select Team:");
+        label.setText("Select a Team:");
         
         teamWidget = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
@@ -78,7 +78,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
                 SWT.COLOR_WHITE));
 
         for (Team team : teams) {
-            teamWidget.add(team.getName());
+            teamWidget.add(team.getId());
         }
         teamWidget.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
@@ -90,7 +90,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
             }
         });
         teamWidget.select(0);
-        setSelected(teams.get(0).getName());
+        setSelected(teams.get(0).getId());
         return composite;
     }
 

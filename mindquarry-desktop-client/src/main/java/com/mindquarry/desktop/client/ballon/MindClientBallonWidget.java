@@ -46,7 +46,6 @@ import com.mindquarry.desktop.client.team.dialog.TeamSelectionDialog;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.model.task.Task;
-import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.HttpUtilities;
@@ -365,13 +364,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
             InputStream content;
             try {
                 content = HttpUtilities.getContentAsXML(profile.getLogin(),
-                        profile.getPassword(), profile.getServerURL() + "/teams"); //$NON-NLS-1$
+                        profile.getPassword(), profile.getServerURL()
+                                + "/teams"); //$NON-NLS-1$
             } catch (Exception e) {
                 MindClient.showErrorMessage(e.getLocalizedMessage());
                 return;
             }
-            TeamList teamList = new TeamList(content, profile.getLogin(), profile.getName());
-            List<Team> teams = teamList.getTeams();
+            TeamList teamList = new TeamList(content, profile.getLogin(),
+                    profile.getPassword());
             if (teamList.getTeams().size() == 0) {
                 MindClient
                         .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
@@ -393,13 +393,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
             if (dlg.open() == Window.OK) {
                 try {
-                    
+
                     TeamSelectionDialog tsDlg = new TeamSelectionDialog(
                             MindClient.getShell(), teamList.getTeams());
 
                     if (tsDlg.open() == Window.OK) {
                         HttpUtilities.putAsXML(profile.getLogin(), profile
-                                .getPassword(), profile.getServerURL() + "/tasks/" //$NON-NLS-1$
+                                .getPassword(), profile.getServerURL()
+                                + "/tasks/" //$NON-NLS-1$
                                 + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
                                 task.getContentAsXML().asXML().getBytes());
                     }

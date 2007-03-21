@@ -124,21 +124,19 @@ public class TaskManager {
     }
 
     public void setDone(Task task) {
-        tasks.remove(task);
-        taskTableViewer.refresh();
+        task.setStatus(Task.STATUS_DONE);
 
+        PreferenceStore store = client.getPreferenceStore();
+        if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
+            tasks.remove(task);
+        }
         Profile selectedProfile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
-        // set task content to status "done"
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
-        Source xmlSource = new DocumentSource(task.getContentAsXML());
-
         try {
-            taskDoneXSLTrans.transform(xmlSource, new StreamResult(result));
-
             HttpUtilities.putAsXML(selectedProfile.getLogin(), selectedProfile
-                    .getPassword(), task.getId(), result.toByteArray());
+                    .getPassword(), task.getId(), task.getContentAsXML()
+                    .asXML().getBytes());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -150,6 +148,7 @@ public class TaskManager {
         if (tasks.isEmpty()) {
             updateTaskWidgetContents(false, false, true);
         }
+        taskTableViewer.refresh();
     }
 
     public void removeChangeListener(TaskListChangeListener provider) {
