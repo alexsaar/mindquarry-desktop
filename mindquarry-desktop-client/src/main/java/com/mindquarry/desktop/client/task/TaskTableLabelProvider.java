@@ -50,6 +50,9 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     @Override
     public Image getImage(Object element) {
         Task task = (Task) element;
+        if(task.getStatus() == null) {
+            return null;
+        }
         if (task.getStatus().equals(Task.STATUS_NEW)) {
             return newTask;
         } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {

@@ -94,23 +94,12 @@ public class TaskManager {
 
     private boolean initialized = false;
 
-    private Transformer taskDoneXSLTrans;
-
     private TaskManager(final MindClient client, final Composite taskContainer,
             Button refreshButton, final Button doneButton) {
         this.client = client;
         this.taskContainer = taskContainer;
         this.doneButton = doneButton;
         this.refreshButton = refreshButton;
-
-        StreamSource taskDoneXSL = new StreamSource(TaskManager.class
-                .getResourceAsStream("/xslt/taskDone.xsl")); //$NON-NLS-1$
-        TransformerFactory transFact = TransformerFactory.newInstance();
-        try {
-            taskDoneXSLTrans = transFact.newTransformer(taskDoneXSL);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public static TaskManager getInstance(final MindClient client,

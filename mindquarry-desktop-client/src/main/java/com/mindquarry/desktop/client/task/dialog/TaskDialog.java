@@ -170,32 +170,43 @@ public class TaskDialog extends TitleAreaDialog {
     }
 
     private void initTask() {
-        title.setText(task.getTitle());
-        summary.setText(task.getSummary());
-        description.setText(task.getDescription());
-
-        if (task.getStatus().equals(Task.STATUS_NEW)) {
-            status.select(0);
-        } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-            status.select(1);
-        } else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-            status.select(2);
-        } else if (task.getStatus().equals(Task.STATUS_DONE)) {
-            status.select(3);
+        if (task.getTitle() != null) {
+            title.setText(task.getTitle());
         }
-        if (task.getPriority().equals(Task.PRIORITY_LOW)) {
-            priority.select(0);
-        } else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
-            priority.select(1);
-        } else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
-            priority.select(2);
-        } else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
-            priority.select(3);
+        if (task.getSummary() != null) {
+            summary.setText(task.getSummary());
         }
-        String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
-        calendar.setDay(Integer.valueOf(dateParts[1]));
-        calendar.setMonth(Integer.valueOf(dateParts[0]) - 1);
-        calendar.setYear(Integer.valueOf(dateParts[2]));
+        if (task.getDescription() != null) {
+            description.setText(task.getDescription());
+        }
+        if (task.getStatus() != null) {
+            if (task.getStatus().equals(Task.STATUS_NEW)) {
+                status.select(0);
+            } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
+                status.select(1);
+            } else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
+                status.select(2);
+            } else if (task.getStatus().equals(Task.STATUS_DONE)) {
+                status.select(3);
+            }
+        }
+        if (task.getPriority() != null) {
+            if (task.getPriority().equals(Task.PRIORITY_LOW)) {
+                priority.select(0);
+            } else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
+                priority.select(1);
+            } else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
+                priority.select(2);
+            } else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
+                priority.select(3);
+            }
+        }
+        if (task.getDate() != null) {
+            String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
+            calendar.setDay(Integer.valueOf(dateParts[1]));
+            calendar.setMonth(Integer.valueOf(dateParts[0]) - 1);
+            calendar.setYear(Integer.valueOf(dateParts[2]));
+        }
     }
 
     private void registerListeners() {
