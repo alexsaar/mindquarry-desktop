@@ -112,13 +112,13 @@ public class IconActionThread extends Thread {
     private void updateToolTip() {
         String tooltip = ""; //$NON-NLS-1$
         if (actions.size() > 0) {
-            tooltip += Messages.getString("IconActionThread.0") //$NON-NLS-1$
+            tooltip += "Running actions:"
                     + "\n"; //$NON-NLS-1$
             for (String action : actions) {
                 tooltip += "- " + action; //$NON-NLS-1$
             }
         } else {
-            tooltip += Messages.getString("IconActionThread.1"); //$NON-NLS-1$
+            tooltip += "Currently no action is running.";
         }
         item.setToolTipText(tooltip);
     }

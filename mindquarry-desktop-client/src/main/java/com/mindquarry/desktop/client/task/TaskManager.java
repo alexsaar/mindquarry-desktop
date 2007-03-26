@@ -13,18 +13,10 @@
  */
 package com.mindquarry.desktop.client.task;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.dom4j.io.DocumentSource;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -247,10 +239,10 @@ public class TaskManager {
 
                 if (!enabled) {
                     MindClient.getIconActionHandler().startAction(
-                            Messages.getString("TaskManager.0")); //$NON-NLS-1$
+                            "Synchronizing tasks");
                 } else {
                     MindClient.getIconActionHandler().stopAction(
-                            Messages.getString("TaskManager.0")); //$NON-NLS-1$
+                            "Synchronizing tasks");
                 }
             }
         });
@@ -263,8 +255,7 @@ public class TaskManager {
                 if (refreshing) {
                     destroyContent();
                     refreshWidget = new TaskUpdateComposite(taskContainer,
-                            Messages.getString("TaskManager.2") //$NON-NLS-1$
-                                    + " ..."); //$NON-NLS-1$
+                            "Updating task list" + " ..."); //$NON-NLS-2$
                 } else if (!error && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);
@@ -284,7 +275,7 @@ public class TaskManager {
                     TableColumn titleCol = new TableColumn(table, SWT.NONE);
                     titleCol.setResizable(false);
                     titleCol.setWidth(100);
-                    titleCol.setText(Messages.getString("TaskManager.3")); //$NON-NLS-1$
+                    titleCol.setText("Description");
 
                     TableViewerColumn vCol = new TableViewerColumn(
                             taskTableViewer, titleCol);
@@ -308,11 +299,11 @@ public class TaskManager {
                 } else if (!error && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksComposite(taskContainer,
-                            Messages.getString("TaskManager.1")); //$NON-NLS-1$
+                            "Currently no tasks are active.");
                 } else {
                     destroyContent();
                     errorWidget = new TaskErrorComposite(taskContainer,
-                            Messages.getString("TaskManager.4")); //$NON-NLS-1$
+                            "List of tasks could not be updated.");
                 }
                 taskContainer.layout(true);
             }

@@ -116,8 +116,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                 .getPreferenceStore());
 
         if (selectedProfile == null) {
-            MindClient.showErrorMessage(Messages
-                    .getString("WorkspaceSynchronizeListener.3")); //$NON-NLS-1$
+            MindClient.showErrorMessage("No profile selected. Please select a profile and try again.");
             return;
         }
         new Thread(new Runnable() {
@@ -141,8 +140,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                     op.run();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    MindClient.showErrorMessage(Messages
-                            .getString("WorkspaceSynchronizeListener.1")); //$NON-NLS-1$
+                    MindClient.showErrorMessage("Error during workspaces synchronization.");
                 }
                 enableTriggerWidgets(true, triggerWidgets);
                 enableSynAreas(false, synAreas);

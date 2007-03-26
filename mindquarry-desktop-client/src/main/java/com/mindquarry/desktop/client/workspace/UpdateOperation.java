@@ -32,7 +32,7 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  */
 public class UpdateOperation extends SvnOperation {
     private HashMap<String, String> workspaces;
-    
+
     public UpdateOperation(final MindClient client,
             List<SynchronizeWidget> synAreas, HashMap<String, String> workspaces) {
         super(client, synAreas);
@@ -64,8 +64,7 @@ public class UpdateOperation extends SvnOperation {
 
         // loop workspaces
         for (String id : workspaces.keySet()) {
-            setMessage(Messages.getString("UpdateOperation.12") //$NON-NLS-1$
-                    + " (" //$NON-NLS-1$
+            setMessage("Updating workspace" + " (" //$NON-NLS-1$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
@@ -77,7 +76,7 @@ public class UpdateOperation extends SvnOperation {
             try {
                 // TODO pipe local changes to commit operation
                 svnHelper.getLocalChanges();
-                
+
                 svnHelper.update();
             } catch (ClientException e) {
                 MindClient.showErrorMessage("Could not update workspace " + id);

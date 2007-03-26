@@ -112,7 +112,7 @@ public class MindClient {
             addNewProfile(args[0], args[1], args[2]);
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
-            addNewProfile(Messages.getString("MindClient.8"), "http://server", //$NON-NLS-1$ //$NON-NLS-2$
+            addNewProfile("Your Mindquarry Server Profile", "http://server", //$NON-NLS-2$
                     "your login name"); //$NON-NLS-1$
             showPreferenceDialog(true);
         } else {
@@ -156,7 +156,7 @@ public class MindClient {
         });
         // go to webpage
         MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString("MindClient.10")); //$NON-NLS-1$
+        menuItem.setText("Go to webpage");
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 if (Profile.getSelectedProfile(store) != null) {
@@ -167,7 +167,7 @@ public class MindClient {
         });
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString("MindClient.11")); //$NON-NLS-1$
+        menuItem.setText("Synchronize");
         menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
                 .getInstance(this, menuItem, null));
 
@@ -176,7 +176,7 @@ public class MindClient {
 
         // options dialog
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString("MindClient.0")); //$NON-NLS-1$
+        menuItem.setText("Options...");
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 try {
@@ -191,7 +191,7 @@ public class MindClient {
 
         // close application
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString("MindClient.1")); //$NON-NLS-1$
+        menuItem.setText("Close");
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 saveOptions();
@@ -227,7 +227,7 @@ public class MindClient {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            showErrorMessage(Messages.getString("MindClient.5")); //$NON-NLS-1$
+            showErrorMessage("Could not load MindClient settings.");
         }
     }
 
@@ -235,7 +235,7 @@ public class MindClient {
         try {
             store.save();
         } catch (Exception e) {
-            showErrorMessage(Messages.getString("MindClient.7")); //$NON-NLS-1$
+            showErrorMessage("Could not save MindClient settings.");
         }
     }
 
@@ -268,7 +268,7 @@ public class MindClient {
                 final ToolTip tip = new ToolTip(shell, SWT.BALLOON
                         | SWT.ICON_ERROR);
                 tip.setMessage(message);
-                tip.setText(Messages.getString("MindClient.12")); //$NON-NLS-1$
+                tip.setText("An error occured");
                 item.setToolTip(tip);
                 tip.setAutoHide(true);
                 tip.setVisible(true);

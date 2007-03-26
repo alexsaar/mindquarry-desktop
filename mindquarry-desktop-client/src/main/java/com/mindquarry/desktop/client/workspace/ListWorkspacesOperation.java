@@ -47,7 +47,7 @@ public class ListWorkspacesOperation extends SvnOperation {
     }
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
-        setMessage(Messages.getString("ListWorkspacesOperation.0")); //$NON-NLS-1$
+        setMessage("Retrieving teamspace list...");
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 

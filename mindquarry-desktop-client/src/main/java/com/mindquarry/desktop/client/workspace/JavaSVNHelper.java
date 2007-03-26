@@ -15,10 +15,14 @@ package com.mindquarry.desktop.client.workspace;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.workspace.dialog.ConflictDialog;
 import com.mindquarry.desktop.workspace.SVNHelper;
 
 /**
@@ -29,7 +33,7 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  */
 public class JavaSVNHelper extends SVNHelper {
     private String commitMessage = ""; //$NON-NLS-1$
-    
+
     private String commitInfo;
 
     public JavaSVNHelper(String repositoryURL, String localPath,
@@ -41,8 +45,19 @@ public class JavaSVNHelper extends SVNHelper {
         System.out.println("java notify: " + info.getPath()); //$NON-NLS-1$
     }
 
-    protected int resolveConflict(Status status) {
-        return CONFLICT_OVERRIDE_FROM_WC;
+    private int CONFLICT_RESOLVE_METHOD;
+
+    protected int resolveConflict(final Status status) {
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                ConflictDialog dlg = new ConflictDialog(new Shell(), status
+                        .getReposLastCmtRevisionNumber());
+                if (dlg.open() == Window.OK) {
+                    CONFLICT_RESOLVE_METHOD = dlg.getResolveMethod();
+                }
+            }
+        });
+        return CONFLICT_RESOLVE_METHOD;
     }
 
     public void setCommitInfo(String commitInfo) {
@@ -51,9 +66,9 @@ public class JavaSVNHelper extends SVNHelper {
 
     protected String getCommitMessage() {
         // retrieve (asynchronously) commit message
-        final InputDialog dlg = new InputDialog(MindClient.getShell(), Messages
-                .getString("JavaSVNHelper.1"), //$NON-NLS-1$
-                commitInfo, Messages.getString("JavaSVNHelper.3"), null); //$NON-NLS-1$
+        final InputDialog dlg = new InputDialog(MindClient.getShell(),
+                "Change Description", commitInfo,
+                "Description of your changes.", null);
 
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
@@ -65,7 +80,7 @@ public class JavaSVNHelper extends SVNHelper {
         });
         return commitMessage;
     }
-    
+
     private void setCommitMessage(String message) {
         commitMessage = message;
     }

@@ -21,8 +21,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+
+import com.mindquarry.desktop.workspace.SVNHelper;
 
 /**
  * Dialog for resolving working copy conflicts.
@@ -31,17 +35,18 @@ import org.eclipse.swt.widgets.Shell;
  *         Saar</a>
  */
 public class ConflictDialog extends TitleAreaDialog {
-    private static String LOG_MSG_PREFIX = "Log message for remote version:"
-            + "\n"; //$NON-NLS-1$
-
     private Button localCopy;
 
     private Button remoteCopy;
 
-    private Label logMsg;
-
-    public ConflictDialog(Shell shell) {
+    private long remoteRevision;
+    
+    private int resolveMethod;
+    
+    public ConflictDialog(Shell shell, long remoteRevision) {
         super(shell);
+        this.remoteRevision = remoteRevision;
+        resolveMethod = SVNHelper.CONFLICT_OVERRIDE_FROM_WC;
         setBlockOnOpen(true);
     }
 
@@ -63,25 +68,42 @@ public class ConflictDialog extends TitleAreaDialog {
         composite.setLayout(new GridLayout(1, false));
         composite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // Build the separator line
+        // build the separator line
         Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL
                 | SWT.SEPARATOR);
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         localCopy = new Button(composite, SWT.RADIO);
         localCopy.setText("Local Version");
+        localCopy.setSelection(true);
         localCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-
+        localCopy.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                resolveMethod = SVNHelper.CONFLICT_OVERRIDE_FROM_WC;
+            }
+        });
         remoteCopy = new Button(composite, SWT.RADIO);
-        remoteCopy.setText("Remote Version (Revision 12345)");
-
+        remoteCopy.setText("Remote Version " + "(Revision " //$NON-NLS-2$
+                + remoteRevision + ")"); //$NON-NLS-1$
+        remoteCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+        remoteCopy.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                resolveMethod = SVNHelper.CONFLICT_RESET_FROM_SERVER;
+            }
+        });
         composite = new Composite(composite, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));
         ((GridLayout) composite.getLayout()).marginWidth = 17;
 
-        logMsg = new Label(composite, SWT.LEFT);
-        logMsg.setText(LOG_MSG_PREFIX + "the remote version");
-
         return composite;
+    }
+
+    /**
+     * Getter for resolveMethod.
+     *
+     * @return the resolveMethod
+     */
+    public int getResolveMethod() {
+        return resolveMethod;
     }
 }

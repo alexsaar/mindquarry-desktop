@@ -40,7 +40,7 @@ public class PublishOperation extends SvnOperation {
 
     public void run() {
         resetProgress();
-        setMessage(Messages.getString("PublishOperation.0")); //$NON-NLS-1$
+        setMessage("Checking workspace changes...");
 
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
@@ -54,7 +54,7 @@ public class PublishOperation extends SvnOperation {
         int wsNbr = 0;
 
         for (String id : workspaces.keySet()) {
-            setMessage(Messages.getString("PublishOperation.4") + " (" //$NON-NLS-1$//$NON-NLS-2$
+            setMessage("Publishing workspace" + " (" //$NON-NLS-2$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
@@ -68,8 +68,9 @@ public class PublishOperation extends SvnOperation {
                 List<String> changedPaths = new ArrayList<String>();
 
                 StringBuffer commitInfo = new StringBuffer();
-                commitInfo.append(Messages.getString("PublishOperation.2") //$NON-NLS-1$
-                        + id + ":\n\n"); //$NON-NLS-1$
+                commitInfo
+                        .append("Please provide a short description of the changes you have made to workspace"
+                                + id + ":\n\n"); //$NON-NLS-1$
                 commitInfo
                         .append(getStatiDescription(changes, wsDir.getPath()));
 
