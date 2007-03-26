@@ -13,13 +13,12 @@
  */
 package com.mindquarry.desktop.workspace;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
+import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
@@ -36,10 +35,9 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
  *         Saar</a>
  */
 public abstract class SVNHelper implements Notify2 {
+    public static final int CONFLICT_RESET_FROM_SERVER = 0;
 
-    protected static final int CONFLICT_RESET_FROM_SERVER = 0;
-
-    protected static final int CONFLICT_OVERRIDE_FROM_WC = 1;
+    public static final int CONFLICT_OVERRIDE_FROM_WC = 1;
 
     protected String repositoryURL;
 
@@ -158,39 +156,45 @@ public abstract class SVNHelper implements Notify2 {
     public void commit(String[] paths) throws ClientException {
         for (String path : paths) {
             try {
-                Status status = client.singleStatus(path, false);
+                final Status status = client.singleStatus(path, false);
 
                 if (status.getTextStatus() == StatusKind.unversioned) {
                     client.add(path, true, true);
                 } else if (status.getTextStatus() == StatusKind.conflicted) {
                     switch (resolveConflict(status)) {
                     case CONFLICT_RESET_FROM_SERVER:
-                        // TODO
-                        break;
-
-                    case CONFLICT_OVERRIDE_FROM_WC:
+                        // copy latest revision to main file
                         try {
-                            copyFile(status.getPath() + ".mine", status
-                                    .getPath());
-                            client.resolved(status.getPath(), false);
+                            copyFile(status.getConflictNew(), status.getPath());
                         } catch (IOException e) {
                             System.err
                                     .println("Could not resolve conflict on file "
                                             + status.getPath());
                         }
                         break;
-
-                    default:
+                    case CONFLICT_OVERRIDE_FROM_WC:
+                        try {
+                            copyFile(status.getPath() + ".mine", status
+                                    .getPath());
+                        } catch (IOException e) {
+                            System.err
+                                    .println("Could not resolve conflict on file "
+                                            + status.getPath());
+                        }
+                        break;
                     }
+                    client.resolved(status.getPath(), false);
                 }
             } catch (ClientException e) {
                 System.err.println("client exception: " + path);
             }
         }
         String message = getCommitMessage();
+
         // if getCommitMessage returns null, we don't commit
-        if (message != null)
+        if (message != null) {
             client.commit(paths, message, true);
+        }
     }
 
     /**
@@ -200,6 +204,7 @@ public abstract class SVNHelper implements Notify2 {
         try {
             client.cancelOperation();
         } catch (ClientException e) {
+            e.printStackTrace();
         }
     }
 
@@ -226,22 +231,6 @@ public abstract class SVNHelper implements Notify2 {
      * Copies a file from source to dest.
      */
     private void copyFile(String source, String dest) throws IOException {
-        FileChannel in = null;
-        FileChannel out = null;
-        try {
-            in = new FileInputStream(source).getChannel();
-            out = new FileOutputStream(dest).getChannel();
-            long size = in.size();
-            MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0,
-                    size);
-            out.write(buf);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-        }
+        FileUtils.copyFile(new File(source), new File(dest));
     }
 }
