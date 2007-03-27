@@ -153,40 +153,28 @@ public abstract class SVNHelper implements Notify2 {
      * resolveConflict() for each conflicted file and getCommitMessage() once to
      * get the commit message before commiting.
      */
-    public void commit(String[] paths) throws ClientException {
+    public void commit(String[] paths) throws Exception {
         for (String path : paths) {
-            try {
-                final Status status = client.singleStatus(path, false);
+            Status status = client.singleStatus(path, false);
+            String basePath = new File(path).getParentFile().getAbsolutePath();
 
-                if (status.getTextStatus() == StatusKind.unversioned) {
-                    client.add(path, true, true);
-                } else if (status.getTextStatus() == StatusKind.conflicted) {
-                    switch (resolveConflict(status)) {
-                    case CONFLICT_RESET_FROM_SERVER:
-                        // copy latest revision to main file
-                        try {
-                            copyFile(status.getConflictNew(), status.getPath());
-                        } catch (IOException e) {
-                            System.err
-                                    .println("Could not resolve conflict on file "
-                                            + status.getPath());
-                        }
-                        break;
-                    case CONFLICT_OVERRIDE_FROM_WC:
-                        try {
-                            copyFile(status.getPath() + ".mine", status
-                                    .getPath());
-                        } catch (IOException e) {
-                            System.err
-                                    .println("Could not resolve conflict on file "
-                                            + status.getPath());
-                        }
-                        break;
-                    }
-                    client.resolved(status.getPath(), false);
+            if (status.getTextStatus() == StatusKind.unversioned) {
+                client.add(path, true, true);
+            } else if (status.getTextStatus() == StatusKind.conflicted) {
+                // check for conflict resolve method
+                switch (resolveConflict(status)) {
+                case CONFLICT_RESET_FROM_SERVER:
+                    // copy latest revision from repository to main file
+                    copyFile(basePath + "/" //$NON-NLS-1$
+                            + status.getConflictNew(), status.getPath());
+                    break;
+                case CONFLICT_OVERRIDE_FROM_WC:
+                    // copy local changes to main file
+                    copyFile(basePath + "/" //$NON-NLS-1$
+                            + status.getConflictWorking(), status.getPath());
+                    break;
                 }
-            } catch (ClientException e) {
-                System.err.println("client exception: " + path);
+                client.resolved(status.getPath(), false);
             }
         }
         String message = getCommitMessage();
