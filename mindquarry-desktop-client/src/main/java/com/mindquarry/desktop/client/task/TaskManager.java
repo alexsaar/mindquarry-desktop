@@ -70,6 +70,8 @@ public class TaskManager {
 
     private final Button refreshButton;
 
+    private final Button createButton;
+
     private final TaskManager myself = this;
 
     private Composite noTasksWidget;
@@ -87,19 +89,20 @@ public class TaskManager {
     private boolean initialized = false;
 
     private TaskManager(final MindClient client, final Composite taskContainer,
-            Button refreshButton, final Button doneButton) {
+            Button refreshButton, Button createButton, final Button doneButton) {
         this.client = client;
         this.taskContainer = taskContainer;
         this.doneButton = doneButton;
         this.refreshButton = refreshButton;
+        this.createButton = createButton;
     }
 
     public static TaskManager getInstance(final MindClient client,
             final Composite taskContainer, Button refreshButton,
-            final Button doneButton) {
+            Button createButton, final Button doneButton) {
         if (instance == null) {
             instance = new TaskManager(client, taskContainer, refreshButton,
-                    doneButton);
+                    createButton, doneButton);
         }
         return instance;
     }
@@ -236,6 +239,7 @@ public class TaskManager {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
                 refreshButton.setEnabled(enabled);
+                createButton.setEnabled(enabled);
 
                 if (!enabled) {
                     MindClient.getIconActionHandler().startAction(

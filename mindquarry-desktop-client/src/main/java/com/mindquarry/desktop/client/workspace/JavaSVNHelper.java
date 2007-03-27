@@ -36,6 +36,8 @@ public class JavaSVNHelper extends SVNHelper {
 
     private String commitInfo;
 
+    private int conflictResolveMethod;
+
     public JavaSVNHelper(String repositoryURL, String localPath,
             String username, String password) {
         super(repositoryURL, localPath, username, password);
@@ -45,19 +47,22 @@ public class JavaSVNHelper extends SVNHelper {
         System.out.println("java notify: " + info.getPath()); //$NON-NLS-1$
     }
 
-    private int CONFLICT_RESOLVE_METHOD;
-
     protected int resolveConflict(final Status status) {
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
-                ConflictDialog dlg = new ConflictDialog(new Shell(), status
-                        .getReposLastCmtRevisionNumber());
+                // retrieve revision number
+                long revision = status.getReposLastCmtRevisionNumber();
+                if (revision == -1) {
+                    revision = status.getRevisionNumber();
+                }
+                // show conflict dialog
+                ConflictDialog dlg = new ConflictDialog(new Shell(), revision);
                 if (dlg.open() == Window.OK) {
-                    CONFLICT_RESOLVE_METHOD = dlg.getResolveMethod();
+                    conflictResolveMethod = dlg.getResolveMethod();
                 }
             }
         });
-        return CONFLICT_RESOLVE_METHOD;
+        return conflictResolveMethod;
     }
 
     public void setCommitInfo(String commitInfo) {

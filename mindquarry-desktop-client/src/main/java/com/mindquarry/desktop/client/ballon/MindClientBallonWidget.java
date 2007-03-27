@@ -73,12 +73,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
-        if(System.getProperty("os.name").equals("Linux")) {
-        	BALLOON_SIZE = new Point(356, 437);
+        if (System.getProperty("os.name").equals("Linux")) {
+            BALLOON_SIZE = new Point(356, 437);
         } else {
-        	BALLOON_SIZE = new Point(356, 397);
+            BALLOON_SIZE = new Point(356, 397);
         }
-        
+
         this.display = display;
         this.client = client;
         createContainer();
@@ -194,7 +194,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Label label = new Label(group, SWT.LEFT);
         label.setBackground(group.getBackground());
-        label.setText("Select Profile" + ":");  //$NON-NLS-1$//$NON-NLS-2$
+        label.setText("Select Profile" + ":"); //$NON-NLS-1$//$NON-NLS-2$
 
         profileSelector = new CCombo(group, SWT.BORDER | SWT.READ_ONLY);
         profileSelector.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
@@ -231,7 +231,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Link label = new Link(group, SWT.NONE);
         label.setBackground(group.getBackground());
-        label.setText("Synchronize your local documents with your team by pressing the 'Synchronize' button below."); //$NON-NLS-1$
+        label
+                .setText("Synchronize your local documents with your team by pressing the 'Synchronize' button below."); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
         SynchronizeWidget synArea = new SynchronizeWidget(group);
@@ -239,7 +240,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText("Synchronize"); //$NON-NLS-1$
-        syncButton.setToolTipText("Use this button to synchronize your local workspaces."); //$NON-NLS-1$
+        syncButton
+                .setToolTipText("Use this button to synchronize your local workspaces."); //$NON-NLS-1$
         syncButton
                 .setImage(new Image(
                         Display.getCurrent(),
@@ -303,7 +305,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         "/com/mindquarry/icons/22x22/status/task-done.png"))); //$NON-NLS-1$
 
         tman = TaskManager.getInstance(client, taskContainer, refreshButton,
-                doneButton);
+                createTaskButton, doneButton);
         refreshButton.addListener(SWT.Selection, new TaskRefreshListener(tman));
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
@@ -341,7 +343,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
     //
     // Button postButton = new Button(group, SWT.NONE);
     // postButton.setText("Post");
-    // postButton.setToolTipText("Use this button for posting the content of the Wiki textbox to your personal Wiki page.");
+    // postButton.setToolTipText("Use this button for posting the content of the
+    // Wiki textbox to your personal Wiki page.");
     // postButton
     // .setImage(new Image(
     // Display.getCurrent(),
