@@ -130,7 +130,7 @@
 				<dependency>
 					<groupId>swt</groupId>
 					<artifactId>swt-linux</artifactId>
-					<version>3.3M4</version>
+					<version>3.3M5</version>
 				</dependency>
 			</dependencies>
 		</profile>
