@@ -59,7 +59,7 @@ import com.mindquarry.desktop.util.HttpUtilities;
  */
 public class MindClientBallonWidget extends BalloonWindow implements
         SelectionListener, Listener {
-    private static final Point BALLOON_SIZE = new Point(356, 397);
+    private static Point BALLOON_SIZE;
 
     private final Display display;
 
@@ -73,7 +73,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
-
+        if(System.getProperty("os.name").equals("Linux")) {
+        	BALLOON_SIZE = new Point(356, 437);
+        } else {
+        	BALLOON_SIZE = new Point(356, 397);
+        }
+        
         this.display = display;
         this.client = client;
         createContainer();
