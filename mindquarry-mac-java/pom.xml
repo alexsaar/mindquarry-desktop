@@ -57,7 +57,7 @@
 								<param>ch.ethz.ganymed:ganymed-ssh2</param>
 								<param>com.svnkit:svnkit</param>
 							</includeDependencies>
-							<includeDependenciesInRelocation></includeDependenciesInRelocation>
+							<name>mindquarry-mac-svn.jar</name>
 						</configuration>
 					</execution>
 					
