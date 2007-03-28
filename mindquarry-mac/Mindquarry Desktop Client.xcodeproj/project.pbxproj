@@ -106,6 +106,23 @@
 		DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFA7E050BAF040D0081BB87 /* NSNumber+Additions.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXBuildStyle section */
+		468219250BBB065200C739C8 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		468219260BBB065200C739C8 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
 /* Begin PBXContainerItemProxy section */
 		DD2EDD930B9F2197000238CE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -490,6 +507,12 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Mindquarry Desktop Client" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				468219250BBB065200C739C8 /* Development */,
+				468219260BBB065200C739C8 /* Deployment */,
+			);
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Mindquarry Desktop Client */;
 			projectDirPath = "";
