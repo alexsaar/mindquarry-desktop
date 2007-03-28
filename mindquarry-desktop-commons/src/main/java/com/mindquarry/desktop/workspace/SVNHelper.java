@@ -14,12 +14,13 @@
 package com.mindquarry.desktop.workspace;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Info;
+import org.tigris.subversion.javahl.LogMessage;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;
@@ -50,23 +51,23 @@ public abstract class SVNHelper implements Notify2 {
     protected SVNClientImpl client;
 
     public SVNHelper(String repositoryURL, String localPath, String username,
-            String password) {
-        this.repositoryURL = repositoryURL;
-        this.localPath = localPath;
-        this.username = username;
-        this.password = password;
+	    String password) {
+	this.repositoryURL = repositoryURL;
+	this.localPath = localPath;
+	this.username = username;
+	this.password = password;
 
-        // create SVN client, set authentification info
-        client = SVNClientImpl.newInstance();
-        if (username != null) {
-            client.username(username);
-            if (password != null) {
-                client.password(password);
-            }
-        }
+	// create SVN client, set authentification info
+	client = SVNClientImpl.newInstance();
+	if (username != null) {
+	    client.username(username);
+	    if (password != null) {
+		client.password(password);
+	    }
+	}
 
-        // register for svn notifications on update and commit
-        client.notification2(this);
+	// register for svn notifications on update and commit
+	client.notification2(this);
     }
 
     /**
@@ -74,24 +75,24 @@ public abstract class SVNHelper implements Notify2 {
      * repositoryURL if no working copy is present
      */
     public void update() throws ClientException {
-        // check whether localPath is a working copy or not
-        try {
-            client.status(localPath, false, false, true);
-        } catch (ClientException e) {
-            // no working copy, checkout
-            initialCheckout();
-            return;
-        }
-        client.update(localPath, Revision.HEAD, true);
+	// check whether localPath is a working copy or not
+	try {
+	    client.status(localPath, false, false, true);
+	} catch (ClientException e) {
+	    // no working copy, checkout
+	    initialCheckout();
+	    return;
+	}
+	client.update(localPath, Revision.HEAD, true);
     }
 
     /**
      * Performs a new checkout from repositoryURL
      */
     protected void initialCheckout() throws ClientException {
-        // TODO: check if localPath already exists and if we need to move it
-        // first
-        client.checkout(repositoryURL, localPath, Revision.HEAD, true);
+	// TODO: check if localPath already exists and if we need to move it
+	// first
+	client.checkout(repositoryURL, localPath, Revision.HEAD, true);
     }
 
     /**
@@ -100,52 +101,63 @@ public abstract class SVNHelper implements Notify2 {
      * to the repository.
      */
     public Status[] getLocalChanges() throws ClientException {
-        try {
-            Status[] stati = client.status(localPath, true, false, true);
+	try {
+	    Status[] stati = client.status(localPath, true, false, true);
 
-            // add all conflicted file paths to an array
-            ArrayList<String> conflicts = new ArrayList<String>();
-            for (Status stat : stati) {
-                if (stat.getTextStatus() == StatusKind.conflicted) {
-                    conflicts.add(stat.getPath());
-                }
-            }
+	    // add all conflicted file paths to an array
+	    ArrayList<String> conflicts = new ArrayList<String>();
+	    for (Status stat : stati) {
+		if (stat.getTextStatus() == StatusKind.conflicted) {
+		    conflicts.add(stat.getPath());
+		}
+	    }
 
-            // collect changes
-            ArrayList<Status> changes = new ArrayList<Status>();
-            for (Status stat : stati) {
+	    // collect changes
+	    ArrayList<Status> changes = new ArrayList<Status>();
+	    for (Status stat : stati) {
 
-                // skip ignored files
-                if (stat.getTextStatus() == StatusKind.ignored
-                        || stat.getTextStatus() == StatusKind.external) {
-                    continue;
-                }
+		// skip ignored files
+		if (stat.getTextStatus() == StatusKind.ignored
+			|| stat.getTextStatus() == StatusKind.external) {
+		    continue;
+		}
 
-                // skip conflict related files (.mine, .rxyz)
-                boolean isConflictRelatedFile = false;
-                for (String conflict : conflicts) {
-                    if (stat.getPath().startsWith(conflict + ".")) {
-                        isConflictRelatedFile = true;
-                        break;
-                    }
-                }
-                if (isConflictRelatedFile) {
-                    continue;
-                }
+		// skip conflict related files (.mine, .rxyz)
+		boolean isConflictRelatedFile = false;
+		for (String conflict : conflicts) {
+		    if (stat.getPath().startsWith(conflict + ".")) {
+			isConflictRelatedFile = true;
+			break;
+		    }
+		}
+		if (isConflictRelatedFile) {
+		    continue;
+		}
 
-                if (stat.getTextStatus() == StatusKind.missing) {
-                    client.remove(new String[] { stat.getPath() }, null, true);
-                }
+		if (stat.getTextStatus() == StatusKind.missing) {
+		    client.remove(new String[] { stat.getPath() }, null, true);
+		}
 
-                // add changed or modified files to the results array
-                if (stat.getTextStatus() > StatusKind.normal) {
-                    changes.add(stat);
-                }
-            }
-            return changes.toArray(new Status[0]);
-        } catch (ClientException ce) {
-            return new Status[0];
-        }
+		// add changed or modified files to the results array
+		if (stat.getTextStatus() > StatusKind.normal) {
+		    changes.add(stat);
+		}
+	    }
+	    return changes.toArray(new Status[0]);
+	} catch (ClientException ce) {
+	    return new Status[0];
+	}
+    }
+
+    public LogMessage[] getRemoteChanges() {
+	try {
+	    Info info = client.info(localPath);
+	    Revision start = Revision.getInstance(info.getRevision());
+	    Revision head = Revision.HEAD;
+	    return client.logMessages(info.getUrl(), start, head);
+	} catch (ClientException e) {
+	    return new LogMessage[0];
+	}
     }
 
     /**
@@ -154,46 +166,46 @@ public abstract class SVNHelper implements Notify2 {
      * get the commit message before commiting.
      */
     public void commit(String[] paths) throws Exception {
-        for (String path : paths) {
-            Status status = client.singleStatus(path, false);
-            String basePath = new File(path).getParentFile().getAbsolutePath();
+	for (String path : paths) {
+	    Status status = client.singleStatus(path, false);
+	    String basePath = new File(path).getParentFile().getAbsolutePath();
 
-            if (status.getTextStatus() == StatusKind.unversioned) {
-                client.add(path, true, true);
-            } else if (status.getTextStatus() == StatusKind.conflicted) {
-                // check for conflict resolve method
-                switch (resolveConflict(status)) {
-                case CONFLICT_RESET_FROM_SERVER:
-                    // copy latest revision from repository to main file
-                    copyFile(basePath + "/" //$NON-NLS-1$
-                            + status.getConflictNew(), status.getPath());
-                    break;
-                case CONFLICT_OVERRIDE_FROM_WC:
-                    // copy local changes to main file
-                    copyFile(basePath + "/" //$NON-NLS-1$
-                            + status.getConflictWorking(), status.getPath());
-                    break;
-                }
-                client.resolved(status.getPath(), false);
-            }
-        }
-        String message = getCommitMessage();
+	    if (status.getTextStatus() == StatusKind.unversioned) {
+		client.add(path, true, true);
+	    } else if (status.getTextStatus() == StatusKind.conflicted) {
+		// check for conflict resolve method
+		switch (resolveConflict(status)) {
+		case CONFLICT_RESET_FROM_SERVER:
+		    // copy latest revision from repository to main file
+		    copyFile(basePath + "/" //$NON-NLS-1$
+			    + status.getConflictNew(), status.getPath());
+		    break;
+		case CONFLICT_OVERRIDE_FROM_WC:
+		    // copy local changes to main file
+		    copyFile(basePath + "/" //$NON-NLS-1$
+			    + status.getConflictWorking(), status.getPath());
+		    break;
+		}
+		client.resolved(status.getPath(), false);
+	    }
+	}
+	String message = getCommitMessage();
 
-        // if getCommitMessage returns null, we don't commit
-        if (message != null) {
-            client.commit(paths, message, true);
-        }
+	// if getCommitMessage returns null, we don't commit
+	if (message != null) {
+	    client.commit(paths, message, true);
+	}
     }
 
     /**
      * Cancels the current SVN operation
      */
     protected void cancelOperation() {
-        try {
-            client.cancelOperation();
-        } catch (ClientException e) {
-            e.printStackTrace();
-        }
+	try {
+	    client.cancelOperation();
+	} catch (ClientException e) {
+	    e.printStackTrace();
+	}
     }
 
     /**
@@ -219,6 +231,6 @@ public abstract class SVNHelper implements Notify2 {
      * Copies a file from source to dest.
      */
     private void copyFile(String source, String dest) throws IOException {
-        FileUtils.copyFile(new File(source), new File(dest));
+	FileUtils.copyFile(new File(source), new File(dest));
     }
 }
