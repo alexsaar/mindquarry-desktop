@@ -58,6 +58,9 @@
 	
 	[self initJVM];
 	[svn fetchLocalChangesForTeam:self returnError:nil];
+
+	[svn fetchRemoteChangesForTeam:self returnError:nil];
+
 }
 
 - (void)commitChanges:(NSArray *)changes message:(NSString *)commitMessage

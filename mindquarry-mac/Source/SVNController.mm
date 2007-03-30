@@ -231,6 +231,42 @@
 	[changeList release];
 }
 
+- (BOOL)fetchRemoteChangesForTeam:(id)team returnError:(NSError **)error
+{
+	static jmethodID remoteChangesMethod = nil;
+	if (!remoteChangesMethod) {
+		remoteChangesMethod = env->GetMethodID(helperClass, "getRemoteChangePaths", "()[Ljava/lang/String;");
+		CHECK_EXCEPTION;
+		if (!remoteChangesMethod) {
+			NSLog(@"Warning: could not get remoteChanges method ID");
+			return NO;
+		}
+	}
+	
+	jobjectArray changesArray = (jobjectArray) env->CallObjectMethod(helperRef, remoteChangesMethod);
+	
+	if (env->ExceptionCheck() == JNI_TRUE) {
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		return NO;
+	}
+	
+	jsize len = env->GetArrayLength(changesArray);
+	
+	int i;
+	for (i = 0; i < len; i++) {
+		jstring item = (jstring) env->GetObjectArrayElement(changesArray, i);
+		CHECK_EXCEPTION;
+		
+		NSString *path = jstring_to_nsstring(env, item);
+		
+		NSLog(@"remote %@", path);
+		
+	}
+	
+	return YES;
+}
+
 - (BOOL)commitItems:(NSArray *)items message:(NSString *)message returnError:(NSError **)error
 {
 	if (!helperRef)

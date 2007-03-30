@@ -32,7 +32,7 @@
 	while (!cancel && (currentTeam = [teamEnum nextObject])) {
 		[currentTeam initJVM];
 		[[currentTeam svnController] attachCurrentThread];
-		
+
 		if (!cancel && update)
 			[currentTeam update];
 		if (!cancel)

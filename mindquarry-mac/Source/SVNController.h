@@ -44,6 +44,8 @@
 
 - (void)_mainThreadChangeInsert:(id)arg;
 
+- (BOOL)fetchRemoteChangesForTeam:(id)team returnError:(NSError **)error;
+
 - (BOOL)commitItems:(NSArray *)items message:(NSString *)message returnError:(NSError **)error;
 
 - (void)setLocalPath:(NSString *)path;

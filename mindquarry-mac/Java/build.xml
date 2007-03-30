@@ -2,7 +2,7 @@
 <!-- build file for Java-Test program -->
 <!-- Created by: Jonas Witt &lt;&gt;  -->
 
-<project name="Java-Test" default="run" basedir=".">
+<project name="Java-Test" default="dist" basedir=".">
     <!-- <property name="src" value="./src"/> -->
   <property name="src" value="../../mindquarry-desktop-commons/src/main/java/com/mindquarry/desktop/workspace"/>
 
@@ -59,7 +59,7 @@ does not already exist.
   </target>
 
   <target name="run" depends="dist">
-    <java classname="com.mindquarry.desktop.svn.MacSVNHelper"  
+    <java classname="com.mindquarry.desktop.workspace.MacSVNHelper"  
         fork="true" 
         dir="${build}" 
         classpath="${build}" 

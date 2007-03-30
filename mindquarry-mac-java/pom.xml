@@ -52,12 +52,20 @@
 							<goal>ueberjar</goal>
 						</goals>
 						<configuration>
-							<stripUnusedClasses>true</stripUnusedClasses>
+							<stripUnusedClasses>false</stripUnusedClasses>
 							<includeDependencies>
 								<param>com.mindquarry.tools:mindquarry-desktop-commons</param>
 								<param>ch.ethz.ganymed:ganymed-ssh2</param>
 								<param>com.svnkit:svnkit</param>
+								<param>org.tigris.subversion:javahl-api</param>
 							</includeDependencies>
+							<!-- <includeDependenciesInRelocation /> -->
+							<includeDependenciesInRelocation> 
+								<param>com.mindquarry.tools:mindquarry-desktop-commons</param> 
+								<param>ch.ethz.ganymed:ganymed-ssh2</param> 
+								<param>com.svnkit:svnkit</param> 
+								<param>org.tigris.subversion:javahl-api</param> 
+							</includeDependenciesInRelocation> 
 							<name>mindquarry-mac-svn.jar</name>
 						</configuration>
 					</execution>

@@ -83,6 +83,7 @@
 		DD6D71080BA97CB80071E035 /* MQJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71070BA97CB80071E035 /* MQJob.m */; };
 		DD6D717A0BA9A9F20071E035 /* MQThreadJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71790BA9A9F20071E035 /* MQThreadJob.m */; };
 		DD6D719B0BA9AEB50071E035 /* MQSVNUpdateJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */; };
+		DD71E7900BBD591D00E8A751 /* mindquarry-mac-svn.jar in Resources */ = {isa = PBXBuildFile; fileRef = DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */; };
 		DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD86617F0B9D95E3000C7B66 /* MQRequest.m */; };
 		DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */; };
 		DD8662790B9D9BBD000C7B66 /* MQTasksRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */; };
@@ -98,30 +99,12 @@
 		DDE33FC80BA6D60400CE286B /* JVMController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBC0BA6D60400CE286B /* JVMController.mm */; };
 		DDE33FC90BA6D60400CE286B /* SVNController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBE0BA6D60400CE286B /* SVNController.mm */; };
 		DDE33FCB0BA6D60400CE286B /* StatusTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FC20BA6D60400CE286B /* StatusTransformer.m */; };
-		DDE33FDD0BA6D65800CE286B /* mindquarry-mac-svn.jar in Resources */ = {isa = PBXBuildFile; fileRef = DDE33FDC0BA6D65800CE286B /* mindquarry-mac-svn.jar */; };
 		DDE33FFF0BA6DB4000CE286B /* MQTeam.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FFE0BA6DB4000CE286B /* MQTeam.mm */; };
 		DDF001050BA850C60008C3AA /* MQTaskInfoRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DDF001040BA850C60008C3AA /* MQTaskInfoRequest.m */; };
 		DDF0016C0BA859530008C3AA /* JavaVM.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDF0016B0BA859530008C3AA /* JavaVM.framework */; };
 		DDFA7D700BAEEF7F0081BB87 /* MQChange.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFA7D6F0BAEEF7F0081BB87 /* MQChange.m */; };
 		DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = DDFA7E050BAF040D0081BB87 /* NSNumber+Additions.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildStyle section */
-		468219250BBB065200C739C8 /* Development */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Development;
-		};
-		468219260BBB065200C739C8 /* Deployment */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-			};
-			name = Deployment;
-		};
-/* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
 		DD2EDD930B9F2197000238CE /* PBXContainerItemProxy */ = {
@@ -130,13 +113,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D1107260486CEB800E47090;
 			remoteInfo = "Mindquarry Desktop Client";
-		};
-		DDE340360BA6EC9700CE286B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DDE33FD10BA6D61800CE286B;
-			remoteInfo = "Java Ant";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -204,6 +180,7 @@
 		DD6D71790BA9A9F20071E035 /* MQThreadJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQThreadJob.m; sourceTree = "<group>"; };
 		DD6D71990BA9AEB50071E035 /* MQSVNUpdateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQSVNUpdateJob.h; sourceTree = "<group>"; };
 		DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNUpdateJob.m; sourceTree = "<group>"; };
+		DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; name = "mindquarry-mac-svn.jar"; path = "Java/dist/mindquarry-mac-svn.jar"; sourceTree = "<group>"; };
 		DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQRequest.h; sourceTree = "<group>"; };
 		DD86617F0B9D95E3000C7B66 /* MQRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQRequest.m; sourceTree = "<group>"; };
 		DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTeamsRequest.h; sourceTree = "<group>"; };
@@ -229,7 +206,6 @@
 		DDE33FBE0BA6D60400CE286B /* SVNController.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = SVNController.mm; sourceTree = "<group>"; };
 		DDE33FC10BA6D60400CE286B /* StatusTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = StatusTransformer.h; sourceTree = "<group>"; };
 		DDE33FC20BA6D60400CE286B /* StatusTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = StatusTransformer.m; sourceTree = "<group>"; };
-		DDE33FDC0BA6D65800CE286B /* mindquarry-mac-svn.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; name = "mindquarry-mac-svn.jar"; path = "Java/dist/mindquarry-mac-svn.jar"; sourceTree = "<group>"; };
 		DDE33FFD0BA6DB4000CE286B /* MQTeam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTeam.h; sourceTree = "<group>"; };
 		DDE33FFE0BA6DB4000CE286B /* MQTeam.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MQTeam.mm; sourceTree = "<group>"; };
 		DDF001030BA850C60008C3AA /* MQTaskInfoRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTaskInfoRequest.h; sourceTree = "<group>"; };
@@ -319,8 +295,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */,
 				DD099E060BA006B2002FD5DD /* GFX */,
-				DDE33FDC0BA6D65800CE286B /* mindquarry-mac-svn.jar */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
@@ -493,7 +469,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				DDE340370BA6EC9700CE286B /* PBXTargetDependency */,
 			);
 			name = "Mindquarry Desktop Client";
 			productInstallPath = "$(HOME)/Applications";
@@ -507,12 +482,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Mindquarry Desktop Client" */;
-			buildSettings = {
-			};
-			buildStyles = (
-				468219250BBB065200C739C8 /* Development */,
-				468219260BBB065200C739C8 /* Deployment */,
-			);
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Mindquarry Desktop Client */;
 			projectDirPath = "";
@@ -530,7 +499,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDE33FDD0BA6D65800CE286B /* mindquarry-mac-svn.jar in Resources */,
+				DD71E7900BBD591D00E8A751 /* mindquarry-mac-svn.jar in Resources */,
 				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				DD8665610B9DB2F7000C7B66 /* DesktopClientAppIcon.icns in Resources */,
@@ -650,11 +619,6 @@
 			isa = PBXTargetDependency;
 			target = 8D1107260486CEB800E47090 /* Mindquarry Desktop Client */;
 			targetProxy = DD2EDD930B9F2197000238CE /* PBXContainerItemProxy */;
-		};
-		DDE340370BA6EC9700CE286B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DDE33FD10BA6D61800CE286B /* Java Ant */;
-			targetProxy = DDE340360BA6EC9700CE286B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
