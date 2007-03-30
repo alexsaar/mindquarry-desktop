@@ -17,10 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Info;
 import org.tigris.subversion.javahl.LogMessage;
+import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;
@@ -154,10 +154,25 @@ public abstract class SVNHelper implements Notify2 {
 	    Info info = client.info(localPath);
 	    Revision start = Revision.getInstance(info.getRevision());
 	    Revision head = Revision.HEAD;
-	    return client.logMessages(info.getUrl(), start, head);
+	    return client.logMessages(info.getUrl(), start, head, false, true, 0);
 	} catch (ClientException e) {
+	    System.err.println("Could not get log Messages");
 	    return new LogMessage[0];
 	}
+    }
+
+    public String[] getRemoteChangePaths() {
+        LogMessage[] messages = getRemoteChanges();
+        ArrayList<String> changePaths = new ArrayList<String>();
+        for (LogMessage message : messages) {
+            ChangePath[] changes = message.getChangedPaths();
+            for (ChangePath change : changes) {
+                String path = change.getPath();
+                if (!changePaths.contains(path))
+                    changePaths.add(path);
+            }
+        }
+        return changePaths.toArray(new String[0]);
     }
 
     /**
@@ -177,13 +192,13 @@ public abstract class SVNHelper implements Notify2 {
 		switch (resolveConflict(status)) {
 		case CONFLICT_RESET_FROM_SERVER:
 		    // copy latest revision from repository to main file
-		    copyFile(basePath + "/" //$NON-NLS-1$
-			    + status.getConflictNew(), status.getPath());
+		    new File(basePath + "/" //$NON-NLS-1$
+			    + status.getConflictNew()).renameTo(new File(status.getPath()));
 		    break;
 		case CONFLICT_OVERRIDE_FROM_WC:
 		    // copy local changes to main file
-		    copyFile(basePath + "/" //$NON-NLS-1$
-			    + status.getConflictWorking(), status.getPath());
+		    new File(basePath + "/" //$NON-NLS-1$
+			    + status.getConflictWorking()).renameTo(new File(status.getPath()));
 		    break;
 		}
 		client.resolved(status.getPath(), false);
@@ -227,10 +242,4 @@ public abstract class SVNHelper implements Notify2 {
      */
     protected abstract String getCommitMessage();
 
-    /**
-     * Copies a file from source to dest.
-     */
-    private void copyFile(String source, String dest) throws IOException {
-	FileUtils.copyFile(new File(source), new File(dest));
-    }
 }
