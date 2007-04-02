@@ -61,6 +61,9 @@
 		DD0B4A560BA166D60075798B /* task-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DD0B4A550BA166D60075798B /* task-add.png */; };
 		DD1CD0230BAAEF1800BF34BA /* MQSVNCommitJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */; };
 		DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */; };
+		DD29A7940BC1064900583931 /* action-both.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7910BC1064900583931 /* action-both.png */; };
+		DD29A7950BC1064900583931 /* action-down.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7920BC1064900583931 /* action-down.png */; };
+		DD29A7960BC1064900583931 /* action-up.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7930BC1064900583931 /* action-up.png */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -149,6 +152,9 @@
 		DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNCommitJob.m; sourceTree = "<group>"; };
 		DD1CD07A0BAAF3DA00BF34BA /* MacSVNHelperNative.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MacSVNHelperNative.h; sourceTree = "<group>"; };
 		DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacSVNHelperNative.mm; sourceTree = "<group>"; };
+		DD29A7910BC1064900583931 /* action-both.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-both.png"; path = "Resources/action-both.png"; sourceTree = "<group>"; };
+		DD29A7920BC1064900583931 /* action-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-down.png"; path = "Resources/action-down.png"; sourceTree = "<group>"; };
+		DD29A7930BC1064900583931 /* action-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-up.png"; path = "Resources/action-up.png"; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -325,6 +331,9 @@
 		DD099E060BA006B2002FD5DD /* GFX */ = {
 			isa = PBXGroup;
 			children = (
+				DD29A7910BC1064900583931 /* action-both.png */,
+				DD29A7920BC1064900583931 /* action-down.png */,
+				DD29A7930BC1064900583931 /* action-up.png */,
 				DD6D6FD80BA958350071E035 /* mindquarry-tasks.png */,
 				DD6D6FD40BA957E60071E035 /* mindquarry-documents.png */,
 				DD0B4A550BA166D60075798B /* task-add.png */,
@@ -523,6 +532,9 @@
 				DD576B1F0BAEA09900460C68 /* refresh.png in Resources */,
 				DD576E5C0BAED3F500460C68 /* sync-down.png in Resources */,
 				DD576E5D0BAED3F500460C68 /* sync-up.png in Resources */,
+				DD29A7940BC1064900583931 /* action-both.png in Resources */,
+				DD29A7950BC1064900583931 /* action-down.png in Resources */,
+				DD29A7960BC1064900583931 /* action-up.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

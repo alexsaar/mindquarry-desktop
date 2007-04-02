@@ -150,28 +150,68 @@ public abstract class SVNHelper implements Notify2 {
     }
 
     public LogMessage[] getRemoteChanges() {
+        // Note: not used right now
 	try {
 	    Info info = client.info(localPath);
-	    Revision start = Revision.getInstance(info.getRevision());
+//	    long revision = info.getRevision() + 1;
+	    Revision start = Revision.BASE;
 	    Revision head = Revision.HEAD;
-	    return client.logMessages(info.getUrl(), start, head, false, true, 0);
+	    return client.logMessages(localPath, start, head, false, true, 0);
 	} catch (ClientException e) {
-	    System.err.println("Could not get log Messages");
 	    return new LogMessage[0];
 	}
     }
 
     public String[] getRemoteChangePaths() {
-        LogMessage[] messages = getRemoteChanges();
+        LogMessage[] messages;
+        int trimLength;
+        Info info;
+        try {
+            info = client.info(localPath);
+            trimLength = info.getUrl().length() - info.getRepository().length();
+            long revision = info.getRevision() + 1;
+            Revision start = Revision.getInstance(revision);
+    	    Revision head = Revision.HEAD;
+    	    messages = client.logMessages(localPath, start, head, false, true, 0);
+        }
+        catch (ClientException e) {
+            return new String[0];
+        }
         ArrayList<String> changePaths = new ArrayList<String>();
         for (LogMessage message : messages) {
+            long revision = message.getRevisionNumber();
             ChangePath[] changes = message.getChangedPaths();
             for (ChangePath change : changes) {
-                String path = change.getPath();
-                if (!changePaths.contains(path))
-                    changePaths.add(path);
+                String absPath = change.getPath();
+                String path;
+                if (absPath.length() > trimLength)
+                    path = absPath.substring(trimLength + 1);
+                else
+                    continue;
+                
+                if (changePaths.contains(path))
+                    continue;
+                
+                long itemRev = 0;
+                try {
+                    String itemLocalPath = localPath + "/" + path;
+//                    System.out.println("item local path " + itemLocalPath);
+                    Info itemInfo = client.info(itemLocalPath);
+                    if (itemInfo != null)
+                        itemRev = itemInfo.getLastChangedRevision();
+                }
+                catch (ClientException e) { }
+                
+                if (itemRev > revision - 1) {
+//                    System.out.println("skipping newer: " + path);
+                    continue;
+                }
+                
+//                System.out.println("rch adding " + path + " irev " + itemRev + " msg rev " + revision);
+                changePaths.add(path);
             }
         }
+
         return changePaths.toArray(new String[0]);
     }
 

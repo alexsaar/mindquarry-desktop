@@ -17,6 +17,8 @@
 #define SVN_STATUS_MISSING 6
 #define SVN_STATUS_CONFLICTED 9
 
+#define SVN_STATUS_DOWNLOAD 32
+
 @interface SVNController : NSObject {
 
 	NSString *repository;

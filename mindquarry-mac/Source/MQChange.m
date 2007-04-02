@@ -51,6 +51,8 @@
 		NSURL *url = [NSURL fileURLWithPath:[self valueForKey:@"absPath"]];
 		if (LSCopyKindStringForURL((CFURLRef)url, &newKind) == noErr) 
 			kind = [(NSString *)newKind copy];
+		if (!kind && LSCopyKindStringForTypeInfo(kLSUnknownType, kLSUnknownCreator, (CFStringRef)[[self valueForKey:@"absPath"] pathExtension], &newKind) == noErr)
+			kind = [(NSString *)newKind copy];
 	}
 	return kind;
 }

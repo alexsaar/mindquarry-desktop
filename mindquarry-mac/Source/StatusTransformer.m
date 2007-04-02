@@ -8,6 +8,7 @@
 
 #import "StatusTransformer.h"
 
+#import "SVNController.h"
 
 @implementation StatusTransformer
 
@@ -23,13 +24,16 @@
 
 - (id)transformedValue:(id)value 
 {
-	if ([value intValue] == 5 || [value intValue] == 3) 
-		return @"new";
-	else if ([value intValue] == 2)
+	int val = [value intValue];
+	if (val == 5 || val == 3) 
+		return @"new: local";
+	else if (val == SVN_STATUS_DOWNLOAD)
+		return @"from server";
+	else if (val == 2)
 		return @"modified";
-	else if ([value intValue] == 6)
+	else if (val == 6)
 		return @"deleted";
-	else if ([value intValue] == 9)
+	else if (val == 9)
 		return @"conflict";
 	return [NSString stringWithFormat:@"code: %@", value];
 }

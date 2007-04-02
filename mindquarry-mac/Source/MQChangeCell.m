@@ -61,7 +61,12 @@
 	
 	// file icon
 	NSString *path = [[self objectValue] valueForKey:@"absPath"];
-	NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:path];
+	NSImage *icon = nil;
+	if ([[NSFileManager defaultManager] fileExistsAtPath:path]) 
+		icon = [[NSWorkspace sharedWorkspace] iconForFile:path];
+	else
+		icon = [[NSWorkspace sharedWorkspace] iconForFileType:[path pathExtension]];
+	
 	[icon setSize:NSMakeSize(32, 32)];
 	[icon compositeToPoint:NSMakePoint(cellFrame.origin.x + 5, cellFrame.origin.y + 36) operation:NSCompositeSourceOver];
 	
@@ -78,26 +83,34 @@
 	}
 	
 	// status
-	NSValueTransformer *trans = [NSValueTransformer valueTransformerForName:@"StatusTransformer"];
 	int status = [[[self objectValue] valueForKey:@"status"] intValue];
-	NSString *statusString = [[trans transformedValue:[[self objectValue] valueForKey:@"status"]] uppercaseString];
-	NSColor *statusColor = textColor;
-	if (status == SVN_STATUS_CONFLICTED || status == SVN_STATUS_MISSING)
-		statusColor = redColor;
-	else if (status > SVN_STATUS_MODIFIED)
-		statusColor = greenColor;
-	NSDictionary *statusDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, statusColor, NSForegroundColorAttributeName, nil];
-	NSSize statusSize = [statusString sizeWithAttributes:statusDict];
-	[statusString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - statusSize.width - 5, cellFrame.origin.y + 8) withAttributes:statusDict];
+//	NSValueTransformer *trans = [NSValueTransformer valueTransformerForName:@"StatusTransformer"];
+//	NSString *statusString = [[trans transformedValue:[[self objectValue] valueForKey:@"status"]] uppercaseString];
+//	NSColor *statusColor = textColor;
+//	if (status == SVN_STATUS_CONFLICTED || status == SVN_STATUS_MISSING)
+//		statusColor = redColor;
+//	else if (status > SVN_STATUS_MODIFIED)
+//		statusColor = greenColor;
+//	NSDictionary *statusDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, statusColor, NSForegroundColorAttributeName, nil];
+//	NSSize statusSize = [statusString sizeWithAttributes:statusDict];
+//	[statusString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - statusSize.width - 45, cellFrame.origin.y + 8) withAttributes:statusDict];
 	
 	// action
 	NSString *action = nil;
 	BOOL enabled = [[[self objectValue] valueForKey:@"enabled"] boolValue];
-	if (status == SVN_STATUS_CONFLICTED)
+	BOOL onServer = [[[self objectValue] valueForKey:@"onServer"] boolValue];
+	BOOL local = [[[self objectValue] valueForKey:@"local"] boolValue];
+	BOOL upload = status == SVN_STATUS_UNVERSIONED || status == SVN_STATUS_ADDED;
+	
+	if (local && onServer && upload)
+		action = @"synchronize";
+	else if (onServer)
+		action = @"download";
+	else if (status == SVN_STATUS_CONFLICTED)
 		action = @"overwrite";
 	else if (status == SVN_STATUS_MISSING)
 		action = @"delete";
-	else if (status == SVN_STATUS_UNVERSIONED || status == SVN_STATUS_ADDED)
+	else if (upload)
 		action = @"upload";
 	else if (status > SVN_STATUS_MODIFIED)
 		action = @"whatever";
@@ -106,12 +119,24 @@
 	
 	if (!enabled)
 		action = [NSString stringWithFormat:@"don't %@", action];
-
+	
 	action = [action uppercaseString];
 	NSDictionary *actionDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:8], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil];
 	NSSize actionSize = [action sizeWithAttributes:actionDict];
-	[action drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - actionSize.width - 5, cellFrame.origin.y + 22) withAttributes:actionDict];
+	[action drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - actionSize.width - 45, cellFrame.origin.y + 15) withAttributes:actionDict];
 
+	// action icon
+	NSImage *image = nil;
+	if (local && onServer && upload)
+		image = [NSImage imageNamed:@"action-both"];
+	else if (onServer)
+		image = [NSImage imageNamed:@"action-down"];
+	else if (local)
+		image = [NSImage imageNamed:@"action-up"];
+	
+//	[image setSize:NSMakeSize(32, 32)];
+	[image compositeToPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 37, cellFrame.origin.y + 37) operation:NSCompositeSourceOver fraction:enabled ? 1.0 : 0.3];
+	
 }
 
 - (id)objectValue

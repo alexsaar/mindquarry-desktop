@@ -80,8 +80,12 @@ static NSDictionary *prioImages;
 	NSDictionary *dateDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil];	
 	NSDate *date = [[self objectValue] valueForKey:@"date"];
 	if (date) {
-		dateDesc = [NSString stringWithFormat:@" - %@", [[self objectValue] dueDescription]];
+		dateDesc = [[self objectValue] dueDescription];
 		dueSize = [dateDesc sizeWithAttributes:dateDict];
+	}
+	// due	
+	if (dateDesc) {
+		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - dueSize.width - 10, cellFrame.origin.y + 6) withAttributes:dateDict];
 	}
 	
 	// title
@@ -120,14 +124,6 @@ static NSDictionary *prioImages;
 	NSImage *prioImage = [prioImages objectForKey:prio];
 	if (prioImage)
 		[prioImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 21, cellFrame.origin.y + 36) operation:NSCompositeSourceOver];	
-	
-	// due
-	
-	if (dateDesc)
-		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + titleSize.width + 42, cellFrame.origin.y + 6) withAttributes:dateDict];
-		
-//		[@"due:" drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - 35 - dateSize.width, cellFrame.origin.y + 10) withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:10], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, nil]];
-	
 	
 }
 

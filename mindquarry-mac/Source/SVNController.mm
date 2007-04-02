@@ -195,6 +195,7 @@
 		[change setObject:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];
 		[change setObject:[NSNumber numberWithBool:statusCode != SVN_STATUS_CONFLICTED] forKey:@"enabled"];
 		[change setObject:[NSNumber numberWithInt:statusCode] forKey:@"status"];
+		[change setObject:[NSNumber numberWithBool:YES] forKey:@"local"];
 				
 		[changeList addObject:change];
 	}
@@ -217,12 +218,35 @@
 	int i;
 	for (i = 0; i < count; i++) {
 		id item = [changeList objectAtIndex:i];
+		NSString *path = [item objectForKey:@"absPath"];
+				
+		NSArray *oldItems = [[changesController arrangedObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", path]]];
+		id change = nil;
+		BOOL didExist = NO;
+		if ([oldItems count]) {
+			change = [oldItems objectAtIndex:0];
+			didExist = YES;
+		}
+		else
+			change = [changesController newObject];
 		
-		id change = [changesController newObject];
-		[change setValue:[item objectForKey:@"absPath"] forKey:@"absPath"];
-		[change setValue:[item objectForKey:@"relPath"] forKey:@"relPath"];
-		[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
-		[change setValue:[item objectForKey:@"status"] forKey:@"status"];
+		if (!didExist) {
+			[change setValue:path forKey:@"absPath"];
+			[change setValue:[item objectForKey:@"relPath"] forKey:@"relPath"];			
+		}
+		
+		if (!didExist)
+			[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
+		else
+			[change setValue:[NSNumber numberWithBool:NO] forKey:@"enabled"];
+			
+		if (!didExist || [[item objectForKey:@"status"] intValue] != SVN_STATUS_DOWNLOAD)
+			[change setValue:[item objectForKey:@"status"] forKey:@"status"];
+		
+		if ([item objectForKey:@"local"])
+			[change setValue:[item objectForKey:@"local"] forKey:@"local"];
+		if ([item objectForKey:@"onServer"])
+			[change setValue:[item objectForKey:@"onServer"] forKey:@"onServer"];
 		
 		[change setValue:team forKey:@"team"];
 		[change setValue:[team valueForKey:@"server"] forKey:@"server"];
@@ -253,16 +277,28 @@
 	
 	jsize len = env->GetArrayLength(changesArray);
 	
+	NSMutableArray *changeList = [[NSMutableArray alloc] init];
+	
 	int i;
 	for (i = 0; i < len; i++) {
 		jstring item = (jstring) env->GetObjectArrayElement(changesArray, i);
 		CHECK_EXCEPTION;
 		
-		NSString *path = jstring_to_nsstring(env, item);
+		NSString *relPath = jstring_to_nsstring(env, item);
+		NSMutableDictionary *change = [NSMutableDictionary dictionary];
 		
-		NSLog(@"remote %@", path);
+		[change setObject:[localPath stringByAppendingPathComponent:relPath] forKey:@"absPath"];
+		[change setObject:relPath forKey:@"relPath"];
+		[change setObject:[NSNumber numberWithBool:YES] forKey:@"enabled"];
+		[change setObject:[NSNumber numberWithInt:SVN_STATUS_DOWNLOAD] forKey:@"status"];
+		[change setObject:[NSNumber numberWithBool:YES] forKey:@"onServer"];
 		
+		[changeList addObject:change];
 	}
+	
+	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
+	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
+	[arg release];
 	
 	return YES;
 }
