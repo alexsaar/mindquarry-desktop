@@ -25,12 +25,16 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class HttpUtilities {
+    private static Log log = LogFactory.getLog(HttpUtilities.class);
+
     public static InputStream getContentAsXML(String login, String pwd,
             String address) throws Exception {
         HttpClient client = createHttpClient(login, pwd, address);
@@ -76,7 +80,10 @@ public class HttpUtilities {
         put.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
         put.setRequestEntity(new ByteArrayRequestEntity(content));
 
+        log.info("Executing HTTP PUT on " + address); //$NON-NLS-1$
         client.executeMethod(put);
+        log.info("Finished HTTP PUT with status code: "//$NON-NLS-1$
+                + put.getStatusCode());
 
         if (put.getStatusCode() == 401) {
             throw new Exception(
@@ -110,7 +117,11 @@ public class HttpUtilities {
         GetMethod get = new GetMethod(address);
         get.setDoAuthentication(true);
         get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        log.info("Executing HTTP GET on " + address); //$NON-NLS-1$
         client.executeMethod(get);
+        log.info("Finished HTTP GET with status code: "//$NON-NLS-1$
+                + get.getStatusCode());
         return get;
     }
 }

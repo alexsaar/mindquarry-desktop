@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.model.team;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -26,6 +28,8 @@ import dax.Path;
  *         Saar</a>
  */
 public class TeamListTransformer extends TransformerBase {
+    private Log log;
+
     private TeamList teamList = null;
 
     private String baseURL;
@@ -33,10 +37,14 @@ public class TeamListTransformer extends TransformerBase {
     private String login;
 
     private String password;
+    
+    private String url;
 
-    public TeamListTransformer(String login, String password) {
+    public TeamListTransformer(String url, String login, String password) {
+        this.url = url;
         this.login = login;
         this.password = password;
+        log = LogFactory.getLog(TeamListTransformer.class);
     }
 
     @Override
@@ -46,17 +54,29 @@ public class TeamListTransformer extends TransformerBase {
 
     @Path("/teamspaces")
     public void teamspaces(Node node) {
+        log.info("Teamspaces element found. Trying to evaluate children.");
         if (node instanceof Element) {
             Element element = (Element) node;
-            baseURL = element.attribute("base").getStringValue(); //$NON-NLS-1$
+
+            if (element.attribute("base") != null) { //$NON-NLS-1$
+                baseURL = element.attribute("base").getStringValue(); //$NON-NLS-1$
+            } else {
+                // FIXME remove this after new server version is available
+                baseURL = url + "/team/"; //$NON-NLS-1$
+            }
         }
         applyTemplates();
     }
 
     @Path("teamspace")
     public void teamspace(Node node) {
+        log.info("Found new teamspace element.");
         if (node instanceof Element) {
             Element element = (Element) node;
+
+            log.info("Trying to add teamspace from '"
+                    + element.attribute("href").getStringValue() //$NON-NLS-1$
+                    + "'."); //$NON-NLS-1$
             teamList.add(baseURL + element.attribute("href").getStringValue()//$NON-NLS-1$ 
                     + "/", //$NON-NLS-1$
                     login, password);

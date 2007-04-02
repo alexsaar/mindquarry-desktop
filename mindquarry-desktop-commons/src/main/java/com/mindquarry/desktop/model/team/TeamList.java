@@ -26,12 +26,12 @@ import com.mindquarry.desktop.model.ModelBase;
 public class TeamList extends ModelBase {
     private List<Team> teams;
 
-    public TeamList(InputStream data, String login, String password) {
-        super(data, new TeamListTransformer(login, password));
+    public TeamList(InputStream data, String url, String login, String password) {
+        super(data, new TeamListTransformer(url, login, password));
     }
 
     public TeamList(String url, String login, String password) throws Exception {
-        super(url, login, password, new TeamListTransformer(login, password));
+        super(url, login, password, new TeamListTransformer(url, login, password));
     }
 
     public TeamList() {
@@ -61,7 +61,8 @@ public class TeamList extends ModelBase {
         try {
             teams.add(new Team(url, login, password));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while loading team from "  //$NON-NLS-1$
+                    + url, e);
             return;
         }
     }

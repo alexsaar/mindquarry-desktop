@@ -62,7 +62,8 @@ public class TaskList extends ModelBase {
         try {
             tasks.add(new Task(url, login, password));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Error while loading task from "  //$NON-NLS-1$
+                    + url, e);
             return;
         }
     }

@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.model.task;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -26,7 +28,13 @@ import dax.Path;
  *         Saar</a>
  */
 public class TaskTransformer extends TransformerBase {
+    private Log log;
+
     private Task task = null;
+
+    public TaskTransformer() {
+        log = LogFactory.getLog(TaskTransformer.class);
+    }
 
     @Override
     protected void handleModelPart(ModelBase model) {
@@ -37,6 +45,9 @@ public class TaskTransformer extends TransformerBase {
     public void task(Node node) {
         if (node instanceof Element) {
             Element element = (Element) node;
+
+            log.info("Retrieved new task description from " //$NON-NLS-1$
+                    + element.attribute("base").getStringValue()); //$NON-NLS-1$
             task.setId(element.attribute("base").getStringValue()); //$NON-NLS-1$
         }
         applyTemplates(node);

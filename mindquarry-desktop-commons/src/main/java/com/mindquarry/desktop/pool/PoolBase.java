@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 
@@ -35,6 +37,8 @@ import com.mindquarry.desktop.preferences.PreferenceUtilities;
  *         Saar</a>
  */
 public abstract class PoolBase {
+    protected Log log;
+    
     public static final String POOL_FOLDER = "pool"; //$NON-NLS-1$
 
     protected String name;
@@ -47,6 +51,7 @@ public abstract class PoolBase {
     }
 
     private void initPool() {
+        log = LogFactory.getLog(this.getClass());
         poolFolder = new File(PreferenceUtilities.SETTINGS_FOLDER + "/" //$NON-NLS-1$
                 + POOL_FOLDER + "/" + name); //$NON-NLS-1$
         if (!poolFolder.exists()) {
@@ -80,7 +85,7 @@ public abstract class PoolBase {
                 Document doc = DocumentHelper.parseText(contents.toString());
                 results.put(id, doc);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("Error while fetching pool entries.", e); //$NON-NLS-1$
             }
         }
         return results;

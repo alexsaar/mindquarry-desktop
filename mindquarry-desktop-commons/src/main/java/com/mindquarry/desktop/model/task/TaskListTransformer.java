@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.model.task;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -26,6 +28,8 @@ import dax.Path;
  *         Saar</a>
  */
 public class TaskListTransformer extends TransformerBase {
+    private Log log;
+
     private TaskList taskList = null;
 
     private String baseURL;
@@ -37,6 +41,8 @@ public class TaskListTransformer extends TransformerBase {
     public TaskListTransformer(String login, String password) {
         this.login = login;
         this.password = password;
+
+        log = LogFactory.getLog(TaskListTransformer.class);
     }
 
     @Override
@@ -46,6 +52,7 @@ public class TaskListTransformer extends TransformerBase {
 
     @Path("/tasks")
     public void tasks(Node node) {
+        log.info("Tasks element found. Trying to evaluate children.");
         if (node instanceof Element) {
             Element element = (Element) node;
             baseURL = element.attribute("base").getStringValue(); //$NON-NLS-1$
@@ -55,8 +62,13 @@ public class TaskListTransformer extends TransformerBase {
 
     @Path("task")
     public void task(Node node) {
+        log.info("Found new task element.");
         if (node instanceof Element) {
             Element element = (Element) node;
+
+            log.info("Trying to add task from '"
+                    + element.attribute("href").getStringValue() //$NON-NLS-1$
+                    + "'."); //$NON-NLS-1$
             taskList.add(baseURL + element.attribute("href").getStringValue(), //$NON-NLS-1$ 
                     login, password);
         }

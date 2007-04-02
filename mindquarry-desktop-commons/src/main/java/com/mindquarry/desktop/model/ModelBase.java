@@ -15,6 +15,8 @@ package com.mindquarry.desktop.model;
 
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -29,7 +31,10 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public abstract class ModelBase {
+    protected Log log;
+
     public ModelBase() {
+        log = LogFactory.getLog(this.getClass());
         initModel();
     }
 
@@ -66,7 +71,7 @@ public abstract class ModelBase {
         try {
             doc = reader.read(data);
         } catch (DocumentException e) {
-            e.printStackTrace();
+            log.error("Error while reading document.", e); //$NON-NLS-1$
             return;
         }
         transformer.execute(this, doc);
