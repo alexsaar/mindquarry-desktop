@@ -15,6 +15,8 @@ package com.mindquarry.desktop.client.workspace;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
@@ -25,6 +27,8 @@ import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
  *         Saar</a>
  */
 public abstract class SvnOperation implements Runnable {
+    protected Log log;
+    
     protected final MindClient client;
 
     protected final List<SynchronizeWidget> synAreas;
@@ -33,6 +37,7 @@ public abstract class SvnOperation implements Runnable {
             List<SynchronizeWidget> synAreas) {
         this.client = client;
         this.synAreas = synAreas;
+        log = LogFactory.getLog(this.getClass());
     }
 
     protected String getStatiDescription(Status[] stati, String pathPrefix) {

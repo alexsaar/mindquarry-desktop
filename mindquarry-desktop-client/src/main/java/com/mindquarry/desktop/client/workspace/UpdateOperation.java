@@ -64,7 +64,8 @@ public class UpdateOperation extends SvnOperation {
 
         // loop workspaces
         for (String id : workspaces.keySet()) {
-            setMessage("Updating workspace" + " (" //$NON-NLS-1$
+            setMessage("Updating workspace" //$NON-NLS-1$
+                    + " (" //$NON-NLS-1$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
@@ -76,11 +77,11 @@ public class UpdateOperation extends SvnOperation {
             try {
                 // TODO pipe local changes to commit operation
                 svnHelper.getLocalChanges();
-
                 svnHelper.update();
             } catch (ClientException e) {
                 MindClient.showErrorMessage("Could not update workspace " + id);
-                e.printStackTrace();
+                log.error("Could not update workspace " //$NON-NLS-1$
+                        + id, e);
             }
             updateProgress();
         }

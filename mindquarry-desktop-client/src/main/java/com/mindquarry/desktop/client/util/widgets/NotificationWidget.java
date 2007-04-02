@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.client.util.widgets;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -31,6 +33,8 @@ public class NotificationWidget {
     private static final int WIDTH = 160;
 
     private static final int HEIGHT = 60;
+    
+    private Log log;
 
     private final Display display;
 
@@ -42,6 +46,7 @@ public class NotificationWidget {
 
     public NotificationWidget(Display display) {
         this.display = display;
+        log = LogFactory.getLog(NotificationWidget.class);
 
         display.syncExec(new Runnable() {
             public void run() {
@@ -124,7 +129,7 @@ public class NotificationWidget {
         try {
             Thread.sleep(6);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error("thread error", e); //$NON-NLS-1$
         }
     }
 

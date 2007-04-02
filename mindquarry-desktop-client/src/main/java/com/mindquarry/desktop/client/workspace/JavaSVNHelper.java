@@ -44,7 +44,7 @@ public class JavaSVNHelper extends SVNHelper {
     }
 
     public void onNotify(NotifyInformation info) {
-        System.out.println("java notify: " + info.getPath()); //$NON-NLS-1$
+        log.info("SVN notify: " + info.getPath()); //$NON-NLS-1$
     }
 
     protected int resolveConflict(final Status status) {

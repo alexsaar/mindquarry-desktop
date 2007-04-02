@@ -16,6 +16,8 @@ package com.mindquarry.desktop.client;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -57,6 +59,8 @@ public class MindClient {
 
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
+    
+    private Log log;
 
     private static Shell shell;
 
@@ -71,6 +75,7 @@ public class MindClient {
     private PreferenceStore store;
 
     public MindClient() throws IOException {
+        log = LogFactory.getLog(MindClient.class);
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 DesktopConstants.MINDQUARRY_ICON));
         Window.setDefaultImage(icon);
@@ -182,7 +187,7 @@ public class MindClient {
                 try {
                     showPreferenceDialog(false);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Error in preferences dialog", e);
                 }
             }
         });

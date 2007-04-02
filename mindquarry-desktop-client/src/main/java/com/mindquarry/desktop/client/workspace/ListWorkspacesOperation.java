@@ -16,6 +16,9 @@ package com.mindquarry.desktop.client.workspace;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.model.team.Team;
@@ -29,11 +32,14 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class ListWorkspacesOperation extends SvnOperation {
+    private Log log;
+
     private HashMap<String, String> workspaces;
 
     public ListWorkspacesOperation(final MindClient client,
             List<SynchronizeWidget> synAreas) {
         super(client, synAreas);
+        log = LogFactory.getLog(ListWorkspacesOperation.class);
     }
 
     public void run() {
@@ -48,6 +54,8 @@ public class ListWorkspacesOperation extends SvnOperation {
 
     private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
         setMessage("Retrieving teamspace list...");
+        log.info("Retrieving teamspace list for workspace synchronization..."); //$NON-NLS-1$
+
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
 
@@ -56,7 +64,10 @@ public class ListWorkspacesOperation extends SvnOperation {
             teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            MindClient.showErrorMessage(e.getLocalizedMessage());
+            MindClient
+                    .showErrorMessage("Could not retrieve list of tasks for workspace synchronization.");
+            log.error("Could not retrieve list of tasks " //$NON-NLS-1$
+                    + "for workspace synchronization.", e); //$NON-NLS-1$
             return false;
         }
         List<Team> teams = teamList.getTeams();
@@ -64,6 +75,7 @@ public class ListWorkspacesOperation extends SvnOperation {
         // loop teamspace descriptions
         for (Team team : teams) {
             workspaces.put(team.getName(), team.getWorkspaceURL());
+            log.info("Added workspace from " + team.getWorkspaceURL()); //$NON-NLS-1$
         }
         return true;
     }

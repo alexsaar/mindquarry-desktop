@@ -13,11 +13,12 @@
  */
 package com.mindquarry.desktop.client.ballon;
 
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -61,6 +62,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
         SelectionListener, Listener {
     private static Point BALLOON_SIZE;
 
+    private Log log;
+
     private final Display display;
 
     private final MindClient client;
@@ -73,7 +76,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
-        if (System.getProperty("os.name").equals("Linux")) {
+        log = LogFactory.getLog(MindClientBallonWidget.class);
+
+        if (System.getProperty("os.name").equals("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
             BALLOON_SIZE = new Point(356, 437);
         } else {
             BALLOON_SIZE = new Point(356, 397);
@@ -225,7 +230,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void createWorkspacesGroup() {
         Group group = new Group(container, SWT.SHADOW_NONE);
         group.setBackground(container.getBackground());
-        group.setText("Workspaces"); //$NON-NLS-1$
+        group.setText("Workspaces");
         group.setLayout(new GridLayout(2, false));
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
@@ -239,7 +244,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         synArea.setVisible(false);
 
         Button syncButton = new Button(group, SWT.PUSH);
-        syncButton.setText("Synchronize"); //$NON-NLS-1$
+        syncButton.setText("Synchronize");
         syncButton
                 .setToolTipText("Use this button to synchronize your local workspaces."); //$NON-NLS-1$
         syncButton
@@ -260,7 +265,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         group.setBackground(container.getBackground());
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
         group.setLayout(new GridLayout(3, false));
-        group.setText("Tasks"); //$NON-NLS-1$
+        group.setText("Tasks");
 
         Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
@@ -275,8 +280,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
         Button createTaskButton = new Button(group, SWT.NONE);
-        createTaskButton.setText("Create Task..."); //$NON-NLS-1$
-        createTaskButton.setToolTipText("Creates a new task"); //$NON-NLS-1$
+        createTaskButton.setText("Create Task...");
+        createTaskButton.setToolTipText("Creates a new task");
         createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
                 false));
         createTaskButton.setImage(new Image(Display.getCurrent(), getClass()
@@ -365,20 +370,17 @@ public class MindClientBallonWidget extends BalloonWindow implements
                     .getPreferenceStore());
 
             // get teamspace list
-            InputStream content;
+            TeamList teamList;
             try {
-                content = HttpUtilities.getContentAsXML(profile.getLogin(),
-                        profile.getPassword(), profile.getServerURL()
-                                + "/teams"); //$NON-NLS-1$
+                teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
+                        profile.getLogin(), profile.getPassword());
             } catch (Exception e) {
                 MindClient.showErrorMessage(e.getLocalizedMessage());
                 return;
             }
-            TeamList teamList = new TeamList(content, profile.getLogin(),
-                    profile.getPassword());
             if (teamList.getTeams().size() == 0) {
                 MindClient
-                        .showErrorMessage("You are not a member of a team. Thus you can not create new tasks."); //$NON-NLS-1$
+                        .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
             }
             Calendar cal = new GregorianCalendar();
             String date = (cal.get(Calendar.MONTH) + 1) + "/" //$NON-NLS-1$
@@ -389,9 +391,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
             Task task = new Task();
             task.setStatus("new"); //$NON-NLS-1$
             task.setPriority("low"); //$NON-NLS-1$
-            task.setTitle("new task"); //$NON-NLS-1$
-            task.setSummary("summary of the task"); //$NON-NLS-1$
-            task.setDescription("description of the task"); //$NON-NLS-1$
+            task.setTitle("new task");
+            task.setSummary("summary of the task");
+            task.setDescription("description of the task");
             task.setDate(date);
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
@@ -409,8 +411,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 task.getContentAsXML().asXML().getBytes());
                     }
                 } catch (Exception e) {
-                    MindClient.showErrorMessage("Could not create the task."); //$NON-NLS-1$
-                    e.printStackTrace();
+                    MindClient.showErrorMessage("Could not create the task.");
+                    log.error("Could not create the task.", e);
                 }
             }
         }

@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
@@ -85,7 +84,8 @@ public class PublishOperation extends SvnOperation {
                 MindClient
                         .showErrorMessage("Could not publish workspace changes "
                                 + id);
-                e.printStackTrace();
+                log.error("Could not publish workspace changes "  //$NON-NLS-1$
+                        + id, e);
             }
             updateProgress();
         }

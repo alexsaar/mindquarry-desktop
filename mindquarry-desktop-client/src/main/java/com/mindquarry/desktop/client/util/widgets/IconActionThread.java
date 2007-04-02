@@ -16,6 +16,8 @@ package com.mindquarry.desktop.client.util.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TrayItem;
@@ -30,6 +32,8 @@ import com.mindquarry.desktop.client.MindClient;
  *         Saar</a>
  */
 public class IconActionThread extends Thread {
+    private Log log;
+    
     private TrayItem item;
 
     private boolean running = false;
@@ -43,6 +47,7 @@ public class IconActionThread extends Thread {
     public IconActionThread(TrayItem item) {
         this.item = item;
         this.item.setToolTipText(MindClient.APPLICATION_NAME);
+        log = LogFactory.getLog(IconActionThread.class);
     }
 
     /**
@@ -76,7 +81,7 @@ public class IconActionThread extends Thread {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("thread error", e); //$NON-NLS-1$
             }
         }
     }

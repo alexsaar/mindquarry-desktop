@@ -16,6 +16,8 @@ package com.mindquarry.desktop.client.workspace;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -36,6 +38,8 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  */
 public class WorkspaceSynchronizeListener implements Listener {
     private static WorkspaceSynchronizeListener instance;
+    
+    private Log log;
 
     private final MindClient client;
 
@@ -47,6 +51,7 @@ public class WorkspaceSynchronizeListener implements Listener {
         this.client = client;
         triggerWidgets = new ArrayList<Widget>();
         synAreas = new ArrayList<SynchronizeWidget>();
+        log = LogFactory.getLog(WorkspaceSynchronizeListener.class);
     }
 
     public static WorkspaceSynchronizeListener getInstance(
@@ -139,8 +144,8 @@ public class WorkspaceSynchronizeListener implements Listener {
                             .getWorkspaces());
                     op.run();
                 } catch (Exception e) {
-                    e.printStackTrace();
                     MindClient.showErrorMessage("Error during workspaces synchronization.");
+                    log.error("Error during workspaces synchronization.", e); //$NON-NLS-1$
                 }
                 enableTriggerWidgets(true, triggerWidgets);
                 enableSynAreas(false, synAreas);

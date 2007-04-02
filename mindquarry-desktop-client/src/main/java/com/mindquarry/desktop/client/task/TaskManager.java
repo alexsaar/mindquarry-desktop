@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -54,6 +56,8 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public class TaskManager {
+    private static Log log;
+
     private static TaskManager instance;
 
     public static final String TITLE_COLUMN = "title"; //$NON-NLS-1$
@@ -100,6 +104,9 @@ public class TaskManager {
     public static TaskManager getInstance(final MindClient client,
             final Composite taskContainer, Button refreshButton,
             Button createButton, final Button doneButton) {
+        log = LogFactory.getLog(TaskManager.class);
+        log.info("Creating new task manager.");
+
         if (instance == null) {
             instance = new TaskManager(client, taskContainer, refreshButton,
                     createButton, doneButton);
@@ -108,6 +115,7 @@ public class TaskManager {
     }
 
     public void setDone(Task task) {
+        log.info("Setting task with id '" + task.getId() + "' to done.");
         task.setStatus(Task.STATUS_DONE);
 
         PreferenceStore store = client.getPreferenceStore();
@@ -122,7 +130,8 @@ public class TaskManager {
                     .getPassword(), task.getId(), task.getContentAsXML()
                     .asXML().getBytes());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occured while setting task with id '"
+                    + task.getId() + "' to done.", e);
         }
         // must disable doneButton explicitly, because removing tasks does
         // not fire a selection changed event
@@ -165,7 +174,9 @@ public class TaskManager {
      * Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
+        log.info("Starting async task list refresh.");
         if (refreshing) {
+            log.info("Already refreshing, nothing to do.");
             return;
         }
         refreshing = true;
@@ -177,6 +188,8 @@ public class TaskManager {
     }
 
     private void refresh() {
+        log.info("Starting task list refresh.");
+
         refreshing = true;
         setRefreshStatus(false);
         tasks.clear();
@@ -186,6 +199,7 @@ public class TaskManager {
 
         // check profile
         if (profile == null) {
+            log.debug("No profile selected.");
             refreshing = false;
             setRefreshStatus(true);
             return;
@@ -194,13 +208,14 @@ public class TaskManager {
 
         TaskList taskList = null;
         try {
+            log.info("Retrieving list of tasks.");
             taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
+            log.error("Unable to get list of tasks.", e);
             updateTaskWidgetContents(false, true, false);
             setRefreshStatus(true);
             refreshing = false;
-            e.printStackTrace();
             return;
         }
         // loop and add tasks
@@ -215,6 +230,7 @@ public class TaskManager {
                 }
             }
             if (listTask && (!tasks.contains(task))) {
+                log.info("Adding task with id '" + task.getId() + "'.");
                 tasks.add(task);
             }
         }
@@ -224,6 +240,7 @@ public class TaskManager {
             updateTaskWidgetContents(false, false, false);
 
             // update task table
+            log.info("Updating list of tasks.");
             taskContainer.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     taskTableViewer.setInput(myself);
@@ -368,9 +385,9 @@ public class TaskManager {
                         }
                     } catch (Exception e) {
                         MindClient
-                                .showErrorMessage("Could not update the task. "
-                                        + e.getLocalizedMessage());
-                        e.printStackTrace();
+                                .showErrorMessage("Could not update the task.");
+                        log.error("Could not update task with id " //$NON-NLS-1$
+                                + task.getId(), e);
                     }
                 }
                 taskTableViewer.refresh();
