@@ -168,7 +168,7 @@ public abstract class SVNHelper implements Notify2 {
         }
     }
 
-    public String[] getRemoteChanges() {
+    public ChangePath[] getRemoteChanges() {
         LogMessage[] messages;
         
         // get local revision, path and log messages from here to HEAD
@@ -183,15 +183,32 @@ public abstract class SVNHelper implements Notify2 {
             messages = client.logMessages(localPath, start, head, false, true,
                     0);
         } catch (ClientException e) {
-            return new String[0];
+            return new ChangePath[0];
         }
         
-        ArrayList<String> changePaths = new ArrayList<String>();
+        ArrayList<ChangePath> changePaths = new ArrayList<ChangePath>();
         for (LogMessage message : messages) {
             long revision = message.getRevisionNumber();
             ChangePath[] changes = message.getChangedPaths();
             for (ChangePath change : changes) {
                 String absPath = change.getPath();
+                
+                // check if we already added this change to our list
+                ChangePath existing = null;
+                for (ChangePath oldChange : changePaths) {
+                    if (oldChange.getPath().equals(absPath)) {
+                        existing = oldChange;
+                        break;
+                    }
+                }
+                if (existing != null) {
+                    // remove it if it's been deleted
+                    if (change.getAction() == 'D') {
+                        changePaths.remove(existing);
+                    }
+                    continue;
+                }
+                
                 String path;
                 
                 // truncate path to be relative to wc root
@@ -201,12 +218,7 @@ public abstract class SVNHelper implements Notify2 {
                 else {
                     continue;
                 }
-
-                // skip if we already added this path
-                if (changePaths.contains(path)) {
-                    continue;
-                }
-
+                
                 // get the items local revision
                 long itemRev = 0;
                 try {
@@ -225,11 +237,11 @@ public abstract class SVNHelper implements Notify2 {
                 }
 
                 // add the change path to the result array
-                changePaths.add(path);
+                changePaths.add(change);
             }
         }
 
-        return changePaths.toArray(new String[0]);
+        return changePaths.toArray(new ChangePath[0]);
     }
 
     /**
@@ -277,7 +289,12 @@ public abstract class SVNHelper implements Notify2 {
     protected void cancelOperation() throws ClientException {
         client.cancelOperation();
     }
-
+    
+    public String getWorkingCopyRelativePath() throws ClientException {
+        Info info = client.info(localPath);
+        return info.getUrl().substring(info.getRepository().length());
+    }
+    
     /**
      * Is called for every single file when updating the repository or commiting
      * changes to notify about progress.
