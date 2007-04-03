@@ -16,8 +16,6 @@ package com.mindquarry.desktop.workspace;
 import java.io.File;
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Info;
@@ -41,8 +39,6 @@ public abstract class SVNHelper implements Notify2 {
 
     public static final int CONFLICT_OVERRIDE_FROM_WC = 1;
 
-    protected Log log;
-
     protected String repositoryURL;
 
     protected String localPath;
@@ -55,7 +51,6 @@ public abstract class SVNHelper implements Notify2 {
 
     public SVNHelper(String repositoryURL, String localPath, String username,
             String password) {
-        log = LogFactory.getLog(this.getClass());
 
         this.repositoryURL = repositoryURL;
         this.localPath = localPath;
@@ -90,13 +85,31 @@ public abstract class SVNHelper implements Notify2 {
         }
         client.update(localPath, Revision.HEAD, true);
     }
+    
+    public void updateSelectedFiles(String[] files) {
+        for (String file : files) {
+            try {
+                client.update(file, Revision.HEAD, true);
+            }
+            catch (ClientException e) { }
+        }
+    }
+    
+    public void addSelectedFiles(String[] files) {
+        for (String file : files) {
+            try {
+                client.add(file, true, true);
+            }
+            catch (ClientException e) { }
+        }
+    }
 
     /**
      * Performs a new checkout from repositoryURL
      */
     protected void initialCheckout() throws ClientException {
         // TODO: check if localPath already exists and if we need to move it
-        // first
+        // first?
         client.checkout(repositoryURL, localPath, Revision.HEAD, true);
     }
 
@@ -139,6 +152,7 @@ public abstract class SVNHelper implements Notify2 {
                     continue;
                 }
 
+                // remove files that the user deleted manually
                 if (stat.getTextStatus() == StatusKind.missing) {
                     client.remove(new String[] { stat.getPath() }, null, true);
                 }
@@ -154,20 +168,10 @@ public abstract class SVNHelper implements Notify2 {
         }
     }
 
-    public LogMessage[] getRemoteChanges() {
-        // Note: not used right now
-        try {
-            Revision start = Revision.BASE;
-            Revision head = Revision.HEAD;
-            return client.logMessages(localPath, start, head, false, true, 0);
-        } catch (ClientException e) {
-            log.error("Could not get log Messages", e); //$NON-NLS-1$
-            return new LogMessage[0];
-        }
-    }
-
-    public String[] getRemoteChangePaths() {
+    public String[] getRemoteChanges() {
         LogMessage[] messages;
+        
+        // get local revision, path and log messages from here to HEAD
         int trimLength;
         Info info;
         try {
@@ -181,6 +185,7 @@ public abstract class SVNHelper implements Notify2 {
         } catch (ClientException e) {
             return new String[0];
         }
+        
         ArrayList<String> changePaths = new ArrayList<String>();
         for (LogMessage message : messages) {
             long revision = message.getRevisionNumber();
@@ -188,31 +193,38 @@ public abstract class SVNHelper implements Notify2 {
             for (ChangePath change : changes) {
                 String absPath = change.getPath();
                 String path;
-                if (absPath.length() > trimLength)
+                
+                // truncate path to be relative to wc root
+                if (absPath.length() > trimLength) {
                     path = absPath.substring(trimLength + 1);
-                else
+                }
+                else {
                     continue;
+                }
 
-                if (changePaths.contains(path))
+                // skip if we already added this path
+                if (changePaths.contains(path)) {
                     continue;
+                }
 
+                // get the items local revision
                 long itemRev = 0;
                 try {
                     String itemLocalPath = localPath + "/" + path;
-                    // System.out.println("item local path " + itemLocalPath);
                     Info itemInfo = client.info(itemLocalPath);
-                    if (itemInfo != null)
+                    if (itemInfo != null) {
                         itemRev = itemInfo.getLastChangedRevision();
+                    }
                 } catch (ClientException e) {
                 }
 
+                // if our copy of this item is newer that the log message, skip it
+                // and wait for possibly newer log messages
                 if (itemRev > revision - 1) {
-                    // System.out.println("skipping newer: " + path);
                     continue;
                 }
 
-                // System.out.println("rch adding " + path + " irev " + itemRev
-                // + " msg rev " + revision);
+                // add the change path to the result array
                 changePaths.add(path);
             }
         }
@@ -262,12 +274,8 @@ public abstract class SVNHelper implements Notify2 {
     /**
      * Cancels the current SVN operation
      */
-    protected void cancelOperation() {
-        try {
-            client.cancelOperation();
-        } catch (ClientException e) {
-            log.error("Error while canceling SVN operation.", e); //$NON-NLS-1$
-        }
+    protected void cancelOperation() throws ClientException {
+        client.cancelOperation();
     }
 
     /**
