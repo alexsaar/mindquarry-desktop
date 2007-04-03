@@ -13,7 +13,7 @@
 
 + (void)initialize
 {
-	[self setKeys:[NSArray arrayWithObjects:@"enabled", nil] triggerChangeNotificationsForDependentKey:@"self"];
+	[self setKeys:[NSArray arrayWithObjects:@"enabled", @"local", @"onServer", nil] triggerChangeNotificationsForDependentKey:@"self"];
 }
 
 - (void)revealInFinder

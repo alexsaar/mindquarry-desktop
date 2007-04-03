@@ -72,9 +72,18 @@
 	}
 	
 	helperRef = env->NewGlobalRef(helper);
-	
 	CHECK_EXCEPTION;
-	
+		
+	jmethodID relativeMethodID = env->GetMethodID(helperClass, "getWorkingCopyRelativePath", "()Ljava/lang/String;");
+	if (relativeMethodID) {
+		jstring jrel = (jstring) env->CallObjectMethod(helperRef, relativeMethodID);
+		CHECK_EXCEPTION;
+		relativePath = [jstring_to_nsstring(env, jrel) copy];
+	}
+	else {
+		NSLog(@"warning: could not get relative path ");
+	}
+		
 	return self;
 }
 
@@ -84,7 +93,14 @@
 	CHECK_EXCEPTION;
 	helperRef = nil;
 	
+	[relativePath release];
+	
 	[super dealloc];
+}
+
+- (NSString *)relativePath
+{
+	return relativePath;
 }
 
 - (void)attachCurrentThread
@@ -326,7 +342,7 @@
 		id item = [changeList objectAtIndex:i];
 		NSString *path = [item objectForKey:@"absPath"];
 				
-		NSArray *oldItems = [[changesController arrangedObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", path]]];
+		NSArray *oldItems = [[[team valueForKey:@"changes"] allObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", path]]];
 		id change = nil;
 		BOOL didExist = NO;
 		if ([oldItems count]) {
@@ -336,23 +352,29 @@
 		else
 			change = [changesController newObject];
 		
+		BOOL stale = didExist && [[change valueForKey:@"stale"] boolValue];
+		
 		if (!didExist) {
 			[change setValue:path forKey:@"absPath"];
 			[change setValue:[item objectForKey:@"relPath"] forKey:@"relPath"];			
 		}
 		
-		if (!didExist)
+		if (!didExist || stale)
 			[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
 //		else if ()
 //			[change setValue:[NSNumber numberWithBool:NO] forKey:@"enabled"];
 			
-		if (!didExist || [[item objectForKey:@"status"] intValue] != SVN_STATUS_DOWNLOAD)
-			[change setValue:[item objectForKey:@"status"] forKey:@"status"];
+		[change setValue:[item objectForKey:@"status"] forKey:@"status"];
 		
 		if ([item objectForKey:@"local"])
 			[change setValue:[item objectForKey:@"local"] forKey:@"local"];
+		else if (stale)
+			[change setValue:[NSNumber numberWithBool:NO] forKey:@"local"];
+			
 		if ([item objectForKey:@"onServer"])
 			[change setValue:[item objectForKey:@"onServer"] forKey:@"onServer"];
+		else if (stale)
+			[change setValue:[NSNumber numberWithBool:NO] forKey:@"onServer"];
 		
 		[change setValue:team forKey:@"team"];
 		[change setValue:[team valueForKey:@"server"] forKey:@"server"];
@@ -367,10 +389,40 @@
 {
 	static jmethodID remoteChangesMethod = nil;
 	if (!remoteChangesMethod) {
-		remoteChangesMethod = env->GetMethodID(helperClass, "getRemoteChanges", "()[Ljava/lang/String;");
+		remoteChangesMethod = env->GetMethodID(helperClass, "getRemoteChanges", "()[Lorg/tigris/subversion/javahl/ChangePath;");
 		CHECK_EXCEPTION;
 		if (!remoteChangesMethod) {
 			NSLog(@"Warning: could not get remoteChanges method ID");
+			return NO;
+		}
+	}
+	
+	static jclass changePathClass = nil;
+	if (!changePathClass) {
+		changePathClass = env->FindClass("org/tigris/subversion/javahl/ChangePath");
+		CHECK_EXCEPTION;
+		if (!changePathClass) {
+			NSLog(@"Warning: could not get ChangePath class");
+			return NO;
+		}
+	}
+	
+	static jmethodID changePathGetPath = nil;
+	if (!changePathGetPath) {
+		changePathGetPath = env->GetMethodID(changePathClass, "getPath", "()Ljava/lang/String;");
+		CHECK_EXCEPTION;
+		if (!changePathGetPath) {
+			NSLog(@"Warning: could not get getPath method ID");
+			return NO;
+		}
+	}
+	
+	static jmethodID changePathGetAction = nil;
+	if (!changePathGetAction) {
+		changePathGetAction = env->GetMethodID(changePathClass, "getAction", "()C");
+		CHECK_EXCEPTION;
+		if (!changePathGetAction) {
+			NSLog(@"Warning: could not get getAction method ID");
 			return NO;
 		}
 	}
@@ -387,21 +439,38 @@
 	
 	NSMutableArray *changeList = [[NSMutableArray alloc] init];
 	
+	NSString *rel = [self relativePath];
+	
 	int i;
 	for (i = 0; i < len; i++) {
-		jstring item = (jstring) env->GetObjectArrayElement(changesArray, i);
+		jobject change = env->GetObjectArrayElement(changesArray, i);
 		CHECK_EXCEPTION;
 		
-		NSString *relPath = jstring_to_nsstring(env, item);
-		NSMutableDictionary *change = [NSMutableDictionary dictionary];
+		jstring jpath = (jstring) env->CallObjectMethod(change, changePathGetPath);
+		CHECK_EXCEPTION;
 		
-		[change setObject:[localPath stringByAppendingPathComponent:relPath] forKey:@"absPath"];
-		[change setObject:relPath forKey:@"relPath"];
-		[change setObject:[NSNumber numberWithBool:YES] forKey:@"enabled"];
-		[change setObject:[NSNumber numberWithInt:SVN_STATUS_DOWNLOAD] forKey:@"status"];
-		[change setObject:[NSNumber numberWithBool:YES] forKey:@"onServer"];
+		jchar jaction = env->CallCharMethod(change, changePathGetAction);
+		CHECK_EXCEPTION;
 		
-		[changeList addObject:change];
+		int status = SVN_STATUS_NORMAL;
+		if (jaction == 'D')
+			status = SVN_STATUS_DELETED;
+		else if (jaction == 'A')
+			status = SVN_STATUS_ADDED;
+		else if (jaction == 'M')
+			status = SVN_STATUS_MODIFIED;
+		
+		NSString *relPath = jstring_to_nsstring(env, jpath);
+		relPath = [relPath substringFromIndex:[rel length] + 1];
+		NSMutableDictionary *changeDict = [NSMutableDictionary dictionary];
+		
+		[changeDict setObject:[localPath stringByAppendingPathComponent:relPath] forKey:@"absPath"];
+		[changeDict setObject:relPath forKey:@"relPath"];
+		[changeDict setObject:[NSNumber numberWithBool:YES] forKey:@"enabled"];
+		[changeDict setObject:[NSNumber numberWithInt:status] forKey:@"status"];
+		[changeDict setObject:[NSNumber numberWithBool:YES] forKey:@"onServer"];
+		
+		[changeList addObject:changeDict];
 	}
 	
 //	NSLog(@"remote %@", changeList);

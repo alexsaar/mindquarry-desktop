@@ -30,11 +30,15 @@
 	jclass helperClass;
 	jobject helperRef;
 	
+	NSString *relativePath;
+	
 	JNIEnv *env;
 	
 }
 
 - (id)initWithRepository:(NSString *)_repo username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local;
+
+- (NSString *)relativePath;
 
 - (void)attachCurrentThread;
 

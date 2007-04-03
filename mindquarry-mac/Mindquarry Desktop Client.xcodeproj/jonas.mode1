@@ -301,14 +301,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>49</integer>
-									<integer>31</integer>
+									<integer>30</integer>
+									<integer>22</integer>
 									<integer>3</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {409, 1001}}</string>
+							<string>{{0, 113}, {409, 1001}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -345,7 +345,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQSVNJob.m</string>
+								<string>MQChange.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -353,11 +353,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MQSVNJob.m</string>
+										<string>MQChange.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD71689B0BC2619A0058CB79</string>
+										<string>DD7169E70BC2A0EA0058CB79</string>
 										<key>history</key>
 										<array>
 											<string>DDF001120BA853160008C3AA</string>
@@ -395,18 +395,18 @@
 											<string>DD71E7140BBD393E00E8A751</string>
 											<string>DD29A7CF0BC1150200583931</string>
 											<string>DD29A7D10BC1150200583931</string>
-											<string>DD29A7D20BC1150200583931</string>
-											<string>DD29A7D30BC1150200583931</string>
 											<string>DD7167160BC249D90058CB79</string>
-											<string>DD7167170BC249D90058CB79</string>
 											<string>DD7167630BC24D6C0058CB79</string>
 											<string>DD7167640BC24D6C0058CB79</string>
 											<string>DD7167650BC24D6C0058CB79</string>
 											<string>DD7167660BC24D6C0058CB79</string>
 											<string>DD71679F0BC24D920058CB79</string>
-											<string>DD7167D20BC250210058CB79</string>
-											<string>DD7168970BC2619A0058CB79</string>
-											<string>DD7168980BC2619A0058CB79</string>
+											<string>DD7168DE0BC27ADF0058CB79</string>
+											<string>DD7169190BC285850058CB79</string>
+											<string>DD71699C0BC28D900058CB79</string>
+											<string>DD7169CE0BC29A060058CB79</string>
+											<string>DD7169E10BC29C7B0058CB79</string>
+											<string>DD7169E20BC29C7B0058CB79</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -456,8 +456,26 @@
 											<string>DD71E7EF0BBD627100E8A751</string>
 											<string>DD29A8340BC1669C00583931</string>
 											<string>DD29A83A0BC1669C00583931</string>
-											<string>DD7168990BC2619A0058CB79</string>
 											<string>DD71689A0BC2619A0058CB79</string>
+											<string>DD7168B80BC274760058CB79</string>
+											<string>DD7168B90BC274760058CB79</string>
+											<string>DD7168BA0BC274760058CB79</string>
+											<string>DD7168CD0BC279240058CB79</string>
+											<string>DD7168CE0BC279240058CB79</string>
+											<string>DD7168CF0BC279240058CB79</string>
+											<string>DD7168D00BC279240058CB79</string>
+											<string>DD7168E00BC27ADF0058CB79</string>
+											<string>DD7168E10BC27ADF0058CB79</string>
+											<string>DD71691B0BC285850058CB79</string>
+											<string>DD71691C0BC285850058CB79</string>
+											<string>DD71691D0BC285850058CB79</string>
+											<string>DD7169330BC286C40058CB79</string>
+											<string>DD71695B0BC2899A0058CB79</string>
+											<string>DD7169800BC28A730058CB79</string>
+											<string>DD71698D0BC28A860058CB79</string>
+											<string>DD71699E0BC28D900058CB79</string>
+											<string>DD7169D00BC29A060058CB79</string>
+											<string>DD7169E30BC29C7B0058CB79</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -515,9 +533,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD71688A0BC261120058CB79</string>
+				<string>DD7168A20BC263560058CB79</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD71688B0BC261120058CB79</string>
+				<string>DD7168A30BC263560058CB79</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -636,7 +654,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>197288346.51681399</real>
+	<real>197304554.698897</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -651,6 +669,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>DD39F5060B9D807800384D0C</string>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>/Users/jonas/Desktop/Mindquarry/meta/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
@@ -672,12 +691,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string></string>
+								<string>SVNController.mm</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -735,7 +756,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD7168940BC2617C0058CB79</string>
+				<string>DD7168B30BC274720058CB79</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -875,12 +896,14 @@
 							<key>Dock</key>
 							<array>
 								<dict>
+									<key>BecomeActive</key>
+									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RequestController.m</string>
+										<string>SVNController.mm</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -936,8 +959,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>DD7166E70BC245BB0058CB79</string>
-				<string>DD7166E80BC245BB0058CB79</string>
+				<string>DD7169000BC27DFB0058CB79</string>
+				<string>DD7169010BC27DFB0058CB79</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -1072,7 +1095,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {1251, 818}}</string>
 								<key>RubberWindowFrame</key>
-								<string>63 118 1251 859 0 0 1920 1178 </string>
+								<string>48 116 1251 859 0 0 1920 1178 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXRunSessionModule</string>
@@ -1095,14 +1118,14 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>DD71688C0BC261120058CB79</string>
+				<string>DD7168A40BC263560058CB79</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>DD71688D0BC261120058CB79</string>
+				<string>DD7168A50BC263560058CB79</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>
 			<key>WindowString</key>
-			<string>63 118 1251 859 0 0 1920 1178 </string>
+			<string>48 116 1251 859 0 0 1920 1178 </string>
 			<key>WindowToolGUID</key>
 			<string>1C0AD2B3069F1EA900FABCE6</string>
 			<key>WindowToolIsVisible</key>

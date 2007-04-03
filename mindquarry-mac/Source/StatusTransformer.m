@@ -25,15 +25,13 @@
 - (id)transformedValue:(id)value 
 {
 	int val = [value intValue];
-	if (val == 5 || val == 3) 
-		return @"new: local";
-	else if (val == SVN_STATUS_DOWNLOAD)
-		return @"from server";
-	else if (val == 2)
+	if (val == SVN_STATUS_UNVERSIONED || val == SVN_STATUS_ADDED) 
+		return @"added";
+	else if (val == SVN_STATUS_MODIFIED)
 		return @"modified";
-	else if (val == 6)
+	else if (val == SVN_STATUS_MISSING || val == SVN_STATUS_DELETED)
 		return @"deleted";
-	else if (val == 9)
+	else if (val == SVN_STATUS_CONFLICTED)
 		return @"conflict";
 	return [NSString stringWithFormat:@"code: %@", value];
 }
