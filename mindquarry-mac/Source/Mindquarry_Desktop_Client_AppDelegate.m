@@ -140,15 +140,15 @@
     NSError *error;
     NSApplicationTerminateReply reply = NSTerminateNow;
     
-	NSEntityDescription *entity = [[managedObjectModel entitiesByName] objectForKey:@"Change"];
-	NSFetchRequest *req = [[[NSFetchRequest alloc] init] autorelease];
-	[req setEntity:entity];
-	NSArray *chan = [managedObjectContext executeFetchRequest:req error:nil];
-	NSEnumerator *chEnum = [chan objectEnumerator];
-	id ch;
-	while (ch = [chEnum nextObject]) {
-		[managedObjectContext deleteObject:ch];
-	}
+//	NSEntityDescription *entity = [[managedObjectModel entitiesByName] objectForKey:@"Change"];
+//	NSFetchRequest *req = [[[NSFetchRequest alloc] init] autorelease];
+//	[req setEntity:entity];
+//	NSArray *chan = [managedObjectContext executeFetchRequest:req error:nil];
+//	NSEnumerator *chEnum = [chan objectEnumerator];
+//	id ch;
+//	while (ch = [chEnum nextObject]) {
+//		[managedObjectContext deleteObject:ch];
+//	}
 	
     if (managedObjectContext != nil) {
         if ([managedObjectContext commitEditing]) {

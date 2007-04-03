@@ -42,6 +42,10 @@
 
 - (BOOL)updateReturnError:(NSError **)error;
 
+- (BOOL)updateSelectedItems:(NSArray *)items;
+
+- (BOOL)addSelectedItems:(NSArray *)items;
+
 - (BOOL)fetchLocalChangesForTeam:(id)team returnError:(NSError **)error;
 
 - (void)_mainThreadChangeInsert:(id)arg;

@@ -121,6 +121,110 @@
 	return YES;
 }
 
+- (BOOL)updateSelectedItems:(NSArray *)items
+{
+	static jmethodID updateMethod = nil;
+	if (!updateMethod) {
+		updateMethod = env->GetMethodID(helperClass, "updateSelectedFiles", "([Ljava/lang/String;)V");
+		CHECK_EXCEPTION;
+		if (!updateMethod) {
+			NSLog(@"Warning: could not get updateSelectedFiles method ID");
+			return NO;
+		}
+	}
+	
+	static jclass stringClass = nil;
+	if (!stringClass) {
+		stringClass = env->FindClass("java/lang/String");
+		CHECK_EXCEPTION;
+		if (!stringClass) {
+			NSLog(@"Failed to find java String class");
+			return FALSE;
+		}
+	}
+	
+	int count = [items count];
+	
+    jobjectArray args = env->NewObjectArray(count, stringClass, NULL);
+    CHECK_EXCEPTION;
+    if (!args) {
+        NSLog(@"could not create args array");
+        return FALSE;
+    }
+	
+	int i;
+	for (i = 0; i < count; i++) {
+		NSString *path = [items objectAtIndex:i];
+		jstring jpath = nsstring_to_jstring(env, path);
+		CHECK_EXCEPTION;
+		
+		env->SetObjectArrayElement(args, i, jpath);
+		CHECK_EXCEPTION;
+	}
+		
+	env->CallVoidMethod(helperRef, updateMethod, args);
+	
+	if (env->ExceptionCheck() == JNI_TRUE) {
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		return NO;
+	}
+	
+	return YES;
+}
+
+- (BOOL)addSelectedItems:(NSArray *)items
+{
+	static jmethodID addMethod = nil;
+	if (!addMethod) {
+		addMethod = env->GetMethodID(helperClass, "addSelectedFiles", "([Ljava/lang/String;)V");
+		CHECK_EXCEPTION;
+		if (!addMethod) {
+			NSLog(@"Warning: could not get addSelectedFiles method ID");
+			return NO;
+		}
+	}
+	
+	static jclass stringClass = nil;
+	if (!stringClass) {
+		stringClass = env->FindClass("java/lang/String");
+		CHECK_EXCEPTION;
+		if (!stringClass) {
+			NSLog(@"Failed to find java String class");
+			return FALSE;
+		}
+	}
+	
+	int count = [items count];
+	
+    jobjectArray args = env->NewObjectArray(count, stringClass, NULL);
+    CHECK_EXCEPTION;
+    if (!args) {
+        NSLog(@"could not create args array");
+        return FALSE;
+    }
+	
+	int i;
+	for (i = 0; i < count; i++) {
+		NSString *path = [items objectAtIndex:i];
+		jstring jpath = nsstring_to_jstring(env, path);
+		CHECK_EXCEPTION;
+		
+		env->SetObjectArrayElement(args, i, jpath);
+		CHECK_EXCEPTION;
+	}
+	
+	env->CallVoidMethod(helperRef, addMethod, args);
+	
+	if (env->ExceptionCheck() == JNI_TRUE) {
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+		return NO;
+	}
+	
+	return YES;
+}
+
 - (BOOL)fetchLocalChangesForTeam:(id)team returnError:(NSError **)error;
 {
 	static jmethodID localChangesMethod = nil;
@@ -200,6 +304,8 @@
 		[changeList addObject:change];
 	}
 	
+//	NSLog(@"local %@", changeList);
+	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
 	[arg release];
@@ -237,8 +343,8 @@
 		
 		if (!didExist)
 			[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
-		else
-			[change setValue:[NSNumber numberWithBool:NO] forKey:@"enabled"];
+//		else if ()
+//			[change setValue:[NSNumber numberWithBool:NO] forKey:@"enabled"];
 			
 		if (!didExist || [[item objectForKey:@"status"] intValue] != SVN_STATUS_DOWNLOAD)
 			[change setValue:[item objectForKey:@"status"] forKey:@"status"];
@@ -250,6 +356,8 @@
 		
 		[change setValue:team forKey:@"team"];
 		[change setValue:[team valueForKey:@"server"] forKey:@"server"];
+		
+		[change setValue:[NSNumber numberWithBool:NO] forKey:@"stale"];
 	}
 	
 	[changeList release];
@@ -259,7 +367,7 @@
 {
 	static jmethodID remoteChangesMethod = nil;
 	if (!remoteChangesMethod) {
-		remoteChangesMethod = env->GetMethodID(helperClass, "getRemoteChangePaths", "()[Ljava/lang/String;");
+		remoteChangesMethod = env->GetMethodID(helperClass, "getRemoteChanges", "()[Ljava/lang/String;");
 		CHECK_EXCEPTION;
 		if (!remoteChangesMethod) {
 			NSLog(@"Warning: could not get remoteChanges method ID");
@@ -295,6 +403,8 @@
 		
 		[changeList addObject:change];
 	}
+	
+//	NSLog(@"remote %@", changeList);
 	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];

@@ -18,8 +18,7 @@
 #import "StatusTransformer.h"
 #import "MQTeam.h"
 #import "MQChangeCell.h"
-#import "MQSVNUpdateJob.h"
-#import "MQSVNCommitJob.h"
+#import "MQSVNJob.h"
 #import "MQChange.h"
 #import "PathAbbreviation.h"
 
@@ -245,7 +244,9 @@
 
 - (void)refreshWorkspaceWithUpdate:(BOOL)update 
 {
-	[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:update] autorelease] addToQueue];
+	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] synchronizes:NO] autorelease] addToQueue];
+
+//	[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:update] autorelease] addToQueue];
 }
 
 - (void)refreshTasks
@@ -322,15 +323,19 @@
 {
 	int tag = [sender tag];
 
-	if (tag == 0 || tag == 1) {
-		// down
-		[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:YES] autorelease] addToQueue];
+	if (tag == 0) {
+		[[[[MQSVNJob alloc] initWithServer:[self selectedServer] synchronizes:YES] autorelease] addToQueue];
 	}
 	
-	if (tag == 0 || tag == 2) {
-		// up
-		[[[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease] addToQueue];
-	}
+//	if (tag == 0 || tag == 1) {
+//		// down
+//		[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:YES] autorelease] addToQueue];
+//	}
+//	
+//	if (tag == 0 || tag == 2) {
+//		// up
+//		[[[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease] addToQueue];
+//	}
 }
 
 - (id)selectedServer

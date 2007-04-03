@@ -59,11 +59,11 @@
 		DD09A5660BA03C26002FD5DD /* MQServer.m in Sources */ = {isa = PBXBuildFile; fileRef = DD09A5650BA03C26002FD5DD /* MQServer.m */; };
 		DD09A62B0BA04585002FD5DD /* AlertStopIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */; };
 		DD0B4A560BA166D60075798B /* task-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DD0B4A550BA166D60075798B /* task-add.png */; };
-		DD1CD0230BAAEF1800BF34BA /* MQSVNCommitJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */; };
 		DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */ = {isa = PBXBuildFile; fileRef = DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */; };
 		DD29A7940BC1064900583931 /* action-both.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7910BC1064900583931 /* action-both.png */; };
 		DD29A7950BC1064900583931 /* action-down.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7920BC1064900583931 /* action-down.png */; };
 		DD29A7960BC1064900583931 /* action-up.png in Resources */ = {isa = PBXBuildFile; fileRef = DD29A7930BC1064900583931 /* action-up.png */; };
+		DD29A8180BC1553400583931 /* MQSVNJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD29A8170BC1553400583931 /* MQSVNJob.m */; };
 		DD2ED17D0B9EBDFD000238CE /* MQUpdateRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */; };
 		DD2ED2D50B9EC8D2000238CE /* MQTask.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED2D40B9EC8D2000238CE /* MQTask.m */; };
 		DD2ED36B0B9ECFF4000238CE /* task-critical.png in Resources */ = {isa = PBXBuildFile; fileRef = DD2ED3670B9ECFF4000238CE /* task-critical.png */; };
@@ -85,7 +85,6 @@
 		DD6D704E0BA968910071E035 /* MQChangeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D704D0BA968910071E035 /* MQChangeCell.m */; };
 		DD6D71080BA97CB80071E035 /* MQJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71070BA97CB80071E035 /* MQJob.m */; };
 		DD6D717A0BA9A9F20071E035 /* MQThreadJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71790BA9A9F20071E035 /* MQThreadJob.m */; };
-		DD6D719B0BA9AEB50071E035 /* MQSVNUpdateJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */; };
 		DD71E7900BBD591D00E8A751 /* mindquarry-mac-svn.jar in Resources */ = {isa = PBXBuildFile; fileRef = DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */; };
 		DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD86617F0B9D95E3000C7B66 /* MQRequest.m */; };
 		DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */; };
@@ -148,13 +147,13 @@
 		DD09A5650BA03C26002FD5DD /* MQServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQServer.m; sourceTree = "<group>"; };
 		DD09A62A0BA04585002FD5DD /* AlertStopIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = AlertStopIcon.icns; path = Resources/AlertStopIcon.icns; sourceTree = "<group>"; };
 		DD0B4A550BA166D60075798B /* task-add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "task-add.png"; path = "Resources/task-add.png"; sourceTree = "<group>"; };
-		DD1CD0210BAAEF1800BF34BA /* MQSVNCommitJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQSVNCommitJob.h; sourceTree = "<group>"; };
-		DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNCommitJob.m; sourceTree = "<group>"; };
 		DD1CD07A0BAAF3DA00BF34BA /* MacSVNHelperNative.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MacSVNHelperNative.h; sourceTree = "<group>"; };
 		DD1CD07D0BAAF3EE00BF34BA /* MacSVNHelperNative.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MacSVNHelperNative.mm; sourceTree = "<group>"; };
 		DD29A7910BC1064900583931 /* action-both.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-both.png"; path = "Resources/action-both.png"; sourceTree = "<group>"; };
 		DD29A7920BC1064900583931 /* action-down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-down.png"; path = "Resources/action-down.png"; sourceTree = "<group>"; };
 		DD29A7930BC1064900583931 /* action-up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "action-up.png"; path = "Resources/action-up.png"; sourceTree = "<group>"; };
+		DD29A8160BC1553400583931 /* MQSVNJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQSVNJob.h; sourceTree = "<group>"; };
+		DD29A8170BC1553400583931 /* MQSVNJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNJob.m; sourceTree = "<group>"; };
 		DD2ED17B0B9EBDFD000238CE /* MQUpdateRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQUpdateRequest.h; sourceTree = "<group>"; };
 		DD2ED17C0B9EBDFD000238CE /* MQUpdateRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQUpdateRequest.m; sourceTree = "<group>"; };
 		DD2ED2D30B9EC8D2000238CE /* MQTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTask.h; sourceTree = "<group>"; };
@@ -184,8 +183,6 @@
 		DD6D71070BA97CB80071E035 /* MQJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQJob.m; sourceTree = "<group>"; };
 		DD6D71780BA9A9F20071E035 /* MQThreadJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQThreadJob.h; sourceTree = "<group>"; };
 		DD6D71790BA9A9F20071E035 /* MQThreadJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQThreadJob.m; sourceTree = "<group>"; };
-		DD6D71990BA9AEB50071E035 /* MQSVNUpdateJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQSVNUpdateJob.h; sourceTree = "<group>"; };
-		DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQSVNUpdateJob.m; sourceTree = "<group>"; };
 		DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; name = "mindquarry-mac-svn.jar"; path = "Java/dist/mindquarry-mac-svn.jar"; sourceTree = "<group>"; };
 		DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQRequest.h; sourceTree = "<group>"; };
 		DD86617F0B9D95E3000C7B66 /* MQRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQRequest.m; sourceTree = "<group>"; };
@@ -395,10 +392,8 @@
 				DDF001040BA850C60008C3AA /* MQTaskInfoRequest.m */,
 				DD6D71780BA9A9F20071E035 /* MQThreadJob.h */,
 				DD6D71790BA9A9F20071E035 /* MQThreadJob.m */,
-				DD6D71990BA9AEB50071E035 /* MQSVNUpdateJob.h */,
-				DD6D719A0BA9AEB50071E035 /* MQSVNUpdateJob.m */,
-				DD1CD0210BAAEF1800BF34BA /* MQSVNCommitJob.h */,
-				DD1CD0220BAAEF1800BF34BA /* MQSVNCommitJob.m */,
+				DD29A8160BC1553400583931 /* MQSVNJob.h */,
+				DD29A8170BC1553400583931 /* MQSVNJob.m */,
 			);
 			name = Requests;
 			sourceTree = "<group>";
@@ -614,13 +609,12 @@
 				DD6D704E0BA968910071E035 /* MQChangeCell.m in Sources */,
 				DD6D71080BA97CB80071E035 /* MQJob.m in Sources */,
 				DD6D717A0BA9A9F20071E035 /* MQThreadJob.m in Sources */,
-				DD6D719B0BA9AEB50071E035 /* MQSVNUpdateJob.m in Sources */,
-				DD1CD0230BAAEF1800BF34BA /* MQSVNCommitJob.m in Sources */,
 				DD1CD07E0BAAF3EE00BF34BA /* MacSVNHelperNative.mm in Sources */,
 				DD576B5A0BAEA28C00460C68 /* RequestController+Toolbar.m in Sources */,
 				DDFA7D700BAEEF7F0081BB87 /* MQChange.m in Sources */,
 				DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */,
 				DD5F20D00BB036C400DF8699 /* PathAbbreviation.m in Sources */,
+				DD29A8180BC1553400583931 /* MQSVNJob.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
