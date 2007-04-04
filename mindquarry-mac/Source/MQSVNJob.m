@@ -37,6 +37,8 @@
 
 - (void)threadMethod
 {
+	BOOL opened = NO;
+	
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
 	while (!cancel && (currentTeam = [teamEnum nextObject])) {
 		[currentTeam initJVM];
@@ -45,7 +47,13 @@
 		NSLog(@"svn job %@ %@", synchronizes ? @"sync" : @"", [currentTeam valueForKey:@"name"]);
 		
 		NSMutableArray *deleteObjects = [NSMutableArray array];
-		if (synchronizes) {			
+		if (synchronizes) {		
+			
+			if (!opened) {
+				[[NSApp delegate] performSelectorOnMainThread:@selector(setProgressVisible:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
+				opened = YES;
+			}
+			
 			if (cancel)
 				break;
 			// get commit items, add them
@@ -129,6 +137,8 @@
 	[[NSApp delegate] setValue:nil forKey:@"cachedMessage"];
 	
 	//	[[[[MQSVNUpdateJob alloc] initWithServer:server updates:NO] autorelease] addToQueue];
+	
+	[[NSApp delegate] performSelectorOnMainThread:@selector(setProgressVisible:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
 - (NSString *)statusString
@@ -140,6 +150,8 @@
 {
 	cancel = YES;
 	[[currentTeam svnController] cancelReturnError:nil];
+	
+	[[NSApp delegate] performSelectorOnMainThread:@selector(setProgressVisible:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
 @end

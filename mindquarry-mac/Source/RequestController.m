@@ -25,7 +25,13 @@
 @implementation RequestController
 
 + (void)initialize {
-	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:1], @"sortBy", [NSNumber numberWithInt:0], @"filesSortBy", nil]];
+	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
+		[NSNumber numberWithInt:1], @"sortBy", 
+		[NSNumber numberWithInt:0], @"filesSortBy", 
+		[NSNumber numberWithBool:YES], @"dblClickTask", 
+		[NSNumber numberWithBool:YES], @"dblClickFile", 
+		
+		nil]];
 	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
 	[NSValueTransformer setValueTransformer:[[[PathAbbreviation alloc] init] autorelease] forName:@"PathAbbreviation"];
 }
@@ -51,6 +57,12 @@
 	[taskColumn setDataCell:[[[MQTaskCell alloc] init] autorelease]];
 	
 	[changeColumn setDataCell:[[[MQChangeCell alloc] init] autorelease]];
+	
+//	[changeEnabledColumn setDataCell:[[[MQChangeEnabledCell alloc] init] autorelease]];	
+//	[[changeEnabledColumn dataCell] setTitle:@""];
+//	[[changeEnabledColumn dataCell] setButtonType:NSSwitchButton];
+//	[[changeEnabledColumn dataCell] setAllowsMixedState:YES];
+//	NSLog(@"cell %d", [[changeEnabledColumn dataCell] allowsMixedState]);
 
 #define MENU_ICON_SIZE NSMakeSize(16, 16)
 	
@@ -425,6 +437,9 @@
 
 - (IBAction)taskDoubleClick:(id)sender
 {
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"dblClickTask"])
+		return;
+	
 	if ([[tasksController selectedObjects] count] == 0)
 		return;
 	id task = [[tasksController selectedObjects] objectAtIndex:0];
@@ -434,10 +449,13 @@
 
 - (IBAction)fileDoubleClick:(id)sender
 {
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"dblClickFile"])
+		return;
+	
 	if ([[changesController selectedObjects] count] == 0)
 		return;
 	id file = [[changesController selectedObjects] objectAtIndex:0];
-
+	
 	[file revealInFinder];
 }
 
@@ -586,7 +604,12 @@
 		pred = filesTeamFilter;
 	else if (filesStringFilter)
 		pred = filesStringFilter;
-		
+
+//	if (pred)
+//		pred = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"(%@) and nodeKind = 0", [pred predicateFormat]]];
+//	else
+//		pred = [NSPredicate predicateWithFormat:@"nodeKind = 0"];
+	
 	[changesController setFilterPredicate:pred];
 }
 

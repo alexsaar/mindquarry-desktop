@@ -547,7 +547,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# shell script goes here\n\njavah -classpath Java/build -o Source/MacSVNHelperNative.h com.mindquarry.desktop.svn.MacSVNHelper\n";
+			shellScript = "# shell script goes here\n\njavah -classpath Java/build -o Source/MacSVNHelperNative.h com.mindquarry.desktop.workspace.MacSVNHelper\n";
 		};
 		DD2EDB030B9F2180000238CE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -87,7 +87,8 @@ JNIEnv *env;
         return FALSE;
     }    
     JNINativeMethod jniHandlerMethods[] = {
-		{ (char*)"getCommitMessage", (char*)"()Ljava/lang/String;", (void*)&Java_com_mindquarry_desktop_svn_MacSVNHelper_getCommitMessage },
+		{ (char*)"onNotify", (char*)"(Lorg/tigris/subversion/javahl/NotifyInformation;)V", (void*)&Java_com_mindquarry_desktop_workspace_MacSVNHelper_onNotify },
+		{ (char*)"getCommitMessage", (char*)"()Ljava/lang/String;", (void*)&Java_com_mindquarry_desktop_workspace_MacSVNHelper_getCommitMessage },
     };
     if (env->RegisterNatives(jJNIHandler, jniHandlerMethods, sizeof(jniHandlerMethods) / sizeof(JNINativeMethod)) != 0) {
         NSLog(@"could not register MacSVNClient native methods");

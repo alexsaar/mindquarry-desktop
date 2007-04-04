@@ -17,6 +17,8 @@
                 commitMessageField = id; 
                 commitMessageWindow = id; 
                 controller = id; 
+                progressController = id; 
+                progressWindow = id; 
                 refreshToolbarItem = id; 
                 serverController = id; 
                 statusField = id; 
@@ -53,6 +55,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 changeColumn = id; 
+                changeEnabledColumn = id; 
                 changesController = id; 
                 changesFilterbar = id; 
                 createTaskSheet = id; 

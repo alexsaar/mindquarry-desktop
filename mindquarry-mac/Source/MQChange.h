@@ -23,4 +23,9 @@
 
 - (NSString *)fileKind;
 
+- (int)nodeKind;
+
+- (BOOL)enabled;
+- (void)setEnabled:(BOOL)enabled;
+
 @end

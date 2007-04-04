@@ -52,6 +52,8 @@ enum {
 	
 	IBOutlet id changeColumn;
 	
+	IBOutlet id changeEnabledColumn;
+	
 	id tasksToolbar;
 	
 	id workspaceToolbar;

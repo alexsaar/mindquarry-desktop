@@ -320,7 +320,7 @@
 		[changeList addObject:change];
 	}
 	
-//	NSLog(@"local %@", changeList);
+	NSLog(@"local %@", changeList);
 	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
@@ -342,7 +342,8 @@
 		id item = [changeList objectAtIndex:i];
 		NSString *path = [item objectForKey:@"absPath"];
 				
-		NSArray *oldItems = [[[team valueForKey:@"changes"] allObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", path]]];
+		NSArray *allItems = [[team valueForKey:@"changes"] allObjects];
+		NSArray *oldItems = [allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", path]]];
 		id change = nil;
 		BOOL didExist = NO;
 		if ([oldItems count]) {
@@ -352,6 +353,7 @@
 		else
 			change = [changesController newObject];
 		
+		BOOL stateChanged = [[item objectForKey:@"status"] intValue] != [[change valueForKey:@"status"] intValue];	
 		BOOL stale = didExist && [[change valueForKey:@"stale"] boolValue];
 		
 		if (!didExist) {
@@ -359,11 +361,12 @@
 			[change setValue:[item objectForKey:@"relPath"] forKey:@"relPath"];			
 		}
 		
-		if (!didExist || stale)
-			[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
-//		else if ()
+//		if ([[change valueForKey:@"nodeKind"] intValue] != 0)
 //			[change setValue:[NSNumber numberWithBool:NO] forKey:@"enabled"];
-			
+//		else 
+		if (!didExist || stateChanged)
+			[change setValue:[item objectForKey:@"enabled"] forKey:@"enabled"];
+
 		[change setValue:[item objectForKey:@"status"] forKey:@"status"];
 		
 		if ([item objectForKey:@"local"])
@@ -380,6 +383,12 @@
 		[change setValue:[team valueForKey:@"server"] forKey:@"server"];
 		
 		[change setValue:[NSNumber numberWithBool:NO] forKey:@"stale"];
+		
+		NSArray *parentItems = [allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:[NSString stringWithFormat:@"absPath = \"%@\"", [path stringByDeletingLastPathComponent]]]];
+		if ([parentItems count]) {
+			[change setValue:[parentItems objectAtIndex:0] forKey:@"parent"];
+		}
+		
 	}
 	
 	[changeList release];
@@ -473,7 +482,7 @@
 		[changeList addObject:changeDict];
 	}
 	
-//	NSLog(@"remote %@", changeList);
+	NSLog(@"remote %@", changeList);
 	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];

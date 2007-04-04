@@ -246,4 +246,35 @@
 //	NSLog(@"full task reload");
 }
 
+- (void)setProgressVisible:(NSNumber *)visible
+{
+	if ([visible boolValue]) {
+		[progressWindow setFrameOrigin:NSMakePoint(10, 10)];
+		[progressWindow orderFront:self];
+	}
+	else {
+		[self performSelector:@selector(_closeProgressVisible) withObject:nil afterDelay:0.5];
+	}
+}
+
+- (void)_closeProgressVisible
+{
+	[progressWindow orderOut:self];
+	[progressController removeObjects:[progressController arrangedObjects]];	
+}
+
+- (void)addProgressPath:(NSString *)path withAction:(NSString *)action
+{
+	NSString *prefix = nil;
+	if ([[serverController selectedObjects] count]) {
+		id server = [[serverController selectedObjects] objectAtIndex:0];
+		prefix = [server valueForKey:@"localPath"];
+	}
+	if (prefix && [path hasPrefix:prefix])
+		path = [path substringFromIndex:[prefix length]];
+	
+	[progressController performSelectorOnMainThread:@selector(addObject:) withObject:[NSDictionary dictionaryWithObjectsAndKeys:path, @"path", action, @"action", nil] waitUntilDone:YES];
+//	[progressController addObject:[NSDictionary dictionaryWithObjectsAndKeys:path, @"path", action, @"action", nil]];
+}
+
 @end

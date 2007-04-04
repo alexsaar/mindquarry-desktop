@@ -31,6 +31,9 @@
 	IBOutlet id commitMessageWindow;
 	IBOutlet id commitMessageField;
 	
+	IBOutlet id progressController;
+	IBOutlet id progressWindow;
+	
 	NSString *cachedMessage;
 	
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
@@ -48,5 +51,9 @@
 - (IBAction)commit:(id)sender;
 
 - (void)reloadTasks;
+
+- (void)setProgressVisible:(NSNumber *)visible;
+- (void)_closeProgressVisible;
+- (void)addProgressPath:(NSString *)path withAction:(NSString *)action;
 
 @end
