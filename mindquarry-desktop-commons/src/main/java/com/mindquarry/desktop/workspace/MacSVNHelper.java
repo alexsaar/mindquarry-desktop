@@ -27,9 +27,7 @@ public class MacSVNHelper extends SVNHelper {
         super(repositoryURL, localPath, username, password);
     }
 
-    public void onNotify(NotifyInformation info) {
-//        System.out.println("mac notify: " + info.getPath());
-    }
+    public native void onNotify(NotifyInformation info);
 
     protected int resolveConflict(Status status) {
         return CONFLICT_OVERRIDE_FROM_WC;

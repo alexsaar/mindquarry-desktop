@@ -20,6 +20,7 @@ import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Info;
 import org.tigris.subversion.javahl.LogMessage;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;
@@ -104,6 +105,22 @@ public abstract class SVNHelper implements Notify2 {
         }
     }
 
+    public void prepareFiles() {
+        try {
+            Status[] stati = client.status(localPath, true, false, true);
+            for (Status stat : stati) {
+/*                if (stat.getTextStatus() == StatusKind.unversioned) {
+                    client.add(stat.getPath(), true);
+                }
+                else */
+                if (stat.getTextStatus() == StatusKind.missing) {
+                    client.remove(new String[] { stat.getPath() }, null, true);
+                }
+            }
+        }   
+        catch (ClientException e) { }
+    }
+
     /**
      * Performs a new checkout from repositoryURL
      */
@@ -119,6 +136,8 @@ public abstract class SVNHelper implements Notify2 {
      * to the repository.
      */
     public Status[] getLocalChanges() throws ClientException {
+        prepareFiles();
+        
         try {
             Status[] stati = client.status(localPath, true, false, true);
 
@@ -133,6 +152,11 @@ public abstract class SVNHelper implements Notify2 {
             // collect changes
             ArrayList<Status> changes = new ArrayList<Status>();
             for (Status stat : stati) {
+
+/*                // skip directories
+                if (stat.getNodeKind() == NodeKind.dir) {
+                    continue;
+                }*/
 
                 // skip ignored files
                 if (stat.getTextStatus() == StatusKind.ignored
@@ -224,9 +248,14 @@ public abstract class SVNHelper implements Notify2 {
                 try {
                     String itemLocalPath = localPath + "/" + path;
                     Info itemInfo = client.info(itemLocalPath);
+/*                    // skip directories
+                    if (itemInfo.getNodeKind() != NodeKind.file) {
+                        continue;
+                    }*/
                     if (itemInfo != null) {
                         itemRev = itemInfo.getLastChangedRevision();
                     }
+                    
                 } catch (ClientException e) {
                 }
 
