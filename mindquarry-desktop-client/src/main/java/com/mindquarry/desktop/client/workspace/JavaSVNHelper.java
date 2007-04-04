@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.client.workspace;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -32,6 +34,9 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  *         Saar</a>
  */
 public class JavaSVNHelper extends SVNHelper {
+    
+    private Log log = LogFactory.getLog(this.getClass());
+    
     private String commitMessage = ""; //$NON-NLS-1$
 
     private String commitInfo;
