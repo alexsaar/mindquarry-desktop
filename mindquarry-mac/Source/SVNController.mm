@@ -334,8 +334,10 @@
 	id team = [arg objectForKey:@"team"];
 	
 	id changesController = [[NSApp delegate] valueForKey:@"changesController"];
-	id changeList = [arg objectForKey:@"changes"];
-	
+	NSArray *sortDesc = [NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"absPath" ascending:YES] autorelease]];
+	id changeList = [[arg objectForKey:@"changes"] autorelease];
+	changeList = [[changeList sortedArrayUsingDescriptors:sortDesc] retain];
+		
 	int count = [changeList count];
 	int i;
 	for (i = 0; i < count; i++) {
@@ -388,7 +390,6 @@
 		if ([parentItems count]) {
 			[change setValue:[parentItems objectAtIndex:0] forKey:@"parent"];
 		}
-		
 	}
 	
 	[changeList release];
