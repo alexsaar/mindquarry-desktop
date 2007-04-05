@@ -277,8 +277,10 @@ public abstract class SVNHelper implements Notify2 {
      * Commits all specified files to the repository. Will call
      * resolveConflict() for each conflicted file and getCommitMessage() once to
      * get the commit message before commiting.
+     *
+     * @return true if commit succeeded, false if getCommitMessage() returned null
      */
-    public void commit(String[] paths) throws Exception {
+    public boolean commit(String[] paths) throws Exception {
         for (String path : paths) {
             Status status = client.singleStatus(path, false);
             String basePath = new File(path).getParentFile().getAbsolutePath();
@@ -307,9 +309,11 @@ public abstract class SVNHelper implements Notify2 {
         String message = getCommitMessage();
 
         // if getCommitMessage returns null, we don't commit
-        if (message != null) {
-            client.commit(paths, message, true);
+        if (message == null) {
+            return false;
         }
+        client.commit(paths, message, true);
+        return true;
     }
 
     /**

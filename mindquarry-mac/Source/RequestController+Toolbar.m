@@ -84,8 +84,8 @@
 	}
 	else if ([itemIdentifier isEqualToString:@"MQRefresh"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQRefresh"];
-		[item setLabel:@"Refresh"];
-		[item setPaletteLabel:@"Refresh"];
+		[item setLabel:@"Refresh View"];
+		[item setPaletteLabel:@"Refresh View"];
 		[item setImage:[NSImage imageNamed:@"refresh"]];
 		[item setTarget:self];
 		[item setAction:@selector(refresh:)];
@@ -187,8 +187,8 @@
 		[items addObject:@"MQDone"];
 	}
 	else if ([[_toolbar identifier] isEqualToString:FILES_TOOLBAR_ID]) {
-		[items addObject:@"MQDown"];
-		[items addObject:@"MQUp"];
+//		[items addObject:@"MQDown"];
+//		[items addObject:@"MQUp"];
 		[items addObject:@"MQCommit"];
 	}
 	

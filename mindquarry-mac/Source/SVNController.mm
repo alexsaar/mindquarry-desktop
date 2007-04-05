@@ -320,7 +320,7 @@
 		[changeList addObject:change];
 	}
 	
-	NSLog(@"local %@", changeList);
+//	NSLog(@"local %@", changeList);
 	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
@@ -482,7 +482,7 @@
 		[changeList addObject:changeDict];
 	}
 	
-	NSLog(@"remote %@", changeList);
+//	NSLog(@"remote %@", changeList);
 	
 	id arg = [[NSDictionary alloc] initWithObjectsAndKeys:team, @"team", changeList, @"changes", nil];
 	[self performSelectorOnMainThread:@selector(_mainThreadChangeInsert:) withObject:arg waitUntilDone:YES];
@@ -498,7 +498,7 @@
 	
 	static jmethodID commitMethod = nil;
 	if (!commitMethod) {
-		commitMethod = env->GetMethodID(helperClass, "commit", "([Ljava/lang/String;)V");
+		commitMethod = env->GetMethodID(helperClass, "commit", "([Ljava/lang/String;)Z");
 		CHECK_EXCEPTION;
 		if (!commitMethod) {
 			NSLog(@"Warning: could not get commit method ID");
@@ -537,7 +537,7 @@
 	
 //	jstring jcommit = nsstring_to_jstring(env, message);
 	
-	env->CallVoidMethod(helperRef, commitMethod, args);
+	jboolean ok = env->CallBooleanMethod(helperRef, commitMethod, args);
 	
 	if (env->ExceptionCheck() == JNI_TRUE) {
 		env->ExceptionDescribe();
@@ -545,7 +545,7 @@
 		return NO;
 	}
 	
-	return YES;
+	return (BOOL) ok;
 }
 
 - (void)setLocalPath:(NSString *)path

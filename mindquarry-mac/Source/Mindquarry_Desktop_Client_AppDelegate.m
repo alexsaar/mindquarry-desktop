@@ -218,6 +218,7 @@
 	
 	[commitMessageField setString:@"<message>"];
 	[commitMessageField setSelectedRange:NSMakeRange(0, [[commitMessageField string] length])];
+	[NSApp beginSheet:commitMessageWindow modalForWindow:window modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	if ([NSApp runModalForWindow:commitMessageWindow] == NSRunAbortedResponse) 
 		message = nil;
 	else 
@@ -235,6 +236,7 @@
 		[NSApp stopModal];
 	}
 	[commitMessageWindow orderOut:self];
+	[NSApp endSheet:commitMessageWindow];
 }
 
 - (void)reloadTasks
@@ -249,8 +251,10 @@
 - (void)setProgressVisible:(NSNumber *)visible
 {
 	if ([visible boolValue]) {
-		[progressWindow setFrameOrigin:NSMakePoint(10, 10)];
-		[progressWindow orderFront:self];
+		if ([[NSUserDefaults standardUserDefaults] boolForKey:@"showProgressPanel"]) {
+			[progressWindow setFrameOrigin:NSMakePoint(10, 10)];
+			[progressWindow orderFront:self];	
+		}			
 	}
 	else {
 		[self performSelector:@selector(_closeProgressVisible) withObject:nil afterDelay:0.5];
@@ -265,6 +269,9 @@
 
 - (void)addProgressPath:(NSString *)path withAction:(NSString *)action
 {
+	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"showProgressPanel"])
+		return;
+	
 	NSString *prefix = nil;
 	if ([[serverController selectedObjects] count]) {
 		id server = [[serverController selectedObjects] objectAtIndex:0];

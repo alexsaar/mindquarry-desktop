@@ -82,7 +82,7 @@ JNIEXPORT void JNICALL Java_com_mindquarry_desktop_workspace_MacSVNHelper_onNoti
 		}
 		
 		if (actionInfo) {
-			NSLog(@"mac notify: %@ - %@", file, actionInfo);
+//			NSLog(@"mac notify: %@ - %@", file, actionInfo);
 			[[NSApp delegate] addProgressPath:file withAction:actionInfo];			
 		}
 	}

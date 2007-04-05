@@ -44,7 +44,7 @@
 		[currentTeam initJVM];
 		[[currentTeam svnController] attachCurrentThread];
 		
-		NSLog(@"svn job %@ %@", synchronizes ? @"sync" : @"", [currentTeam valueForKey:@"name"]);
+//		NSLog(@"svn job %@ %@", synchronizes ? @"sync" : @"", [currentTeam valueForKey:@"name"]);
 		
 		NSMutableArray *deleteObjects = [NSMutableArray array];
 		if (synchronizes) {		
@@ -66,7 +66,7 @@
 			while (!cancel && (change = [chEnum nextObject])) {
 				[commitPaths addObject:[change valueForKey:@"absPath"]];
 			}
-			NSLog(@"up %@", commitPaths);
+//			NSLog(@"up %@", commitPaths);
 			if ([commitPaths count] > 0) {
 				[[currentTeam svnController] addSelectedItems:commitPaths];
 			}
@@ -81,7 +81,7 @@
 			while (!cancel && (change = [chEnum nextObject])) {
 				[updatePaths addObject:[change valueForKey:@"absPath"]];
 			}
-			NSLog(@"down   %@", updatePaths);
+//			NSLog(@"down   %@", updatePaths);
 			BOOL ok = NO;
 			if ([allItems count] == 0 || [allUpdateItems count] == [updatePaths count]) {
 				ok = [[currentTeam svnController] updateReturnError:nil];

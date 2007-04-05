@@ -30,6 +30,7 @@
 		[NSNumber numberWithInt:0], @"filesSortBy", 
 		[NSNumber numberWithBool:YES], @"dblClickTask", 
 		[NSNumber numberWithBool:YES], @"dblClickFile", 
+		[NSNumber numberWithBool:YES], @"showProgressPanel", 
 		
 		nil]];
 	[NSValueTransformer setValueTransformer:[[[StatusTransformer alloc] init] autorelease] forName:@"StatusTransformer"];
