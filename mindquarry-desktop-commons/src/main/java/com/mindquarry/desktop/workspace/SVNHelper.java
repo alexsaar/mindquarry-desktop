@@ -78,6 +78,7 @@ public abstract class SVNHelper implements Notify2 {
     public void update() throws ClientException {
         // check whether localPath is a working copy or not
         try {
+            cleanup();
             client.status(localPath, false, false, true);
         } catch (ClientException e) {
             // no working copy, checkout
@@ -88,6 +89,7 @@ public abstract class SVNHelper implements Notify2 {
     }
     
     public void updateSelectedFiles(String[] files) {
+        cleanup();
         for (String file : files) {
             try {
                 client.update(file, Revision.HEAD, true);
@@ -97,6 +99,7 @@ public abstract class SVNHelper implements Notify2 {
     }
     
     public void addSelectedFiles(String[] files) {
+        cleanup();
         for (String file : files) {
             try {
                 client.add(file, true, true);
@@ -136,6 +139,7 @@ public abstract class SVNHelper implements Notify2 {
      * to the repository.
      */
     public Status[] getLocalChanges() throws ClientException {
+        cleanup();
         prepareFiles();
         
         try {
@@ -281,6 +285,7 @@ public abstract class SVNHelper implements Notify2 {
      * @return true if commit succeeded, false if getCommitMessage() returned null
      */
     public boolean commit(String[] paths) throws Exception {
+        cleanup();
         for (String path : paths) {
             Status status = client.singleStatus(path, false);
             String basePath = new File(path).getParentFile().getAbsolutePath();
@@ -321,6 +326,13 @@ public abstract class SVNHelper implements Notify2 {
      */
     protected void cancelOperation() throws ClientException {
         client.cancelOperation();
+    }
+    
+    protected void cleanup() {
+        try {
+            client.cleanup(localPath);
+        }
+        catch (ClientException e) { }
     }
     
     public String getWorkingCopyRelativePath() throws ClientException {
