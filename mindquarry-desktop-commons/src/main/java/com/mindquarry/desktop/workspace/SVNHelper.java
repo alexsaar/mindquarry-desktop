@@ -336,8 +336,15 @@ public abstract class SVNHelper implements Notify2 {
     }
     
     public String getWorkingCopyRelativePath() throws ClientException {
-        Info info = client.info(localPath);
-        return info.getUrl().substring(info.getRepository().length());
+        String relPath = null;
+        try {
+            Info info = client.info(localPath);
+            relPath = info.getUrl().substring(info.getRepository().length());
+        }
+        catch (ClientException e) {
+            relPath = "/";
+        }
+        return relPath;
     }
     
     /**

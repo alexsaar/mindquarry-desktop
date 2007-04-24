@@ -311,8 +311,9 @@
 		
 		NSMutableDictionary *change = [NSMutableDictionary dictionary];
 		
+        NSString *relPath = [path substringFromIndex:MIN([localPath length] + 1, [path length])];
 		[change setObject:path forKey:@"absPath"];
-		[change setObject:[path substringFromIndex:[localPath length] + 1] forKey:@"relPath"];
+		[change setObject:relPath forKey:@"relPath"];
 		[change setObject:[NSNumber numberWithBool:statusCode != SVN_STATUS_CONFLICTED] forKey:@"enabled"];
 		[change setObject:[NSNumber numberWithInt:statusCode] forKey:@"status"];
 		[change setObject:[NSNumber numberWithBool:YES] forKey:@"local"];
