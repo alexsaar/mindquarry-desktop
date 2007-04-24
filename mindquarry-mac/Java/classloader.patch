@@ -1,0 +1,35 @@
+Index: svnkit/src/org/tmatesoft/svn/util/Version.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/util/Version.java	(revision 2884)
++++ svnkit/src/org/tmatesoft/svn/util/Version.java	(working copy)
+@@ -80,8 +80,11 @@
+         if (ourProperties != null) {
+             return;
+         }
+-        InputStream is = Version.class.getClassLoader().getResourceAsStream(
+-                PROPERTIES_PATH);
++        ClassLoader cl = Version.class.getClassLoader();
++        InputStream is = null;
++        if (cl != null) {
++            is = cl.getResourceAsStream(PROPERTIES_PATH);
++        }
+         ourProperties = new Properties();
+         if (is == null) {
+             return;
+Index: svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java
+===================================================================
+--- svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(revision 2884)
++++ svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(working copy)
+@@ -84,7 +84,11 @@
+         String prefix = "svnkit.program.";
+ 
+         Properties props = new Properties();
+-        InputStream is = SVNFileUtil.class.getClassLoader().getResourceAsStream("svnkit.runtime.properties");
++        ClassLoader cl = SVNFileUtil.class.getClassLoader();
++        InputStream is = null;
++        if (cl != null) {
++            is = cl.getResourceAsStream("svnkit.runtime.properties");
++        }
+         if (is != null) {
+             try {
+                 props.load(is);
