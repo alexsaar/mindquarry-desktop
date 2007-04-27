@@ -10,135 +10,6 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/cli/SV
              SVNDebugLog.getDefaultLog().info(th);
              System.exit(-1);
          }   
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java	(working copy)
-@@ -58,6 +58,7 @@
- import org.tmatesoft.svn.core.internal.io.svn.SVNGanymedSession;
- import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
- import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
- import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
-@@ -1251,13 +1252,13 @@
-     }
- 
-     public String getAdminDirectoryName() {
--        return SVNFileUtil.getAdminDirectoryName();
-+        return SVNAdminDirectoryLocator.getAdminDirectoryName();
-     }
- 
-     public boolean isAdminDirectory(String name) {
-         return name != null && (SVNFileUtil.isWindows) ?
--                name.equalsIgnoreCase(SVNFileUtil.getAdminDirectoryName()) :
--                name.equals(SVNFileUtil.getAdminDirectoryName());
-+                name.equalsIgnoreCase(SVNAdminDirectoryLocator.getAdminDirectoryName()) :
-+                name.equals(SVNAdminDirectoryLocator.getAdminDirectoryName());
-     }
- 
-     public org.tigris.subversion.javahl.Version getVersion() {        
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java	(working copy)
-@@ -33,6 +33,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
- import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
-@@ -187,7 +188,7 @@
-         if (endRev < startRev) {
-             SVNErrorManager.error(SVNErrorMessage.create(SVNErrorCode.CLIENT_BAD_REVISION, "Start revision must precede end revision"));
-         }
--        File tmpFile = new File(path.getParentFile(), SVNFileUtil.getAdminDirectoryName());
-+        File tmpFile = SVNAdminDirectoryLocator.getAdminDirectory(path.getParentFile(), false);
-         tmpFile = new File(tmpFile, "tmp/text-base");
-         if (!tmpFile.isDirectory()) {
-             tmpFile = SVNFileUtil.createTempDirectory("annotate");
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java	(working copy)
-@@ -18,7 +18,7 @@
- import org.tmatesoft.svn.core.SVNLock;
- import org.tmatesoft.svn.core.SVNNodeKind;
- import org.tmatesoft.svn.core.SVNURL;
--import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
- 
- /**
-@@ -534,10 +534,10 @@
-         if (myLocalPropertiesDate == null) {
-             File propFile = null;
-             if (getFile() != null && getKind() == SVNNodeKind.DIR) {
--                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
-+                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
-                 propFile = new File(propFile, "dir-props");
-             } else if (getFile() != null && getKind() == SVNNodeKind.FILE) {
--                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
-+                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
-                 propFile = new File(propFile, "props/" + getFile().getName() + ".svn-work");
-             }
-             myLocalContentsDate = propFile != null ? new Date(propFile.lastModified()) : new Date(0);
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java	(working copy)
-@@ -35,6 +35,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
- import org.tmatesoft.svn.core.internal.wc.ISVNCommitPathHandler;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNCommitMediator;
- import org.tmatesoft.svn.core.internal.wc.SVNCommitUtil;
- import org.tmatesoft.svn.core.internal.wc.SVNCommitter;
-@@ -455,8 +456,8 @@
-             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.ENTRY_EXISTS, "Path ''{0}'' already exists", dstURL);            
-             SVNErrorManager.error(err);
-         }
--        if (newPaths.contains(SVNFileUtil.getAdminDirectoryName())) {
--            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNFileUtil.getAdminDirectoryName());            
-+        if (newPaths.contains(SVNAdminDirectoryLocator.getAdminDirectoryName())) {
-+            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNAdminDirectoryLocator.getAdminDirectoryName());            
-             SVNErrorManager.error(err);
-         }
-         SVNCommitItem[] items = new SVNCommitItem[1];
-@@ -982,7 +983,7 @@
-         boolean changed = false;
-         for (int i = 0; children != null && i < children.length; i++) {
-             File file = children[i];
--            if (SVNFileUtil.getAdminDirectoryName().equals(file.getName())) {
-+            if (SVNAdminDirectoryLocator.isAdminResource(file)) {
-                 SVNEvent skippedEvent = SVNEventFactory.createSkipEvent(
-                         rootFile, file, SVNEventAction.SKIP, SVNEventAction.COMMIT_ADDED, SVNNodeKind.NONE);
-                 handleEvent(skippedEvent, ISVNEventHandler.UNKNOWN);
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java	(working copy)
-@@ -38,6 +38,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
- import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
- import org.tmatesoft.svn.core.internal.wc.SVNCancellableOutputStream;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
-@@ -1032,7 +1033,7 @@
-         File[] children = dir.getRoot().listFiles();
-         for(int i = 0; children != null && i < children.length; i++) {
-             checkCancelled();
--            if (SVNFileUtil.getAdminDirectoryName().equals(children[i].getName())) {
-+            if (SVNAdminDirectoryLocator.isAdminResource(children[i])) {
-                 continue;
-             }
-             if (!noIgnore && SVNStatusEditor.isIgnored(ignores, children[i].getName())) {
 Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/io/dav/handlers/DAVEditorHandler.java
 ===================================================================
 --- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/io/dav/handlers/DAVEditorHandler.java	(revision 2884)
@@ -157,171 +28,231 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
          if (element == UPDATE_REPORT) {
              String receiveAll = attrs.getValue(SEND_ALL_ATTR);
              if (receiveAll == null || !Boolean.valueOf(receiveAll).booleanValue()) {
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(working copy)
-@@ -23,9 +23,9 @@
- import java.io.InputStream;
- import java.io.InputStreamReader;
- import java.io.OutputStream;
-+import java.io.RandomAccessFile;
- import java.io.Reader;
- import java.io.Writer;
--import java.io.RandomAccessFile;
- import java.lang.reflect.Method;
- import java.nio.channels.FileChannel;
- import java.security.MessageDigest;
-@@ -70,7 +70,6 @@
-     private static String ourGroupID;
-     private static String ourUserID;
-     private static File ourAppDataPath;
--    private static String ourAdminDirectoryName;
-     private static final String BINARY_MIME_TYPE = "application/octet-stream";
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java	(working copy)
+@@ -37,6 +37,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
+ import org.tmatesoft.svn.core.internal.wc.DefaultSVNMerger;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+@@ -56,7 +57,7 @@
  
-     static {
-@@ -109,8 +108,7 @@
-         File base = file.getParentFile();
-         while (base != null) {
-             if (base.isDirectory()) {
--                File adminDir = new File(base, getAdminDirectoryName());
--                if (adminDir.exists() && adminDir.isDirectory()) {
-+                if (SVNAdminDirectoryLocator.hasEmbeddedAdminDirectory(base)) {
-                     break;
-                 }
-             }
-@@ -811,7 +809,7 @@
-             if (cancel != null) {
-                 cancel.checkCancelled();
-             }
--            if (!copyAdminDir && file.getName().equals(getAdminDirectoryName())) {
-+            if (!copyAdminDir && SVNAdminDirectoryLocator.isAdminResource(file)) {
-                 continue;
-             }
-             SVNFileType fileType = SVNFileType.getType(file);
-@@ -825,7 +823,7 @@
-                 }
-             } else if (fileType == SVNFileType.DIRECTORY) {
-                 copyDirectory(file, dst, copyAdminDir, cancel);
--                if (file.isHidden() || getAdminDirectoryName().equals(file.getName())) {
-+                if (file.isHidden() || SVNAdminDirectoryLocator.isAdminResource(file)) {
-                     setHidden(dst, true);
-                 }
-             } else if (fileType == SVNFileType.SYMLINK) {
-@@ -1075,24 +1073,6 @@
+     private File myDirectory;
+     private SVNWCAccess myWCAccess;
+-    private File myAdminRoot;
++    //private File myAdminRoot;
+     protected Map myBaseProperties;
+     protected Map myProperties;
+     protected Map myWCProperties;
+@@ -1059,7 +1060,7 @@
+     }
+ 
+     public File getAdminDirectory() {
+-        return myAdminRoot;
++        return SVNAdminDirectoryLocator.getAdminDirectory(myDirectory, false);
+     }
+ 
+     public File getAdminFile(String name) {
+@@ -1070,6 +1071,13 @@
+         if (name == null) {
+             return null;
          }
++        // some calls request the files inside the admin directory
++        // which might reside in a different location
++        final String adminDirName = SVNAdminDirectoryLocator.getAdminDirectoryName();
++        if (name.startsWith(adminDirName)) {
++            return getAdminFile(name.substring(adminDirName.length()));
++        }
++        
+         return new File(getRoot(), name);
      }
-     
--    public static String getAdminDirectoryName() {
--        if (ourAdminDirectoryName == null) {
--            String defaultAdminDir = ".svn";
--            if (getEnvironmentVariable("SVN_ASP_DOT_NET_HACK") != null){
--                defaultAdminDir = "_svn";
--            }
--            ourAdminDirectoryName = System.getProperty("svnkit.admindir", System.getProperty("javasvn.admindir", defaultAdminDir));
--            if (ourAdminDirectoryName == null || "".equals(ourAdminDirectoryName.trim())) {
--                ourAdminDirectoryName = defaultAdminDir;
--            }
--        }
--        return ourAdminDirectoryName;
--    }
--    
--    public static void setAdminDirectoryName(String name) {
--        ourAdminDirectoryName = name;
--    }
--    
-     public static File getApplicationDataPath() {
-         if (ourAppDataPath != null) {
-             return ourAppDataPath;
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java
+ 
+@@ -1108,7 +1116,7 @@
+ 
+     protected SVNAdminArea(File dir){
+         myDirectory = dir;
+-        myAdminRoot = new File(dir, SVNFileUtil.getAdminDirectoryName());
++        //myAdminRoot = SVNFileUtil.getAdminDir(dir);
+     }
+ 
+     protected File getBasePropertiesFile(String name, boolean tmp) {
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(working copy)
-@@ -75,7 +75,7 @@
-         if (file == null) {
-             return SVNFileType.UNKNOWN;
-         }
--        if (detectSymlinks && !SVNFileUtil.isWindows && !isAdminFile(file)) {
-+        if (detectSymlinks && !SVNFileUtil.isWindows && !SVNAdminDirectoryLocator.isAdminFile(file)) {
-             if (canonPathCacheUsed && !fastSymlinkResoution && SVNFileUtil.isSymlink(file)) {
-                 return SVNFileType.SYMLINK;
-             } else if (!canonPathCacheUsed || fastSymlinkResoution) {            
-@@ -127,12 +127,6 @@
-         return false;
-     }
-     
--    private static boolean isAdminFile(File file) {
--        String path = file.getAbsolutePath().replace(File.separatorChar, '/');
--        String adminDir = "/" + SVNFileUtil.getAdminDirectoryName();
--        return path.lastIndexOf(adminDir + "/") > 0 || path.endsWith(adminDir);
--    }
--
-     public int getID() {
-         return myType;
-     }
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java	(working copy)
+@@ -39,6 +39,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+@@ -1348,8 +1349,9 @@
+     public SVNAdminArea createVersionedDirectory(File dir, String url, String rootURL, String uuid, long revNumber, boolean createMyself) throws SVNException {
+         dir = createMyself ? getRoot() : dir;
+         dir.mkdirs();
+-        File adminDir = createMyself ? getAdminDirectory() : new File(dir, SVNFileUtil.getAdminDirectoryName());
+-        adminDir.mkdir();
++        
++        File adminDir = createMyself ? getAdminDirectory() : SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
++        
+         SVNFileUtil.setHidden(adminDir, true);
+         // lock dir.
+         File lockFile = createMyself ? myLockFile : new File(adminDir, "lock");
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java	(working copy)
-@@ -86,7 +86,7 @@
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java	(working copy)
+@@ -19,6 +19,7 @@
+ import org.tmatesoft.svn.core.SVNErrorCode;
+ import org.tmatesoft.svn.core.SVNErrorMessage;
+ import org.tmatesoft.svn.core.SVNException;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+@@ -57,7 +58,7 @@
+     }
+ 
+     protected int doCheckWC(File path) throws SVNException {
+-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
++        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+         File entriesFile = new File(adminDir, "entries");
+         int formatVersion = -1;
+ 
+@@ -99,7 +100,7 @@
+     }
      
-     public static String getTextBasePath(String name, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
-@@ -101,7 +101,7 @@
+     protected int getVersion(File path) throws SVNException {
+-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
++        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+         File entriesFile = new File(adminDir, "entries");
+         int formatVersion = -1;
  
-     public static String getTextRevertPath(String name, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
-@@ -116,7 +116,7 @@
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java	(working copy)
+@@ -20,8 +20,8 @@
+ import org.tmatesoft.svn.core.SVNErrorMessage;
+ import org.tmatesoft.svn.core.SVNException;
+ import org.tmatesoft.svn.core.SVNURL;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
  
-     public static String getPropPath(String name, SVNNodeKind kind, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
-@@ -135,7 +135,7 @@
  
-     public static String getPropBasePath(String name, SVNNodeKind kind, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
-@@ -154,7 +154,7 @@
-     
-     public static String getPropRevertPath(String name, SVNNodeKind kind, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
-@@ -173,7 +173,7 @@
+ /**
+@@ -189,8 +189,8 @@
+     }
+         
+     private static boolean checkAdminAreaExists(File dir, String url, long revision) throws SVNException {
+-        File adminDir = new File(dir, SVNFileUtil.getAdminDirectoryName());
+-        if (adminDir.exists() && !adminDir.isDirectory()) {
++        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
++        if (adminDir == null || (adminDir.exists() && !adminDir.isDirectory())) {
+             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_OBSTRUCTED_UPDATE, "''{0}'' is not a directory", dir);
+             SVNErrorManager.error(err);
+         } else if (!adminDir.exists()) {
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java	(working copy)
+@@ -29,10 +29,10 @@
+ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNExternalInfo;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+ import org.tmatesoft.svn.core.wc.ISVNEventHandler;
+ import org.tmatesoft.svn.core.wc.ISVNOptions;
+ import org.tmatesoft.svn.core.wc.SVNEvent;
+@@ -391,7 +391,7 @@
+     }
  
-     public static String getWCPropPath(String name, SVNNodeKind kind, boolean tmp) {
-         StringBuffer buffer = new StringBuffer();
--        buffer.append(SVNFileUtil.getAdminDirectoryName());
-+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
-         buffer.append('/');
-         if (tmp) {
-             buffer.append(TMP_DIR_NAME);
+     public boolean isLocked(File path) throws SVNException {
+-        File lockFile = new File(path, SVNFileUtil.getAdminDirectoryName());
++        File lockFile = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+         lockFile = new File(lockFile, "lock");
+         if (SVNFileType.getType(lockFile) == SVNFileType.FILE) {
+             return true;
+@@ -506,7 +506,7 @@
+                     SVNErrorManager.error(err);
+                 }
+             }
+-            File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
++            File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+             SVNFileType wcType = SVNFileType.getType(adminDir);
+             
+             if (type == SVNFileType.NONE) {
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java	(working copy)
+@@ -37,6 +37,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+@@ -693,8 +694,9 @@
+     public SVNAdminArea createVersionedDirectory(File dir, String url, String rootURL, String uuid, long revNumber, boolean createMyself) throws SVNException {
+         dir = createMyself ? getRoot() : dir;
+         dir.mkdirs();
+-        File adminDir = createMyself ? getAdminDirectory() : new File(dir, SVNFileUtil.getAdminDirectoryName());
+-        adminDir.mkdir();
++        
++        File adminDir = createMyself ? getAdminDirectory() : SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
++        
+         SVNFileUtil.setHidden(adminDir, true);
+         // lock dir.
+         File lockFile = createMyself ? myLockFile : new File(adminDir, "lock");
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java	(working copy)
+@@ -19,6 +19,7 @@
+ import org.tmatesoft.svn.core.SVNErrorCode;
+ import org.tmatesoft.svn.core.SVNErrorMessage;
+ import org.tmatesoft.svn.core.SVNException;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+@@ -52,7 +53,7 @@
+     }
+ 
+     protected int doCheckWC(File path) throws SVNException {
+-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
++        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+         File formatFile = new File(adminDir, "format");
+         int formatVersion = -1;
+ 
+@@ -93,7 +94,7 @@
+     }
+ 
+     protected int getVersion(File path) throws SVNException {
+-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
++        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
+         File formatFile = new File(adminDir, "format");
+         BufferedReader reader = null;
+         String line = null;
 Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminDirectoryLocator.java
 ===================================================================
 --- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminDirectoryLocator.java	(revision 0)
 +++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminDirectoryLocator.java	(revision 0)
-@@ -0,0 +1,367 @@
+@@ -0,0 +1,441 @@
 +/*
 + * ====================================================================
 + * Copyright (c) 2004-2007 TMate Software Ltd.  All rights reserved.
@@ -406,7 +337,7 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
 +    /**
 +     * Checks if the base paths contains an .svn directory
 +     */
-+    public static boolean hasEmbeddedAdminDirectory(File base) {
++    private static boolean hasEmbeddedAdminDirectory(File base) {
 +        File adminDir = new File(base, SVNAdminDirectoryLocator.getAdminDirectoryName());
 +        return (adminDir.exists() && adminDir.isDirectory());
 +    }
@@ -445,6 +376,9 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
 +     */
 +    public static File getAdminDirectory(File dir, boolean create) {
 +        // we need absolute path handling since we might go up to the filesystem root
++        if (dir == null) {
++            dir = new File("");
++        }
 +        dir = dir.getAbsoluteFile();
 +        
 +        // some requests directly target the .svn sub directory
@@ -468,7 +402,7 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
 +                    getShallowWorkingCopyBaseDir() + "/" +
 +                    wcRoot.shallowWorkingCopyDir + "/" +
 +                    wcRoot.wcRelativePath + "/" +
-+                    SVNAdminDirectoryLocator.getAdminDirectoryName()
++                    getAdminDirectoryName()
 +                );
 +        } else {
 +            if (!create) {
@@ -486,6 +420,77 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
 +        return shallowAdminSubDir;
 +    }
 +
++    /**
++     * Returns for a normal file in the working copy the path relative to the
++     * folder in which there is a corresponding wc admin directory available.
++     * This is typically just the parent folder in the case of a file (not dir).
++     * For example:
++     *     file         = "/checkouts/foobar/folder/myfile.txt"
++     *     wc admin dir = "/checkouts/foobar/folder/.svn"
++     *     result       =                          "myfile.txt"
++     *     
++     *     (Note that wc admin dir might be a shallow working copy.)
++     */
++    public static String getRelativePathToClosestVersionedDir(File file) {
++        // the admin dir indicating versioning will be located in or at the
++        // same level as the file's parent
++        File base = file.getParentFile();
++        
++        // first try to find the "closest versioned dir" by looking for
++        // a corresponding shallow working copy dir
++        SVNAdminDirectoryLocator.WCRootInfo wcRoot = findWCRoot(base);
++        if (wcRoot.found) {
++            final File shallowAdminBaseDir = new File(
++                    getShallowWorkingCopyBaseDir() + "/" +
++                    wcRoot.shallowWorkingCopyDir
++                );
++            
++            File fullAdminSubDir = new File(
++                    shallowAdminBaseDir,
++                    wcRoot.wcRelativePath
++                );
++            // record the relative path as we go up
++            String relativePath = "";
++            
++            // stop when we are at the root of the working copy
++            while (!fullAdminSubDir.equals(shallowAdminBaseDir)) {
++                // if the directory exists in the shallow working copy
++                // (including an admin directory), we have reached the
++                // "closest versioned dir" and calculate the relative path to it
++                if (fullAdminSubDir.exists() && fullAdminSubDir.isDirectory()
++                        && new File(fullAdminSubDir, getAdminDirectoryName()).exists()) {
++                    
++                    return relativePath + file.getName();
++                }
++                // go upwards
++                relativePath = fullAdminSubDir.getName() + "/" + relativePath;
++                fullAdminSubDir = fullAdminSubDir.getParentFile();
++            }
++            
++            // ok, there seems to be only a trunk present
++            return wcRoot.wcRelativePath;
++        }
++        
++        // look out for old style .svn dirs
++        while (base != null) {
++            if (base.isDirectory()) {
++                if (SVNAdminDirectoryLocator.hasEmbeddedAdminDirectory(base)) {
++                    break;
++                }
++            }
++            base = base.getParentFile();
++        }
++        String path = file.getAbsolutePath();
++        if (base != null) {
++            path = path.substring(base.getAbsolutePath().length());
++        }
++        path = path.replace(File.separatorChar, '/');
++        if (path.startsWith("/")) {
++            path = path.substring(1);
++        }
++        return path;
++    }
++    
 +    /**
 +     * Returns the base directory for the shallow working copy directories
 +     * inside the user's home dir.
@@ -689,6 +694,64 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
 +        return result;
 +    }    
 +}
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNAdminUtil.java	(working copy)
+@@ -86,7 +86,7 @@
+     
+     public static String getTextBasePath(String name, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
+@@ -101,7 +101,7 @@
+ 
+     public static String getTextRevertPath(String name, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
+@@ -116,7 +116,7 @@
+ 
+     public static String getPropPath(String name, SVNNodeKind kind, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
+@@ -135,7 +135,7 @@
+ 
+     public static String getPropBasePath(String name, SVNNodeKind kind, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
+@@ -154,7 +154,7 @@
+     
+     public static String getPropRevertPath(String name, SVNNodeKind kind, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
+@@ -173,7 +173,7 @@
+ 
+     public static String getWCPropPath(String name, SVNNodeKind kind, boolean tmp) {
+         StringBuffer buffer = new StringBuffer();
+-        buffer.append(SVNFileUtil.getAdminDirectoryName());
++        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
+         buffer.append('/');
+         if (tmp) {
+             buffer.append(TMP_DIR_NAME);
 Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNDiffEditor.java
 ===================================================================
 --- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNDiffEditor.java	(revision 2884)
@@ -702,226 +765,138 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
                  continue;
              }
              if (processedFiles != null && processedFiles.contains(file.getName())) {
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminAreaFactory.java	(working copy)
-@@ -20,8 +20,8 @@
- import org.tmatesoft.svn.core.SVNErrorMessage;
- import org.tmatesoft.svn.core.SVNException;
- import org.tmatesoft.svn.core.SVNURL;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
--import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
- 
- 
- /**
-@@ -189,8 +189,8 @@
-     }
-         
-     private static boolean checkAdminAreaExists(File dir, String url, long revision) throws SVNException {
--        File adminDir = new File(dir, SVNFileUtil.getAdminDirectoryName());
--        if (adminDir.exists() && !adminDir.isDirectory()) {
-+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
-+        if (adminDir == null || (adminDir.exists() && !adminDir.isDirectory())) {
-             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_OBSTRUCTED_UPDATE, "''{0}'' is not a directory", dir);
-             SVNErrorManager.error(err);
-         } else if (!adminDir.exists()) {
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14Factory.java	(working copy)
-@@ -19,6 +19,7 @@
- import org.tmatesoft.svn.core.SVNErrorCode;
- import org.tmatesoft.svn.core.SVNErrorMessage;
- import org.tmatesoft.svn.core.SVNException;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
- import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
-@@ -57,7 +58,7 @@
-     }
- 
-     protected int doCheckWC(File path) throws SVNException {
--        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
-+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-         File entriesFile = new File(adminDir, "entries");
-         int formatVersion = -1;
- 
-@@ -99,7 +100,7 @@
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileType.java	(working copy)
+@@ -75,7 +75,7 @@
+         if (file == null) {
+             return SVNFileType.UNKNOWN;
+         }
+-        if (detectSymlinks && !SVNFileUtil.isWindows && !isAdminFile(file)) {
++        if (detectSymlinks && !SVNFileUtil.isWindows && !SVNAdminDirectoryLocator.isAdminFile(file)) {
+             if (canonPathCacheUsed && !fastSymlinkResoution && SVNFileUtil.isSymlink(file)) {
+                 return SVNFileType.SYMLINK;
+             } else if (!canonPathCacheUsed || fastSymlinkResoution) {            
+@@ -127,12 +127,6 @@
+         return false;
      }
      
-     protected int getVersion(File path) throws SVNException {
--        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
-+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-         File entriesFile = new File(adminDir, "entries");
-         int formatVersion = -1;
- 
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java
+-    private static boolean isAdminFile(File file) {
+-        String path = file.getAbsolutePath().replace(File.separatorChar, '/');
+-        String adminDir = "/" + SVNFileUtil.getAdminDirectoryName();
+-        return path.lastIndexOf(adminDir + "/") > 0 || path.endsWith(adminDir);
+-    }
+-
+     public int getID() {
+         return myType;
+     }
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea.java	(working copy)
-@@ -37,6 +37,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
- import org.tmatesoft.svn.core.internal.wc.DefaultSVNMerger;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
-@@ -56,7 +57,7 @@
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNFileUtil.java	(working copy)
+@@ -23,9 +23,9 @@
+ import java.io.InputStream;
+ import java.io.InputStreamReader;
+ import java.io.OutputStream;
++import java.io.RandomAccessFile;
+ import java.io.Reader;
+ import java.io.Writer;
+-import java.io.RandomAccessFile;
+ import java.lang.reflect.Method;
+ import java.nio.channels.FileChannel;
+ import java.security.MessageDigest;
+@@ -70,7 +70,6 @@
+     private static String ourGroupID;
+     private static String ourUserID;
+     private static File ourAppDataPath;
+-    private static String ourAdminDirectoryName;
+     private static final String BINARY_MIME_TYPE = "application/octet-stream";
  
-     private File myDirectory;
-     private SVNWCAccess myWCAccess;
--    private File myAdminRoot;
-+    //private File myAdminRoot;
-     protected Map myBaseProperties;
-     protected Map myProperties;
-     protected Map myWCProperties;
-@@ -1059,7 +1060,7 @@
+     static {
+@@ -106,25 +105,7 @@
      }
  
-     public File getAdminDirectory() {
--        return myAdminRoot;
-+        return SVNAdminDirectoryLocator.getAdminDirectory(myDirectory, false);
+     public static String getBasePath(File file) {
+-        File base = file.getParentFile();
+-        while (base != null) {
+-            if (base.isDirectory()) {
+-                File adminDir = new File(base, getAdminDirectoryName());
+-                if (adminDir.exists() && adminDir.isDirectory()) {
+-                    break;
+-                }
+-            }
+-            base = base.getParentFile();
+-        }
+-        String path = file.getAbsolutePath();
+-        if (base != null) {
+-            path = path.substring(base.getAbsolutePath().length());
+-        }
+-        path = path.replace(File.separatorChar, '/');
+-        if (path.startsWith("/")) {
+-            path = path.substring(1);
+-        }
+-        return path;
++        return SVNAdminDirectoryLocator.getRelativePathToClosestVersionedDir(file);
      }
- 
-     public File getAdminFile(String name) {
-@@ -1070,6 +1071,13 @@
-         if (name == null) {
-             return null;
-         }
-+        // some calls request the files inside the admin directory
-+        // which might reside in a different location
-+        final String adminDirName = SVNAdminDirectoryLocator.getAdminDirectoryName();
-+        if (name.startsWith(adminDirName)) {
-+            return getAdminFile(name.substring(adminDirName.length()));
-+        }
-+        
-         return new File(getRoot(), name);
-     }
- 
-@@ -1108,7 +1116,7 @@
- 
-     protected SVNAdminArea(File dir){
-         myDirectory = dir;
--        myAdminRoot = new File(dir, SVNFileUtil.getAdminDirectoryName());
-+        //myAdminRoot = SVNFileUtil.getAdminDir(dir);
-     }
- 
-     protected File getBasePropertiesFile(String name, boolean tmp) {
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNAdminArea14.java	(working copy)
-@@ -39,6 +39,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
- import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
-@@ -1348,8 +1349,9 @@
-     public SVNAdminArea createVersionedDirectory(File dir, String url, String rootURL, String uuid, long revNumber, boolean createMyself) throws SVNException {
-         dir = createMyself ? getRoot() : dir;
-         dir.mkdirs();
--        File adminDir = createMyself ? getAdminDirectory() : new File(dir, SVNFileUtil.getAdminDirectoryName());
--        adminDir.mkdir();
-+        
-+        File adminDir = createMyself ? getAdminDirectory() : SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
-+        
-         SVNFileUtil.setHidden(adminDir, true);
-         // lock dir.
-         File lockFile = createMyself ? myLockFile : new File(adminDir, "lock");
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminAreaFactory.java	(working copy)
-@@ -19,6 +19,7 @@
- import org.tmatesoft.svn.core.SVNErrorCode;
- import org.tmatesoft.svn.core.SVNErrorMessage;
- import org.tmatesoft.svn.core.SVNException;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
- import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
-@@ -52,7 +53,7 @@
-     }
- 
-     protected int doCheckWC(File path) throws SVNException {
--        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
-+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-         File formatFile = new File(adminDir, "format");
-         int formatVersion = -1;
- 
-@@ -93,7 +94,7 @@
-     }
- 
-     protected int getVersion(File path) throws SVNException {
--        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
-+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-         File formatFile = new File(adminDir, "format");
-         BufferedReader reader = null;
-         String line = null;
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNWCAccess.java	(working copy)
-@@ -29,10 +29,10 @@
- import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNExternalInfo;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
--import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
- import org.tmatesoft.svn.core.wc.ISVNEventHandler;
- import org.tmatesoft.svn.core.wc.ISVNOptions;
- import org.tmatesoft.svn.core.wc.SVNEvent;
-@@ -391,7 +391,7 @@
-     }
- 
-     public boolean isLocked(File path) throws SVNException {
--        File lockFile = new File(path, SVNFileUtil.getAdminDirectoryName());
-+        File lockFile = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-         lockFile = new File(lockFile, "lock");
-         if (SVNFileType.getType(lockFile) == SVNFileType.FILE) {
-             return true;
-@@ -506,7 +506,7 @@
-                     SVNErrorManager.error(err);
-                 }
+     
+     public static boolean createEmptyFile(File file) throws SVNException {
+@@ -811,7 +792,7 @@
+             if (cancel != null) {
+                 cancel.checkCancelled();
              }
--            File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
-+            File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
-             SVNFileType wcType = SVNFileType.getType(adminDir);
-             
-             if (type == SVNFileType.NONE) {
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java
+-            if (!copyAdminDir && file.getName().equals(getAdminDirectoryName())) {
++            if (!copyAdminDir && SVNAdminDirectoryLocator.isAdminResource(file)) {
+                 continue;
+             }
+             SVNFileType fileType = SVNFileType.getType(file);
+@@ -825,7 +806,7 @@
+                 }
+             } else if (fileType == SVNFileType.DIRECTORY) {
+                 copyDirectory(file, dst, copyAdminDir, cancel);
+-                if (file.isHidden() || getAdminDirectoryName().equals(file.getName())) {
++                if (file.isHidden() || SVNAdminDirectoryLocator.isAdminResource(file)) {
+                     setHidden(dst, true);
+                 }
+             } else if (fileType == SVNFileType.SYMLINK) {
+@@ -1075,24 +1056,6 @@
+         }
+     }
+     
+-    public static String getAdminDirectoryName() {
+-        if (ourAdminDirectoryName == null) {
+-            String defaultAdminDir = ".svn";
+-            if (getEnvironmentVariable("SVN_ASP_DOT_NET_HACK") != null){
+-                defaultAdminDir = "_svn";
+-            }
+-            ourAdminDirectoryName = System.getProperty("svnkit.admindir", System.getProperty("javasvn.admindir", defaultAdminDir));
+-            if (ourAdminDirectoryName == null || "".equals(ourAdminDirectoryName.trim())) {
+-                ourAdminDirectoryName = defaultAdminDir;
+-            }
+-        }
+-        return ourAdminDirectoryName;
+-    }
+-    
+-    public static void setAdminDirectoryName(String name) {
+-        ourAdminDirectoryName = name;
+-    }
+-    
+     public static File getApplicationDataPath() {
+         if (ourAppDataPath != null) {
+             return ourAppDataPath;
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java
 ===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/admin/SVNXMLAdminArea.java	(working copy)
-@@ -37,6 +37,7 @@
- import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
- import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
- import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
-+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
- import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
- import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
- import org.tmatesoft.svn.core.internal.wc.SVNFileType;
-@@ -693,8 +694,9 @@
-     public SVNAdminArea createVersionedDirectory(File dir, String url, String rootURL, String uuid, long revNumber, boolean createMyself) throws SVNException {
-         dir = createMyself ? getRoot() : dir;
-         dir.mkdirs();
--        File adminDir = createMyself ? getAdminDirectory() : new File(dir, SVNFileUtil.getAdminDirectoryName());
--        adminDir.mkdir();
-+        
-+        File adminDir = createMyself ? getAdminDirectory() : SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
-+        
-         SVNFileUtil.setHidden(adminDir, true);
-         // lock dir.
-         File lockFile = createMyself ? myLockFile : new File(adminDir, "lock");
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java	(working copy)
+@@ -178,7 +178,7 @@
+         childrenFiles = new TreeMap(childrenFiles);
+         for (Iterator files = childrenFiles.keySet().iterator(); files.hasNext();) {
+             String fileName = (String) files.next();
+-            if (dir.getEntry(fileName, false) != null || SVNFileUtil.getAdminDirectoryName().equals(fileName)) {
++            if (dir.getEntry(fileName, false) != null || SVNAdminDirectoryLocator.isAdminResource(fileName)) {
+                 continue;
+             }
+             if (ignorePatterns == null) {
 Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNUpdateEditor.java
 ===================================================================
 --- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNUpdateEditor.java	(revision 2884)
@@ -953,19 +928,6 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
          File textTmpBase = adminArea.getBaseFile(name, true);
          if (isReplaced) {
              textTmpBase = adminArea.getFile(SVNAdminUtil.getTextRevertPath(name, true));
-Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java
-===================================================================
---- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java	(revision 2884)
-+++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNStatusEditor.java	(working copy)
-@@ -178,7 +178,7 @@
-         childrenFiles = new TreeMap(childrenFiles);
-         for (Iterator files = childrenFiles.keySet().iterator(); files.hasNext();) {
-             String fileName = (String) files.next();
--            if (dir.getEntry(fileName, false) != null || SVNFileUtil.getAdminDirectoryName().equals(fileName)) {
-+            if (dir.getEntry(fileName, false) != null || SVNAdminDirectoryLocator.isAdminResource(fileName)) {
-                 continue;
-             }
-             if (ignorePatterns == null) {
 Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNWCManager.java
 ===================================================================
 --- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/internal/wc/SVNWCManager.java	(revision 2884)
@@ -979,3 +941,135 @@ Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/i
                      continue;
                  }
                  if (versioned.contains(children[i].getName())) {
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/javahl/SVNClientImpl.java	(working copy)
+@@ -58,6 +58,7 @@
+ import org.tmatesoft.svn.core.internal.io.svn.SVNGanymedSession;
+ import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+ import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileType;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+@@ -1251,7 +1252,7 @@
+     }
+ 
+     public String getAdminDirectoryName() {
+-        return SVNFileUtil.getAdminDirectoryName();
++        return SVNAdminDirectoryLocator.getAdminDirectoryName();
+     }
+ 
+     public boolean isAdminDirectory(String name) {
+@@ -1256,8 +1257,8 @@
+ 
+     public boolean isAdminDirectory(String name) {
+         return name != null && (SVNFileUtil.isWindows) ?
+-                name.equalsIgnoreCase(SVNFileUtil.getAdminDirectoryName()) :
+-                name.equals(SVNFileUtil.getAdminDirectoryName());
++                name.equalsIgnoreCase(SVNAdminDirectoryLocator.getAdminDirectoryName()) :
++                name.equals(SVNAdminDirectoryLocator.getAdminDirectoryName());
+     }
+ 
+     public org.tigris.subversion.javahl.Version getVersion() {        
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNCommitClient.java	(working copy)
+@@ -35,6 +35,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
+ import org.tmatesoft.svn.core.internal.wc.ISVNCommitPathHandler;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNCommitMediator;
+ import org.tmatesoft.svn.core.internal.wc.SVNCommitUtil;
+ import org.tmatesoft.svn.core.internal.wc.SVNCommitter;
+@@ -455,8 +456,8 @@
+             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.ENTRY_EXISTS, "Path ''{0}'' already exists", dstURL);            
+             SVNErrorManager.error(err);
+         }
+-        if (newPaths.contains(SVNFileUtil.getAdminDirectoryName())) {
+-            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNFileUtil.getAdminDirectoryName());            
++        if (newPaths.contains(SVNAdminDirectoryLocator.getAdminDirectoryName())) {
++            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNAdminDirectoryLocator.getAdminDirectoryName());            
+             SVNErrorManager.error(err);
+         }
+         SVNCommitItem[] items = new SVNCommitItem[1];
+@@ -982,7 +983,7 @@
+         boolean changed = false;
+         for (int i = 0; children != null && i < children.length; i++) {
+             File file = children[i];
+-            if (SVNFileUtil.getAdminDirectoryName().equals(file.getName())) {
++            if (SVNAdminDirectoryLocator.isAdminResource(file)) {
+                 SVNEvent skippedEvent = SVNEventFactory.createSkipEvent(
+                         rootFile, file, SVNEventAction.SKIP, SVNEventAction.COMMIT_ADDED, SVNNodeKind.NONE);
+                 handleEvent(skippedEvent, ISVNEventHandler.UNKNOWN);
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNLogClient.java	(working copy)
+@@ -33,6 +33,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+ import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
+@@ -187,7 +188,7 @@
+         if (endRev < startRev) {
+             SVNErrorManager.error(SVNErrorMessage.create(SVNErrorCode.CLIENT_BAD_REVISION, "Start revision must precede end revision"));
+         }
+-        File tmpFile = new File(path.getParentFile(), SVNFileUtil.getAdminDirectoryName());
++        File tmpFile = SVNAdminDirectoryLocator.getAdminDirectory(path.getParentFile(), false);
+         tmpFile = new File(tmpFile, "tmp/text-base");
+         if (!tmpFile.isDirectory()) {
+             tmpFile = SVNFileUtil.createTempDirectory("annotate");
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNStatus.java	(working copy)
+@@ -18,7 +18,7 @@
+ import org.tmatesoft.svn.core.SVNLock;
+ import org.tmatesoft.svn.core.SVNNodeKind;
+ import org.tmatesoft.svn.core.SVNURL;
+-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
+ 
+ /**
+@@ -534,10 +534,10 @@
+         if (myLocalPropertiesDate == null) {
+             File propFile = null;
+             if (getFile() != null && getKind() == SVNNodeKind.DIR) {
+-                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
++                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
+                 propFile = new File(propFile, "dir-props");
+             } else if (getFile() != null && getKind() == SVNNodeKind.FILE) {
+-                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
++                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
+                 propFile = new File(propFile, "props/" + getFile().getName() + ".svn-work");
+             }
+             myLocalContentsDate = propFile != null ? new Date(propFile.lastModified()) : new Date(0);
+Index: /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java
+===================================================================
+--- /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java	(revision 2884)
++++ /Users/alex/Library/OpenSource/svnkit/svnkit/src/org/tmatesoft/svn/core/wc/SVNWCClient.java	(working copy)
+@@ -38,6 +38,7 @@
+ import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
+ import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
++import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+ import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
+ import org.tmatesoft.svn.core.internal.wc.SVNCancellableOutputStream;
+ import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
+@@ -1032,7 +1033,7 @@
+         File[] children = dir.getRoot().listFiles();
+         for(int i = 0; children != null && i < children.length; i++) {
+             checkCancelled();
+-            if (SVNFileUtil.getAdminDirectoryName().equals(children[i].getName())) {
++            if (SVNAdminDirectoryLocator.isAdminResource(children[i])) {
+                 continue;
+             }
+             if (!noIgnore && SVNStatusEditor.isIgnored(ignores, children[i].getName())) {
