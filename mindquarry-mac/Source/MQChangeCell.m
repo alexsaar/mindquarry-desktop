@@ -41,7 +41,7 @@
 	}
 	
 	NSMutableParagraphStyle *pstyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
-	[pstyle setLineBreakMode:NSLineBreakByTruncatingHead];
+	[pstyle setLineBreakMode:NSLineBreakByTruncatingMiddle];
 	
     // file size
     NSString *sizeString = nil;
