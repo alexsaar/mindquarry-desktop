@@ -41,24 +41,31 @@
 	}
 	
 	NSMutableParagraphStyle *pstyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
-	[pstyle setLineBreakMode:NSLineBreakByTruncatingTail];
+	[pstyle setLineBreakMode:NSLineBreakByTruncatingHead];
 	
+    // file size
+    NSString *sizeString = nil;
+    NSDictionary *sizeDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:9], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
+    float sizeWidth = 0;
+	if ([[self objectValue] respondsToSelector:@selector(fileSize)]) {
+		long filesize = [(MQChange *)[self objectValue] fileSize];
+		if (filesize > 0) {
+			sizeString = [[NSNumber numberWithLong:filesize] humanReadableFilesize];
+            sizeWidth = [sizeString sizeWithAttributes:sizeDict].width + 5;
+		}
+	}
+    
 	// file path
 	NSDictionary *titleDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:12], NSFontAttributeName, textColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
 	NSString *dpath = [[self objectValue] valueForKey:@"relPath"];
 	NSSize titleSize = [dpath sizeWithAttributes:titleDict];
-	[dpath drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 5, cellFrame.size.width - 45, 16) withAttributes:titleDict];
-	
-	// file size
-	if ([[self objectValue] respondsToSelector:@selector(fileSize)]) {
-		long filesize = [(MQChange *)[self objectValue] fileSize];
-		if (filesize > 0) {
-			NSString *sizeString = [[NSNumber numberWithLong:filesize] humanReadableFilesize];
-			NSDictionary *sizeDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:9], NSFontAttributeName, grayColor, NSForegroundColorAttributeName, pstyle, NSParagraphStyleAttributeName, nil];
-			[sizeString drawAtPoint:NSMakePoint(cellFrame.origin.x + 48 + titleSize.width, cellFrame.origin.y + 8)  withAttributes:sizeDict];			
-		}
-	}
-	
+    float pathMaxWidth = cellFrame.size.width - 137 - sizeWidth;
+	[dpath drawInRect:NSMakeRect(cellFrame.origin.x + 40, cellFrame.origin.y + 5, pathMaxWidth, 16) withAttributes:titleDict];
+    
+    [sizeString drawAtPoint:NSMakePoint(cellFrame.origin.x + 48 + MIN(titleSize.width, pathMaxWidth), cellFrame.origin.y + 8)  withAttributes:sizeDict];			
+    
+    [pstyle setLineBreakMode:NSLineBreakByTruncatingTail];
+    
 	// file icon
 	NSString *path = [[self objectValue] valueForKey:@"absPath"];
 	NSImage *icon = nil;

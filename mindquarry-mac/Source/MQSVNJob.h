@@ -17,9 +17,11 @@
 	BOOL synchronizes;
 	
 	id currentTeam;
+    
+    NSPredicate *predicate;
 	
 }
 
-- (id)initWithServer:(id)_server synchronizes:(BOOL)_synchronizes;
+- (id)initWithServer:(id)_server predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes;
 
 @end

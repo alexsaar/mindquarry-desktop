@@ -25,14 +25,22 @@
 	return self;
 }
 
-- (id)initWithServer:(id)_server synchronizes:(BOOL)_synchronizes
+- (id)initWithServer:(id)_server predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes
 {
 	if (![super initWithServer:_server])
 		return nil;
 	
 	synchronizes = _synchronizes;
+    predicate = [_pred retain];
 	
 	return self;
+}
+
+- (void)dealloc
+{
+    [predicate release];
+    predicate = nil;
+    [super dealloc];
 }
 
 - (void)threadMethod
@@ -58,6 +66,8 @@
 				break;
 			// get commit items, add them
 			NSArray *allItems = [[currentTeam valueForKey:@"changes"] allObjects];
+            if (predicate)
+                allItems = [allItems filteredArrayUsingPredicate:predicate];
 //			NSLog(@"all  %@", allItems);
 			NSArray *commitItems = [allItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled = TRUE AND local = TRUE"]];
 			NSMutableArray *commitPaths = [NSMutableArray array];

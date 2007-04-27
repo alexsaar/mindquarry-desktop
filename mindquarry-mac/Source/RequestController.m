@@ -21,6 +21,7 @@
 #import "MQSVNJob.h"
 #import "MQChange.h"
 #import "PathAbbreviation.h"
+#import "Mindquarry_Desktop_Client_AppDelegate.h"
 
 @implementation RequestController
 
@@ -98,7 +99,7 @@
 	[filterBar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"sortBy"]];
 	[self titlebarSelectionChanged:nil];
 	
-	labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Filename", @"Size", @"Kind", @"State", @"Team", NULL] autorelease];
+	labels = [[[NSArray alloc] initWithObjects:@"LABEL:Sort by:", @"Filename", @"Size", @"Kind", @"Status", @"Team", NULL] autorelease];
 	[changesFilterbar addItemsWithTitles:labels withSelector:@selector(fileSortSelectionChanged:) withSender:self];
 	[changesFilterbar selectTag:[[NSUserDefaults standardUserDefaults] integerForKey:@"filesSortBy"]];
 	[self fileSortSelectionChanged:nil];
@@ -257,7 +258,7 @@
 
 - (void)refreshWorkspaceWithUpdate:(BOOL)update 
 {
-	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] synchronizes:NO] autorelease] addToQueue];
+	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] predicate:[changesController filterPredicate] synchronizes:NO] autorelease] addToQueue];
 
 //	[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:update] autorelease] addToQueue];
 }
@@ -336,8 +337,12 @@
 {
 	int tag = [sender tag];
 
+    BOOL willCommit = [[[changesController arrangedObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled = TRUE AND local = TRUE"]] count] > 0;
+    if (willCommit)
+        [[NSApp delegate] getCommitMessage];
+    
 	if (tag == 0) {
-		[[[[MQSVNJob alloc] initWithServer:[self selectedServer] synchronizes:YES] autorelease] addToQueue];
+		[[[[MQSVNJob alloc] initWithServer:[self selectedServer] predicate:[changesController filterPredicate] synchronizes:YES] autorelease] addToQueue];
 	}
 	
 //	if (tag == 0 || tag == 1) {
