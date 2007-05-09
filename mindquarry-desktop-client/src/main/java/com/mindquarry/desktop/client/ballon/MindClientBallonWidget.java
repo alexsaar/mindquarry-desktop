@@ -15,6 +15,7 @@ package com.mindquarry.desktop.client.ballon;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -126,8 +127,11 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         // add profiles and select selected profile in combo box
         int selected = -1;
-        for (Profile profile : Profile
-                .loadProfiles(client.getPreferenceStore())) {
+
+        Iterator pIt = Profile.loadProfiles(client.getPreferenceStore())
+                .iterator();
+        while (pIt.hasNext()) {
+            Profile profile = (Profile) pIt.next();
             profileSelector.add(profile.getName());
 
             selected++;
@@ -138,8 +142,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
             }
         }
         // select first profile, if no selected profile is specified
-        List<Profile> profiles = Profile.loadProfiles(client
-                .getPreferenceStore());
+        List profiles = Profile.loadProfiles(client.getPreferenceStore());
         if ((profileSelector.getSelectionIndex() == -1)
                 && (profiles.size() > 0)) {
             profileSelector.select(0);
@@ -280,7 +283,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
         Button createTaskButton = new Button(group, SWT.NONE);
-        createTaskButton.setText("Create Task...");
+        createTaskButton.setText("New Task...");
         createTaskButton.setToolTipText("Creates a new task");
         createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
                 false));
@@ -302,7 +305,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
-        doneButton.setText("Done"); //$NON-NLS-1$
+        doneButton.setText("Mark Done"); //$NON-NLS-1$
         doneButton.setToolTipText("Use this button to finish a running task.");
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()

@@ -66,7 +66,9 @@ public class TaskDialog extends TitleAreaDialog {
         backupTask = task;
     }
 
-    @Override
+    /**
+     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
+     */
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
@@ -79,7 +81,9 @@ public class TaskDialog extends TitleAreaDialog {
         return contents;
     }
 
-    @Override
+    /**
+     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setLayout(new GridLayout(1, true));
@@ -161,7 +165,6 @@ public class TaskDialog extends TitleAreaDialog {
      * 
      * @param parent the parent composite
      */
-    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
                 true);
@@ -203,9 +206,9 @@ public class TaskDialog extends TitleAreaDialog {
         }
         if (task.getDate() != null) {
             String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
-            calendar.setDay(Integer.valueOf(dateParts[1]));
-            calendar.setMonth(Integer.valueOf(dateParts[0]) - 1);
-            calendar.setYear(Integer.valueOf(dateParts[2]));
+            calendar.setDay(Integer.valueOf(dateParts[1]).intValue());
+            calendar.setMonth(Integer.valueOf(dateParts[0]).intValue() - 1);
+            calendar.setYear(Integer.valueOf(dateParts[2]).intValue());
         }
     }
 
@@ -247,7 +250,6 @@ public class TaskDialog extends TitleAreaDialog {
     /**
      * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
      */
-    @Override
     protected void cancelPressed() {
         super.cancelPressed();
         task = backupTask;

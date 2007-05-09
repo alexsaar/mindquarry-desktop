@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.team.dialog;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -41,17 +42,16 @@ import com.mindquarry.desktop.model.team.Team;
 public class TeamSelectionDialog extends TitleAreaDialog {
     private CCombo teamWidget = null;
 
-    private List<Team> teams;
+    private List teams;
     
     private String selected;
 
-    public TeamSelectionDialog(Shell shell, List<Team> teams) {
+    public TeamSelectionDialog(Shell shell, List teams) {
         super(shell);
         setBlockOnOpen(true);
         this.teams = teams;
     }
     
-    @Override
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
@@ -63,7 +63,6 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         return contents;
     }
 
-    @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         composite.setLayout(new GridLayout(1, true));
@@ -77,7 +76,9 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         teamWidget.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
 
-        for (Team team : teams) {
+        Iterator tIt = teams.iterator();
+        while(tIt.hasNext()) {
+            Team team = (Team)tIt.next();
             teamWidget.add(team.getId());
         }
         teamWidget.addSelectionListener(new SelectionListener() {
@@ -90,7 +91,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
             }
         });
         teamWidget.select(0);
-        setSelected(teams.get(0).getId());
+        setSelected(((Team)teams.get(0)).getId());
         return composite;
     }
 
@@ -99,7 +100,6 @@ public class TeamSelectionDialog extends TitleAreaDialog {
      * 
      * @param parent the parent composite
      */
-    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
                 true);

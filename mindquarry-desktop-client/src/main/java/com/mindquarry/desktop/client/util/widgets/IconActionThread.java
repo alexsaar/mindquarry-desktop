@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.util.widgets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +34,7 @@ import com.mindquarry.desktop.client.MindClient;
  */
 public class IconActionThread extends Thread {
     private Log log;
-    
+
     private TrayItem item;
 
     private boolean running = false;
@@ -42,7 +43,7 @@ public class IconActionThread extends Thread {
 
     private boolean ascending = false;
 
-    private List<String> actions = new ArrayList<String>();
+    private List actions = new ArrayList();
 
     public IconActionThread(TrayItem item) {
         this.item = item;
@@ -53,7 +54,6 @@ public class IconActionThread extends Thread {
     /**
      * @see java.lang.Thread#run()
      */
-    @Override
     public void run() {
         while (true) {
             if (running) {
@@ -117,9 +117,11 @@ public class IconActionThread extends Thread {
     private void updateToolTip() {
         String tooltip = ""; //$NON-NLS-1$
         if (actions.size() > 0) {
-            tooltip += "Running actions:"
-                    + "\n"; //$NON-NLS-1$
-            for (String action : actions) {
+            tooltip += "Running actions:" + "\n"; //$NON-NLS-1$
+
+            Iterator aIt = actions.iterator();
+            while (aIt.hasNext()) {
+                String action = (String) aIt.next();
                 tooltip += "- " + action; //$NON-NLS-1$
             }
         } else {

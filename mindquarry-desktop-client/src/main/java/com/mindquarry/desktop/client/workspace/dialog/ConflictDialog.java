@@ -50,7 +50,9 @@ public class ConflictDialog extends TitleAreaDialog {
         setBlockOnOpen(true);
     }
 
-    @Override
+    /**
+     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
+     */
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
@@ -62,7 +64,9 @@ public class ConflictDialog extends TitleAreaDialog {
         return contents;
     }
 
-    @Override
+    /**
+     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
     protected Control createDialogArea(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, false));

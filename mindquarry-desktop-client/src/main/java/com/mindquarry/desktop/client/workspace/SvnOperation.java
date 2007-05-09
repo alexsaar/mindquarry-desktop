@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.workspace;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -28,13 +29,12 @@ import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
  */
 public abstract class SvnOperation implements Runnable {
     protected Log log;
-    
+
     protected final MindClient client;
 
-    protected final List<SynchronizeWidget> synAreas;
+    protected final List synAreas;
 
-    public SvnOperation(final MindClient client,
-            List<SynchronizeWidget> synAreas) {
+    public SvnOperation(final MindClient client, List synAreas) {
         this.client = client;
         this.synAreas = synAreas;
         log = LogFactory.getLog(this.getClass());
@@ -42,7 +42,9 @@ public abstract class SvnOperation implements Runnable {
 
     protected String getStatiDescription(Status[] stati, String pathPrefix) {
         StringBuffer msg = new StringBuffer();
-        for (Status status : stati) {
+        for (int i = 0; i < stati.length; i++) {
+            Status status = stati[i];
+
             // show the relative path
             String path = status.getPath().substring(pathPrefix.length() + 1);
 
@@ -61,7 +63,9 @@ public abstract class SvnOperation implements Runnable {
     public void setProgressSteps(final int value) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (SynchronizeWidget synArea : synAreas) {
+                Iterator saIt = synAreas.iterator();
+                while (saIt.hasNext()) {
+                    SynchronizeWidget synArea = (SynchronizeWidget) saIt.next();
                     synArea.setProgressSteps(value);
                 }
             }
@@ -71,7 +75,9 @@ public abstract class SvnOperation implements Runnable {
     public void updateProgress() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (SynchronizeWidget synArea : synAreas) {
+                Iterator saIt = synAreas.iterator();
+                while (saIt.hasNext()) {
+                    SynchronizeWidget synArea = (SynchronizeWidget) saIt.next();
                     synArea.updateProgress();
                 }
             }
@@ -81,7 +87,9 @@ public abstract class SvnOperation implements Runnable {
     public void resetProgress() {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (SynchronizeWidget synArea : synAreas) {
+                Iterator saIt = synAreas.iterator();
+                while (saIt.hasNext()) {
+                    SynchronizeWidget synArea = (SynchronizeWidget) saIt.next();
                     synArea.resetProgress();
                     synArea.setMessage(""); //$NON-NLS-1$
                 }
@@ -92,7 +100,9 @@ public abstract class SvnOperation implements Runnable {
     public void setMessage(final String message) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (SynchronizeWidget synArea : synAreas) {
+                Iterator saIt = synAreas.iterator();
+                while (saIt.hasNext()) {
+                    SynchronizeWidget synArea = (SynchronizeWidget) saIt.next();
                     synArea.setMessage(message);
                 }
             }

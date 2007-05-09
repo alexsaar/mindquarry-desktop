@@ -255,7 +255,6 @@ public class MindClient {
         }
     }
 
-    @Override
     protected void finalize() throws Throwable {
         if (icon != null) {
             icon.dispose();

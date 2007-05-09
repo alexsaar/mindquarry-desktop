@@ -47,7 +47,6 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     /**
      * @see org.eclipse.jface.viewers.ColumnLabelProvider#getImage(java.lang.Object)
      */
-    @Override
     public Image getImage(Object element) {
         Task task = (Task) element;
         if(task.getStatus() == null) {
@@ -68,7 +67,6 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     /**
      * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
      */
-    @Override
     public String getText(Object element) {
         Task task = (Task) element;
         String text = task.getTitle();
@@ -78,7 +76,6 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     /**
      * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipText(java.lang.Object)
      */
-    @Override
     public String getToolTipText(Object element) {
         Task task = (Task) element;
 
@@ -92,7 +89,6 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     /**
      * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipTimeDisplayed(java.lang.Object)
      */
-    @Override
     public int getToolTipTimeDisplayed(Object object) {
         return 2000;
     }
@@ -100,7 +96,6 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     /**
      * @see org.eclipse.jface.viewers.CellLabelProvider#getToolTipDisplayDelayTime(java.lang.Object)
      */
-    @Override
     public int getToolTipDisplayDelayTime(Object object) {
         return 10;
     }

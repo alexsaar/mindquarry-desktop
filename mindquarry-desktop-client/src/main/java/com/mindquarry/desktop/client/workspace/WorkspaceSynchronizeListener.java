@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.workspace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -38,19 +39,19 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  */
 public class WorkspaceSynchronizeListener implements Listener {
     private static WorkspaceSynchronizeListener instance;
-    
+
     private Log log;
 
     private final MindClient client;
 
-    private List<Widget> triggerWidgets;
+    private List triggerWidgets;
 
-    private List<SynchronizeWidget> synAreas;
+    private List synAreas;
 
     private WorkspaceSynchronizeListener(final MindClient client) {
         this.client = client;
-        triggerWidgets = new ArrayList<Widget>();
-        synAreas = new ArrayList<SynchronizeWidget>();
+        triggerWidgets = new ArrayList();
+        synAreas = new ArrayList();
         log = LogFactory.getLog(WorkspaceSynchronizeListener.class);
     }
 
@@ -91,22 +92,24 @@ public class WorkspaceSynchronizeListener implements Listener {
         }
     }
 
-    private void enableTriggerWidgets(final boolean enable,
-            final List<Widget> widgets) {
+    private void enableTriggerWidgets(final boolean enable, final List widgets) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (Widget widget : widgets) {
+                Iterator wIt = widgets.iterator();
+                while (wIt.hasNext()) {
+                    Widget widget = (Widget) wIt.next();
                     setEnabled(widget, enable);
                 }
             }
         });
     }
 
-    private void enableSynAreas(final boolean enabled,
-            final List<SynchronizeWidget> synAreas) {
+    private void enableSynAreas(final boolean enabled, final List synAreas) {
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {
-                for (SynchronizeWidget synArea : synAreas) {
+                Iterator saIt = synAreas.iterator();
+                while (saIt.hasNext()) {
+                    SynchronizeWidget synArea = (SynchronizeWidget) saIt.next();
                     synArea.setVisible(enabled);
                 }
             }
@@ -121,7 +124,8 @@ public class WorkspaceSynchronizeListener implements Listener {
                 .getPreferenceStore());
 
         if (selectedProfile == null) {
-            MindClient.showErrorMessage("No profile selected. Please select a profile and try again.");
+            MindClient
+                    .showErrorMessage("No profile selected. Please select a profile and try again.");
             return;
         }
         new Thread(new Runnable() {
@@ -144,7 +148,8 @@ public class WorkspaceSynchronizeListener implements Listener {
                             .getWorkspaces());
                     op.run();
                 } catch (Exception e) {
-                    MindClient.showErrorMessage("Error during workspaces synchronization.");
+                    MindClient
+                            .showErrorMessage("Error during workspaces synchronization.");
                     log.error("Error during workspaces synchronization.", e); //$NON-NLS-1$
                 }
                 enableTriggerWidgets(true, triggerWidgets);

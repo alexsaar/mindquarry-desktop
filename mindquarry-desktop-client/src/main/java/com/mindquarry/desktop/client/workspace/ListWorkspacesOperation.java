@@ -14,13 +14,13 @@
 package com.mindquarry.desktop.client.workspace;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -34,17 +34,16 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 public class ListWorkspacesOperation extends SvnOperation {
     private Log log;
 
-    private HashMap<String, String> workspaces;
+    private HashMap workspaces;
 
-    public ListWorkspacesOperation(final MindClient client,
-            List<SynchronizeWidget> synAreas) {
+    public ListWorkspacesOperation(final MindClient client, List synAreas) {
         super(client, synAreas);
         log = LogFactory.getLog(ListWorkspacesOperation.class);
     }
 
     public void run() {
         resetProgress();
-        workspaces = new HashMap<String, String>();
+        workspaces = new HashMap();
         if (!getTeamspaceList(workspaces)) {
             resetProgress();
             return;
@@ -52,7 +51,7 @@ public class ListWorkspacesOperation extends SvnOperation {
         resetProgress();
     }
 
-    private boolean getTeamspaceList(HashMap<String, String> teamspaces) {
+    private boolean getTeamspaceList(HashMap teamspaces) {
         setMessage("Retrieving teamspace list...");
         log.info("Retrieving teamspace list for workspace synchronization..."); //$NON-NLS-1$
 
@@ -70,17 +69,19 @@ public class ListWorkspacesOperation extends SvnOperation {
                     + "for workspace synchronization.", e); //$NON-NLS-1$
             return false;
         }
-        List<Team> teams = teamList.getTeams();
+        List teams = teamList.getTeams();
 
         // loop teamspace descriptions
-        for (Team team : teams) {
+        Iterator tIt = teams.iterator();
+        while (tIt.hasNext()) {
+            Team team = (Team) tIt.next();
             workspaces.put(team.getName(), team.getWorkspaceURL());
             log.info("Added workspace from " + team.getWorkspaceURL()); //$NON-NLS-1$
         }
         return true;
     }
 
-    public HashMap<String, String> getWorkspaces() {
+    public HashMap getWorkspaces() {
         return workspaces;
     }
 }

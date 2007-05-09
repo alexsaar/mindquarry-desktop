@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.task;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -62,9 +63,9 @@ public class TaskManager {
 
     public static final String TITLE_COLUMN = "title"; //$NON-NLS-1$
 
-    private List<Task> tasks = new ArrayList<Task>();
+    private List tasks = new ArrayList();
 
-    private List<TaskListChangeListener> listeners = new Vector<TaskListChangeListener>();
+    private List listeners = new Vector();
 
     private final MindClient client;
 
@@ -153,7 +154,7 @@ public class TaskManager {
     }
 
     public Task[] getTasks() {
-        return tasks.toArray(new Task[] {});
+        return (Task[]) tasks.toArray(new Task[] {});
     }
 
     /**
@@ -219,7 +220,9 @@ public class TaskManager {
             return;
         }
         // loop and add tasks
-        for (Task task : taskList.getTasks()) {
+        Iterator tIt = taskList.getTasks().iterator();
+        while (tIt.hasNext()) {
+            Task task = (Task) tIt.next();
             // add task to internal list of tasks, if not yet exist
             PreferenceStore store = client.getPreferenceStore();
 

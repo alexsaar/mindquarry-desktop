@@ -76,11 +76,11 @@ public class BalloonWindow {
 
     private ToolBar systemControlsBar;
 
-    private ArrayList<Control> selectionControls = new ArrayList<Control>();
+    private ArrayList selectionControls = new ArrayList();
 
     private boolean addedGlobalListener;
 
-    private ArrayList<Listener> selectionListeners = new ArrayList<Listener>();
+    private ArrayList selectionListeners = new ArrayList();
 
     public BalloonWindow(Shell parent, int style) {
         this(null, parent, style);

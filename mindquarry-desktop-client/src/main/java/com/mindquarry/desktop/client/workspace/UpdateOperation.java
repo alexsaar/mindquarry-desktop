@@ -15,12 +15,12 @@ package com.mindquarry.desktop.client.workspace;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.tigris.subversion.javahl.ClientException;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNHelper;
 
@@ -31,10 +31,10 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  *         Saar</a>
  */
 public class UpdateOperation extends SvnOperation {
-    private HashMap<String, String> workspaces;
+    private HashMap workspaces;
 
-    public UpdateOperation(final MindClient client,
-            List<SynchronizeWidget> synAreas, HashMap<String, String> workspaces) {
+    public UpdateOperation(final MindClient client, List synAreas,
+            HashMap workspaces) {
         super(client, synAreas);
         this.workspaces = workspaces;
     }
@@ -63,7 +63,9 @@ public class UpdateOperation extends SvnOperation {
         setProgressSteps(wsCount);
 
         // loop workspaces
-        for (String id : workspaces.keySet()) {
+        Iterator idIt = workspaces.keySet().iterator();
+        while (idIt.hasNext()) {
+            String id = (String) idIt.next();
             setMessage("Updating workspace" //$NON-NLS-1$
                     + " (" //$NON-NLS-1$
                     + ++wsNbr + " of " //$NON-NLS-1$
@@ -71,9 +73,9 @@ public class UpdateOperation extends SvnOperation {
 
             // create directory for the new workspace
             File wsDir = new File(wsHome.getAbsolutePath() + "/" + id); //$NON-NLS-1$
-            SVNHelper svnHelper = new JavaSVNHelper(workspaces.get(id), wsDir
-                    .getAbsolutePath(), profile.getLogin(), profile
-                    .getPassword());
+            SVNHelper svnHelper = new JavaSVNHelper(
+                    (String) workspaces.get(id), wsDir.getAbsolutePath(),
+                    profile.getLogin(), profile.getPassword());
             try {
                 // TODO pipe local changes to commit operation
                 svnHelper.getLocalChanges();

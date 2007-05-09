@@ -16,12 +16,12 @@ package com.mindquarry.desktop.client.workspace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -29,10 +29,10 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class PublishOperation extends SvnOperation {
-    private HashMap<String, String> workspaces;
+    private HashMap workspaces;
 
-    public PublishOperation(final MindClient client,
-            List<SynchronizeWidget> synAreas, HashMap<String, String> workspaces) {
+    public PublishOperation(final MindClient client, List synAreas,
+            HashMap workspaces) {
         super(client, synAreas);
         this.workspaces = workspaces;
     }
@@ -52,19 +52,21 @@ public class PublishOperation extends SvnOperation {
         setProgressSteps(wsCount);
         int wsNbr = 0;
 
-        for (String id : workspaces.keySet()) {
+        Iterator idIt = workspaces.keySet().iterator();
+        while (idIt.hasNext()) {
+            String id = (String) idIt.next();
             setMessage("Publishing workspace" + " (" //$NON-NLS-2$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
             File wsDir = new File(wsHome.getAbsolutePath() + "/" //$NON-NLS-1$ 
                     + id);
-            JavaSVNHelper svnHelper = new JavaSVNHelper(workspaces.get(id),
-                    wsDir.getAbsolutePath(), profile.getLogin(), profile
-                            .getPassword());
+            JavaSVNHelper svnHelper = new JavaSVNHelper((String) workspaces
+                    .get(id), wsDir.getAbsolutePath(), profile.getLogin(),
+                    profile.getPassword());
             try {
                 Status[] changes = svnHelper.getLocalChanges();
-                List<String> changedPaths = new ArrayList<String>();
+                List changedPaths = new ArrayList();
 
                 StringBuffer commitInfo = new StringBuffer();
                 commitInfo
@@ -73,18 +75,20 @@ public class PublishOperation extends SvnOperation {
                 commitInfo
                         .append(getStatiDescription(changes, wsDir.getPath()));
 
-                for (Status change : changes) {
+                for (int i = 0; i < changes.length; i++) {
+                    Status change = changes[i];
                     changedPaths.add(change.getPath());
                 }
                 if (changedPaths.size() > 0) {
                     svnHelper.setCommitInfo(commitInfo.toString());
-                    svnHelper.commit(changedPaths.toArray(new String[0]));
+                    svnHelper.commit((String[]) changedPaths
+                            .toArray(new String[0]));
                 }
             } catch (Exception e) {
                 MindClient
                         .showErrorMessage("Could not publish workspace changes "
                                 + id);
-                log.error("Could not publish workspace changes "  //$NON-NLS-1$
+                log.error("Could not publish workspace changes " //$NON-NLS-1$
                         + id, e);
             }
             updateProgress();
