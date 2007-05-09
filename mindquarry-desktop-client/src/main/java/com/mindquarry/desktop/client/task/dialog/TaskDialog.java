@@ -60,6 +60,7 @@ public class TaskDialog extends TitleAreaDialog {
 
     public TaskDialog(Shell shell, Task task) {
         super(shell);
+        setShellStyle(SWT.RESIZE);
         setBlockOnOpen(true);
 
         this.task = task;
@@ -91,6 +92,9 @@ public class TaskDialog extends TitleAreaDialog {
         createTaskDataSection(composite);
         initTask();
         registerListeners();
+        
+        getShell().setSize(400, 600);
+        getShell().redraw();
         return composite;
     }
 
@@ -139,21 +143,23 @@ public class TaskDialog extends TitleAreaDialog {
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
                 | SWT.WRAP);
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                        | GridData.VERTICAL_ALIGN_FILL);
+                | GridData.VERTICAL_ALIGN_FILL);
         gridData.heightHint = 100;
         summary.setLayoutData(gridData);
         ((GridData) summary.getLayoutData()).verticalSpan = 3;
         ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
-        /*label = new Label(composite, SWT.LEFT);
-        label.setText("Description:");
-
-        description = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
-                | SWT.WRAP);
-        description.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_FILL));
-        ((GridData) description.getLayoutData()).verticalSpan = 3;
-        ((GridData) description.getLayoutData()).grabExcessVerticalSpace = true;*/
+        /*
+         * label = new Label(composite, SWT.LEFT);
+         * label.setText("Description:");
+         * 
+         * description = new Text(composite, SWT.MULTI | SWT.BORDER |
+         * SWT.V_SCROLL | SWT.WRAP); description.setLayoutData(new
+         * GridData(GridData.HORIZONTAL_ALIGN_FILL |
+         * GridData.VERTICAL_ALIGN_FILL)); ((GridData)
+         * description.getLayoutData()).verticalSpan = 3; ((GridData)
+         * description.getLayoutData()).grabExcessVerticalSpace = true;
+         */
 
         label = new Label(composite, SWT.LEFT);
         label.setText("Due Date:");
@@ -181,9 +187,10 @@ public class TaskDialog extends TitleAreaDialog {
         if (task.getSummary() != null) {
             summary.setText(task.getSummary());
         }
-        /*if (task.getDescription() != null) {
-            description.setText(task.getDescription());
-        }*/
+        /*
+         * if (task.getDescription() != null) {
+         * description.setText(task.getDescription()); }
+         */
         if (task.getStatus() != null) {
             if (task.getStatus().equals(Task.STATUS_NEW)) {
                 status.select(0);
@@ -230,11 +237,11 @@ public class TaskDialog extends TitleAreaDialog {
                 task.setSummary(summary.getText());
             }
         });
-        /*description.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                task.setDescription(description.getText());
-            }
-        });*/
+        /*
+         * description.addModifyListener(new ModifyListener() { public void
+         * modifyText(ModifyEvent e) {
+         * task.setDescription(description.getText()); } });
+         */
         priority.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 task.setPriority(priority.getText().toLowerCase());
