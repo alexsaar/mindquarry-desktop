@@ -94,7 +94,7 @@ public class MindClient {
         Display.setAppName(APPLICATION_NAME);
         display.setWarnings(true);
 
-        shell = new Shell(display, SWT.NONE);
+        shell = new Shell(display, SWT.ON_TOP);
         shell.setText(APPLICATION_NAME);
         
         // init splash screen
