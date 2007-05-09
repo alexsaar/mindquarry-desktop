@@ -44,6 +44,7 @@ import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.splash.SplashScreen;
 
 /**
  * Main class for the MindClient. Responsible for managing persistence of
@@ -95,10 +96,20 @@ public class MindClient {
 
         shell = new Shell(display, SWT.NONE);
         shell.setText(APPLICATION_NAME);
+        
+        // init splash screen
+        SplashScreen splash = SplashScreen.newInstance(3);
+        splash.show();
 
+        // init client
         MindClient mindclient = new MindClient();
+        splash.step();
+        
         mindclient.checkArguments(args);
+        splash.step();
+        
         mindclient.createTrayIconAndMenu(display);
+        splash.step();
 
         while (!display.isDisposed()) {
             if (!display.readAndDispatch()) {
