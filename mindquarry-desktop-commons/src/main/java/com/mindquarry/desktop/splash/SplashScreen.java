@@ -41,6 +41,11 @@ public class SplashScreen {
     
     public void show() {
         splash.open();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // nothing to do here, just continue...
+        }
     }
     
     public void step() {
