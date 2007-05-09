@@ -141,8 +141,9 @@ public class TaskManager {
         // check number of active tasks, if 0 display NoTasksWidget
         if (tasks.isEmpty()) {
             updateTaskWidgetContents(false, false, true);
+        } else {
+            taskTableViewer.refresh();
         }
-        taskTableViewer.refresh();
     }
 
     public void removeChangeListener(TaskListChangeListener provider) {
