@@ -229,12 +229,13 @@ public class TaskManager {
 
             boolean listTask = true;
             if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
-                if (task.getStatus().equals(Task.STATUS_DONE)) {
+                if ((task.getStatus() != null)
+                        && (task.getStatus().equals(Task.STATUS_DONE))) {
                     listTask = false;
                 }
             }
             if (listTask && (!tasks.contains(task))) {
-                log.info("Adding task with id '" + task.getId() + "'.");
+                log.info("Adding task with id '" + task.getId() + "'."); //$NON-NLS-2$
                 tasks.add(task);
             }
         }
