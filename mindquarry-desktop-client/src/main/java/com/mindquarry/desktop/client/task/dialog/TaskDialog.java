@@ -46,7 +46,7 @@ public class TaskDialog extends TitleAreaDialog {
 
     private Text summary = null;
 
-    private Text description = null;
+    //private Text description = null;
 
     private ImageCombo status = null;
 
@@ -138,12 +138,14 @@ public class TaskDialog extends TitleAreaDialog {
 
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
                 | SWT.WRAP);
-        summary.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_FILL));
+        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+                        | GridData.VERTICAL_ALIGN_FILL);
+        gridData.heightHint = 100;
+        summary.setLayoutData(gridData);
         ((GridData) summary.getLayoutData()).verticalSpan = 3;
         ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
-        label = new Label(composite, SWT.LEFT);
+        /*label = new Label(composite, SWT.LEFT);
         label.setText("Description:");
 
         description = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
@@ -151,7 +153,7 @@ public class TaskDialog extends TitleAreaDialog {
         description.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL));
         ((GridData) description.getLayoutData()).verticalSpan = 3;
-        ((GridData) description.getLayoutData()).grabExcessVerticalSpace = true;
+        ((GridData) description.getLayoutData()).grabExcessVerticalSpace = true;*/
 
         label = new Label(composite, SWT.LEFT);
         label.setText("Due Date:");
@@ -179,9 +181,9 @@ public class TaskDialog extends TitleAreaDialog {
         if (task.getSummary() != null) {
             summary.setText(task.getSummary());
         }
-        if (task.getDescription() != null) {
+        /*if (task.getDescription() != null) {
             description.setText(task.getDescription());
-        }
+        }*/
         if (task.getStatus() != null) {
             if (task.getStatus().equals(Task.STATUS_NEW)) {
                 status.select(0);
@@ -204,7 +206,7 @@ public class TaskDialog extends TitleAreaDialog {
                 priority.select(3);
             }
         }
-        if (task.getDate() != null) {
+        if (task.getDate() != null && !task.getDate().trim().equals("")) {
             String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
             calendar.setDay(Integer.valueOf(dateParts[1]).intValue());
             calendar.setMonth(Integer.valueOf(dateParts[0]).intValue() - 1);
@@ -228,11 +230,11 @@ public class TaskDialog extends TitleAreaDialog {
                 task.setSummary(summary.getText());
             }
         });
-        description.addModifyListener(new ModifyListener() {
+        /*description.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 task.setDescription(description.getText());
             }
-        });
+        });*/
         priority.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 task.setPriority(priority.getText().toLowerCase());

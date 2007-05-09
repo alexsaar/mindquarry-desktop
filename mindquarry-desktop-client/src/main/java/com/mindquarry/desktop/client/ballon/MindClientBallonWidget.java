@@ -396,7 +396,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
             task.setPriority("low"); //$NON-NLS-1$
             task.setTitle("new task");
             task.setSummary("summary of the task");
-            task.setDescription("description of the task");
+            //task.setDescription("description of the task");
             task.setDate(date);
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
