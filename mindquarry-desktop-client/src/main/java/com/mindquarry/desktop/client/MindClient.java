@@ -15,9 +15,10 @@ package com.mindquarry.desktop.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -61,8 +62,6 @@ public class MindClient {
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
     
-    private Log log;
-
     private static Shell shell;
 
     private final Image icon;
@@ -74,9 +73,13 @@ public class MindClient {
     private static IconActionThread iconAction;
 
     private PreferenceStore store;
+    
+    private MindClientBallonWidget ballonWindow; 
+        
+    private Menu menu;
+    private List<MenuItem> profilesInMenu = new ArrayList<MenuItem>();
 
     public MindClient() throws IOException {
-        log = LogFactory.getLog(MindClient.class);
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
                 DesktopConstants.MINDQUARRY_ICON));
         Window.setDefaultImage(icon);
@@ -119,7 +122,7 @@ public class MindClient {
         display.dispose();
     }
 
-    private void checkArguments(String[] args) throws IOException {
+    private void checkArguments(String[] args) {
         if ((args.length == 3) && (prefFile.exists())) {
             loadOptions();
             addNewProfile(args[0], args[1], args[2]);
@@ -153,25 +156,30 @@ public class MindClient {
         item = new TrayItem(tray, SWT.NONE);
         item.setImage(icon);
 
-        final MindClientBallonWidget ballonWindow = new MindClientBallonWidget(
-                display, this);
+        ballonWindow = new MindClientBallonWidget(display, this);
 
-        final Menu menu = new Menu(shell, SWT.POP_UP);
+        menu = new Menu(shell, SWT.POP_UP);
         // right-click / context menu => menu
         item.addListener(SWT.MenuDetect, new Listener() {
             public void handleEvent(Event event) {
                 menu.setVisible(true);
             }
         });
-
         // left-click => balloon window
         item.addListener(SWT.Selection, new Listener() {
             public void handleEvent(final Event event) {
                 ballonWindow.handleEvent(event);
             }
         });
+
+        // List all profiles:
+        updateProfileSelector();
+        
+        // add separator
+        MenuItem menuItem = new MenuItem(menu, SWT.SEPARATOR);
+
         // go to webpage
-        MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
+        menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText("Go to webpage");
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -195,11 +203,7 @@ public class MindClient {
         menuItem.setText("Options...");
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                try {
-                    showPreferenceDialog(false);
-                } catch (IOException e) {
-                    log.error("Error in preferences dialog", e);
-                }
+                showPreferenceDialog(false);
             }
         });
         // add separator
@@ -219,7 +223,44 @@ public class MindClient {
         iconAction.start();
     }
 
-    private void showPreferenceDialog(boolean showProfiles) throws IOException {
+    public void updateProfileSelector() {
+        if (menu == null)
+            return; // happens at very first start
+        MenuItem[] menuItems = menu.getItems();
+        // remove the existing profiles first:
+        for (int i = 0; i < menuItems.length; i++) {
+            if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
+                menuItems[i].dispose();
+            }
+        }
+        Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
+        boolean hasSelection = false;
+        profilesInMenu = new ArrayList<MenuItem>();
+        int i = 0;
+        while (pIt.hasNext()) {
+            Profile profile = (Profile) pIt.next();
+            final MenuItem menuItem = new MenuItem(menu, SWT.RADIO, i);
+            i++;
+            menuItem.setText(profile.getName());
+            menuItem.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(Event event) {
+                    Profile.selectProfile(getPreferenceStore(), menuItem.getText());
+                }
+            });
+            if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
+                    && (profile.getName().equals(Profile.getSelectedProfile(
+                            getPreferenceStore()).getName()))) {
+                menuItem.setSelection(true);
+                hasSelection = true;
+            }
+            profilesInMenu.add(menuItem);
+        }
+        if (!hasSelection && profilesInMenu.size() > 0) {
+            profilesInMenu.get(0).setSelection(true);
+        }
+    }
+    
+    private void showPreferenceDialog(boolean showProfiles) {
         loadOptions();
 
         // request preference values from user
@@ -253,6 +294,7 @@ public class MindClient {
         } catch (Exception e) {
             showErrorMessage("Could not save MindClient settings.");
         }
+        updateProfileSelector();
     }
 
     protected void finalize() throws Throwable {

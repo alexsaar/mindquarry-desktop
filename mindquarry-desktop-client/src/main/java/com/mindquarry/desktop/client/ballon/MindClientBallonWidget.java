@@ -15,14 +15,11 @@ package com.mindquarry.desktop.client.ballon;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
@@ -35,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
@@ -73,16 +69,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
     private TaskManager tman;
 
-    private CCombo profileSelector;
-
     public MindClientBallonWidget(Display display, final MindClient client) {
         super(display, SWT.TITLE | SWT.CLOSE | SWT.TOOL | SWT.ON_TOP);
         log = LogFactory.getLog(MindClientBallonWidget.class);
 
         if (System.getProperty("os.name").equals("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
-            BALLOON_SIZE = new Point(356, 437);
+            BALLOON_SIZE = new Point(356, 340);
         } else {
-            BALLOON_SIZE = new Point(356, 397);
+            BALLOON_SIZE = new Point(356, 300);
         }
 
         this.display = display;
@@ -123,30 +117,11 @@ public class MindClientBallonWidget extends BalloonWindow implements
     }
 
     private void updateProfileSelector() {
-        profileSelector.removeAll();
-
-        // add profiles and select selected profile in combo box
-        int selected = -1;
-
-        Iterator pIt = Profile.loadProfiles(client.getPreferenceStore())
-                .iterator();
-        while (pIt.hasNext()) {
-            Profile profile = (Profile) pIt.next();
-            profileSelector.add(profile.getName());
-
-            selected++;
-            if ((Profile.getSelectedProfile(client.getPreferenceStore()) != null)
-                    && (profile.getName().equals(Profile.getSelectedProfile(
-                            client.getPreferenceStore()).getName()))) {
-                profileSelector.select(selected);
-            }
-        }
-        // select first profile, if no selected profile is specified
-        List profiles = Profile.loadProfiles(client.getPreferenceStore());
-        if ((profileSelector.getSelectionIndex() == -1)
-                && (profiles.size() > 0)) {
-            profileSelector.select(0);
-        }
+        client.updateProfileSelector();
+    }
+    
+    public void asyncRefreshTasks() {
+       tman.asyncRefresh();
     }
 
     private void initBalloonPosition() {
@@ -181,50 +156,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
         container = getContents();
         container.setLayout(new GridLayout());
 
-        createProfileGroup();
         createWorkspacesGroup();
         createTasksGroup();
         // createWikiGroup();
 
         container.pack();
         container.setSize(BALLOON_SIZE);
-    }
-
-    /**
-     * Initializes the profile group for switching between profiles.
-     */
-    private void createProfileGroup() {
-        Group group = new Group(container, SWT.SHADOW_NONE);
-        group.setBackground(container.getBackground());
-        group.setText("Profiles"); //$NON-NLS-1$
-        group.setLayout(new GridLayout(1, false));
-        group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-
-        Label label = new Label(group, SWT.LEFT);
-        label.setBackground(group.getBackground());
-        label.setText("Select Profile" + ":"); //$NON-NLS-1$//$NON-NLS-2$
-
-        profileSelector = new CCombo(group, SWT.BORDER | SWT.READ_ONLY);
-        profileSelector.setBackground(display.getSystemColor(SWT.COLOR_WHITE));
-        profileSelector.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        profileSelector.addListener(SWT.Selection, new Listener() {
-            /**
-             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
-             */
-            public void handleEvent(Event event) {
-                // find the selected item and set the according profile as
-                // selected
-                String[] items = profileSelector.getItems();
-                for (int i = 0; i < items.length; i++) {
-                    if (items[i].equals(profileSelector.getItem(profileSelector
-                            .getSelectionIndex()))) {
-                        Profile.selectProfile(client.getPreferenceStore(),
-                                items[i]);
-                        tman.asyncRefresh();
-                    }
-                }
-            }
-        });
     }
 
     /**
