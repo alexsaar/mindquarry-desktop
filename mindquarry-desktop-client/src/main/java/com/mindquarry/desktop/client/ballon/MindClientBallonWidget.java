@@ -76,7 +76,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         if (System.getProperty("os.name").equals("Linux")) { //$NON-NLS-1$ //$NON-NLS-2$
             BALLOON_SIZE = new Point(356, 340);
         } else {
-            BALLOON_SIZE = new Point(356, 300);
+            BALLOON_SIZE = new Point(356, 330);
         }
 
         this.display = display;
