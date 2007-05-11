@@ -390,7 +390,7 @@ public class TaskManager {
                         }
                     } catch (Exception e) {
                         MindClient
-                                .showErrorMessage("Could not update the task.");
+                                .showErrorMessage("Could not update the task: " + e.toString());
                         log.error("Could not update task with id " //$NON-NLS-1$
                                 + task.getId(), e);
                     }

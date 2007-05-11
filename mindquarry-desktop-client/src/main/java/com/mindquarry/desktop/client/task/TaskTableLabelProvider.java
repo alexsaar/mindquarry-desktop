@@ -79,10 +79,23 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
     public String getToolTipText(Object element) {
         Task task = (Task) element;
 
+        final int maxLength = 100;
         String text = ""; //$NON-NLS-1$
-        text += "Title" + ": " + task.getTitle(); //$NON-NLS-1$ //$NON-NLS-2$ 
-        text += "\n" + "Status" + ": " + task.getStatus(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        text += "\n" + "Summary" + ": " + task.getSummary(); //$NON-NLS-1$ //$NON-NLS-2$//$NON-NLS-3$
+        String title = task.getTitle();
+        if (title != null) {
+            title = title.length() > maxLength ? title.substring(0, maxLength) + "..." : title;
+        } else {
+            title = "-";
+        }
+        text += "Title" + ": " + title; //$NON-NLS-2$ 
+        text += "\n" + "Status" + ": " + task.getStatus(); //$NON-NLS-1$ //$NON-NLS-3$
+        String summary = task.getSummary();
+        if (summary != null) {
+            summary = summary.length() > maxLength ? summary.substring(0, maxLength) + "..." : summary;
+        } else {
+            summary = "-";
+        }
+        text += "\n" + "Summary" + ": " + summary; //$NON-NLS-1$ //$NON-NLS-3$
         return text;
     }
 

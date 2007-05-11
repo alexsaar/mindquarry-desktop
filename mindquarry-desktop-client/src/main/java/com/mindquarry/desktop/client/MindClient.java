@@ -285,7 +285,7 @@ public class MindClient {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            showErrorMessage("Could not load MindClient settings.");
+            showErrorMessage("Could not load MindClient settings: " + e.toString());
         }
     }
 
@@ -293,7 +293,7 @@ public class MindClient {
         try {
             store.save();
         } catch (Exception e) {
-            showErrorMessage("Could not save MindClient settings.");
+            showErrorMessage("Could not save MindClient settings: " + e.toString());
         }
         updateProfileSelector();
     }
