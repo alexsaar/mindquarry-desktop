@@ -77,7 +77,7 @@ public class MindClient {
     private MindClientBallonWidget ballonWindow; 
         
     private Menu menu;
-    private List<MenuItem> profilesInMenu = new ArrayList<MenuItem>();
+    private List profilesInMenu = new ArrayList();
 
     public MindClient() throws IOException {
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
@@ -235,7 +235,7 @@ public class MindClient {
         }
         Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
         boolean hasSelection = false;
-        profilesInMenu = new ArrayList<MenuItem>();
+        profilesInMenu = new ArrayList();
         int i = 0;
         while (pIt.hasNext()) {
             Profile profile = (Profile) pIt.next();
@@ -256,7 +256,8 @@ public class MindClient {
             profilesInMenu.add(menuItem);
         }
         if (!hasSelection && profilesInMenu.size() > 0) {
-            profilesInMenu.get(0).setSelection(true);
+            MenuItem mi = (MenuItem) profilesInMenu.get(0);
+            mi.setSelection(true);
         }
     }
     
