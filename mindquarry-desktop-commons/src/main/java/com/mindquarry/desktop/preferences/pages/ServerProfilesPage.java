@@ -25,6 +25,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -96,6 +98,10 @@ public class ServerProfilesPage extends PreferencePage {
         for (Profile profile : profiles) {
             profileList.add(profile.getName());
         }
+        if (profileList.getItemCount() > 0) {
+            profileList.select(0);
+            activateProfileSelection();
+        }
         return composite;
     }
 
@@ -152,22 +158,49 @@ public class ServerProfilesPage extends PreferencePage {
                 resetFields();
             }
         });
+        profileList.addSelectionListener(new SelectionListener() {
+                public void widgetDefaultSelected(SelectionEvent event) {
+                    renameProfile();
+                }
+                public void widgetSelected(SelectionEvent event) {
+                    // single click, do nothing
+                }
+        });
         profileList.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                String[] selection = profileList.getSelection();
-                if (selection.length > 0) {
-                    Profile profile = findByName(selection[0]);
-                    login.setText(profile.getLogin());
-                    pwd.setText(profile.getPassword());
-                    url.setText(profile.getServerURL());
-                    folder.setText(profile.getWorkspaceFolder());
-
-                    delButton.setEnabled(true);
-                }
+                activateProfileSelection();
             }
         });
     }
 
+    private void renameProfile() {
+        String[] selection = profileList.getSelection();
+        if (selection.length > 0) {
+            Profile profile = findByName(selection[0]);
+            InputDialog dlg = new InputDialog(getShell(),
+                    "Rename server profile",
+                    "Please enter the new profile name",
+                    selection[0],
+                    new AddProfileInputValidator());
+            if (dlg.open() == Window.OK) {
+                profile.setName(dlg.getValue());
+                profileList.setItem(profileList.getSelectionIndex(), dlg.getValue());
+            }
+        }
+    }
+    
+    private void activateProfileSelection() {
+        String[] selection = profileList.getSelection();
+        if (selection.length > 0) {
+            Profile profile = findByName(selection[0]);
+            login.setText(profile.getLogin());
+            pwd.setText(profile.getPassword());
+            url.setText(profile.getServerURL());
+            folder.setText(profile.getWorkspaceFolder());
+            delButton.setEnabled(true);
+        }
+    }
+    
     private void createProfileSettingsGroup(Composite composite) {
         Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -291,7 +324,7 @@ public class ServerProfilesPage extends PreferencePage {
     class AddProfileInputValidator implements IInputValidator {
         public String isValid(String text) {
             // check if a name was provided for the profile
-            if (text.length() < 1) {
+            if (text.trim().length() < 1) {
                 return "Profile name must contain at least one character.";
             }
             // check if the name does already exist

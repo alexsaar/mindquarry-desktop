@@ -20,7 +20,6 @@ import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Info;
 import org.tigris.subversion.javahl.LogMessage;
-import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;

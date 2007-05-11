@@ -21,8 +21,6 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.jface.preference.PreferenceStore;
 
-import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
-
 /**
  * Add summary documentation here.
  * 
