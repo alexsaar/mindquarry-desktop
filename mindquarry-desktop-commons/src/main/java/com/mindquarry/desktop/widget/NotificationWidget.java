@@ -14,6 +14,8 @@
 package com.mindquarry.desktop.widget;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -56,7 +58,6 @@ public class NotificationWidget {
         shell = new Shell(SWT.ON_TOP);
         shell.setLocation(display.getBounds().width - WIDTH, display
                 .getBounds().height);
-        shell.setLocation(400, 400);
         shell.setSize(WIDTH, HEIGHT);
 
         img = new Image(null, getClass().getResourceAsStream(
@@ -72,7 +73,6 @@ public class NotificationWidget {
         titleLabel.setFont(new Font(display, "Arial", 9, SWT.BOLD)); //$NON-NLS-1$
 
         msgLabel = new Label(shell, SWT.WRAP);
-        msgLabel.setBackground(display.getSystemColor(SWT.COLOR_CYAN));
         msgLabel.setLocation(2, titleLabel.getSize().y + 2);
         msgLabel.setSize(WIDTH - 6, HEIGHT - titleLabel.getSize().y - 6);
         
@@ -104,14 +104,14 @@ public class NotificationWidget {
     private void moveUp() {
         for (int i = 0; i <= currentHeight; i++) {
             updatePosition(true);
-            redrawAndSleep();
+            sleep();
         }
     }
 
     private void moveDown() {
         for (int i = 0; i <= currentHeight; i++) {
             updatePosition(false);
-            redrawAndSleep();
+            sleep();
         }
     }
 
@@ -129,13 +129,7 @@ public class NotificationWidget {
         });
     }
 
-    private void redrawAndSleep() {
-        display.syncExec(new Runnable() {
-            public void run() {
-                shell.redraw(shell.getLocation().x, shell.getLocation().y,
-                        shell.getSize().x, shell.getSize().y, true);
-            }
-        });
+    private void sleep() {
         // short sleep for better movement look&feel
         try {
             Thread.sleep(6);
