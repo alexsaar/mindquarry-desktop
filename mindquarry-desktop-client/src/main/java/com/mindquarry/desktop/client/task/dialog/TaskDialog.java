@@ -56,6 +56,8 @@ public class TaskDialog extends TitleAreaDialog {
 
     private ImageCombo priority = null;
 
+    private Label dueDateLabel = null;
+
     private DateTime calendar;
 
     private Task task;
@@ -83,7 +85,7 @@ public class TaskDialog extends TitleAreaDialog {
                 IMessageProvider.INFORMATION);
         getShell().setText("Edit Task: " + task.getTitle());
 
-        getShell().setSize(400, 600);
+        getShell().setSize(400, 650);
         getShell().redraw();
         return contents;
     }
@@ -166,8 +168,8 @@ public class TaskDialog extends TitleAreaDialog {
          * description.getLayoutData()).grabExcessVerticalSpace = true;
          */
 
-        label = new Label(composite, SWT.LEFT);
-        label.setText("Due Date:");
+        dueDateLabel = new Label(composite, SWT.LEFT);
+        dueDateLabel.setText("Due Date:");
 
         calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
         calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -176,7 +178,8 @@ public class TaskDialog extends TitleAreaDialog {
     /**
      * Creates the buttons for the button bar
      * 
-     * @param parent the parent composite
+     * @param parent
+     *            the parent composite
      */
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
@@ -226,6 +229,13 @@ public class TaskDialog extends TitleAreaDialog {
                 calendar.setMonth(Integer.valueOf(dateParts[1]).intValue() - 1);
                 calendar.setYear(Integer.valueOf(dateParts[0]).intValue());
             }
+        } else {
+            // TODO: find a better solution for this. DateTime cannot start with
+            // no date selected. Currently yu cannot selected today as a due
+            // date
+            // because that's selected by default:
+            dueDateLabel
+                    .setText("No Due date set for this task, select one below:");
         }
     }
 
