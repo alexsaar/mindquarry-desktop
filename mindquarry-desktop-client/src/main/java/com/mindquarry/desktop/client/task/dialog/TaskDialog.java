@@ -83,6 +83,8 @@ public class TaskDialog extends TitleAreaDialog {
                 IMessageProvider.INFORMATION);
         getShell().setText("Edit Task Data");
 
+        getShell().setSize(400, 600);
+        getShell().redraw();
         return contents;
     }
 
@@ -97,8 +99,6 @@ public class TaskDialog extends TitleAreaDialog {
         initTask();
         registerListeners();
         
-        getShell().setSize(400, 600);
-        getShell().redraw();
         return composite;
     }
 
