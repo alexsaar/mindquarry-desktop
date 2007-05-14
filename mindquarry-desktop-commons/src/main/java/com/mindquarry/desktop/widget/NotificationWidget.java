@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.widget;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -34,9 +35,13 @@ public class NotificationWidget {
 
     private Shell shell;
 
+    private Label titleLabel;
+
     private Label msgLabel;
 
     private Image img;
+
+    private int currentHeight;
 
     public NotificationWidget(Display display) {
         this.display = display;
@@ -51,7 +56,7 @@ public class NotificationWidget {
         shell = new Shell(SWT.ON_TOP);
         shell.setLocation(display.getBounds().width - WIDTH, display
                 .getBounds().height);
-        // shell.setLocation(400, 400);
+        shell.setLocation(400, 400);
         shell.setSize(WIDTH, HEIGHT);
 
         img = new Image(null, getClass().getResourceAsStream(
@@ -61,47 +66,77 @@ public class NotificationWidget {
         icon.setSize(20, 20);
         icon.setImage(img);
 
-        msgLabel = new Label(shell, SWT.WRAP);
-        msgLabel.setLocation(22, 2);
-        msgLabel.setSize(WIDTH - 22, HEIGHT - 2);
+        titleLabel = new Label(shell, SWT.LEFT);
+        titleLabel.setLocation(22, 2);
+        titleLabel.setSize(WIDTH - 26, 20);
+        titleLabel.setFont(new Font(display, "Arial", 9, SWT.BOLD)); //$NON-NLS-1$
 
+        msgLabel = new Label(shell, SWT.WRAP);
+        msgLabel.setBackground(display.getSystemColor(SWT.COLOR_CYAN));
+        msgLabel.setLocation(2, titleLabel.getSize().y + 2);
+        msgLabel.setSize(WIDTH - 6, HEIGHT - titleLabel.getSize().y - 6);
+        
         shell.open();
     }
 
-    public void show(final String message, final long duration) {
-        msgLabel.setText(message);
-        msgLabel.redraw();
+    public void show(final String title, final String message,
+            final long duration) {
+        display.syncExec(new Runnable() {
+            public void run() {
+                titleLabel.setText(title);
+                msgLabel.setText(message);
 
-        int height = shell.getSize().y;
-        for (int i = 0; i <= height; i++) {
-            updatePosition(true);
-            redrawAndSleep();
-        }
+                titleLabel.redraw();
+                msgLabel.redraw();
+
+                currentHeight = shell.getSize().y;
+            }
+        });
+        moveUp();
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
+            // nothing to do here
         }
-        for (int i = 0; i <= height; i++) {
+        moveDown();
+    }
+
+    private void moveUp() {
+        for (int i = 0; i <= currentHeight; i++) {
+            updatePosition(true);
+            redrawAndSleep();
+        }
+    }
+
+    private void moveDown() {
+        for (int i = 0; i <= currentHeight; i++) {
             updatePosition(false);
             redrawAndSleep();
         }
     }
 
     private void updatePosition(final boolean up) {
-        int x = shell.getLocation().x;
-        int y = shell.getLocation().y;
-        if (up) {
-            shell.setLocation(x, --y);
-        } else {
-            shell.setLocation(x, ++y);
-        }
+        display.syncExec(new Runnable() {
+            public void run() {
+                int x = shell.getLocation().x;
+                int y = shell.getLocation().y;
+                if (up) {
+                    shell.setLocation(x, --y);
+                } else {
+                    shell.setLocation(x, ++y);
+                }
+            }
+        });
     }
 
     private void redrawAndSleep() {
-        shell.redraw(shell.getLocation().x, shell.getLocation().y, shell
-                .getSize().x, shell.getSize().y, true);
-        shell.layout(true, true);
-
+        display.syncExec(new Runnable() {
+            public void run() {
+                shell.redraw(shell.getLocation().x, shell.getLocation().y,
+                        shell.getSize().x, shell.getSize().y, true);
+            }
+        });
+        // short sleep for better movement look&feel
         try {
             Thread.sleep(6);
         } catch (InterruptedException e) {
@@ -109,9 +144,20 @@ public class NotificationWidget {
         }
     }
 
+    public void dispose() {
+        display.syncExec(new Runnable() {
+            public void run() {
+                shell.dispose();
+                img.dispose();
+            }
+        });
+    }
+
     public boolean isDisposed() {
         if (shell.isDisposed()) {
-            img.dispose();
+            if (!img.isDisposed()) {
+                img.dispose();
+            }
         }
         return shell.isDisposed();
     }

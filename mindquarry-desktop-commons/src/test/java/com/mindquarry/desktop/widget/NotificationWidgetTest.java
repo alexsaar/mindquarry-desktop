@@ -29,12 +29,28 @@ import junit.framework.TestCase;
 public class NotificationWidgetTest extends TestCase {
     @Test
     public void testNotificationWidget() throws IOException {
-        Display display = new Display();
+        final Display display = new Display();
 
-        NotificationWidget widget = new NotificationWidget(display);
-        widget.show("this is a notification that contains a bit more text...", //$NON-NLS-1$
-                2000);
-        widget.show("this is a second notification...", //$NON-NLS-1$
-                2000);
+        final NotificationWidget widget = new NotificationWidget(display);
+        Thread worker = new Thread(new Runnable() {
+            public void run() {
+                widget
+                        .show(
+                                "the notification title", //$NON-NLS-1$
+                                "this is a notification that contains a bit more text...", //$NON-NLS-1$
+                                2000);
+                widget.show("the notification title", //$NON-NLS-1$
+                        "this is a second notification...", //$NON-NLS-1$
+                        2000);
+                widget.dispose();
+            }
+        });
+        worker.start();
+        while (!widget.isDisposed()) {
+            if (!display.readAndDispatch()) {
+                display.sleep();
+            }
+        }
+        display.dispose();
     }
 }
