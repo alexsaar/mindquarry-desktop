@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.Shell;
  *         Saar</a>
  */
 public class NotificationWidget {
-    private static final int WIDTH = 160;
+    private static final int WIDTH = 200;
 
-    private static final int HEIGHT = 60;
+    private static final int HEIGHT = 100;
 
     private final Display display;
 
@@ -49,9 +49,9 @@ public class NotificationWidget {
 
     private void createContents() {
         shell = new Shell(SWT.ON_TOP);
-//        shell.setLocation(display.getBounds().width - WIDTH, display
-//                .getBounds().height);
-        shell.setLocation(400, 400);
+        shell.setLocation(display.getBounds().width - WIDTH, display
+                .getBounds().height);
+        // shell.setLocation(400, 400);
         shell.setSize(WIDTH, HEIGHT);
 
         img = new Image(null, getClass().getResourceAsStream(
@@ -63,8 +63,8 @@ public class NotificationWidget {
 
         msgLabel = new Label(shell, SWT.WRAP);
         msgLabel.setLocation(22, 2);
-        msgLabel.setSize(WIDTH - 22, HEIGHT -2);
-        
+        msgLabel.setSize(WIDTH - 22, HEIGHT - 2);
+
         shell.open();
     }
 
