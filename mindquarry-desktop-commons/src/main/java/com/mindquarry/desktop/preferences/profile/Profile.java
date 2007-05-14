@@ -221,6 +221,9 @@ public class Profile {
         // set properties from profiles
         int pos = 0;
         
+        if (store == null)
+            return;
+        
         // PreferenceStore cannot properly delete entries, so we first "delete"
         // all entries by setting them to the empty string and then set all entries
         // that are left in the following loop (on reading the config, we ignore
