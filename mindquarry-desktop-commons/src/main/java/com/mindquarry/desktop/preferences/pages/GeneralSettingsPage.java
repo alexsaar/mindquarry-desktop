@@ -14,6 +14,8 @@
 package com.mindquarry.desktop.preferences.pages;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -25,7 +27,9 @@ import org.eclipse.swt.graphics.Image;
  */
 public class GeneralSettingsPage extends FieldEditorPreferencePage {
     public static final String NAME = "general"; //$NON-NLS-1$
-    
+
+    public static final String NOTIFY_DELAY = "com.mindquarry.desktop.notify.delay"; //$NON-NLS-1$
+
     /**
      * ShortcutsPage default constructor
      */
@@ -40,7 +44,13 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
                                         "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"))));
     }
 
-    @Override
     protected void createFieldEditors() {
+        IPreferenceStore store = getPreferenceStore();
+        store.setDefault(NOTIFY_DELAY, 2);
+
+        IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
+                NOTIFY_DELAY, "Notification Message Delay (in seconds):",
+                getFieldEditorParent());
+        addField(notifyDisplayDelay);
     }
 }
