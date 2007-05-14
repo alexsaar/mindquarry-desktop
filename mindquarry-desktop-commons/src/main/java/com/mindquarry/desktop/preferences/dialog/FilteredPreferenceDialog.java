@@ -13,11 +13,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ISafeRunnable;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ListenerList;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.DialogMessageArea;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -40,7 +40,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.jface.viewers.ISelection;
@@ -88,6 +87,9 @@ import org.eclipse.swt.widgets.Tree;
  */
 public class FilteredPreferenceDialog extends TrayDialog implements
         IPreferencePageContainer, IPageChangeProvider {
+    
+    private static Log log;
+    
     /**
      * Layout for the page container.
      * 
@@ -232,6 +234,7 @@ public class FilteredPreferenceDialog extends TrayDialog implements
     public FilteredPreferenceDialog(Shell parentShell,
             PreferenceManager manager) {
         super(parentShell);
+        log = LogFactory.getLog(FilteredPreferenceDialog.class);
         setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
         preferenceManager = manager;
     }
@@ -918,15 +921,16 @@ public class FilteredPreferenceDialog extends TrayDialog implements
             public void handleException(Throwable e) {
                 errorOccurred = true;
 
-                Policy.getLog().log(
-                        new Status(IStatus.ERROR, Policy.JFACE, 0,
-                                e.toString(), e));
+                log.error(e.toString(), e);
+                //Policy.getLog().log(
+                //        new Status(IStatus.ERROR, Policy.JFACE, 0,
+                //                e.toString(), e));
 
                 clearSelectedNode();
                 String message = JFaceResources
                         .getString("SafeRunnable.errorMessage"); //$NON-NLS-1$
                 MessageDialog.openError(getShell(), JFaceResources
-                        .getString("Error"), message); //$NON-NLS-1$
+                        .getString("Error"), message + ": " +  e.toString()); //$NON-NLS-1$  //$NON-NLS-2$
 
             }
         });
