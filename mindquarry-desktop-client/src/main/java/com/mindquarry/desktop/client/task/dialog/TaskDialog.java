@@ -81,7 +81,7 @@ public class TaskDialog extends TitleAreaDialog {
         setMessage(
                 "Please enter the tasks data and press OK for adding/changing the task.",
                 IMessageProvider.INFORMATION);
-        getShell().setText("Edit Task Data");
+        getShell().setText("Edit Task: " + task.getTitle());
 
         getShell().setSize(400, 600);
         getShell().redraw();
@@ -149,6 +149,7 @@ public class TaskDialog extends TitleAreaDialog {
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL);
         gridData.heightHint = 100;
+        gridData.widthHint = 360;
         summary.setLayoutData(gridData);
         ((GridData) summary.getLayoutData()).verticalSpan = 3;
         ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
