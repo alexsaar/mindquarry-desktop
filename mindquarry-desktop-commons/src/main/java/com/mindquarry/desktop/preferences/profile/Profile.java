@@ -42,6 +42,10 @@ public class Profile {
 
     public static final String PROFILE_SELECTED = "com.mindquarry.server.selected"; //$NON-NLS-1$
 
+    private static final String DELIM = "."; //$NON-NLS-1$
+
+    private static final String EMPTY = ""; //$NON-NLS-1$
+
     private String name;
 
     private String login;
@@ -179,23 +183,25 @@ public class Profile {
         String[] prefs = store.preferenceNames();
         for (String pref : prefs) {
             if (pref.startsWith(PROFILE_KEY_BASE)) {
+                String val = store.getString(pref);
+                if (val.trim().equals(EMPTY)) {
+                    // ignore empty values as PreferenceStore cannot properly delete
+                    // entries, so we just set deleted entries to the empty string
+                    continue;
+                }
                 // analyze preference
-                int nbr = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
+                int number = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
                         .length(), PROFILE_KEY_BASE.length() + 1));
                 String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
                         pref.length());
 
                 // init profile
                 Profile profile;
-                if (storedProfiles.containsKey(nbr)) {
-                    profile = storedProfiles.get(nbr);
+                if (storedProfiles.containsKey(number)) {
+                    profile = storedProfiles.get(number);
                 } else {
-                    profile = new Profile("", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            ""); //$NON-NLS-1$
-                    storedProfiles.put(nbr, profile);
+                    profile = new Profile(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY);
+                    storedProfiles.put(number, profile);
                 }
                 setProfileAttribute(store, profile, pref, prefName);
             }
@@ -214,20 +220,37 @@ public class Profile {
             List<Profile> profiles) {
         // set properties from profiles
         int pos = 0;
+        
+        // PreferenceStore cannot properly delete entries, so we first "delete"
+        // all entries by setting them to the empty string and then set all entries
+        // that are left in the following loop (on reading the config, we ignore
+        // empty entries):
+        for (String storeKey : store.preferenceNames()) {
+            if (storeKey.startsWith(Profile.PROFILE_KEY_BASE)) {
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_NAME, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_LOGIN, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_SERVER_URL, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_WORKSPACES, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_PASSWORD, EMPTY);
+                pos++;
+            }
+        }
+        
+        pos = 0;
         for (Profile profile : profiles) {
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_NAME, profile.getName());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_LOGIN, profile.getLogin());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_SERVER_URL, profile.getServerURL());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_WORKSPACES, profile.getWorkspaceFolder());
 
-            // encrypt and store password
+            // pseudo-encrypt and store password
             byte[] passwordData = Base64.encodeBase64(profile.getPassword()
                     .getBytes());
-            store.putValue(Profile.PROFILE_KEY_BASE + pos + "." //$NON-NLS-1$
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_PASSWORD, new String(passwordData));
             pos++;
         }
@@ -250,7 +273,7 @@ public class Profile {
         for (String pref : prefs) {
             if (pref.startsWith(PROFILE_KEY_BASE)) {
                 // analyze preference
-                int nbr = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
+                int number = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
                         .length(), PROFILE_KEY_BASE.length() + 1));
                 String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
                         pref.length());
@@ -258,7 +281,7 @@ public class Profile {
                 // check if we found the select profile
                 if ((prefName.equals(PREF_NAME))
                         && (store.getString(pref).equals(name))) {
-                    store.putValue(PROFILE_SELECTED, String.valueOf(nbr));
+                    store.putValue(PROFILE_SELECTED, String.valueOf(number));
                     return;
                 }
             }
@@ -283,11 +306,7 @@ public class Profile {
 
                 // init profile if not done already
                 if (profile == null) {
-                    profile = new Profile("", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            "", //$NON-NLS-1$
-                            ""); //$NON-NLS-1$
+                    profile = new Profile(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY);
                 }
 
                 // set profile values
