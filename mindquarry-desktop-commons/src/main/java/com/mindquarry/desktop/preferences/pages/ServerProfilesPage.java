@@ -141,6 +141,7 @@ public class ServerProfilesPage extends PreferencePage {
                     profileList.select(profileList.getItemCount() - 1);
                     profiles.add(profile);
                     resetFields();
+                    login.setFocus();
                 }
             }
         });
