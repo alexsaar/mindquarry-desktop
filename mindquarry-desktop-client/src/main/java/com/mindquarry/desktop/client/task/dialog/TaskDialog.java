@@ -13,6 +13,10 @@
  */
 package com.mindquarry.desktop.client.task.dialog;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -252,9 +256,12 @@ public class TaskDialog extends TitleAreaDialog {
         });
         calendar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                task.setDate((calendar.getMonth() + 1) + "/" //$NON-NLS-1$
-                        + calendar.getDay() + "/" //$NON-NLS-1$
-                        + calendar.getYear());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar cal = new GregorianCalendar();
+                cal.set(Calendar.YEAR, calendar.getYear());
+                cal.set(Calendar.MONTH, calendar.getMonth());
+                cal.set(Calendar.DAY_OF_MONTH, calendar.getDay());
+                task.setDate(sdf.format(cal.getTime()));
             }
         });
     }

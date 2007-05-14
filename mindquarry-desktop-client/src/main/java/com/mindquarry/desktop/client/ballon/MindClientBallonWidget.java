@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.ballon;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -322,10 +323,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 MindClient
                         .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
             }
-            Calendar cal = new GregorianCalendar();
-            String date = (cal.get(Calendar.MONTH) + 1) + "/" //$NON-NLS-1$
-                    + cal.get(Calendar.DAY_OF_MONTH) + "/" //$NON-NLS-1$
-                    + cal.get(Calendar.YEAR);
+            Calendar cal = new GregorianCalendar();     // current date
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String date = sdf.format(cal.getTime());
 
             // create initial task
             Task task = new Task();
