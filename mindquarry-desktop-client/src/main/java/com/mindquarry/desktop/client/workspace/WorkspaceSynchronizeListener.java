@@ -124,7 +124,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                 .getPreferenceStore());
 
         if (selectedProfile == null) {
-            MindClient
+            client
                     .showMessage("Error",
                             "No profile selected. Please select a profile and try again.");
             return;
@@ -149,7 +149,7 @@ public class WorkspaceSynchronizeListener implements Listener {
                             .getWorkspaces());
                     op.run();
                 } catch (Exception e) {
-                    MindClient.showMessage("Error",
+                    client.showMessage("Error",
                             "Error during workspaces synchronization.");
                     log.error("Error during workspaces synchronization.", e); //$NON-NLS-1$
                 }

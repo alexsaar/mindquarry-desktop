@@ -275,16 +275,16 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                         profile.getLogin(), profile.getPassword());
             } catch (Exception e) {
-                MindClient.showMessage("Error", "Could not update team list.");
+                client.showMessage("Error", "Could not update team list.");
                 log("Error while updating team list.", e);
                 return;
             }
             if (teamList.getTeams().size() == 0) {
-                MindClient
+                client
                         .showMessage("Authorization Error",
                                 "You are not a member of a team. Thus you can not create new tasks.");
             }
-            Calendar cal = new GregorianCalendar();     // current date
+            Calendar cal = new GregorianCalendar(); // current date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String date = sdf.format(cal.getTime());
 
@@ -311,7 +311,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 task.getContentAsXML().asXML().getBytes());
                     }
                 } catch (Exception e) {
-                    MindClient.showMessage("Network error",
+                    client.showMessage("Network error",
                             "Could not create the task.");
                     log.error("Could not create the task.", e);
                 }

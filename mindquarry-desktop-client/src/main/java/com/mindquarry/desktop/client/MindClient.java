@@ -41,6 +41,7 @@ import com.mindquarry.desktop.client.util.widgets.IconActionThread;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
+import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -324,10 +325,11 @@ public class MindClient {
         return MindClient.iconAction;
     }
 
-    public static synchronized void showMessage(final String title,
+    public synchronized void showMessage(final String title,
             final String message) {
         NotificationWidget widget = new NotificationWidget(shell.getDisplay());
-        widget.show(title, message, 2000);
+        widget.show(title, message, getPreferenceStore().getInt(
+                GeneralSettingsPage.NOTIFY_DELAY) * 1000);
         widget.dispose();
     }
 }

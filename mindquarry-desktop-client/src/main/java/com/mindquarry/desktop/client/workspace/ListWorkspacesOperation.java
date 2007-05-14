@@ -63,7 +63,7 @@ public class ListWorkspacesOperation extends SvnOperation {
             teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            MindClient
+            client
                     .showMessage("Error",
                             "Could not retrieve list of tasks for workspace synchronization.");
             log.error("Could not retrieve list of tasks " //$NON-NLS-1$

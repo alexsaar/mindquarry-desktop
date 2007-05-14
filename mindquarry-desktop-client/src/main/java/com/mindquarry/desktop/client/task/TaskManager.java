@@ -214,11 +214,11 @@ public class TaskManager {
             taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            MindClient.showMessage("Error", "Could not update list of tasks.");
             log.error("Could not update list of tasks.", e);
             updateTaskWidgetContents(false, e, false);
             setRefreshStatus(true);
             refreshing = false;
+            client.showMessage("Error", "Could not update list of tasks.");
             return;
         }
         // loop and add tasks
@@ -390,7 +390,7 @@ public class TaskManager {
                                     .getContentAsXML().asXML().getBytes());
                         }
                     } catch (Exception e) {
-                        MindClient.showMessage("Network error",
+                        client.showMessage("Network error",
                                 "Could not update the task: " + e.toString());
                         log.error("Could not update task with id " //$NON-NLS-1$
                                 + task.getId(), e);
