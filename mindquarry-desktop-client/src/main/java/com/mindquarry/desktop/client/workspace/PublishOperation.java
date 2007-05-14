@@ -85,9 +85,8 @@ public class PublishOperation extends SvnOperation {
                             .toArray(new String[0]));
                 }
             } catch (Exception e) {
-                MindClient
-                        .showErrorMessage("Could not publish workspace changes "
-                                + id);
+                MindClient.showMessage("Error",
+                        "Could not publish workspace changes " + id);
                 log.error("Could not publish workspace changes " //$NON-NLS-1$
                         + id, e);
             }

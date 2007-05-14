@@ -120,9 +120,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void updateProfileSelector() {
         client.updateProfileSelector();
     }
-    
+
     public void asyncRefreshTasks() {
-       tman.asyncRefresh();
+        tman.asyncRefresh();
     }
 
     private void initBalloonPosition() {
@@ -256,53 +256,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
         doneButton.addListener(SWT.Selection, new TaskDoneListener(tman));
     }
 
-    /**
-     * This method initializes wikiGroup
-     */
-    // private void createWikiGroup() {
-    // Group group = new Group(container, SWT.NONE);
-    // group.setBackground(container.getBackground());
-    // group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    // group.setLayout(new GridLayout(2, false));
-    // group.setText("Wiki");
-    //
-    // final Text wikiTextArea = new Text(group, SWT.MULTI | SWT.WRAP
-    // | SWT.V_SCROLL | SWT.BORDER);
-    // wikiTextArea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-    // 2, 2));
-    // ((GridData) wikiTextArea.getLayoutData()).heightHint = 130;
-    // wikiTextArea.setEnabled(false);
-    //
-    // Button clearButton = new Button(group, SWT.NONE);
-    // clearButton.setText("Clear");
-    // clearButton.setToolTipText("Use this button to clear the text in the Wiki
-    // textbox."));
-    // clearButton
-    // .setImage(new Image(
-    // Display.getCurrent(),
-    // getClass()
-    // .getResourceAsStream(
-    // "/org/tango-project/tango-icon-theme/22x22/actions/edit-clear.png")));
-    // //$NON-NLS-1$
-    // clearButton.setEnabled(false);
-    // clearButton.setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
-    //
-    // Button postButton = new Button(group, SWT.NONE);
-    // postButton.setText("Post");
-    // postButton.setToolTipText("Use this button for posting the content of the
-    // Wiki textbox to your personal Wiki page.");
-    // postButton
-    // .setImage(new Image(
-    // Display.getCurrent(),
-    // getClass()
-    // .getResourceAsStream(
-    // "/org/tango-project/tango-icon-theme/22x22/actions/document-new.png")));
-    // //$NON-NLS-1$
-    // postButton.setEnabled(false);
-    // postButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
-    // }
     public void handleEvent(Event event) {
         this.toggleBalloon();
+    }
+
+    private void log(String message, Exception e) {
+        log.error(message, e);
     }
 
     class CreateTaskListener implements Listener {
@@ -316,12 +275,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                         profile.getLogin(), profile.getPassword());
             } catch (Exception e) {
-                MindClient.showErrorMessage(e.getLocalizedMessage());
+                MindClient.showMessage("Error", "Could not update team list.");
+                log("Error while updating team list.", e);
                 return;
             }
             if (teamList.getTeams().size() == 0) {
                 MindClient
-                        .showErrorMessage("You are not a member of a team. Thus you can not create new tasks.");
+                        .showMessage("Authorization Error",
+                                "You are not a member of a team. Thus you can not create new tasks.");
             }
             Calendar cal = new GregorianCalendar();     // current date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -333,7 +294,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
             task.setPriority("low"); //$NON-NLS-1$
             task.setTitle("new task");
             task.setSummary("summary of the task");
-            //task.setDescription("description of the task");
             task.setDate(date);
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
@@ -351,7 +311,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 task.getContentAsXML().asXML().getBytes());
                     }
                 } catch (Exception e) {
-                    MindClient.showErrorMessage("Could not create the task.");
+                    MindClient.showMessage("Network error",
+                            "Could not create the task.");
                     log.error("Could not create the task.", e);
                 }
             }

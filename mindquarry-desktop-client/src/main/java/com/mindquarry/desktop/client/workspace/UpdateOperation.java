@@ -81,7 +81,8 @@ public class UpdateOperation extends SvnOperation {
                 svnHelper.getLocalChanges();
                 svnHelper.update();
             } catch (ClientException e) {
-                MindClient.showErrorMessage("Could not update workspace " + id);
+                MindClient.showMessage("Error", "Could not update workspace "
+                        + id);
                 log.error("Could not update workspace " //$NON-NLS-1$
                         + id, e);
             }

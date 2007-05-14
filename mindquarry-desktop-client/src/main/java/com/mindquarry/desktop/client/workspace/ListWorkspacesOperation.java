@@ -64,7 +64,8 @@ public class ListWorkspacesOperation extends SvnOperation {
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
             MindClient
-                    .showErrorMessage("Could not retrieve list of tasks for workspace synchronization.");
+                    .showMessage("Error",
+                            "Could not retrieve list of tasks for workspace synchronization.");
             log.error("Could not retrieve list of tasks " //$NON-NLS-1$
                     + "for workspace synchronization.", e); //$NON-NLS-1$
             return false;

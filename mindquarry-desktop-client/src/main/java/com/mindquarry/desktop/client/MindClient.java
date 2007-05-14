@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
@@ -46,6 +45,7 @@ import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.splash.SplashScreen;
+import com.mindquarry.desktop.widget.NotificationWidget;
 
 /**
  * Main class for the MindClient. Responsible for managing persistence of
@@ -61,7 +61,7 @@ public class MindClient {
 
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
-    
+
     private static Shell shell;
 
     private final Image icon;
@@ -73,10 +73,11 @@ public class MindClient {
     private static IconActionThread iconAction;
 
     private PreferenceStore store;
-    
-    private MindClientBallonWidget ballonWindow; 
-        
+
+    private MindClientBallonWidget ballonWindow;
+
     private Menu menu;
+
     private List profilesInMenu = new ArrayList();
 
     public MindClient() throws IOException {
@@ -99,7 +100,7 @@ public class MindClient {
 
         shell = new Shell(display, SWT.NONE);
         shell.setText(APPLICATION_NAME);
-        
+
         // init splash screen
         SplashScreen splash = SplashScreen.newInstance(3);
         splash.show();
@@ -107,10 +108,10 @@ public class MindClient {
         // init client
         MindClient mindclient = new MindClient();
         splash.step();
-        
+
         mindclient.checkArguments(args);
         splash.step();
-        
+
         mindclient.createTrayIconAndMenu(display);
         splash.step();
 
@@ -174,7 +175,7 @@ public class MindClient {
 
         // List all profiles:
         updateProfileSelector();
-        
+
         // add separator
         MenuItem menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
@@ -244,7 +245,8 @@ public class MindClient {
             menuItem.setText(profile.getName());
             menuItem.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
-                    Profile.selectProfile(getPreferenceStore(), menuItem.getText());
+                    Profile.selectProfile(getPreferenceStore(), menuItem
+                            .getText());
                 }
             });
             if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
@@ -260,7 +262,7 @@ public class MindClient {
             mi.setSelection(true);
         }
     }
-    
+
     private void showPreferenceDialog(boolean showProfiles) {
         loadOptions();
 
@@ -285,7 +287,8 @@ public class MindClient {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            showErrorMessage("Could not load MindClient settings: " + e.toString());
+            showMessage("Error", "Could not load MindClient settings: "
+                    + e.toString());
         }
     }
 
@@ -293,7 +296,8 @@ public class MindClient {
         try {
             store.save();
         } catch (Exception e) {
-            showErrorMessage("Could not save MindClient settings: " + e.toString());
+            showMessage("Error", "Could not save MindClient settings: "
+                    + e.toString());
         }
         updateProfileSelector();
     }
@@ -320,17 +324,10 @@ public class MindClient {
         return MindClient.iconAction;
     }
 
-    public static void showErrorMessage(final String message) {
-        shell.getDisplay().asyncExec(new Runnable() {
-            public void run() {
-                final ToolTip tip = new ToolTip(shell, SWT.BALLOON
-                        | SWT.ICON_ERROR);
-                tip.setMessage(message);
-                tip.setText("An error occured");
-                item.setToolTip(tip);
-                tip.setAutoHide(true);
-                tip.setVisible(true);
-            }
-        });
+    public static synchronized void showMessage(final String title,
+            final String message) {
+        NotificationWidget widget = new NotificationWidget(shell.getDisplay());
+        widget.show(title, message, 2000);
+        widget.dispose();
     }
 }
