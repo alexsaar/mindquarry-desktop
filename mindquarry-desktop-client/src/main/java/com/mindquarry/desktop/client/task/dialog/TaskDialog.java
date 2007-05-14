@@ -214,10 +214,13 @@ public class TaskDialog extends TitleAreaDialog {
             }
         }
         if (task.getDate() != null && !task.getDate().trim().equals("")) {
-            String[] dateParts = task.getDate().split("/"); //$NON-NLS-1$
-            calendar.setDay(Integer.valueOf(dateParts[1]).intValue());
-            calendar.setMonth(Integer.valueOf(dateParts[0]).intValue() - 1);
-            calendar.setYear(Integer.valueOf(dateParts[2]).intValue());
+            // iso 8601 date format:
+            String[] dateParts = task.getDate().split("-"); //$NON-NLS-1$
+            if (dateParts.length == 3) {
+                calendar.setDay(Integer.valueOf(dateParts[2]).intValue());
+                calendar.setMonth(Integer.valueOf(dateParts[1]).intValue() - 1);
+                calendar.setYear(Integer.valueOf(dateParts[0]).intValue());
+            }
         }
     }
 
