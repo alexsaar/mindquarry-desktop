@@ -140,7 +140,7 @@ public class TaskManager {
 
         // check number of active tasks, if 0 display NoTasksWidget
         if (tasks.isEmpty()) {
-            updateTaskWidgetContents(false, false, true);
+            updateTaskWidgetContents(false, null, true);
         } else {
             taskTableViewer.refresh();
         }
@@ -206,7 +206,7 @@ public class TaskManager {
             setRefreshStatus(true);
             return;
         }
-        updateTaskWidgetContents(true, false, false);
+        updateTaskWidgetContents(true, null, false);
 
         TaskList taskList = null;
         try {
@@ -215,7 +215,7 @@ public class TaskManager {
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
             log.error("Unable to get list of tasks.", e);
-            updateTaskWidgetContents(false, true, false);
+            updateTaskWidgetContents(false, e, false);
             setRefreshStatus(true);
             refreshing = false;
             return;
@@ -240,9 +240,9 @@ public class TaskManager {
             }
         }
         if (tasks.isEmpty()) {
-            updateTaskWidgetContents(false, false, true);
+            updateTaskWidgetContents(false, null, true);
         } else {
-            updateTaskWidgetContents(false, false, false);
+            updateTaskWidgetContents(false, null, false);
 
             // update task table
             log.info("Updating list of tasks.");
@@ -275,14 +275,14 @@ public class TaskManager {
     }
 
     private void updateTaskWidgetContents(final boolean refreshing,
-            final boolean error, final boolean empty) {
+            final Exception exception, final boolean empty) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (refreshing) {
                     destroyContent();
                     refreshWidget = new TaskUpdateComposite(taskContainer,
                             "Updating task list" + " ..."); //$NON-NLS-2$
-                } else if (!error && !empty) {
+                } else if (exception == null && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);
                     table.setHeaderVisible(false);
@@ -322,14 +322,14 @@ public class TaskManager {
                                     taskTableViewer, doneButton));
                     taskTableViewer
                             .addDoubleClickListener(new TaskTableDoubleClickListener());
-                } else if (!error && empty) {
+                } else if (exception == null && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksComposite(taskContainer,
                             "Currently no tasks are active.");
                 } else {
                     destroyContent();
-                    errorWidget = new TaskErrorComposite(taskContainer,
-                            "List of tasks could not be updated.");
+                    String errMessage = "List of tasks could not be updated:\n" + exception.toString();
+                    errorWidget = new TaskErrorComposite(taskContainer, errMessage);
                 }
                 taskContainer.layout(true);
             }
