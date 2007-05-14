@@ -40,8 +40,7 @@ public class NotificationWidget {
 
     public NotificationWidget(Display display) {
         this.display = display;
-
-        display.syncExec(new Runnable() {
+        this.display.syncExec(new Runnable() {
             public void run() {
                 createContents();
             }
