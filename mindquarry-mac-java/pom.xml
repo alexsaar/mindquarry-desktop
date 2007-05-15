@@ -37,6 +37,12 @@
 			<version>1.0-M2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+	
+	<scm>
+		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-mac-java</connection>
+		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-mac-java</url>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-mac-java</developerConnection>
+	</scm>
 
 	<build>
 		<plugins>

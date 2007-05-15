@@ -37,9 +37,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-1.1</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-1.1</url>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-1.1</developerConnection>
+		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</connection>
+		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</url>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</developerConnection>
 	</scm>
 
 	<build>

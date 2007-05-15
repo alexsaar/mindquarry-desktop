@@ -57,9 +57,9 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-desktop-commons</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-desktop-commons</url>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-base/tags/mindquarry-desktop-commons</developerConnection>
+		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</connection>
+		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</url>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</developerConnection>
 	</scm>
 
 	<build>
