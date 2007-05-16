@@ -82,7 +82,7 @@ public class UpdateOperation extends SvnOperation {
                 svnHelper.update();
             } catch (ClientException e) {
                 client.showMessage("Error", "Could not update workspace "
-                        + id);
+                        + id + ": " + e.toString());    //$NON-NLS-1$
                 log.error("Could not update workspace " //$NON-NLS-1$
                         + id, e);
             }
