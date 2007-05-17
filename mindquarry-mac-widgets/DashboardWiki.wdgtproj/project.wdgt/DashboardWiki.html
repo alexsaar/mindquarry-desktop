@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <style type="text/css" title="AppleStyle">
+        @import "DashboardWiki.css";
+    </style>
+    <script type="text/javascript" src="AppleClasses/AppleAnimator.js" charset="utf-8"></script>
+    <script type="text/javascript" src="AppleClasses/AppleButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="AppleClasses/AppleInfoButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="localizedStrings.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/utilities.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/setup.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/Text.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/InfoButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="Parts/GlassButton.js" charset="utf-8"></script>
+    <script type="text/javascript" src="DashboardWiki.js" charset="utf-8"></script>
+</head>
+<body onload="load();">
+	<div id="front">
+		<img id="frontImg" src="Images/front.png" alt="" apple-locked="true" apple-part="com.apple.Dashcode.part.frontimage" apple-style="image-theme: 2; image-shape: 3; image-opacity: 1.00; image-top-color: 0.4884,0.5523,0.8311; image-bottom-color: 1.0000,1.0000,0.4000; image-radius: 6,6,6,6; image-border: 1; image-border-color: 0.0000,0.0000,0.5020; image-border-width: 1; shine-include-shine: 1; shine-strength: 0.00; shine-include-alphas: 1; shine-alpha-level: 0.37; shine-height: 0.89; glass-include-arc: 0; shine-include-bottom: 1; shadow-include-shadow: 1; shadow-blur: 9.00; shadow-offset: -1.00,-6.00; shadow-color: 0.0000,0.0000,0.0000,0.3333;">
+		<div class="apple-no-children" id="info" apple-part="com.apple.Dashcode.part.infobutton" apple-default-image-visibility="hidden"></div>
+        <div apple-part="com.apple.Dashcode.part.text" class="apple-text apple-no-children" id="titleText" apple-group="text" onclick="editThis(event);"></div>
+    <div apple-part="com.apple.Dashcode.part.text" id="bodyText" apple-group="text" onclick="editThis(event);">Quick read-and-write access to your Mindquarry Wiki.</div>
+	
+	
+	
+	
+	
+	<div id="viewBox" apple-group="box" style="" apple-default-image-visibility="hidden">
+	
+	
+	
+	
+	
+		<img title="open wiki start page" src="Images/go-home 1.png" id="homeimg" style="" class="buttonImage" onclick="loadStart(event);">
+	
+	
+	
+	
+	
+	<img title="add new wiki page" src="Images/list-add 3.png" id="newimg" style="" class="buttonImage" onclick="editNew(event);">
+	
+	
+	
+	
+	
+	<img title="edit wiki page" src="Images/edit 1.png" id="editimg" class="buttonImage" onclick="editThis(event);">
+	
+	
+	
+	
+	
+	</div>
+	<div id="editBox" apple-group="box" style="" apple-default-image-visibility="hidden">
+<img title="cancel editing" src="Images/cancel 1.png" id="cancelimg" class="buttonImage" onclick="showThis(event);" apple-default-image-visibility="hidden">
+<img title="save changes" src="Images/save 1.png" id="saveimg" class="buttonImage" onclick="saveThis(event);" apple-default-image-visibility="hidden">
+<img title="insert link" src="Images/insert-link-fast 1.png" id="linkImg" class="buttonImage" apple-default-image-visibility="hidden" onclick="makeLink(event);">
+	</div>
+	
+	</div>
+    <div id="back">
+	   <img id="backImg" src="Images/back.png" alt="" apple-locked="true" apple-part="com.apple.Dashcode.part.backimage" apple-style=" image-radius: 12,12,12,12; image-border: 1; image-border-color: 0.1500,0.1500,0.1500; image-border-width: 3; shadow-include-shadow: 1; shadow-blur: 9.00; shadow-offset: -1.00,-6.00; shadow-color: 0.0000,0.0000,0.0000,0.3333;">
+    	<img class="backDevelopedWith" src="Images/DevelopedWith.png" alt="Created with Dashcode">
+        <div id="done" class="apple-no-children" apple-part="com.apple.Dashcode.part.glassbutton"></div>
+    <input type="text" value="" class="apple-textfield apple-no-children" apple-part="com.apple.Dashcode.part.textfield" id="urlfield" apple-group="textfield">
+    <div apple-part="com.apple.Dashcode.part.text" class="apple-text apple-no-children" apple-default-image-visibility="hidden" id="text" apple-group="text"></div>
+    <div apple-part="com.apple.Dashcode.part.text" class="apple-text apple-no-children" apple-default-image-visibility="hidden" id="text13" apple-group="text"></div>
+    <input type="text" value="" class="apple-textfield apple-no-children" apple-part="com.apple.Dashcode.part.textfield" id="userfield" apple-group="textfield">
+    <input type="password" value="" class="apple-textfield apple-no-children" apple-part="com.apple.Dashcode.part.textfield" id="passwordfield" apple-group="textfield">
+    <div apple-part="com.apple.Dashcode.part.text" class="apple-text apple-no-children" apple-default-image-visibility="hidden" id="text16" apple-group="text"></div>
+    </div>
+</body>
+</html>
