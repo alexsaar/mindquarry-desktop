@@ -26,7 +26,7 @@
 	<key>ContentSplitViewGeometry</key>
 	<dict>
 		<key>ContentSplitViewConfig</key>
-		<integer>8</integer>
+		<integer>10</integer>
 		<key>SplitViewConfig</key>
 		<integer>3</integer>
 		<key>_collapsingFrameDimension</key>
@@ -37,8 +37,8 @@
 		<real>0.0</real>
 		<key>sizes</key>
 		<array>
-			<string>{{0, 0}, {760, 290}}</string>
-			<string>{{0, 300}, {760, 336}}</string>
+			<string>{{0, 0}, {760, 373}}</string>
+			<string>{{0, 383}, {760, 253}}</string>
 		</array>
 	</dict>
 	<key>ContentViewType</key>
@@ -46,25 +46,25 @@
 	<key>Dashboard Widget Prefs</key>
 	<dict>
 		<key>id</key>
-		<string>737fa55724fba741</string>
+		<string>726a4f6d40fba741</string>
 		<key>in-layer</key>
 		<true/>
 		<key>path</key>
-		<string>/private/tmp/Dashcode/.DashboardWiki.wdgtprojQi8nrC/DashboardWiki.wdgtproj/project.wdgt/</string>
+		<string>/private/tmp/Dashcode/.DashboardWiki.wdgtprojZ4PdSC/DashboardWiki.wdgtproj/project.wdgt/</string>
 		<key>percent-offset-x</key>
 		<integer>0</integer>
 		<key>percent-offset-y</key>
 		<integer>0</integer>
 		<key>percent-type</key>
-		<integer>3</integer>
+		<integer>1</integer>
 		<key>percent-x</key>
-		<real>0.10357142984867096</real>
+		<real>0.010714286006987095</real>
 		<key>percent-y</key>
-		<real>0.28761905431747437</real>
+		<real>0.077142857015132904</real>
 		<key>pos-x</key>
-		<integer>1270</integer>
+		<integer>18</integer>
 		<key>pos-y</key>
-		<integer>1524</integer>
+		<integer>1131</integer>
 		<key>rosetta</key>
 		<false/>
 	</dict>
@@ -85,7 +85,7 @@
 		</array>
 	</dict>
 	<key>MainWindowFrame</key>
-	<string>204 -822 1004 678 0 -1050 1680 1050 </string>
+	<string>308 -755 1004 678 0 -1050 1680 1050 </string>
 	<key>NavigatorSplitViewGeometry</key>
 	<dict>
 		<key>ContentSplitViewConfig</key>
