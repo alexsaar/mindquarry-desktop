@@ -46,25 +46,25 @@
 	<key>Dashboard Widget Prefs</key>
 	<dict>
 		<key>id</key>
-		<string>0af6b78f2ffaa741</string>
+		<string>737fa55724fba741</string>
 		<key>in-layer</key>
 		<true/>
 		<key>path</key>
-		<string>/private/tmp/Dashcode/.DashboardWiki.wdgtproj4coX1W/DashboardWiki.wdgtproj/project.wdgt/</string>
+		<string>/private/tmp/Dashcode/.DashboardWiki.wdgtprojQi8nrC/DashboardWiki.wdgtproj/project.wdgt/</string>
 		<key>percent-offset-x</key>
 		<integer>0</integer>
 		<key>percent-offset-y</key>
 		<integer>0</integer>
 		<key>percent-type</key>
-		<integer>1</integer>
+		<integer>3</integer>
 		<key>percent-x</key>
-		<real>0.1458333283662796</real>
+		<real>0.10357142984867096</real>
 		<key>percent-y</key>
-		<real>0.048571430146694183</real>
+		<real>0.28761905431747437</real>
 		<key>pos-x</key>
-		<integer>245</integer>
+		<integer>1270</integer>
 		<key>pos-y</key>
-		<integer>51</integer>
+		<integer>1524</integer>
 		<key>rosetta</key>
 		<false/>
 	</dict>
@@ -85,7 +85,7 @@
 		</array>
 	</dict>
 	<key>MainWindowFrame</key>
-	<string>644 335 1004 678 0 0 1680 1028 </string>
+	<string>204 -822 1004 678 0 -1050 1680 1050 </string>
 	<key>NavigatorSplitViewGeometry</key>
 	<dict>
 		<key>ContentSplitViewConfig</key>
