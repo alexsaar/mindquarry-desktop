@@ -37,8 +37,6 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</url>
 		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-minutes-editor</developerConnection>
 	</scm>
 
@@ -48,14 +46,6 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags/mindquarry-minutes-editor/
-					</tagBase>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -31,8 +31,6 @@
 	<name>Mindquarry Desktop Client</name>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-client</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-client</url>
 		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-client</developerConnection>
 	</scm>
 
@@ -79,14 +77,6 @@
 	</profiles>
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags/mindquarry-desktop-client/
-					</tagBase>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>appassembler-maven-plugin</artifactId>

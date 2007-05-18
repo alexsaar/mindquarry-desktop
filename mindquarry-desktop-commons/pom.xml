@@ -57,22 +57,11 @@
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</url>
 		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-commons</developerConnection>
 	</scm>
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags/mindquarry-desktop-commons/
-					</tagBase>
-				</configuration>
-			</plugin>
-
 			<!-- skip tests, because widget tests are present -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

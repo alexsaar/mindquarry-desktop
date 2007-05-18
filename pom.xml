@@ -37,8 +37,6 @@
 	</modules>
 
 	<scm>
-		<connection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk</connection>
-		<url>https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk</url>
 		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk</developerConnection>
 	</scm>
 
@@ -156,6 +154,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
+				<version>2.0-beta-5-mindquarry</version>
 				<configuration>
 					<tagBase>
 						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags
