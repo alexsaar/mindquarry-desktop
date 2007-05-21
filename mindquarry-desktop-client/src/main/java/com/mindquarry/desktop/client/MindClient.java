@@ -125,11 +125,15 @@ public class MindClient {
     }
 
     private void checkArguments(String[] args) {
-        if ((args.length == 3) && (prefFile.exists())) {
+        if (args.length == 3 && prefFile.exists()) {
             loadOptions();
-            addNewProfile(args[0], args[1], args[2]);
-            showPreferenceDialog(true);
-        } else if ((args.length == 3) && (!prefFile.exists())) {
+            if (!profileNameExists(args[0])) {
+                addNewProfile(args[0], args[1], args[2]);
+                showPreferenceDialog(true, false);
+            } else {
+                // don't show dialog -- probably started via Windows desktop link
+            }
+        } else if (args.length == 3 && !prefFile.exists()) {
             addNewProfile(args[0], args[1], args[2]);
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
@@ -139,6 +143,15 @@ public class MindClient {
         } else {
             loadOptions();
         }
+    }
+
+    private boolean profileNameExists(String name) {
+        String[] keys = store.preferenceNames();
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i].endsWith("." + Profile.PREF_NAME) && store.getString(keys[i]).equals(name))
+                return true;
+        }
+        return false;
     }
 
     private boolean addNewProfile(String name, String endpoint, String login) {
@@ -265,7 +278,13 @@ public class MindClient {
     }
 
     private void showPreferenceDialog(boolean showProfiles) {
-        loadOptions();
+        showPreferenceDialog(showProfiles, true);
+    }
+    
+    private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
+        if (loadProfiles) {
+            loadOptions();
+        }
 
         // request preference values from user
         PreferenceManager mgr = PreferenceUtilities
