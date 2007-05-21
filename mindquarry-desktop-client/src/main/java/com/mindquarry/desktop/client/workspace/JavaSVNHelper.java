@@ -24,6 +24,7 @@ import org.tigris.subversion.javahl.NotifyAction;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.dialog.ConflictDialog;
 import com.mindquarry.desktop.workspace.SVNHelper;
@@ -58,7 +59,7 @@ public class JavaSVNHelper extends SVNHelper {
         case NotifyAction.commit_deleted:
             log.info("SVN notify: deleted " + info.getPath()); //$NON-NLS-1$
             break;
-            
+
         case NotifyAction.commit_modified:
             log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
             break;
@@ -90,9 +91,9 @@ public class JavaSVNHelper extends SVNHelper {
 
     protected String getCommitMessage() {
         // retrieve (asynchronously) commit message
-        final InputDialog dlg = new InputDialog(MindClient.getShell(),
-                "Change Description", commitInfo,
-                "Description of your changes.", null);
+        final InputDialog dlg = new InputDialog(MindClient.getShell(), Messages
+                .getString("com.mindquarry.desktop.client.83"), commitInfo, //$NON-NLS-1$
+                Messages.getString("com.mindquarry.desktop.client.84"), null); //$NON-NLS-1$
 
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
@@ -39,7 +40,7 @@ public class PublishOperation extends SvnOperation {
 
     public void run() {
         resetProgress();
-        setMessage("Checking workspace changes...");
+        setMessage(Messages.getString("com.mindquarry.desktop.client.88")); //$NON-NLS-1$
 
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
@@ -55,7 +56,7 @@ public class PublishOperation extends SvnOperation {
         Iterator idIt = workspaces.keySet().iterator();
         while (idIt.hasNext()) {
             String id = (String) idIt.next();
-            setMessage("Publishing workspace" + " (" //$NON-NLS-2$
+            setMessage(Messages.getString("com.mindquarry.desktop.client.89") + " (" //$NON-NLS-1$//$NON-NLS-2$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
@@ -69,9 +70,9 @@ public class PublishOperation extends SvnOperation {
                 List changedPaths = new ArrayList();
 
                 StringBuffer commitInfo = new StringBuffer();
-                commitInfo
-                        .append("Please provide a short description of the changes you have made to workspace"
-                                + id + ":\n\n"); //$NON-NLS-1$
+                commitInfo.append(Messages
+                        .getString("com.mindquarry.desktop.client.90") //$NON-NLS-1$
+                        + id + ":\n\n"); //$NON-NLS-1$
                 commitInfo
                         .append(getStatiDescription(changes, wsDir.getPath()));
 
@@ -85,8 +86,12 @@ public class PublishOperation extends SvnOperation {
                             .toArray(new String[0]));
                 }
             } catch (Exception e) {
-                client.showMessage("Error",
-                        "Could not publish workspace changes " + id);
+                client
+                        .showMessage(
+                                Messages
+                                        .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                                Messages
+                                        .getString("com.mindquarry.desktop.client.92") + id); //$NON-NLS-1$
                 log.error("Could not publish workspace changes " //$NON-NLS-1$
                         + id, e);
             }

@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.model.team.Team;
 
 /**
@@ -43,7 +44,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
     private CCombo teamWidget = null;
 
     private List teams;
-    
+
     private String selected;
 
     public TeamSelectionDialog(Shell shell, List teams) {
@@ -51,15 +52,16 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         setBlockOnOpen(true);
         this.teams = teams;
     }
-    
+
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle("Select a Team");
-        setMessage("Please select one of your teams.",
+        setTitle(Messages.getString("com.mindquarry.desktop.client.73")); //$NON-NLS-1$
+        setMessage(Messages.getString("com.mindquarry.desktop.client.74"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
 
-        getShell().setText("Select a Team");
+        getShell().setText(
+                Messages.getString("com.mindquarry.desktop.client.73")); //$NON-NLS-1$
         return contents;
     }
 
@@ -68,8 +70,9 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         composite.setLayout(new GridLayout(1, true));
 
         Label label = new Label(composite, SWT.LEFT);
-        label.setText("Select a Team:");
-        
+        label.setText(Messages.getString("com.mindquarry.desktop.client.73") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
+
         teamWidget = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
         teamWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -77,8 +80,8 @@ public class TeamSelectionDialog extends TitleAreaDialog {
                 SWT.COLOR_WHITE));
 
         Iterator tIt = teams.iterator();
-        while(tIt.hasNext()) {
-            Team team = (Team)tIt.next();
+        while (tIt.hasNext()) {
+            Team team = (Team) tIt.next();
             teamWidget.add(team.getId());
         }
         teamWidget.addSelectionListener(new SelectionListener() {
@@ -91,7 +94,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
             }
         });
         teamWidget.select(0);
-        setSelected(((Team)teams.get(0)).getId());
+        setSelected(((Team) teams.get(0)).getId());
         return composite;
     }
 
@@ -107,7 +110,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
 
     /**
      * Getter for selected.
-     *
+     * 
      * @return the selected
      */
     public String getSelectedTeam() {
@@ -116,7 +119,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
 
     /**
      * Setter for selected.
-     *
+     * 
      * @param selected the selected to set
      */
     private void setSelected(String selected) {

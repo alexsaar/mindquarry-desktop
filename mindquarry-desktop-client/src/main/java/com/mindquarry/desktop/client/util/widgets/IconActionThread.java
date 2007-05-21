@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TrayItem;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 
 /**
@@ -117,7 +118,7 @@ public class IconActionThread extends Thread {
     private void updateToolTip() {
         String tooltip = ""; //$NON-NLS-1$
         if (actions.size() > 0) {
-            tooltip += "Running actions:" + "\n"; //$NON-NLS-1$
+            tooltip += "Running actions:" + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
             Iterator aIt = actions.iterator();
             while (aIt.hasNext()) {
@@ -125,7 +126,7 @@ public class IconActionThread extends Thread {
                 tooltip += "- " + action; //$NON-NLS-1$
             }
         } else {
-            tooltip += "Currently no action is running.";
+            tooltip += Messages.getString("com.mindquarry.desktop.client.77"); //$NON-NLS-1$
         }
         item.setToolTipText(tooltip);
     }

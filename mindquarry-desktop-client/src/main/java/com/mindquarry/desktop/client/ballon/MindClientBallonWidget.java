@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.task.TaskDoneListener;
 import com.mindquarry.desktop.client.task.TaskManager;
@@ -171,7 +172,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void createWorkspacesGroup() {
         Group group = new Group(container, SWT.SHADOW_NONE);
         group.setBackground(container.getBackground());
-        group.setText("Workspaces");
+        group.setText(Messages.getString("com.mindquarry.desktop.client.10")); //$NON-NLS-1$
         group.setLayout(new GridLayout(2, false));
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
@@ -185,7 +186,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
         synArea.setVisible(false);
 
         Button syncButton = new Button(group, SWT.PUSH);
-        syncButton.setText("Synchronize");
+        syncButton.setText(Messages
+                .getString("com.mindquarry.desktop.client.11")); //$NON-NLS-1$
         syncButton
                 .setToolTipText("Use this button to synchronize your local workspaces."); //$NON-NLS-1$
         syncButton
@@ -206,7 +208,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         group.setBackground(container.getBackground());
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
         group.setLayout(new GridLayout(3, false));
-        group.setText("Tasks");
+        group.setText(Messages.getString("com.mindquarry.desktop.client.12")); //$NON-NLS-1$
 
         Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
@@ -221,8 +223,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
         Button createTaskButton = new Button(group, SWT.NONE);
-        createTaskButton.setText("New Task...");
-        createTaskButton.setToolTipText("Creates a new task");
+        createTaskButton.setText(Messages
+                .getString("com.mindquarry.desktop.client.13")); //$NON-NLS-1$
+        createTaskButton.setToolTipText(Messages
+                .getString("com.mindquarry.desktop.client.14")); //$NON-NLS-1$
         createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
                 false));
         createTaskButton.setImage(new Image(Display.getCurrent(), getClass()
@@ -230,8 +234,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
         createTaskButton.addListener(SWT.Selection, new CreateTaskListener());
         Button refreshButton = new Button(group, SWT.NONE);
-        refreshButton.setText("Refresh");
-        refreshButton.setToolTipText("Refresh list of tasks.");
+        refreshButton.setText(Messages
+                .getString("com.mindquarry.desktop.client.15")); //$NON-NLS-1$
+        refreshButton.setToolTipText(Messages
+                .getString("com.mindquarry.desktop.client.16")); //$NON-NLS-1$
         refreshButton
                 .setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         refreshButton
@@ -244,7 +250,8 @@ public class MindClientBallonWidget extends BalloonWindow implements
         Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
         doneButton.setText("Mark Done"); //$NON-NLS-1$
-        doneButton.setToolTipText("Use this button to finish a running task.");
+        doneButton.setToolTipText(Messages
+                .getString("com.mindquarry.desktop.client.17")); //$NON-NLS-1$
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream(
@@ -275,25 +282,29 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                         profile.getLogin(), profile.getPassword());
             } catch (Exception e) {
-                client.showMessage("Error", "Could not update team list.");
-                log("Error while updating team list.", e);
+                client.showMessage(Messages
+                        .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                        Messages.getString("com.mindquarry.desktop.client.19")); //$NON-NLS-1$
+                log(Messages.getString("com.mindquarry.desktop.client.20"), e); //$NON-NLS-1$
                 return;
             }
             if (teamList.getTeams().size() == 0) {
-                client
-                        .showMessage("Authorization Error",
-                                "You are not a member of a team. Thus you can not create new tasks.");
+                client.showMessage(Messages
+                        .getString("com.mindquarry.desktop.client.21"), //$NON-NLS-1$
+                        Messages.getString("com.mindquarry.desktop.client.22")); //$NON-NLS-1$
             }
             Calendar cal = new GregorianCalendar(); // current date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
             String date = sdf.format(cal.getTime());
 
             // create initial task
             Task task = new Task();
             task.setStatus("new"); //$NON-NLS-1$
             task.setPriority("low"); //$NON-NLS-1$
-            task.setTitle("new task");
-            task.setSummary("summary of the task");
+            task.setTitle(Messages
+                    .getString("com.mindquarry.desktop.client.24")); //$NON-NLS-1$
+            task.setSummary(Messages
+                    .getString("com.mindquarry.desktop.client.25")); //$NON-NLS-1$
             task.setDate(date);
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
@@ -311,9 +322,14 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 task.getContentAsXML().asXML().getBytes());
                     }
                 } catch (Exception e) {
-                    client.showMessage("Network error",
-                            "Could not create the task.");
-                    log.error("Could not create the task.", e);
+                    client
+                            .showMessage(
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.26"), //$NON-NLS-1$
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.27")); //$NON-NLS-1$
+                    log.error(Messages
+                            .getString("com.mindquarry.desktop.client.27"), e); //$NON-NLS-1$
                 }
             }
         }

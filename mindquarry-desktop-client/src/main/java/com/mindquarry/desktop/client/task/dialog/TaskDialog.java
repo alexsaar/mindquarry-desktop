@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.util.widgets.ImageCombo;
 import com.mindquarry.desktop.model.task.Task;
 
@@ -79,11 +80,11 @@ public class TaskDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle("Edit the contents of a task");
+        setTitle(Messages.getString("com.mindquarry.desktop.client.56")); //$NON-NLS-1$
         setMessage(
-                "Please enter the tasks data and press OK for adding/changing the task.",
+                Messages.getString("com.mindquarry.desktop.client.57"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
-        getShell().setText("Edit Task: " + task.getTitle());
+        getShell().setText(Messages.getString("com.mindquarry.desktop.client.58") + task.getTitle()); //$NON-NLS-1$
 
         getShell().setSize(400, 650);
         getShell().redraw();
@@ -106,45 +107,45 @@ public class TaskDialog extends TitleAreaDialog {
 
     private void createTaskDataSection(Composite composite) {
         Label label = new Label(composite, SWT.LEFT);
-        label.setText("Title:");
+        label.setText(Messages.getString("com.mindquarry.desktop.client.59")); //$NON-NLS-1$
 
         title = new Text(composite, SWT.BORDER | SWT.SINGLE);
         title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         label = new Label(composite, SWT.LEFT);
-        label.setText("Status:");
+        label.setText(Messages.getString("com.mindquarry.desktop.client.60")); //$NON-NLS-1$
 
         status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
         status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         status.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
-        status.add("New", new Image(null, getClass().getResourceAsStream(
+        status.add("New", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
                 "/com/mindquarry/icons/16x16/status/task-new.png"))); //$NON-NLS-1$
-        status.add("Running", new Image(null, getClass().getResourceAsStream(
+        status.add("Running", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
                 "/com/mindquarry/icons/16x16/status/task-running.png"))); //$NON-NLS-1$
-        status.add("Paused", new Image(null, getClass().getResourceAsStream(
+        status.add("Paused", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
                 "/com/mindquarry/icons/16x16/status/task-paused.png"))); //$NON-NLS-1$
-        status.add("Done", new Image(null, getClass().getResourceAsStream(
+        status.add("Done", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
                 "/com/mindquarry/icons/16x16/status/task-done.png"))); //$NON-NLS-1$
         status.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText("Priority:");
+        label.setText(Messages.getString("com.mindquarry.desktop.client.65")); //$NON-NLS-1$
 
         priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
         priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         priority.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
-        priority.add("Low", null);
-        priority.add("Medium", null);
-        priority.add("Important", null);
-        priority.add("Critical", null);
+        priority.add("Low", null); //$NON-NLS-1$
+        priority.add("Medium", null); //$NON-NLS-1$
+        priority.add("Important", null); //$NON-NLS-1$
+        priority.add("Critical", null); //$NON-NLS-1$
         priority.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText("Summary:");
+        label.setText(Messages.getString("com.mindquarry.desktop.client.70")); //$NON-NLS-1$
 
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
                 | SWT.WRAP);
@@ -169,7 +170,7 @@ public class TaskDialog extends TitleAreaDialog {
          */
 
         dueDateLabel = new Label(composite, SWT.LEFT);
-        dueDateLabel.setText("Due Date:");
+        dueDateLabel.setText(Messages.getString("com.mindquarry.desktop.client.71")); //$NON-NLS-1$
 
         calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
         calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -221,7 +222,7 @@ public class TaskDialog extends TitleAreaDialog {
                 priority.select(3);
             }
         }
-        if (task.getDate() != null && !task.getDate().trim().equals("")) {
+        if (task.getDate() != null && !task.getDate().trim().equals("")) { //$NON-NLS-1$
             // iso 8601 date format:
             String[] dateParts = task.getDate().split("-"); //$NON-NLS-1$
             if (dateParts.length == 3) {
@@ -235,7 +236,7 @@ public class TaskDialog extends TitleAreaDialog {
             // date
             // because that's selected by default:
             dueDateLabel
-                    .setText("No Due date set for this task, select one below:");
+                    .setText(Messages.getString("com.mindquarry.desktop.client.72")); //$NON-NLS-1$
         }
     }
 
@@ -267,7 +268,7 @@ public class TaskDialog extends TitleAreaDialog {
         });
         calendar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
                 Calendar cal = new GregorianCalendar();
                 cal.set(Calendar.YEAR, calendar.getYear());
                 cal.set(Calendar.MONTH, calendar.getMonth());

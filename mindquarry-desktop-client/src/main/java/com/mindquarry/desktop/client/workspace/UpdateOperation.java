@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.tigris.subversion.javahl.ClientException;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNHelper;
@@ -81,7 +82,7 @@ public class UpdateOperation extends SvnOperation {
                 svnHelper.getLocalChanges();
                 svnHelper.update();
             } catch (ClientException e) {
-                client.showMessage("Error", "Could not update workspace "
+                client.showMessage(Messages.getString("com.mindquarry.desktop.client.6"), Messages.getString("com.mindquarry.desktop.client.96") //$NON-NLS-1$ //$NON-NLS-2$
                         + id + ": " + e.toString());    //$NON-NLS-1$
                 log.error("Could not update workspace " //$NON-NLS-1$
                         + id, e);

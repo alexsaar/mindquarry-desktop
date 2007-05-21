@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.SVNHelper;
 
 /**
@@ -40,9 +41,9 @@ public class ConflictDialog extends TitleAreaDialog {
     private Button remoteCopy;
 
     private long remoteRevision;
-    
+
     private int resolveMethod;
-    
+
     public ConflictDialog(Shell shell, long remoteRevision) {
         super(shell);
         this.remoteRevision = remoteRevision;
@@ -56,11 +57,11 @@ public class ConflictDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle("Resolve conflicts");
-        setMessage(
-                "Please select the version that should be treated as actual.",
+        setTitle(Messages.getString("com.mindquarry.desktop.client.78")); //$NON-NLS-1$
+        setMessage(Messages.getString("com.mindquarry.desktop.client.79"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
-        getShell().setText("Resolving conflicts");
+        getShell().setText(
+                Messages.getString("com.mindquarry.desktop.client.80")); //$NON-NLS-1$
         return contents;
     }
 
@@ -78,7 +79,8 @@ public class ConflictDialog extends TitleAreaDialog {
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         localCopy = new Button(composite, SWT.RADIO);
-        localCopy.setText("Local Version");
+        localCopy.setText(Messages
+                .getString("com.mindquarry.desktop.client.81")); //$NON-NLS-1$
         localCopy.setSelection(true);
         localCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         localCopy.addListener(SWT.Selection, new Listener() {
@@ -87,7 +89,8 @@ public class ConflictDialog extends TitleAreaDialog {
             }
         });
         remoteCopy = new Button(composite, SWT.RADIO);
-        remoteCopy.setText("Remote Version " + "(Revision " //$NON-NLS-2$
+        remoteCopy.setText(Messages
+                .getString("com.mindquarry.desktop.client.82") + "(Revision " //$NON-NLS-1$//$NON-NLS-2$
                 + remoteRevision + ")"); //$NON-NLS-1$
         remoteCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         remoteCopy.addListener(SWT.Selection, new Listener() {
@@ -104,7 +107,7 @@ public class ConflictDialog extends TitleAreaDialog {
 
     /**
      * Getter for resolveMethod.
-     *
+     * 
      * @return the resolveMethod
      */
     public int getResolveMethod() {

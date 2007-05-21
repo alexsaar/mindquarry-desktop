@@ -131,14 +131,16 @@ public class MindClient {
                 addNewProfile(args[0], args[1], args[2]);
                 showPreferenceDialog(true, false);
             } else {
-                // don't show dialog -- probably started via Windows desktop link
+                // don't show dialog -- probably started via Windows desktop
+                // link
             }
         } else if (args.length == 3 && !prefFile.exists()) {
             addNewProfile(args[0], args[1], args[2]);
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
-            addNewProfile("Your Mindquarry Server Profile", "http://server", //$NON-NLS-2$
-                    "your login name"); //$NON-NLS-1$
+            addNewProfile(
+                    Messages.getString("com.mindquarry.desktop.client.0"), "http://server", //$NON-NLS-1$//$NON-NLS-2$
+                    "Login ID"); //$NON-NLS-1$
             showPreferenceDialog(true);
         } else {
             loadOptions();
@@ -148,8 +150,11 @@ public class MindClient {
     private boolean profileNameExists(String name) {
         String[] keys = store.preferenceNames();
         for (int i = 0; i < keys.length; i++) {
-            if (keys[i].endsWith("." + Profile.PREF_NAME) && store.getString(keys[i]).equals(name))
+            if (keys[i].endsWith("." //$NON-NLS-1$
+                    + Profile.PREF_NAME)
+                    && store.getString(keys[i]).equals(name)) {
                 return true;
+            }
         }
         return false;
     }
@@ -195,7 +200,7 @@ public class MindClient {
 
         // go to webpage
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Go to webpage");
+        menuItem.setText(Messages.getString("com.mindquarry.desktop.client.2")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 if (Profile.getSelectedProfile(store) != null) {
@@ -205,14 +210,14 @@ public class MindClient {
             }
         });
         menuItem
-        .setImage(new Image(
-                Display.getCurrent(),
-                getClass()
-                        .getResourceAsStream(
-                                "/org/tango-project/tango-icon-theme/16x16/apps/internet-web-browser.png"))); //$NON-NLS-1$
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/org/tango-project/tango-icon-theme/16x16/apps/internet-web-browser.png"))); //$NON-NLS-1$
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Synchronize");
+        menuItem.setText(Messages.getString("com.mindquarry.desktop.client.3")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
                 .getInstance(this, menuItem, null));
         menuItem
@@ -227,7 +232,7 @@ public class MindClient {
 
         // options dialog
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Options...");
+        menuItem.setText(Messages.getString("com.mindquarry.desktop.client.4")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 showPreferenceDialog(false);
@@ -244,7 +249,7 @@ public class MindClient {
 
         // close application
         menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText("Close");
+        menuItem.setText(Messages.getString("com.mindquarry.desktop.client.5")); //$NON-NLS-1$
         menuItem.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 saveOptions();
@@ -304,7 +309,7 @@ public class MindClient {
     private void showPreferenceDialog(boolean showProfiles) {
         showPreferenceDialog(showProfiles, true);
     }
-    
+
     private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
         if (loadProfiles) {
             loadOptions();
@@ -331,8 +336,9 @@ public class MindClient {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            showMessage("Error", "Could not load MindClient settings: "
-                    + e.toString());
+            showMessage(
+                    Messages.getString("com.mindquarry.desktop.client.6"), Messages.getString("com.mindquarry.desktop.client.7") //$NON-NLS-1$ //$NON-NLS-2$
+                            + e.toString());
         }
     }
 
@@ -340,8 +346,9 @@ public class MindClient {
         try {
             store.save();
         } catch (Exception e) {
-            showMessage("Error", "Could not save MindClient settings: "
-                    + e.toString());
+            showMessage(Messages.getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                    Messages.getString("com.mindquarry.desktop.client.9") //$NON-NLS-1$
+                            + e.toString());
         }
         updateProfileSelector();
     }

@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -124,9 +125,9 @@ public class WorkspaceSynchronizeListener implements Listener {
                 .getPreferenceStore());
 
         if (selectedProfile == null) {
-            client
-                    .showMessage("Error",
-                            "No profile selected. Please select a profile and try again.");
+            client.showMessage(Messages
+                    .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                    Messages.getString("com.mindquarry.desktop.client.98")); //$NON-NLS-1$
             return;
         }
         new Thread(new Runnable() {
@@ -149,8 +150,12 @@ public class WorkspaceSynchronizeListener implements Listener {
                             .getWorkspaces());
                     op.run();
                 } catch (Exception e) {
-                    client.showMessage("Error",
-                            "Error during workspaces synchronization.");
+                    client
+                            .showMessage(
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.100")); //$NON-NLS-1$
                     log.error("Error during workspaces synchronization.", e); //$NON-NLS-1$
                 }
                 enableTriggerWidgets(true, triggerWidgets);

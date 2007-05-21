@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 
@@ -49,9 +50,13 @@ public abstract class SvnOperation implements Runnable {
             String path = status.getPath().substring(pathPrefix.length() + 1);
 
             if (!status.isManaged() || status.isAdded()) {
-                msg.append("Added: " + path + "\n"); //$NON-NLS-2$
+                msg
+                        .append(Messages
+                                .getString("com.mindquarry.desktop.client.93") + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$
             } else if (status.isModified()) {
-                msg.append("Modified: " + path + "\n"); //$NON-NLS-2$ 
+                msg
+                        .append(Messages
+                                .getString("com.mindquarry.desktop.client.94") + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$ 
             } else {
                 msg.append(status.getTextStatusDescription()
                         + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$

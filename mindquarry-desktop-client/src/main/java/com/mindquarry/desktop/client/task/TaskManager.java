@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.task.dialog.TaskDialog;
 import com.mindquarry.desktop.client.task.widgets.NoTasksComposite;
@@ -106,7 +107,7 @@ public class TaskManager {
             final Composite taskContainer, Button refreshButton,
             Button createButton, final Button doneButton) {
         log = LogFactory.getLog(TaskManager.class);
-        log.info("Creating new task manager.");
+        log.info(Messages.getString("com.mindquarry.desktop.client.29")); //$NON-NLS-1$
 
         if (instance == null) {
             instance = new TaskManager(client, taskContainer, refreshButton,
@@ -116,7 +117,8 @@ public class TaskManager {
     }
 
     public void setDone(Task task) {
-        log.info("Setting task with id '" + task.getId() + "' to done.");
+        log
+                .info(Messages.getString("com.mindquarry.desktop.client.30") + task.getId() + Messages.getString("com.mindquarry.desktop.client.31")); //$NON-NLS-1$ //$NON-NLS-2$
         task.setStatus(Task.STATUS_DONE);
 
         PreferenceStore store = client.getPreferenceStore();
@@ -131,8 +133,13 @@ public class TaskManager {
                     .getPassword(), task.getId(), task.getContentAsXML()
                     .asXML().getBytes());
         } catch (Exception e) {
-            log.error("An error occured while setting task with id '"
-                    + task.getId() + "' to done.", e);
+            log
+                    .error(
+                            Messages
+                                    .getString("com.mindquarry.desktop.client.32") //$NON-NLS-1$
+                                    + task.getId()
+                                    + Messages
+                                            .getString("com.mindquarry.desktop.client.33"), e); //$NON-NLS-1$
         }
         // must disable doneButton explicitly, because removing tasks does
         // not fire a selection changed event
@@ -176,9 +183,9 @@ public class TaskManager {
      * Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
-        log.info("Starting async task list refresh.");
+        log.info(Messages.getString("com.mindquarry.desktop.client.34")); //$NON-NLS-1$
         if (refreshing) {
-            log.info("Already refreshing, nothing to do.");
+            log.info(Messages.getString("com.mindquarry.desktop.client.35")); //$NON-NLS-1$
             return;
         }
         refreshing = true;
@@ -190,7 +197,7 @@ public class TaskManager {
     }
 
     private void refresh() {
-        log.info("Starting task list refresh.");
+        log.info(Messages.getString("com.mindquarry.desktop.client.36")); //$NON-NLS-1$
 
         refreshing = true;
         setRefreshStatus(false);
@@ -201,7 +208,7 @@ public class TaskManager {
 
         // check profile
         if (profile == null) {
-            log.debug("No profile selected.");
+            log.debug(Messages.getString("com.mindquarry.desktop.client.37")); //$NON-NLS-1$
             refreshing = false;
             setRefreshStatus(true);
             return;
@@ -210,15 +217,19 @@ public class TaskManager {
 
         TaskList taskList = null;
         try {
-            log.info("Retrieving list of tasks.");
+            log.info(Messages.getString("com.mindquarry.desktop.client.38")); //$NON-NLS-1$
             taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            log.error("Could not update list of tasks.", e);
+            log
+                    .error(Messages
+                            .getString("com.mindquarry.desktop.client.39"), e); //$NON-NLS-1$
             updateTaskWidgetContents(false, e, false);
             setRefreshStatus(true);
             refreshing = false;
-            client.showMessage("Error", "Could not update list of tasks.");
+            client.showMessage(Messages
+                    .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
+                    Messages.getString("com.mindquarry.desktop.client.39")); //$NON-NLS-1$
             return;
         }
         // loop and add tasks
@@ -236,7 +247,9 @@ public class TaskManager {
                 }
             }
             if (listTask && (!tasks.contains(task))) {
-                log.info("Adding task with id '" + task.getId() + "'."); //$NON-NLS-2$
+                log
+                        .info(Messages
+                                .getString("com.mindquarry.desktop.client.42") + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
                 tasks.add(task);
             }
         }
@@ -246,7 +259,7 @@ public class TaskManager {
             updateTaskWidgetContents(false, null, false);
 
             // update task table
-            log.info("Updating list of tasks.");
+            log.info(Messages.getString("com.mindquarry.desktop.client.43")); //$NON-NLS-1$
             taskContainer.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     taskTableViewer.setInput(myself);
@@ -265,11 +278,17 @@ public class TaskManager {
                 createButton.setEnabled(enabled);
 
                 if (!enabled) {
-                    MindClient.getIconActionHandler().startAction(
-                            "Synchronizing tasks");
+                    MindClient
+                            .getIconActionHandler()
+                            .startAction(
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.44")); //$NON-NLS-1$
                 } else {
-                    MindClient.getIconActionHandler().stopAction(
-                            "Synchronizing tasks");
+                    MindClient
+                            .getIconActionHandler()
+                            .stopAction(
+                                    Messages
+                                            .getString("com.mindquarry.desktop.client.44")); //$NON-NLS-1$
                 }
             }
         });
@@ -281,8 +300,10 @@ public class TaskManager {
             public void run() {
                 if (refreshing) {
                     destroyContent();
-                    refreshWidget = new TaskUpdateComposite(taskContainer,
-                            "Updating task list" + " ..."); //$NON-NLS-2$
+                    refreshWidget = new TaskUpdateComposite(
+                            taskContainer,
+                            Messages
+                                    .getString("com.mindquarry.desktop.client.46") + " ..."); //$NON-NLS-1$//$NON-NLS-2$
                 } else if (exception == null && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);
@@ -302,7 +323,8 @@ public class TaskManager {
                     TableColumn titleCol = new TableColumn(table, SWT.NONE);
                     titleCol.setResizable(false);
                     titleCol.setWidth(100);
-                    titleCol.setText("Description");
+                    titleCol.setText(Messages
+                            .getString("com.mindquarry.desktop.client.47")); //$NON-NLS-1$
 
                     TableViewerColumn vCol = new TableViewerColumn(
                             taskTableViewer, titleCol);
@@ -325,12 +347,17 @@ public class TaskManager {
                             .addDoubleClickListener(new TaskTableDoubleClickListener());
                 } else if (exception == null && empty) {
                     destroyContent();
-                    noTasksWidget = new NoTasksComposite(taskContainer,
-                            "Currently no tasks are active.");
+                    noTasksWidget = new NoTasksComposite(
+                            taskContainer,
+                            Messages
+                                    .getString("com.mindquarry.desktop.client.48")); //$NON-NLS-1$
                 } else {
                     destroyContent();
-                    String errMessage = "List of tasks could not be updated:\n" + exception.getLocalizedMessage();
-                    errorWidget = new TaskErrorComposite(taskContainer, errMessage);
+                    String errMessage = Messages
+                            .getString("com.mindquarry.desktop.client.49") //$NON-NLS-1$
+                            + "\n" + exception.getLocalizedMessage(); //$NON-NLS-1$
+                    errorWidget = new TaskErrorComposite(taskContainer,
+                            errMessage);
                 }
                 taskContainer.layout(true);
             }
@@ -390,8 +417,12 @@ public class TaskManager {
                                     .getContentAsXML().asXML().getBytes());
                         }
                     } catch (Exception e) {
-                        client.showMessage("Network error",
-                                "Could not update the task: " + e.toString());
+                        client
+                                .showMessage(
+                                        Messages
+                                                .getString("com.mindquarry.desktop.client.50"), //$NON-NLS-1$
+                                        Messages
+                                                .getString("com.mindquarry.desktop.client.51") + e.toString()); //$NON-NLS-1$
                         log.error("Could not update task with id " //$NON-NLS-1$
                                 + task.getId(), e);
                     }
