@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.desktop.DesktopConstants;
 import com.mindquarry.desktop.client.ballon.MindClientBallonWidget;
+import com.mindquarry.desktop.client.task.TaskManager;
 import com.mindquarry.desktop.client.util.widgets.IconActionThread;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
@@ -78,6 +79,8 @@ public class MindClient {
     private MindClientBallonWidget ballonWindow;
 
     private Menu menu;
+
+    private Menu profilesMenu;
 
     private List profilesInMenu = new ArrayList();
 
@@ -192,11 +195,18 @@ public class MindClient {
             }
         });
 
-        // List all profiles:
+        // profiles sub menu
+        MenuItem menuItem = new MenuItem(menu, SWT.CASCADE);
+        menuItem.setText(Messages.getString("com.mindquarry.desktop.client.1")); //$NON-NLS-1$
+
+        profilesMenu = new Menu(shell, SWT.DROP_DOWN);
+        menuItem.setMenu(profilesMenu);
+
+        // list all profiles in the menu
         updateProfileSelector();
 
         // add separator
-        MenuItem menuItem = new MenuItem(menu, SWT.SEPARATOR);
+        menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
         // go to webpage
         menuItem = new MenuItem(menu, SWT.PUSH);
@@ -268,9 +278,11 @@ public class MindClient {
     }
 
     public void updateProfileSelector() {
-        if (menu == null)
+        if ((menu == null) || (profilesMenu == null)) {
             return; // happens at very first start
-        MenuItem[] menuItems = menu.getItems();
+        }
+        MenuItem[] menuItems = profilesMenu.getItems();
+
         // remove the existing profiles first:
         for (int i = 0; i < menuItems.length; i++) {
             if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
@@ -283,7 +295,7 @@ public class MindClient {
         int i = 0;
         while (pIt.hasNext()) {
             Profile profile = (Profile) pIt.next();
-            final MenuItem menuItem = new MenuItem(menu, SWT.RADIO, i);
+            final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
             i++;
             menuItem.setText(profile.getName());
             menuItem.addListener(SWT.Selection, new Listener() {
@@ -336,8 +348,7 @@ public class MindClient {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            showMessage(
-                    Messages.getString("com.mindquarry.desktop.client.6"),  //$NON-NLS-1$
+            showMessage(Messages.getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
                     Messages.getString("com.mindquarry.desktop.client.7") //$NON-NLS-1$
                             + e.toString());
         }
