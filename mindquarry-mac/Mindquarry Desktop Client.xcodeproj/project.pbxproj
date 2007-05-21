@@ -131,7 +131,7 @@
 		77C8280B06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mindquarry_Desktop_Client_AppDelegate.h; sourceTree = "<group>"; };
 		77C8280C06725ACE000B614F /* Mindquarry_Desktop_Client_AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mindquarry_Desktop_Client_AppDelegate.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Mindquarry Desktop Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Mindquarry Desktop Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mindquarry Desktop Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD09A09B0BA0070A002FD5DD /* StatusBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = StatusBackground.png; path = Resources/StatusBackground.png; sourceTree = "<group>"; };
 		DD09A3090BA01E6D002FD5DD /* LRFilterBar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LRFilterBar.h; sourceTree = "<group>"; };
 		DD09A30A0BA01E6D002FD5DD /* LRFilterBar.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = LRFilterBar.m; sourceTree = "<group>"; };
