@@ -31,11 +31,14 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -113,6 +116,11 @@ public class TaskManager {
             instance = new TaskManager(client, taskContainer, refreshButton,
                     createButton, doneButton);
         }
+        return instance;
+    }
+
+    public static TaskManager getInstance() {
+        log.info("Looking up task manager."); //$NON-NLS-1$
         return instance;
     }
 
@@ -254,6 +262,15 @@ public class TaskManager {
             taskContainer.getDisplay().syncExec(new Runnable() {
                 public void run() {
                     taskTableViewer.setInput(myself);
+
+                    // set background color for every second table item
+                    TableItem[] items = taskTableViewer.getTable().getItems();
+                    for (int i = 0; i < items.length; i++) {
+                        if (i % 2 == 1) {
+                            items[i].setBackground(new Color(Display
+                                    .getCurrent(), 233, 233, 251));
+                        }
+                    }
                 }
             });
         }
