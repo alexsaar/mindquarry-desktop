@@ -302,6 +302,13 @@ public class MindClient {
                 public void handleEvent(Event event) {
                     Profile.selectProfile(getPreferenceStore(), menuItem
                             .getText());
+
+                    // TODO trigger task synchronization, this needs
+                    // interruption of the task synchronization
+                    // TaskManager tm = TaskManager.getInstance();
+                    // if (tm != null) {
+                    // tm.asyncRefresh();
+                    // }
                 }
             });
             if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
