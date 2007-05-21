@@ -21,6 +21,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * This class creates a preference page for Mindquarry task management.
  * 
@@ -29,20 +31,22 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TaskPage extends FieldEditorPreferencePage {
     public static final String NAME = "task"; //$NON-NLS-1$
-    
+
     public static final String LIST_FINISHED_TASKS = "com.mindquarry.desktop.task.finished"; //$NON-NLS-1$
 
     /**
      * ProfilesPage default constructor
      */
     public TaskPage() {
-        super("Task Settings", SWT.FLAT);
+        super(Messages.getString("com.mindquarry.desktop.31"), SWT.FLAT); //$NON-NLS-1$
 
         // inital preference page
-        setDescription("Manage your task settings.");
-        Image img = new Image(Display.getCurrent(), getClass()
-                .getResourceAsStream(
-                "/com/mindquarry/icons/16x16/apps/mindquarry-tasks.png")); //$NON-NLS-1$
+        setDescription(Messages.getString("com.mindquarry.desktop.32")); //$NON-NLS-1$
+        Image img = new Image(
+                Display.getCurrent(),
+                getClass()
+                        .getResourceAsStream(
+                                "/com/mindquarry/icons/16x16/apps/mindquarry-tasks.png")); //$NON-NLS-1$
         ImageDescriptor imgDesc = ImageDescriptor.createFromImage(img);
         setImageDescriptor(imgDesc);
     }
@@ -56,9 +60,10 @@ public class TaskPage extends FieldEditorPreferencePage {
     protected void createFieldEditors() {
         IPreferenceStore store = getPreferenceStore();
         store.setDefault(LIST_FINISHED_TASKS, false);
-        
+
         BooleanFieldEditor showFinishedTasks = new BooleanFieldEditor(
-                LIST_FINISHED_TASKS, "&List finished tasks",
+                LIST_FINISHED_TASKS, Messages
+                        .getString("com.mindquarry.desktop.33"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(showFinishedTasks);
     }

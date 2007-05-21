@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -69,11 +70,11 @@ public class ServerProfilesPage extends PreferencePage {
      * ProfilesPage default constructor
      */
     public ServerProfilesPage() {
-        super("Server Profiles");
+        super(Messages.getString("com.mindquarry.desktop.12")); //$NON-NLS-1$
         profiles = new ArrayList<Profile>();
 
         // inital preference page
-        setDescription("Manage different Mindquarry installations by using Mindquarry Server profiles.");
+        setDescription(Messages.getString("com.mindquarry.desktop.13")); //$NON-NLS-1$
         Image img = new Image(null, getClass().getResourceAsStream(
                 "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
         ImageDescriptor imgDesc = ImageDescriptor.createFromImage(img);
@@ -108,7 +109,7 @@ public class ServerProfilesPage extends PreferencePage {
     private void createProfileManagementGroup(Composite composite) {
         Group profileGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         profileGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        profileGroup.setText("Server Profiles");
+        profileGroup.setText(Messages.getString("com.mindquarry.desktop.14")); //$NON-NLS-1$
         profileGroup.setLayout(new GridLayout(2, false));
 
         // create profile list
@@ -122,13 +123,13 @@ public class ServerProfilesPage extends PreferencePage {
 
         Button addButton = new Button(buttonArea, SWT.PUSH);
         addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        addButton.setText("Add Profile...");
+        addButton.setText(Messages.getString("com.mindquarry.desktop.15")); //$NON-NLS-1$
         addButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                InputDialog dlg = new InputDialog(getShell(),
-                        "Create new server profile",
-                        "Please enter your profile name",
-                        "My Mindquarry Server Profile",
+                InputDialog dlg = new InputDialog(getShell(), Messages
+                        .getString("com.mindquarry.desktop.16"), //$NON-NLS-1$
+                        Messages.getString("com.mindquarry.desktop.17"), //$NON-NLS-1$
+                        Messages.getString("com.mindquarry.desktop.18"), //$NON-NLS-1$
                         new AddProfileInputValidator());
 
                 // open dialog and check results
@@ -148,7 +149,7 @@ public class ServerProfilesPage extends PreferencePage {
         delButton = new Button(buttonArea, SWT.PUSH);
         delButton.setEnabled(false);
         delButton.setLayoutData(new GridData(GridData.FILL_BOTH));
-        delButton.setText("Delete Profile");
+        delButton.setText(Messages.getString("com.mindquarry.desktop.19")); //$NON-NLS-1$
         delButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 Profile profile = findByName(profileList.getSelection()[0]);
@@ -160,12 +161,13 @@ public class ServerProfilesPage extends PreferencePage {
             }
         });
         profileList.addSelectionListener(new SelectionListener() {
-                public void widgetDefaultSelected(SelectionEvent event) {
-                    renameProfile();
-                }
-                public void widgetSelected(SelectionEvent event) {
-                    // single click, do nothing
-                }
+            public void widgetDefaultSelected(SelectionEvent event) {
+                renameProfile();
+            }
+
+            public void widgetSelected(SelectionEvent event) {
+                // single click, do nothing
+            }
         });
         profileList.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -178,18 +180,18 @@ public class ServerProfilesPage extends PreferencePage {
         String[] selection = profileList.getSelection();
         if (selection.length > 0) {
             Profile profile = findByName(selection[0]);
-            InputDialog dlg = new InputDialog(getShell(),
-                    "Rename server profile",
-                    "Please enter the new profile name",
-                    selection[0],
-                    new AddProfileInputValidator());
+            InputDialog dlg = new InputDialog(getShell(), Messages
+                    .getString("com.mindquarry.desktop.20"), //$NON-NLS-1$
+                    Messages.getString("com.mindquarry.desktop.21"), //$NON-NLS-1$
+                    selection[0], new AddProfileInputValidator());
             if (dlg.open() == Window.OK) {
                 profile.setName(dlg.getValue());
-                profileList.setItem(profileList.getSelectionIndex(), dlg.getValue());
+                profileList.setItem(profileList.getSelectionIndex(), dlg
+                        .getValue());
             }
         }
     }
-    
+
     private void activateProfileSelection() {
         String[] selection = profileList.getSelection();
         if (selection.length > 0) {
@@ -201,16 +203,16 @@ public class ServerProfilesPage extends PreferencePage {
             delButton.setEnabled(true);
         }
     }
-    
+
     private void createProfileSettingsGroup(Composite composite) {
         Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        settingsGroup.setText("Profile Settings");
+        settingsGroup.setText(Messages.getString("com.mindquarry.desktop.22")); //$NON-NLS-1$
         settingsGroup.setLayout(new GridLayout(1, true));
 
         // init login section
         CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
-        loginLabel.setText("Your Login ID:");
+        loginLabel.setText(Messages.getString("com.mindquarry.desktop.23")); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         login = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
@@ -226,7 +228,7 @@ public class ServerProfilesPage extends PreferencePage {
         });
         // init password section
         CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
-        pwdLabel.setText("Your Password:");
+        pwdLabel.setText(Messages.getString("com.mindquarry.desktop.24")); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         pwd = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
@@ -242,7 +244,8 @@ public class ServerProfilesPage extends PreferencePage {
         });
         // init server URL section
         CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
-        quarryEndpointLabel.setText("URL of the Mindquarry Server:");
+        quarryEndpointLabel.setText(Messages
+                .getString("com.mindquarry.desktop.25")); //$NON-NLS-1$
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -259,7 +262,7 @@ public class ServerProfilesPage extends PreferencePage {
         });
         // init workspace folder section
         CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
-        locationLabel.setText("Folder for Workspaces:");
+        locationLabel.setText(Messages.getString("com.mindquarry.desktop.26")); //$NON-NLS-1$
         locationLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Composite locationArea = new Composite(settingsGroup, SWT.NONE);
@@ -284,11 +287,12 @@ public class ServerProfilesPage extends PreferencePage {
             }
         });
         Button selectWSLocationButton = new Button(locationArea, SWT.PUSH);
-        selectWSLocationButton.setText("Browse...");
+        selectWSLocationButton.setText(Messages
+                .getString("com.mindquarry.desktop.27")); //$NON-NLS-1$
         selectWSLocationButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
-                fd.setText("Select folder for workspaces.");
+                fd.setText(Messages.getString("com.mindquarry.desktop.28")); //$NON-NLS-1$
 
                 String path = fd.open();
                 if (path != null) {
@@ -326,12 +330,12 @@ public class ServerProfilesPage extends PreferencePage {
         public String isValid(String text) {
             // check if a name was provided for the profile
             if (text.trim().length() < 1) {
-                return "Profile name must contain at least one character.";
+                return Messages.getString("com.mindquarry.desktop.29"); //$NON-NLS-1$
             }
             // check if the name does already exist
             for (String profile : profileList.getItems()) {
                 if (text.equals(profile)) {
-                    return "A profile with the same name already exists. Each profile must have a unique name.";
+                    return Messages.getString("com.mindquarry.desktop.30"); //$NON-NLS-1$
                 }
             }
             return null;

@@ -41,6 +41,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * This class creates a preference page for shortcuts.
  * 
@@ -58,22 +60,20 @@ public class ShortcutsPage extends PreferencePage {
 
     private static final String SHORTCUT_COL_ID = "shortcut"; //$NON-NLS-1$
 
-    private TableViewer viewer;
-
     private List<Shortcut> shortcuts;
 
     /**
      * ShortcutsPage default constructor
      */
     public ShortcutsPage() {
-        super("Shortcuts");
-        setDescription("Manage shortcuts of the application.");
+        super(Messages.getString("com.mindquarry.desktop.6")); //$NON-NLS-1$
+        setDescription(Messages.getString("com.mindquarry.desktop.7")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
                         getClass()
                                 .getResourceAsStream(
-                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"))));
+                                        Messages.getString("com.mindquarry.desktop.8"))))); //$NON-NLS-1$
         // init shortcuts
         shortcuts = new ArrayList<Shortcut>();
     }
@@ -92,13 +92,13 @@ public class ShortcutsPage extends PreferencePage {
         table.setLinesVisible(true);
 
         TableColumn col = new TableColumn(table, SWT.NONE);
-        col.setText("Category");
+        col.setText(Messages.getString("com.mindquarry.desktop.9")); //$NON-NLS-1$
         col.setWidth(100);
         col = new TableColumn(table, SWT.NONE);
-        col.setText("Action");
+        col.setText(Messages.getString("com.mindquarry.desktop.10")); //$NON-NLS-1$
         col.setWidth(200);
         col = new TableColumn(table, SWT.NONE);
-        col.setText("Shortcut");
+        col.setText(Messages.getString("com.mindquarry.desktop.11")); //$NON-NLS-1$
         col.setWidth(100);
 
         CellEditor[] editors = new CellEditor[table.getColumnCount()];

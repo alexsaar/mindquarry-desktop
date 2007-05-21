@@ -52,7 +52,7 @@ public class TaskListTransformer extends TransformerBase {
 
     @Path("/tasks")
     public void tasks(Node node) {
-        log.info("Tasks element found. Trying to evaluate children.");
+        log.info("Tasks element found. Trying to evaluate children."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;
             baseURL = element.attribute("base").getStringValue(); //$NON-NLS-1$
@@ -62,11 +62,11 @@ public class TaskListTransformer extends TransformerBase {
 
     @Path("task")
     public void task(Node node) {
-        log.info("Found new task element.");
+        log.info("Found new task element."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;
 
-            log.info("Trying to add task from '"
+            log.info("Trying to add task from '" //$NON-NLS-1$
                     + element.attribute("href").getStringValue() //$NON-NLS-1$
                     + "'."); //$NON-NLS-1$
             taskList.add(baseURL + element.attribute("href").getStringValue(), //$NON-NLS-1$ 

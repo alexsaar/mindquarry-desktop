@@ -19,6 +19,8 @@ import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * This class creates a preference page for shortcuts.
  * 
@@ -34,14 +36,14 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
      * ShortcutsPage default constructor
      */
     public GeneralSettingsPage() {
-        super("Common Settings", FieldEditorPreferencePage.GRID);
-        setDescription("Manage common settings of the application.");
+        super(Messages.getString("com.mindquarry.desktop.2"), FieldEditorPreferencePage.GRID); //$NON-NLS-1$
+        setDescription(Messages.getString("com.mindquarry.desktop.3")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
                         getClass()
                                 .getResourceAsStream(
-                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png"))));
+                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")))); //$NON-NLS-1$
     }
 
     protected void createFieldEditors() {
@@ -49,7 +51,7 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
         store.setDefault(NOTIFY_DELAY, 2);
 
         IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
-                NOTIFY_DELAY, "Notification Message Delay (in seconds):",
+                NOTIFY_DELAY, Messages.getString("com.mindquarry.desktop.4"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(notifyDisplayDelay);
     }

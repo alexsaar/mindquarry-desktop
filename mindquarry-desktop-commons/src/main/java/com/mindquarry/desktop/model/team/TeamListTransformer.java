@@ -54,7 +54,7 @@ public class TeamListTransformer extends TransformerBase {
 
     @Path("/teamspaces")
     public void teamspaces(Node node) {
-        log.info("Teamspaces element found. Trying to evaluate children.");
+        log.info("Teamspaces element found. Trying to evaluate children."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;
 
@@ -70,11 +70,11 @@ public class TeamListTransformer extends TransformerBase {
 
     @Path("teamspace")
     public void teamspace(Node node) {
-        log.info("Found new teamspace element.");
+        log.info("Found new teamspace element."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;
 
-            log.info("Trying to add teamspace from '"
+            log.info("Trying to add teamspace from '" //$NON-NLS-1$
                     + element.attribute("href").getStringValue() //$NON-NLS-1$
                     + "'."); //$NON-NLS-1$
             teamList.add(baseURL + element.attribute("href").getStringValue()//$NON-NLS-1$ 

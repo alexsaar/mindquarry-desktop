@@ -170,7 +170,7 @@ public abstract class SVNHelper implements Notify2 {
                 // skip conflict related files (.mine, .rxyz)
                 boolean isConflictRelatedFile = false;
                 for (String conflict : conflicts) {
-                    if (stat.getPath().startsWith(conflict + ".")) {
+                    if (stat.getPath().startsWith(conflict + ".")) { //$NON-NLS-1$
                         isConflictRelatedFile = true;
                         break;
                     }
@@ -249,7 +249,7 @@ public abstract class SVNHelper implements Notify2 {
                 // get the items local revision
                 long itemRev = 0;
                 try {
-                    String itemLocalPath = localPath + "/" + path;
+                    String itemLocalPath = localPath + "/" + path; //$NON-NLS-1$
                     Info itemInfo = client.info(itemLocalPath);
 /*                    // skip directories
                     if (itemInfo.getNodeKind() != NodeKind.file) {
@@ -341,7 +341,7 @@ public abstract class SVNHelper implements Notify2 {
             relPath = info.getUrl().substring(info.getRepository().length());
         }
         catch (ClientException e) {
-            relPath = "/";
+            relPath = "/"; //$NON-NLS-1$
         }
         return relPath;
     }

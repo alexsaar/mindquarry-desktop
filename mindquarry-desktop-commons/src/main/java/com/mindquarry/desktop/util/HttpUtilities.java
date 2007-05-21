@@ -28,6 +28,8 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
@@ -45,9 +47,9 @@ public class HttpUtilities {
             result = get.getResponseBodyAsStream();
         } else if (get.getStatusCode() == 401) {
             throw new Exception(
-                    "Authorization has been refused. Please check you login name and password!");
+                    Messages.getString("com.mindquarry.desktop.0")); //$NON-NLS-1$
         } else {
-            throw new Exception("Unknown connection error. Status code "
+            throw new Exception(Messages.getString("com.mindquarry.desktop.1") //$NON-NLS-1$
                     + get.getStatusCode());
         }
         return result;
@@ -63,9 +65,9 @@ public class HttpUtilities {
             result = get.getResponseBodyAsString();
         } else if (get.getStatusCode() == 401) {
             throw new Exception(
-                    "Authorization has been refused. Please check you login name and password!");
+                    Messages.getString("com.mindquarry.desktop.0")); //$NON-NLS-1$
         } else {
-            throw new Exception("Unknown connection error. Status code "
+            throw new Exception(Messages.getString("com.mindquarry.desktop.1") //$NON-NLS-1$
                     + get.getStatusCode());
         }
         return result;
@@ -87,12 +89,12 @@ public class HttpUtilities {
 
         if (put.getStatusCode() == 401) {
             throw new Exception(
-                    "Authorization has been refused. Please check you login name and password!");
+                    Messages.getString("com.mindquarry.desktop.0")); //$NON-NLS-1$
         } else if (put.getStatusCode() == 302) {
             // we received a redirect to the URL of the putted document, so
             // everthign seems right and we have nothing to do
         } else if (put.getStatusCode() != 200) {
-            throw new Exception("Unknown connection error. Status code "
+            throw new Exception(Messages.getString("com.mindquarry.desktop.1") //$NON-NLS-1$
                     + put.getStatusCode());
         }
         put.releaseConnection();
