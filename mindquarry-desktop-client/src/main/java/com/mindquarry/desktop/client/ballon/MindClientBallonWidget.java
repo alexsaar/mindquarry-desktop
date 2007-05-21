@@ -285,7 +285,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 client.showMessage(Messages
                         .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
                         Messages.getString("com.mindquarry.desktop.client.19")); //$NON-NLS-1$
-                log(Messages.getString("com.mindquarry.desktop.client.20"), e); //$NON-NLS-1$
+                log("Error while updating team list.", e); //$NON-NLS-1$
                 return;
             }
             if (teamList.getTeams().size() == 0) {

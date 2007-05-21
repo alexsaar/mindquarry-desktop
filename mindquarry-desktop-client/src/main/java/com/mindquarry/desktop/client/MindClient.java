@@ -337,7 +337,8 @@ public class MindClient {
             store.load();
         } catch (Exception e) {
             showMessage(
-                    Messages.getString("com.mindquarry.desktop.client.6"), Messages.getString("com.mindquarry.desktop.client.7") //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("com.mindquarry.desktop.client.6"),  //$NON-NLS-1$
+                    Messages.getString("com.mindquarry.desktop.client.7") //$NON-NLS-1$
                             + e.toString());
         }
     }
