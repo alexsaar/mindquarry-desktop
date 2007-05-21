@@ -179,7 +179,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         Link label = new Link(group, SWT.NONE);
         label.setBackground(group.getBackground());
         label
-                .setText("Synchronize your local documents with your team by pressing the 'Synchronize' button below."); //$NON-NLS-1$
+                .setText("Synchronize your local documents with your team by pressing the 'Synchronize' button below.");
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
         SynchronizeWidget synArea = new SynchronizeWidget(group);
@@ -189,7 +189,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         syncButton.setText(Messages
                 .getString("com.mindquarry.desktop.client.11")); //$NON-NLS-1$
         syncButton
-                .setToolTipText("Use this button to synchronize your local workspaces."); //$NON-NLS-1$
+                .setToolTipText("Use this button to synchronize your local workspaces.");
         syncButton
                 .setImage(new Image(
                         Display.getCurrent(),
