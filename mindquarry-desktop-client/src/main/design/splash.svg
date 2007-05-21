@@ -13,9 +13,9 @@
    height="744.09448"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
+   inkscape:version="0.44.1"
    version="1.0"
-   sodipodi:docbase="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/design"
+   sodipodi:docbase="/home/dnaber/mindquarry/mindquarry-meta-system/mindquarry-desktop-client/mindquarry-desktop-client/src/main/design"
    sodipodi:docname="splash.svg"
    inkscape:export-filename="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/resources/com/mindquarry/splash/splash.png"
    inkscape:export-xdpi="90"
@@ -94,15 +94,15 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
      inkscape:cx="544.57205"
-     inkscape:cy="472.09596"
+     inkscape:cy="471.73882"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="1052.3622px"
      height="744.09448px"
      inkscape:window-width="1243"
      inkscape:window-height="756"
-     inkscape:window-x="37"
-     inkscape:window-y="22"
+     inkscape:window-x="216"
+     inkscape:window-y="144"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -146,17 +146,17 @@
        ry="0" />
     <text
        xml:space="preserve"
-       style="font-size:16.2696476px;font-style:normal;font-weight:normal;line-height:125%;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="514.97424"
-       y="380.08609"
+       style="font-size:16.26980782px;font-style:normal;font-weight:normal;line-height:125%;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="597.24133"
+       y="380.08865"
        id="text8526"
        sodipodi:linespacing="125%"
        transform="scale(1.021115,0.979322)"><tspan
          sodipodi:role="line"
          id="tspan8528"
-         x="514.97424"
-         y="380.08609"
-         style="font-size:16.33789825px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:white;fill-opacity:1;font-family:Helvetica Neue">Enjoy meetings with Mindquarry</tspan></text>
+         x="597.24133"
+         y="380.08865"
+         style="font-size:16.33805847px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:white;fill-opacity:1;font-family:Helvetica Neue">Enjoy your teamwork</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.93316078px;font-style:normal;font-weight:normal;line-height:125%;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -168,7 +168,7 @@
          x="249.96936"
          y="398.34726"
          id="tspan8534"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Minutes Editor 1.0</tspan></text>
+         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Desktop Client 1.1</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
        id="rect5629"
