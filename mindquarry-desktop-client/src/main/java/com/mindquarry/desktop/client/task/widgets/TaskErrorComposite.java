@@ -41,7 +41,7 @@ public class TaskErrorComposite extends Composite {
                 true));
 
         Image icon = new Image(null, getClass().getResourceAsStream(
-                "/org/tango-project/tango-icon-theme/22x22/actions/edit-delete.png")); //$NON-NLS-1$
+                "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
         
         Label label = new Label(internalComp, SWT.CENTER);
         label.setImage(icon);

@@ -20,6 +20,7 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.tigris.subversion.javahl.NotifyAction;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 
@@ -34,9 +35,9 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  *         Saar</a>
  */
 public class JavaSVNHelper extends SVNHelper {
-    
+
     private Log log = LogFactory.getLog(this.getClass());
-    
+
     private String commitMessage = ""; //$NON-NLS-1$
 
     private String commitInfo;
@@ -49,7 +50,20 @@ public class JavaSVNHelper extends SVNHelper {
     }
 
     public void onNotify(NotifyInformation info) {
-        log.info("SVN notify: " + info.getPath()); //$NON-NLS-1$
+        switch (info.getAction()) {
+        case NotifyAction.commit_added:
+            log.info("SVN notify: added " + info.getPath()); //$NON-NLS-1$
+            break;
+
+        case NotifyAction.commit_deleted:
+            log.info("SVN notify: deleted " + info.getPath()); //$NON-NLS-1$
+            break;
+            
+        case NotifyAction.commit_modified:
+            log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
+            break;
+        }
+        log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
     }
 
     protected int resolveConflict(final Status status) {

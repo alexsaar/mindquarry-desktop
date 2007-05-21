@@ -204,11 +204,23 @@ public class MindClient {
                 }
             }
         });
+        menuItem
+        .setImage(new Image(
+                Display.getCurrent(),
+                getClass()
+                        .getResourceAsStream(
+                                "/org/tango-project/tango-icon-theme/16x16/apps/internet-web-browser.png"))); //$NON-NLS-1$
         // synchronize
         menuItem = new MenuItem(menu, SWT.PUSH);
         menuItem.setText("Synchronize");
         menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
                 .getInstance(this, menuItem, null));
+        menuItem
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/com/mindquarry/icons/16x16/actions/synchronize-vertical.png"))); //$NON-NLS-1$
 
         // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
@@ -221,6 +233,12 @@ public class MindClient {
                 showPreferenceDialog(false);
             }
         });
+        menuItem
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/org/tango-project/tango-icon-theme/16x16/categories/preferences-system.png"))); //$NON-NLS-1$
         // add separator
         menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
@@ -233,6 +251,12 @@ public class MindClient {
                 System.exit(1);
             }
         });
+        menuItem
+                .setImage(new Image(
+                        Display.getCurrent(),
+                        getClass()
+                                .getResourceAsStream(
+                                        "/org/tango-project/tango-icon-theme/16x16/actions/process-stop.png"))); //$NON-NLS-1$
         iconAction = new IconActionThread(item);
         iconAction.setDaemon(true);
         iconAction.start();

@@ -329,7 +329,7 @@ public class TaskManager {
                             "Currently no tasks are active.");
                 } else {
                     destroyContent();
-                    String errMessage = "List of tasks could not be updated:\n" + exception.toString();
+                    String errMessage = "List of tasks could not be updated:\n" + exception.getLocalizedMessage();
                     errorWidget = new TaskErrorComposite(taskContainer, errMessage);
                 }
                 taskContainer.layout(true);
