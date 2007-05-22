@@ -38,10 +38,10 @@ public class TaskPage extends FieldEditorPreferencePage {
      * ProfilesPage default constructor
      */
     public TaskPage() {
-        super(Messages.getString("com.mindquarry.desktop.31"), SWT.FLAT); //$NON-NLS-1$
+        super(Messages.getString(TaskPage.class, "0"), SWT.FLAT); //$NON-NLS-1$
 
         // inital preference page
-        setDescription(Messages.getString("com.mindquarry.desktop.32")); //$NON-NLS-1$
+        setDescription(Messages.getString(TaskPage.class, "1")); //$NON-NLS-1$
         Image img = new Image(
                 Display.getCurrent(),
                 getClass()
@@ -62,8 +62,8 @@ public class TaskPage extends FieldEditorPreferencePage {
         store.setDefault(LIST_FINISHED_TASKS, false);
 
         BooleanFieldEditor showFinishedTasks = new BooleanFieldEditor(
-                LIST_FINISHED_TASKS, Messages
-                        .getString("com.mindquarry.desktop.33"), //$NON-NLS-1$
+                LIST_FINISHED_TASKS, "&" //$NON-NLS-1$
+                        + Messages.getString(TaskPage.class, "2"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(showFinishedTasks);
     }

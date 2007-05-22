@@ -51,7 +51,7 @@ import com.mindquarry.desktop.Messages;
  */
 public class ShortcutsPage extends PreferencePage {
     public static final String NAME = "shortcuts"; //$NON-NLS-1$
-    
+
     public static final String SHORTCUT_KEY_BASE = "com.mindquarry.desktop.shortcut."; //$NON-NLS-1$
 
     private static final String CATEGORY_COL_ID = "category"; //$NON-NLS-1$
@@ -66,14 +66,14 @@ public class ShortcutsPage extends PreferencePage {
      * ShortcutsPage default constructor
      */
     public ShortcutsPage() {
-        super(Messages.getString("com.mindquarry.desktop.6")); //$NON-NLS-1$
-        setDescription(Messages.getString("com.mindquarry.desktop.7")); //$NON-NLS-1$
+        super(Messages.getString(ShortcutsPage.class, "0")); //$NON-NLS-1$
+        setDescription(Messages.getString(ShortcutsPage.class, "1")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
                         getClass()
                                 .getResourceAsStream(
-                                        Messages.getString("com.mindquarry.desktop.8"))))); //$NON-NLS-1$
+                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")))); //$NON-NLS-1$
         // init shortcuts
         shortcuts = new ArrayList<Shortcut>();
     }
@@ -84,7 +84,7 @@ public class ShortcutsPage extends PreferencePage {
     @Override
     protected Control createContents(Composite parent) {
         loadStoredShortcuts();
-        
+
         Table table = new Table(parent, SWT.BORDER | SWT.SINGLE
                 | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -92,13 +92,13 @@ public class ShortcutsPage extends PreferencePage {
         table.setLinesVisible(true);
 
         TableColumn col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("com.mindquarry.desktop.9")); //$NON-NLS-1$
+        col.setText(Messages.getString(ShortcutsPage.class, "2")); //$NON-NLS-1$
         col.setWidth(100);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("com.mindquarry.desktop.10")); //$NON-NLS-1$
+        col.setText(Messages.getString(ShortcutsPage.class, "3")); //$NON-NLS-1$
         col.setWidth(200);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("com.mindquarry.desktop.11")); //$NON-NLS-1$
+        col.setText(Messages.getString(ShortcutsPage.class, "4")); //$NON-NLS-1$
         col.setWidth(100);
 
         CellEditor[] editors = new CellEditor[table.getColumnCount()];
@@ -112,25 +112,25 @@ public class ShortcutsPage extends PreferencePage {
         viewer.setContentProvider(new ShortcutContentProvider());
         viewer.setLabelProvider(new ShortcutLabelProvider());
         viewer.setInput(shortcuts.toArray(new Shortcut[0]));
-        
+
         return parent;
     }
-    
+
     class KeySequenceTextCellEditor extends TextCellEditor {
         public KeySequenceTextCellEditor(Composite parent) {
             super(parent);
         }
-        
+
         @Override
         protected Control createControl(Composite parent) {
-            Text txt = (Text)super.createControl(parent);
+            Text txt = (Text) super.createControl(parent);
             KeySequenceText kst = new KeySequenceText(txt);
             return txt;
         }
     }
 
     private void loadStoredShortcuts() {
-        PreferenceStore store = (PreferenceStore)getPreferenceStore();
+        PreferenceStore store = (PreferenceStore) getPreferenceStore();
         HashMap<Integer, Shortcut> storedProfiles = new HashMap<Integer, Shortcut>();
 
         // load stored profiles
@@ -140,8 +140,8 @@ public class ShortcutsPage extends PreferencePage {
                 // analyze preference
                 int nbr = Integer.valueOf(pref.substring(SHORTCUT_KEY_BASE
                         .length(), SHORTCUT_KEY_BASE.length() + 1));
-                String prefName = pref.substring(SHORTCUT_KEY_BASE.length() + 2,
-                        pref.length());
+                String prefName = pref.substring(
+                        SHORTCUT_KEY_BASE.length() + 2, pref.length());
 
                 // init profile
                 Shortcut shortcut;

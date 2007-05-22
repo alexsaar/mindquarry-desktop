@@ -36,8 +36,9 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
      * ShortcutsPage default constructor
      */
     public GeneralSettingsPage() {
-        super(Messages.getString("com.mindquarry.desktop.2"), FieldEditorPreferencePage.GRID); //$NON-NLS-1$
-        setDescription(Messages.getString("com.mindquarry.desktop.3")); //$NON-NLS-1$
+        super(Messages.getString(GeneralSettingsPage.class, "0"), //$NON-NLS-1$
+                FieldEditorPreferencePage.GRID);
+        setDescription(Messages.getString(GeneralSettingsPage.class, "1")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -51,7 +52,9 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
         store.setDefault(NOTIFY_DELAY, 2);
 
         IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
-                NOTIFY_DELAY, Messages.getString("com.mindquarry.desktop.4"), //$NON-NLS-1$
+                NOTIFY_DELAY, Messages
+                        .getString(GeneralSettingsPage.class, "2") //$NON-NLS-1$
+                        + ":", //$NON-NLS-1$
                 getFieldEditorParent());
         addField(notifyDisplayDelay);
     }
