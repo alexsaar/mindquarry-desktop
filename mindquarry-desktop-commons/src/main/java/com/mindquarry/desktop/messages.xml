@@ -18,6 +18,11 @@
             <entry key="0">Authorization has been refused. Please check you login name and password!</entry>
             <entry key="1">Unknown connection error. Status code</entry>
         </locale>
+        
+        <locale language="de">
+            <entry key="0">Authorisierung wurde abgelehnt. Bitte überprüfen sie ihren Login Namen und Password.</entry>
+            <entry key="1">Unbekannter Verbindungsfehler. Status code</entry>
+        </locale>
     </message>
     
     <message id="com.mindquarry.desktop.preferences.pages.GeneralSettingsPage">
@@ -25,6 +30,12 @@
             <entry key="0">Common Settings</entry>
             <entry key="1">Manage common settings of the application.</entry>
             <entry key="2">Notification Message Delay (in seconds)</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Allgemein</entry>
+            <entry key="1">Verwalten sie allgemeine Anwendungseinstellung.</entry>
+            <entry key="2">Anzeigedauer für Nachrichten (in Sekunden)</entry>
         </locale>
     </message>
     
@@ -35,6 +46,14 @@
             <entry key="2">Category</entry>
             <entry key="3">Action</entry>
             <entry key="4">Shortcut</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Tastaturbefehle</entry>
+            <entry key="1">Verwalten sie Tastaturbefehle der Anwendung.</entry>
+            <entry key="2">Kategorie</entry>
+            <entry key="3">Aktion</entry>
+            <entry key="4">Tastaturbefehl</entry>
         </locale>
     </message>
     
@@ -48,7 +67,7 @@
         <locale language="de">
             <entry key="0">Aufgaben</entry>
             <entry key="1">Verwalten sie ihre Einstellungen für Aufgaben.</entry>
-            <entry key="2">Anzeige beendeter Aufgaben</entry>
+            <entry key="2">Anzeigen beendeter Aufgaben</entry>
         </locale>
     </message>
     
@@ -72,6 +91,27 @@
             <entry key="15">Select folder for workspaces.</entry>
             <entry key="16">Profile name must contain at least one character.</entry>
             <entry key="17">A profile with the same name already exists. Each profile must have a unique name.</entry>
+        </locale>
+        
+        <locale language="en">
+            <entry key="0">Server Profile</entry>
+            <entry key="1">Verwalten sie verschiedene Mindquarry Server Profile.</entry>
+            <entry key="2">Profil hinzufügen</entry>
+            <entry key="3">Neues Server Profil anlegen</entry>
+            <entry key="4">Bitte geben sie einen Namen für das Profil ein</entry>
+            <entry key="5">Mein Mindquarry Server Profil</entry>
+            <entry key="6">Profil entfernen</entry>
+            <entry key="7">Server Profil umbenennen</entry>
+            <entry key="8">Bitte geben sie einen neuen Namen für das Profil ein</entry>
+            <entry key="9">Profile Einstellungen</entry>
+            <entry key="10">Ihre Login ID</entry>
+            <entry key="11">Ihr Passwort</entry>
+            <entry key="12">URL des Mindquarry Servers</entry>
+            <entry key="13">Ordner für Arbeitplätze</entry>
+            <entry key="14">Durchsuchen</entry>
+            <entry key="15">Bitte wählen sie einen Ordner für Arbeitsplätze aus.</entry>
+            <entry key="16">Profil Name muss mindestens ein Zeichen enthalten.</entry>
+            <entry key="17">Ein Profil mit demselben Namen existiert bereits. Jedes Profil muss einen eindeutigen Namen haben.</entry>
         </locale>
     </message>
 </messages>
