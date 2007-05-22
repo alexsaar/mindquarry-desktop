@@ -71,21 +71,21 @@
         
         <locale language="de">
             <entry key="0">Arbeitsplätze</entry>
-            <entry key="1">Synchronisieren sie ihre lokalen Dokumente, indem sie die Schaltfläche "Synchronisieren" drücken.</entry>
+            <entry key="1">Synchronisieren Sie Ihre lokalen Dokumente, indem Sie die Schaltfläche "Synchronisieren" drücken.</entry>
             <entry key="2">Synchronisieren</entry>
-            <entry key="3">Verwenden sie diese Schaltfläche zur Synchronisierung ihrer lokalen Arbeitplätze.</entry>
+            <entry key="3">Verwenden Sie diese Schaltfläche zur Synchronisierung Ihrer lokalen Arbeitplätze.</entry>
             <entry key="4">Aufgaben</entry>
             <entry key="5">Neue Aufgabe</entry>
             <entry key="6">Legt eine neue Aufgabe an</entry>
             <entry key="7">Aktualisieren</entry>
             <entry key="8">Aktualisieren der Aufgabenliste.</entry>
             <entry key="9">Erledigt</entry>
-            <entry key="10">Verwenden sie diese Schaltfläche um eine Aufgabe als erledigt zu markieren.</entry>
+            <entry key="10">Verwenden Sie diese Schaltfläche, um eine Aufgabe als erledigt zu markieren.</entry>
             <entry key="11">Liste der Teams konnte nicht aktualisiert werden.</entry>
             <entry key="12">Authorisierungsfehler</entry>
             <entry key="13">Sie sind in keinen Team Mitglied und können keine Aufgabe anlegen.</entry>
             <entry key="14">Neue Aufgabe</entry>
-            <entry key="15">zusammenfassung der Aufgabe</entry>
+            <entry key="15">Zusammenfassung der Aufgabe</entry>
             <entry key="16">Netzwerkfehler</entry>
             <entry key="17">Aufgabe konnte nicht angelegt werden.</entry>
         </locale>
@@ -143,15 +143,15 @@
         </locale>
         
         <locale language="de">
-            <entry key="0">Editieren sie eine Aufgabe</entry>
-            <entry key="1">Bitte gegeben sie die Daten der Aufgabe ein und drücken sie OK zum ändern/anlegen der Aufgabe.</entry>
+            <entry key="0">Editieren Sie eine Aufgabe</entry>
+            <entry key="1">Bitte gegeben Sie die Daten der Aufgabe ein und drücken Sie OK zum Ändern/Anlegen der Aufgabe.</entry>
             <entry key="2">Aufgabe bearbeiten</entry>
             <entry key="3">Titel</entry>
             <entry key="4">Status</entry>
             <entry key="5">Priorität</entry>
             <entry key="6">Zusammenfassung</entry>
             <entry key="7">Fälligkeitsdatum</entry>
-            <entry key="8">Es wurde kein Fälligkeitsdatum gesetzt, bitte wählen sie eines</entry>
+            <entry key="8">Es wurde kein Fälligkeitsdatum gesetzt, bitte wählen Sie eines</entry>
         </locale>
     </message>
     
@@ -162,8 +162,8 @@
         </locale>
         
         <locale language="en">
-            <entry key="0">Wählen sie ein Team</entry>
-            <entry key="1">Bitte wählen sie eines ihrer Teams aus.</entry>
+            <entry key="0">Wählen Sie ein Team</entry>
+            <entry key="1">Bitte wählen Sie eines Ihrer Teams aus.</entry>
         </locale>
     </message>
     
@@ -188,7 +188,7 @@
         
         <locale language="de">
             <entry key="0">Konflikte auflösen</entry>
-            <entry key="1">Bitte wählen sie die Version, die als aktuelle Version verwendet werden soll.</entry>
+            <entry key="1">Bitte wählen Sie die Version, die als aktuelle Version verwendet werden soll.</entry>
             <entry key="2">Auflösen von Konflikten</entry>
             <entry key="3">Lokale Version</entry>
             <entry key="4">Server Version</entry>
@@ -203,7 +203,7 @@
         
         <locale language="de">
             <entry key="0">Beschreibung von Änderungen</entry>
-            <entry key="1">Beschreibung der von ihnen getätigten Änderungen.</entry>
+            <entry key="1">Beschreibung der von Ihnen getätigten Änderungen.</entry>
         </locale>
     </message>
     
@@ -228,9 +228,9 @@
         </locale>
         
         <locale language="de">
-            <entry key="0">Checke Änderungen der Arbeitplätze</entry>
+            <entry key="0">Prüfe Änderungen der Arbeitplätze</entry>
             <entry key="1">Veröffentliche Arbeitplatzänderungen</entry>
-            <entry key="2">Bitte geben sie eine kurze Beschreibung ihrer Änderunge des Arbeitsplatzes ein.</entry>
+            <entry key="2">Bitte geben Sie eine kurze Beschreibung Ihrer Änderunge des Arbeitsplatzes ein.</entry>
             <entry key="3">Arbeitsplatzänderungen konnten nicht veröffentlicht werden</entry>
         </locale>
     </message>
@@ -264,7 +264,7 @@
         </locale>
         
         <locale language="de">
-            <entry key="0">Es wurde kein Server Profil ausgewählt. Bitte wählen sie ein Profil und versuchen sie es nocheinmal.</entry>
+            <entry key="0">Es wurde kein Server Profil ausgewählt. Bitte wählen Sie ein Profil und versuchen Sie es nocheinmal.</entry>
             <entry key="1">Fehler während der Synchronisierung der Arbeitplätze.</entry>
         </locale>
     </message>
