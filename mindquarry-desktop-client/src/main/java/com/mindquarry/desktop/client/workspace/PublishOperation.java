@@ -40,7 +40,7 @@ public class PublishOperation extends SvnOperation {
 
     public void run() {
         resetProgress();
-        setMessage(Messages.getString("com.mindquarry.desktop.client.88")); //$NON-NLS-1$
+        setMessage(Messages.getString(PublishOperation.class, "0")); //$NON-NLS-1$
 
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
@@ -56,7 +56,8 @@ public class PublishOperation extends SvnOperation {
         Iterator idIt = workspaces.keySet().iterator();
         while (idIt.hasNext()) {
             String id = (String) idIt.next();
-            setMessage(Messages.getString("com.mindquarry.desktop.client.89") + " (" //$NON-NLS-1$//$NON-NLS-2$
+            setMessage(Messages.getString(PublishOperation.class, "1") //$NON-NLS-1$
+                    + " (" //$NON-NLS-1$
                     + ++wsNbr + " of " //$NON-NLS-1$
                     + wsCount + ")"); //$NON-NLS-1$
 
@@ -70,8 +71,8 @@ public class PublishOperation extends SvnOperation {
                 List changedPaths = new ArrayList();
 
                 StringBuffer commitInfo = new StringBuffer();
-                commitInfo.append(Messages
-                        .getString("com.mindquarry.desktop.client.90") //$NON-NLS-1$
+                commitInfo.append(Messages.getString(PublishOperation.class,
+                        "2") //$NON-NLS-1$
                         + id + ":\n\n"); //$NON-NLS-1$
                 commitInfo
                         .append(getStatiDescription(changes, wsDir.getPath()));
@@ -86,12 +87,10 @@ public class PublishOperation extends SvnOperation {
                             .toArray(new String[0]));
                 }
             } catch (Exception e) {
-                client
-                        .showMessage(
-                                Messages
-                                        .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
-                                Messages
-                                        .getString("com.mindquarry.desktop.client.92") + id); //$NON-NLS-1$
+                client.showMessage(Messages.getString(
+                        "com.mindquarry.desktop.client", //$NON-NLS-1$
+                        "error"), //$NON-NLS-1$
+                        Messages.getString(PublishOperation.class, "3") + id); //$NON-NLS-1$
                 log.error("Could not publish workspace changes " //$NON-NLS-1$
                         + id, e);
             }

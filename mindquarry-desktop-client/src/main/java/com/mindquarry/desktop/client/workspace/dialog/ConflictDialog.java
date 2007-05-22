@@ -57,11 +57,10 @@ public class ConflictDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString("com.mindquarry.desktop.client.78")); //$NON-NLS-1$
-        setMessage(Messages.getString("com.mindquarry.desktop.client.79"), //$NON-NLS-1$
+        setTitle(Messages.getString(ConflictDialog.class, "0")); //$NON-NLS-1$
+        setMessage(Messages.getString(ConflictDialog.class, "1"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
-        getShell().setText(
-                Messages.getString("com.mindquarry.desktop.client.80")); //$NON-NLS-1$
+        getShell().setText(Messages.getString(ConflictDialog.class, "2")); //$NON-NLS-1$
         return contents;
     }
 
@@ -79,8 +78,7 @@ public class ConflictDialog extends TitleAreaDialog {
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         localCopy = new Button(composite, SWT.RADIO);
-        localCopy.setText(Messages
-                .getString("com.mindquarry.desktop.client.81")); //$NON-NLS-1$
+        localCopy.setText(Messages.getString(ConflictDialog.class, "3")); //$NON-NLS-1$
         localCopy.setSelection(true);
         localCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         localCopy.addListener(SWT.Selection, new Listener() {
@@ -89,8 +87,8 @@ public class ConflictDialog extends TitleAreaDialog {
             }
         });
         remoteCopy = new Button(composite, SWT.RADIO);
-        remoteCopy.setText(Messages
-                .getString("com.mindquarry.desktop.client.82") + "(Revision " //$NON-NLS-1$//$NON-NLS-2$
+        remoteCopy.setText(Messages.getString(ConflictDialog.class, "4") //$NON-NLS-1$
+                + "(Revision " //$NON-NLS-1$
                 + remoteRevision + ")"); //$NON-NLS-1$
         remoteCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         remoteCopy.addListener(SWT.Selection, new Listener() {

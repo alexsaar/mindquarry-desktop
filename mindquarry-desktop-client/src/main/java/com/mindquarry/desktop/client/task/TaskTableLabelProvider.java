@@ -50,7 +50,7 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
      */
     public Image getImage(Object element) {
         Task task = (Task) element;
-        if(task.getStatus() == null) {
+        if (task.getStatus() == null) {
             return null;
         }
         if (task.getStatus().equals(Task.STATUS_NEW)) {
@@ -84,19 +84,25 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
         String text = ""; //$NON-NLS-1$
         String title = task.getTitle();
         if (title != null) {
-            title = title.length() > maxLength ? title.substring(0, maxLength) + "..." : title; //$NON-NLS-1$
+            title = title.length() > maxLength ? title.substring(0, maxLength)
+                    + "..." : title; //$NON-NLS-1$
         } else {
             title = "-"; //$NON-NLS-1$
         }
-        text += Messages.getString("com.mindquarry.desktop.client.53") + ": " + title;  //$NON-NLS-1$//$NON-NLS-2$ 
-        text += "\n" + Messages.getString("com.mindquarry.desktop.client.54") + ": " + task.getStatus(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        text += Messages.getString(TaskTableLabelProvider.class, "0") //$NON-NLS-1$
+                + ": " + title; //$NON-NLS-1$ 
+        text += "\n" + Messages.getString(TaskTableLabelProvider.class, "1") //$NON-NLS-1$//$NON-NLS-2$
+                + ": " + task.getStatus(); //$NON-NLS-1$ 
         String summary = task.getSummary();
         if (summary != null) {
-            summary = summary.length() > maxLength ? summary.substring(0, maxLength) + "..." : summary; //$NON-NLS-1$
+            summary = summary.length() > maxLength ? summary.substring(0,
+                    maxLength)
+                    + "..." : summary; //$NON-NLS-1$
         } else {
             summary = "-"; //$NON-NLS-1$
         }
-        text += "\n" + Messages.getString("com.mindquarry.desktop.client.55") + ": " + summary; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        text += "\n" + Messages.getString(TaskTableLabelProvider.class, "2") //$NON-NLS-1$ //$NON-NLS-2$
+                + ": " + summary; //$NON-NLS-1$ 
         return text;
     }
 

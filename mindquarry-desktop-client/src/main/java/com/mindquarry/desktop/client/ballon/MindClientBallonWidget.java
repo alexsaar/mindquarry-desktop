@@ -172,14 +172,13 @@ public class MindClientBallonWidget extends BalloonWindow implements
     private void createWorkspacesGroup() {
         Group group = new Group(container, SWT.SHADOW_NONE);
         group.setBackground(container.getBackground());
-        group.setText(Messages.getString("com.mindquarry.desktop.client.10")); //$NON-NLS-1$
+        group.setText(Messages.getString(MindClientBallonWidget.class, "0")); //$NON-NLS-1$
         group.setLayout(new GridLayout(2, false));
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
         Link label = new Link(group, SWT.NONE);
         label.setBackground(group.getBackground());
-        label
-                .setText("Synchronize your local documents with your team by pressing the 'Synchronize' button below.");
+        label.setText(Messages.getString(MindClientBallonWidget.class, "1")); //$NON-NLS-1$
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 2));
 
         SynchronizeWidget synArea = new SynchronizeWidget(group);
@@ -187,9 +186,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Button syncButton = new Button(group, SWT.PUSH);
         syncButton.setText(Messages
-                .getString("com.mindquarry.desktop.client.11")); //$NON-NLS-1$
-        syncButton
-                .setToolTipText("Use this button to synchronize your local workspaces.");
+                .getString(MindClientBallonWidget.class, "2")); //$NON-NLS-1$
+        syncButton.setToolTipText(Messages.getString(
+                MindClientBallonWidget.class, "3")); //$NON-NLS-1$
         syncButton
                 .setImage(new Image(
                         Display.getCurrent(),
@@ -208,7 +207,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
         group.setBackground(container.getBackground());
         group.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
         group.setLayout(new GridLayout(3, false));
-        group.setText(Messages.getString("com.mindquarry.desktop.client.12")); //$NON-NLS-1$
+        group.setText(Messages.getString(MindClientBallonWidget.class, "4")); //$NON-NLS-1$
 
         Composite taskContainer = new Composite(group, SWT.NONE);
         taskContainer.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true,
@@ -223,10 +222,11 @@ public class MindClientBallonWidget extends BalloonWindow implements
         ((GridLayout) taskContainer.getLayout()).marginWidth = 0;
 
         Button createTaskButton = new Button(group, SWT.NONE);
-        createTaskButton.setText(Messages
-                .getString("com.mindquarry.desktop.client.13")); //$NON-NLS-1$
-        createTaskButton.setToolTipText(Messages
-                .getString("com.mindquarry.desktop.client.14")); //$NON-NLS-1$
+        createTaskButton.setText(Messages.getString(
+                MindClientBallonWidget.class, "5") //$NON-NLS-1$
+                + "..."); //$NON-NLS-1$
+        createTaskButton.setToolTipText(Messages.getString(
+                MindClientBallonWidget.class, "6")); //$NON-NLS-1$
         createTaskButton.setLayoutData(new GridData(SWT.LEFT, SWT.NONE, true,
                 false));
         createTaskButton.setImage(new Image(Display.getCurrent(), getClass()
@@ -234,10 +234,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         "/com/mindquarry/icons/22x22/actions/task-new.png"))); //$NON-NLS-1$
         createTaskButton.addListener(SWT.Selection, new CreateTaskListener());
         Button refreshButton = new Button(group, SWT.NONE);
-        refreshButton.setText(Messages
-                .getString("com.mindquarry.desktop.client.15")); //$NON-NLS-1$
-        refreshButton.setToolTipText(Messages
-                .getString("com.mindquarry.desktop.client.16")); //$NON-NLS-1$
+        refreshButton.setText(Messages.getString(MindClientBallonWidget.class,
+                "7")); //$NON-NLS-1$
+        refreshButton.setToolTipText(Messages.getString(
+                MindClientBallonWidget.class, "8")); //$NON-NLS-1$
         refreshButton
                 .setLayoutData(new GridData(SWT.END, SWT.NONE, true, false));
         refreshButton
@@ -249,9 +249,10 @@ public class MindClientBallonWidget extends BalloonWindow implements
 
         Button doneButton = new Button(group, SWT.NONE);
         doneButton.setEnabled(false);
-        doneButton.setText("Mark Done"); //$NON-NLS-1$
-        doneButton.setToolTipText(Messages
-                .getString("com.mindquarry.desktop.client.17")); //$NON-NLS-1$
+        doneButton.setText(Messages
+                .getString(MindClientBallonWidget.class, "9")); //$NON-NLS-1$
+        doneButton.setToolTipText(Messages.getString(
+                MindClientBallonWidget.class, "10")); //$NON-NLS-1$
         doneButton.setLayoutData(new GridData(SWT.END, SWT.NONE, false, false));
         doneButton.setImage(new Image(Display.getCurrent(), getClass()
                 .getResourceAsStream(
@@ -282,16 +283,17 @@ public class MindClientBallonWidget extends BalloonWindow implements
                 teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                         profile.getLogin(), profile.getPassword());
             } catch (Exception e) {
-                client.showMessage(Messages
-                        .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
-                        Messages.getString("com.mindquarry.desktop.client.19")); //$NON-NLS-1$
+                client.showMessage(Messages.getString(
+                        "com.mindquarry.desktop.client", //$NON-NLS-1$
+                        "error"), //$NON-NLS-1$
+                        Messages.getString(MindClientBallonWidget.class, "11")); //$NON-NLS-1$
                 log("Error while updating team list.", e); //$NON-NLS-1$
                 return;
             }
             if (teamList.getTeams().size() == 0) {
-                client.showMessage(Messages
-                        .getString("com.mindquarry.desktop.client.21"), //$NON-NLS-1$
-                        Messages.getString("com.mindquarry.desktop.client.22")); //$NON-NLS-1$
+                client.showMessage(Messages.getString(
+                        MindClientBallonWidget.class, "12"), //$NON-NLS-1$
+                        Messages.getString(MindClientBallonWidget.class, "13")); //$NON-NLS-1$
             }
             Calendar cal = new GregorianCalendar(); // current date
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
@@ -302,9 +304,9 @@ public class MindClientBallonWidget extends BalloonWindow implements
             task.setStatus("new"); //$NON-NLS-1$
             task.setPriority("low"); //$NON-NLS-1$
             task.setTitle(Messages
-                    .getString("com.mindquarry.desktop.client.24")); //$NON-NLS-1$
-            task.setSummary(Messages
-                    .getString("com.mindquarry.desktop.client.25")); //$NON-NLS-1$
+                    .getString(MindClientBallonWidget.class, "14")); //$NON-NLS-1$
+            task.setSummary(Messages.getString(MindClientBallonWidget.class,
+                    "15")); //$NON-NLS-1$
             task.setDate(date);
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
@@ -322,14 +324,12 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 task.getContentAsXML().asXML().getBytes());
                     }
                 } catch (Exception e) {
-                    client
-                            .showMessage(
-                                    Messages
-                                            .getString("com.mindquarry.desktop.client.26"), //$NON-NLS-1$
-                                    Messages
-                                            .getString("com.mindquarry.desktop.client.27")); //$NON-NLS-1$
-                    log.error(Messages
-                            .getString("com.mindquarry.desktop.client.27"), e); //$NON-NLS-1$
+                    client.showMessage(Messages.getString(
+                            MindClientBallonWidget.class, "16"), //$NON-NLS-1$
+                            Messages.getString(MindClientBallonWidget.class,
+                                    "17")); //$NON-NLS-1$
+                    log.error(Messages.getString(MindClientBallonWidget.class,
+                            "17"), e); //$NON-NLS-1$
                 }
             }
         }

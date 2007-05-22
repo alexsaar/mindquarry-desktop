@@ -126,7 +126,7 @@ public class IconActionThread extends Thread {
                 tooltip += "- " + action; //$NON-NLS-1$
             }
         } else {
-            tooltip += Messages.getString("com.mindquarry.desktop.client.77"); //$NON-NLS-1$
+            tooltip += Messages.getString(IconActionThread.class, "0"); //$NON-NLS-1$
         }
         item.setToolTipText(tooltip);
     }

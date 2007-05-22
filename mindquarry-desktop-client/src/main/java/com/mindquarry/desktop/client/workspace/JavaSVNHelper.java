@@ -92,8 +92,8 @@ public class JavaSVNHelper extends SVNHelper {
     protected String getCommitMessage() {
         // retrieve (asynchronously) commit message
         final InputDialog dlg = new InputDialog(MindClient.getShell(), Messages
-                .getString("com.mindquarry.desktop.client.83"), commitInfo, //$NON-NLS-1$
-                Messages.getString("com.mindquarry.desktop.client.84"), null); //$NON-NLS-1$
+                .getString(JavaSVNHelper.class, "0"), commitInfo, //$NON-NLS-1$
+                Messages.getString(JavaSVNHelper.class, "1"), null); //$NON-NLS-1$
 
         MindClient.getShell().getDisplay().syncExec(new Runnable() {
             public void run() {

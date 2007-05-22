@@ -82,8 +82,11 @@ public class UpdateOperation extends SvnOperation {
                 svnHelper.getLocalChanges();
                 svnHelper.update();
             } catch (ClientException e) {
-                client.showMessage(Messages.getString("com.mindquarry.desktop.client.6"), Messages.getString("com.mindquarry.desktop.client.96") //$NON-NLS-1$ //$NON-NLS-2$
-                        + id + ": " + e.toString());    //$NON-NLS-1$
+                client.showMessage(Messages.getString(
+                        "com.mindquarry.desktop.client", //$NON-NLS-1$
+                        "error"), //$NON-NLS-1$
+                        Messages.getString(UpdateOperation.class, "0") //$NON-NLS-1$
+                                + " " + id + ": " + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
                 log.error("Could not update workspace " //$NON-NLS-1$
                         + id, e);
             }

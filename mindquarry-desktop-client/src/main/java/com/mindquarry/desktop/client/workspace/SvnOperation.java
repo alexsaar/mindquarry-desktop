@@ -50,13 +50,11 @@ public abstract class SvnOperation implements Runnable {
             String path = status.getPath().substring(pathPrefix.length() + 1);
 
             if (!status.isManaged() || status.isAdded()) {
-                msg
-                        .append(Messages
-                                .getString("com.mindquarry.desktop.client.93") + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$
+                msg.append(Messages.getString(SvnOperation.class, "0") //$NON-NLS-1$
+                        + ": " + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$
             } else if (status.isModified()) {
-                msg
-                        .append(Messages
-                                .getString("com.mindquarry.desktop.client.94") + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$ 
+                msg.append(Messages.getString(SvnOperation.class, "1") //$NON-NLS-1$
+                        + ": " + path + "\n"); //$NON-NLS-1$//$NON-NLS-2$ 
             } else {
                 msg.append(status.getTextStatusDescription()
                         + ": " + path + "\n"); //$NON-NLS-1$ //$NON-NLS-2$

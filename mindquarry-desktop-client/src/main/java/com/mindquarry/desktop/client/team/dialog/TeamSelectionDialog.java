@@ -56,12 +56,11 @@ public class TeamSelectionDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString("com.mindquarry.desktop.client.73")); //$NON-NLS-1$
-        setMessage(Messages.getString("com.mindquarry.desktop.client.74"), //$NON-NLS-1$
+        setTitle(Messages.getString(TeamSelectionDialog.class, "0")); //$NON-NLS-1$
+        setMessage(Messages.getString(TeamSelectionDialog.class, "1"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
 
-        getShell().setText(
-                Messages.getString("com.mindquarry.desktop.client.73")); //$NON-NLS-1$
+        getShell().setText(Messages.getString(TeamSelectionDialog.class, "0")); //$NON-NLS-1$
         return contents;
     }
 
@@ -70,7 +69,7 @@ public class TeamSelectionDialog extends TitleAreaDialog {
         composite.setLayout(new GridLayout(1, true));
 
         Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("com.mindquarry.desktop.client.73") //$NON-NLS-1$
+        label.setText(Messages.getString(TeamSelectionDialog.class, "0") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         teamWidget = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY

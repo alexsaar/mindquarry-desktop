@@ -53,7 +53,8 @@ public class ListWorkspacesOperation extends SvnOperation {
     }
 
     private boolean getTeamspaceList(HashMap teamspaces) {
-        setMessage(Messages.getString("com.mindquarry.desktop.client.85")); //$NON-NLS-1$
+        setMessage(Messages.getString(ListWorkspacesOperation.class, "0") //$NON-NLS-1$
+                + "..."); //$NON-NLS-1$
         log.info("Retrieving teamspace list for workspace synchronization..."); //$NON-NLS-1$
 
         Profile profile = Profile.getSelectedProfile(client
@@ -64,9 +65,10 @@ public class ListWorkspacesOperation extends SvnOperation {
             teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            client.showMessage(Messages
-                    .getString("com.mindquarry.desktop.client.6"), //$NON-NLS-1$
-                    Messages.getString("com.mindquarry.desktop.client.87")); //$NON-NLS-1$
+            client.showMessage(Messages.getString(
+                    "com.mindquarry.desktop.client", //$NON-NLS-1$
+                    "error"), //$NON-NLS-1$
+                    Messages.getString(ListWorkspacesOperation.class, "1")); //$NON-NLS-1$
             log.error("Could not retrieve list of tasks " //$NON-NLS-1$
                     + "for workspace synchronization.", e); //$NON-NLS-1$
             return false;

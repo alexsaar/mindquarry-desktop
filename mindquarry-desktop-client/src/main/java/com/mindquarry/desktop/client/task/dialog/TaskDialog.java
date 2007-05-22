@@ -51,7 +51,7 @@ public class TaskDialog extends TitleAreaDialog {
 
     private Text summary = null;
 
-    //private Text description = null;
+    // private Text description = null;
 
     private ImageCombo status = null;
 
@@ -80,11 +80,12 @@ public class TaskDialog extends TitleAreaDialog {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString("com.mindquarry.desktop.client.56")); //$NON-NLS-1$
-        setMessage(
-                Messages.getString("com.mindquarry.desktop.client.57"), //$NON-NLS-1$
+        setTitle(Messages.getString(TaskDialog.class, "0")); //$NON-NLS-1$
+        setMessage(Messages.getString(TaskDialog.class, "1"), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
-        getShell().setText(Messages.getString("com.mindquarry.desktop.client.58") + task.getTitle()); //$NON-NLS-1$
+        getShell().setText(Messages.getString(TaskDialog.class, "2") //$NON-NLS-1$
+                + ": " //$NON-NLS-1$
+                + task.getTitle());
 
         getShell().setSize(400, 650);
         getShell().redraw();
@@ -101,19 +102,21 @@ public class TaskDialog extends TitleAreaDialog {
         createTaskDataSection(composite);
         initTask();
         registerListeners();
-        
+
         return composite;
     }
 
     private void createTaskDataSection(Composite composite) {
         Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("com.mindquarry.desktop.client.59")); //$NON-NLS-1$
+        label.setText(Messages.getString(TaskDialog.class, "3") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 
         title = new Text(composite, SWT.BORDER | SWT.SINGLE);
         title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("com.mindquarry.desktop.client.60")); //$NON-NLS-1$
+        label.setText(Messages.getString(TaskDialog.class, "4") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 
         status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
@@ -131,7 +134,8 @@ public class TaskDialog extends TitleAreaDialog {
         status.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("com.mindquarry.desktop.client.65")); //$NON-NLS-1$
+        label.setText(Messages.getString(TaskDialog.class, "5") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 
         priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
@@ -145,7 +149,8 @@ public class TaskDialog extends TitleAreaDialog {
         priority.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("com.mindquarry.desktop.client.70")); //$NON-NLS-1$
+        label.setText(Messages.getString(TaskDialog.class, "6") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
                 | SWT.WRAP);
@@ -170,7 +175,8 @@ public class TaskDialog extends TitleAreaDialog {
          */
 
         dueDateLabel = new Label(composite, SWT.LEFT);
-        dueDateLabel.setText(Messages.getString("com.mindquarry.desktop.client.71")); //$NON-NLS-1$
+        dueDateLabel.setText(Messages.getString(TaskDialog.class, "7") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 
         calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
         calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -179,8 +185,7 @@ public class TaskDialog extends TitleAreaDialog {
     /**
      * Creates the buttons for the button bar
      * 
-     * @param parent
-     *            the parent composite
+     * @param parent the parent composite
      */
     protected void createButtonsForButtonBar(Composite parent) {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
@@ -235,8 +240,8 @@ public class TaskDialog extends TitleAreaDialog {
             // no date selected. Currently yu cannot selected today as a due
             // date
             // because that's selected by default:
-            dueDateLabel
-                    .setText(Messages.getString("com.mindquarry.desktop.client.72")); //$NON-NLS-1$
+            dueDateLabel.setText(Messages.getString(TaskDialog.class, "8") //$NON-NLS-1$
+                    + ":"); //$NON-NLS-1$
         }
     }
 
