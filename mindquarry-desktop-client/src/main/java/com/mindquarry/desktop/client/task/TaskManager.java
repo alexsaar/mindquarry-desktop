@@ -354,7 +354,7 @@ public class TaskManager {
                 } else {
                     destroyContent();
                     String errMessage = Messages.getString(TaskManager.class,
-                            "5") //$NON-NLS-1$
+                            "5") + ":" //$NON-NLS-1$ //$NON-NLS-2$
                             + "\n" + exception.getLocalizedMessage(); //$NON-NLS-1$
                     errorWidget = new TaskErrorComposite(taskContainer,
                             errMessage);

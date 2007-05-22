@@ -40,7 +40,8 @@ public class PublishOperation extends SvnOperation {
 
     public void run() {
         resetProgress();
-        setMessage(Messages.getString(PublishOperation.class, "0")); //$NON-NLS-1$
+        setMessage(Messages.getString(PublishOperation.class, "0") //$NON-NLS-1$
+                + "..."); //$NON-NLS-1$
 
         Profile profile = Profile.getSelectedProfile(client
                 .getPreferenceStore());
