@@ -74,12 +74,10 @@
 									<property name="user.home"
 										value="${user.home}"/>
 								</ant>
-								<!--
 								<ant antfile="${basedir}/dist-build.xml" inheritRefs="true">
 									<target name="web-dist"/>
 									<property name="user.home" value="${user.home}"/>
 								</ant>
-								-->
 							</tasks>
 						</configuration>
 						<goals>
@@ -89,9 +87,9 @@
 				</executions>
 				<dependencies>
 					<dependency>
-						<groupId>ant</groupId>
+						<groupId>org.apache.ant</groupId>
 						<artifactId>ant-apache-oro</artifactId>
-						<version>1.6.5</version>
+						<version>1.7.0</version>
 					</dependency>
 					<dependency>
 						<groupId>oro</groupId>
@@ -113,8 +111,7 @@
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
 						<manifestEntries>
-							<Implementation-Vendor>Mindquarry
-							GmbH</Implementation-Vendor>
+							<Implementation-Vendor>Mindquarry GmbH</Implementation-Vendor>
 						</manifestEntries>
 					</archive>
 				</configuration>
