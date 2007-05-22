@@ -72,10 +72,12 @@
 									<target name="jar-dist"/>
 									<property name="user.home" value="${user.home}"/>
 								</ant>
+								<!--
 								<ant antfile="${basedir}/dist-build.xml" inheritRefs="true">
 									<target name="web-dist"/>
 									<property name="user.home" value="${user.home}"/>
 								</ant>
+								-->
 							</tasks>
 						</configuration>
 						<goals>
