@@ -93,7 +93,7 @@
             <entry key="17">A profile with the same name already exists. Each profile must have a unique name.</entry>
         </locale>
         
-        <locale language="en">
+        <locale language="de">
             <entry key="0">Server Profile</entry>
             <entry key="1">Verwalten sie verschiedene Mindquarry Server Profile.</entry>
             <entry key="2">Profil hinzufügen</entry>
