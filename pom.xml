@@ -93,8 +93,9 @@
 			<artifactId>tango-icon-theme</artifactId>
 			<version>0.8.0</version>
 		</dependency>
+		
 	</dependencies>
-	
+
 	<profiles>
 		<!-- OS profiles:
 			 - everything must be in lower case, eg. system property os.name is 'Mac OS X' => 'mac os x' in this pom
@@ -133,21 +134,6 @@
 				</dependency>
 			</dependencies>
 		</profile>
-
-<profile>
-			<id>mac</id>
-			<activation>
-				<os><family>mac</family></os>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-macosx</artifactId>
-					<version>3.3M6</version>
-				</dependency>
-			</dependencies>
-		</profile>
-
 	</profiles>
 
 	<build>
@@ -173,4 +159,6 @@
 				</plugin>
 		</plugins>
 	</build>
+	
+	
 </project>
