@@ -12,7 +12,9 @@
   License for the specific language governing rights and limitations
   under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -28,12 +30,12 @@
 	<packaging>pom</packaging>
 
 	<name>Mindquarry Desktop Tools</name>
-	
+
 	<modules>
-	         <module>mindquarry-desktop-commons</module>
-	         <module>mindquarry-desktop-client</module>
-	         <module>mindquarry-mac-java</module>
-	         <module>mindquarry-minutes-editor</module>
+		<module>mindquarry-desktop-commons</module>
+		<module>mindquarry-desktop-client</module>
+		<module>mindquarry-mac-java</module>
+		<module>mindquarry-minutes-editor</module>
 	</modules>
 
 	<scm>
@@ -47,7 +49,7 @@
 			<artifactId>dax</artifactId>
 			<version>0.2</version>
 		</dependency>
-		
+
 		<!-- apache-commons libs -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -60,11 +62,16 @@
 			<version>3.0.1</version>
 		</dependency>
 		<dependency>
-    <groupId>commons-logging</groupId>
-    <artifactId>commons-logging</artifactId>
-    <version>1.1</version>
-</dependency>
-		
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-i18n</groupId>
+			<artifactId>commons-i18n</artifactId>
+			<version>0.5</version>
+		</dependency>
+
 		<!-- eclipse libs -->
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
@@ -81,7 +88,7 @@
 			<artifactId>jface</artifactId>
 			<version>3.3.0.I20061213-0010</version>
 		</dependency>
-		
+
 		<!-- icon libs -->
 		<dependency>
 			<groupId>com.mindquarry.icons</groupId>
@@ -93,7 +100,7 @@
 			<artifactId>tango-icon-theme</artifactId>
 			<version>0.8.0</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<profiles>
@@ -148,17 +155,17 @@
 				</configuration>
 			</plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<excludes>
-							<exclude>*Test.java</exclude>
-						</excludes>
-					</configuration>
-				</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>*Test.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
-	
-	
+
+
 </project>
