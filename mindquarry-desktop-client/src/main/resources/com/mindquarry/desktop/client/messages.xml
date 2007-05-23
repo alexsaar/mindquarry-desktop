@@ -180,7 +180,7 @@
     <message id="com.mindquarry.desktop.client.workspace.dialog.ConflictDialog">
         <locale language="en">
             <entry key="0">Resolve conflicts</entry>
-            <entry key="1">Please select the version that should be treated as actual.</entry>
+            <entry key="1">Please select the version that should be treated as the current version.</entry>
             <entry key="2">Resolving conflicts</entry>
             <entry key="3">Local Version</entry>
             <entry key="4">Remote Version</entry>
@@ -230,7 +230,7 @@
         <locale language="de">
             <entry key="0">Prüfe Änderungen der Arbeitplätze</entry>
             <entry key="1">Veröffentliche Arbeitplatzänderungen</entry>
-            <entry key="2">Bitte geben Sie eine kurze Beschreibung Ihrer Änderunge des Arbeitsplatzes ein.</entry>
+            <entry key="2">Bitte geben Sie eine kurze Beschreibung Ihrer Änderungen des Arbeitsplatzes ein.</entry>
             <entry key="3">Arbeitsplatzänderungen konnten nicht veröffentlicht werden</entry>
         </locale>
     </message>

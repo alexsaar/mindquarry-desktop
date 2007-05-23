@@ -15,7 +15,7 @@
 <messages>
     <message id="com.mindquarry.desktop.util.HttpUtilities">
         <locale language="en">
-            <entry key="0">Authorization has been refused. Please check you login name and password!</entry>
+            <entry key="0">Authorization has been refused. Please check your login name and password.</entry>
             <entry key="1">Unknown connection error. Status code</entry>
         </locale>
         
