@@ -32,7 +32,7 @@
 			[team setValue:[node stringValue] forKey:@"workspaceURL"];
 	}
 	
-//	NSLog(@"workspace: %@ -> %@", [team valueForKey:@"workspaceURL"], [team localPath]);
+	NSLog(@"workspace: %@ -> %@", [team valueForKey:@"workspaceURL"], [team localPath]);
 }
 
 @end
