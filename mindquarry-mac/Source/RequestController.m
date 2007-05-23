@@ -304,6 +304,10 @@
 {
 	if (![createTaskSheet isVisible]) {
 		[createTaskTitle setStringValue:@"New Task"];
+        if ([self tasksTeamSelection] > 1) {
+            id name = [[[teamsController arrangedObjects] objectAtIndex:[self tasksTeamSelection] - 2] valueForKey:@"name"];
+            [createTaskTeamButton selectItemWithTitle:name];            
+        }
 		[NSApp beginSheet:createTaskSheet modalForWindow:window modalDelegate:self didEndSelector:nil contextInfo:nil];		
 	}
 }
@@ -535,7 +539,8 @@
 	
 	[tasksTeamFilter release];
 	tasksTeamFilter = [[self filterForTeamSelectorPosition:selection] retain];
-	[self setTasksFilter];}
+	[self setTasksFilter];
+}
 
 - (int)filesTeamSelection
 {
