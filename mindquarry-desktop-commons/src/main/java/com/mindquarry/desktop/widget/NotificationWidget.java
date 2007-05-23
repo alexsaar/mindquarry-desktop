@@ -27,9 +27,9 @@ import org.eclipse.swt.widgets.Shell;
  *         Saar</a>
  */
 public class NotificationWidget {
-    private static final int WIDTH = 160;
+    private static final int WIDTH = 200;
 
-    private static final int HEIGHT = 80;
+    private static final int HEIGHT = 100;
 
     private final Display display;
 
@@ -59,15 +59,15 @@ public class NotificationWidget {
         shell.setSize(WIDTH, HEIGHT);
 
         img = new Image(null, getClass().getResourceAsStream(
-                "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+                "/org/tango-project/tango-icon-theme/22x22/status/dialog-warning.png")); //$NON-NLS-1$
 
         Label icon = new Label(shell, SWT.CENTER);
-        icon.setSize(20, 20);
+        icon.setSize(26, 26);
         icon.setImage(img);
 
         titleLabel = new Label(shell, SWT.LEFT);
-        titleLabel.setLocation(22, 2);
-        titleLabel.setSize(WIDTH - 26, 20);
+        titleLabel.setLocation(28, 4);
+        titleLabel.setSize(WIDTH - 26, 26);
         titleLabel.setFont(new Font(display, "Arial", 9, SWT.BOLD)); //$NON-NLS-1$
 
         msgLabel = new Label(shell, SWT.WRAP);
