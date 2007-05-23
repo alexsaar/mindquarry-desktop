@@ -30,12 +30,14 @@
             <entry key="0">Common Settings</entry>
             <entry key="1">Manage common settings of the application.</entry>
             <entry key="2">Notification Message Delay (in seconds)</entry>
+            <entry key="3">Run at system startup (Windows only)</entry>
         </locale>
         
         <locale language="de">
             <entry key="0">Allgemein</entry>
             <entry key="1">Verwalten Sie allgemeine Anwendungseinstellung.</entry>
             <entry key="2">Anzeigedauer für Nachrichten (in Sekunden)</entry>
+            <entry key="3">Starte Desktop Client wenn Computer startet (nur Windows)</entry>
         </locale>
     </message>
     

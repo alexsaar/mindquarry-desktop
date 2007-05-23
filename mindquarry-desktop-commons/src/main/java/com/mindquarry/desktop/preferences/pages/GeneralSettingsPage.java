@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.preferences.pages;
 
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -30,6 +32,8 @@ import com.mindquarry.desktop.Messages;
 public class GeneralSettingsPage extends FieldEditorPreferencePage {
     public static final String NAME = "general"; //$NON-NLS-1$
 
+    public static final String AUTOSTART = "com.mindquarry.desktop.autostart"; //$NON-NLS-1$
+
     public static final String NOTIFY_DELAY = "com.mindquarry.desktop.notify.delay"; //$NON-NLS-1$
 
     /**
@@ -44,12 +48,18 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
                         null,
                         getClass()
                                 .getResourceAsStream(
-                                        "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")))); //$NON-NLS-1$
+                                        "/org/tango-project/tango-icon-theme/16x16/categories/preferences-system.png")))); //$NON-NLS-1$
     }
 
     protected void createFieldEditors() {
         IPreferenceStore store = getPreferenceStore();
+        store.setDefault(AUTOSTART, false);
         store.setDefault(NOTIFY_DELAY, 2);
+
+        BooleanFieldEditor autostartFlag = new BooleanFieldEditor(AUTOSTART,
+                Messages.getString(GeneralSettingsPage.class, "3"), //$NON-NLS-1$
+                getFieldEditorParent());
+        addField(autostartFlag);
 
         IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
                 NOTIFY_DELAY, Messages

@@ -76,7 +76,7 @@ public class ServerProfilesPage extends PreferencePage {
         // inital preference page
         setDescription(Messages.getString(ServerProfilesPage.class, "1")); //$NON-NLS-1$
         Image img = new Image(null, getClass().getResourceAsStream(
-                "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+                "/org/tango-project/tango-icon-theme/16x16/places/network-server.png")); //$NON-NLS-1$
         ImageDescriptor imgDesc = ImageDescriptor.createFromImage(img);
         setImageDescriptor(imgDesc);
         noDefaultAndApplyButton();
