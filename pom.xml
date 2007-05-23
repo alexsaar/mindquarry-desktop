@@ -36,7 +36,7 @@
 		<module>mindquarry-desktop-commons</module>
 		<module>mindquarry-desktop-client</module>
 		<module>mindquarry-mac-java</module>
-		<module>mindquarry-minutes-editor</module>
+		<!--module>mindquarry-minutes-editor</module-->
 	</modules>
 
 	<scm>
