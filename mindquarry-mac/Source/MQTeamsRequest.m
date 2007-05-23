@@ -34,6 +34,10 @@
 
 		NSString *name = [team stringValue];		
 		NSString *team_id = [[team attributeForName:@"xlink:href"] stringValue];
+        
+        // WARNING: abusing xlink:href here to retain compatibility with our
+        // internal convention that xlink:href == team ID
+        team_id = [[team_id componentsSeparatedByString:@"/"] lastObject];
 		
 		if (!name || !team_id)
 			continue;
