@@ -324,14 +324,13 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>7</integer>
-									<integer>5</integer>
-									<integer>4</integer>
+									<integer>69</integer>
+									<integer>66</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {324, 680}}</string>
+							<string>{{0, 830}, {324, 680}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -368,7 +367,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>Mindquarry_Desktop_Client_AppDelegate.m</string>
+								<string>Info.plist</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -376,18 +375,17 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>Mindquarry_Desktop_Client_AppDelegate.m</string>
+										<string>Info.plist</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD7D7C170C04886D007B996A</string>
+										<string>DD7D7C2A0C0488B9007B996A</string>
 										<key>history</key>
 										<array>
 											<string>DDF001130BA853160008C3AA</string>
 											<string>DD6D705E0BA969390071E035</string>
 											<string>DD1CCF220BAAE48000BF34BA</string>
 											<string>DD1CD10B0BAAF83000BF34BA</string>
-											<string>DD576B0F0BAE95CF00460C68</string>
 											<string>DD576D8E0BAEC81A00460C68</string>
 											<string>DD576E9E0BAEDB8500460C68</string>
 											<string>DDFA7C9E0BAEE7230081BB87</string>
@@ -423,7 +421,8 @@
 											<string>DD7D7BE50C048657007B996A</string>
 											<string>DD7D7BE60C048657007B996A</string>
 											<string>DD7D7C050C048832007B996A</string>
-											<string>DD7D7C060C048832007B996A</string>
+											<string>DD7D7C220C0488B4007B996A</string>
+											<string>DD7D7C230C0488B4007B996A</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -466,11 +465,9 @@
 											<string>DD7D7B850C047ED1007B996A</string>
 											<string>DD7D7BA10C04807A007B996A</string>
 											<string>DD7D7BBC0C04817A007B996A</string>
-											<string>DD7D7BE70C048657007B996A</string>
 											<string>DD7D7BE80C048657007B996A</string>
-											<string>DD7D7BE90C048657007B996A</string>
 											<string>DD7D7BEA0C048657007B996A</string>
-											<string>DD7D7C070C048832007B996A</string>
+											<string>DD7D7C240C0488B4007B996A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -528,9 +525,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD7D7BD60C04859D007B996A</string>
+				<string>DD7D7C260C0488B4007B996A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD7D7BD70C04859D007B996A</string>
+				<string>DD7D7C270C0488B4007B996A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -649,7 +646,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>201623661.438631</real>
+	<real>201623737.977523</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -664,8 +661,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>1C530D57069F1CE1000CFCEE</string>
-		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>DD39F5060B9D807800384D0C</string>
 		<string>/Users/jonas/Mindquarry/meta/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
@@ -749,7 +744,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD7D7BD40C04859C007B996A</string>
+				<string>DD7D7C210C0488B3007B996A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
