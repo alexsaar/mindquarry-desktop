@@ -106,7 +106,7 @@
 					<archive>
 						<index>true</index>
 						<manifest>
-							<mainClass>com.mindquarry.desktop.client.MindClient</mainClass>>
+							<mainClass>com.mindquarry.desktop.client.MindClient</mainClass>
 								<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
