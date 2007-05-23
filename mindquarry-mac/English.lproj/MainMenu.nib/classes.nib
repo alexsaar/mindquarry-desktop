@@ -43,6 +43,7 @@
                 focusSearchField = id; 
                 refresh = id; 
                 saveTask = id; 
+                saveUnsavedTasks = id; 
                 selectMode = id; 
                 setDone = id; 
                 setServerLocalPath = id; 

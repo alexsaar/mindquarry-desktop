@@ -16,6 +16,8 @@ static BOOL global_autosave_enabled = NO;
 static NSTimer *saveTimer = nil;
 static NSLock *saveTimerLock = nil;
 
+static int saveTaskCount = 0;
+
 @implementation MQTask
 
 + (void)initialize
@@ -49,13 +51,16 @@ static NSLock *saveTimerLock = nil;
     NSArray *unsavedTasks = [context executeFetchRequest:req error:nil];
     NSEnumerator *taskEnum = [unsavedTasks objectEnumerator];
     id task;
-    int count = 0;
+    saveTaskCount = 0;
     while (task = [taskEnum nextObject]) {
 //        NSLog(@"saving unsaved %@", [task valueForKey:@"title"]);
         [task save];
-        count++;
+        saveTaskCount++;
     }
-    NSLog(@"re-tried to commit %d unsaved tasks", count);
+//    NSLog(@"re-tried to commit %d unsaved tasks", saveTaskCount);
+    
+    if (saveTaskCount)
+        [[[NSApp delegate] valueForKey:@"controller"] setValue:[NSNumber numberWithBool:YES] forKey:@"hasUnsavedTasks"];
 }
 
 - (void)setAutoSaveEnabled:(BOOL)enabled
@@ -195,6 +200,12 @@ static NSLock *saveTimerLock = nil;
     [self setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
     [self setValue:[NSNumber numberWithBool:NO] forKey:@"needsUpdate"];
     isSaving = NO;
+    
+    [saveTimerLock lock];
+    saveTaskCount--;
+    if (saveTaskCount == 0) 
+        [[[NSApp delegate] valueForKey:@"controller"] setValue:[NSNumber numberWithBool:NO] forKey:@"hasUnsavedTasks"];
+    [saveTimerLock unlock];
 }
 
 - (NSString *)dueDescription

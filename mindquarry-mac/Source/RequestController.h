@@ -87,6 +87,8 @@ enum {
 	IBOutlet id filesSearchField;
 	
 	IBOutlet id passwordField;
+    
+    BOOL hasUnsavedTasks;
 	
 }
 

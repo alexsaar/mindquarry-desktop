@@ -119,7 +119,7 @@
 
 - (void)handleResponseData:(NSData *)data
 {
-    [task finishSave];
+    [task performSelectorOnMainThread:@selector(finishSave) withObject:nil waitUntilDone:NO];
 }
 
 - (NSString *)statusString
