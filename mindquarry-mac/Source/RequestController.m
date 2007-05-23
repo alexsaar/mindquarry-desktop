@@ -627,4 +627,9 @@
 		[filesSearchField becomeFirstResponder];
 }
 
+- (IBAction)saveUnsavedTasks:(id)sender
+{
+    [MQTask saveUnsavedTasks];
+}
+
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "MQUpdateRequest.h"
-
+#import "MQTask.h"
 
 @implementation MQUpdateRequest
 
@@ -119,7 +119,7 @@
 
 - (void)handleResponseData:(NSData *)data
 {
-	[task setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
+    [task finishSave];
 }
 
 - (NSString *)statusString

@@ -86,6 +86,7 @@
 		DD6D71080BA97CB80071E035 /* MQJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71070BA97CB80071E035 /* MQJob.m */; };
 		DD6D717A0BA9A9F20071E035 /* MQThreadJob.m in Sources */ = {isa = PBXBuildFile; fileRef = DD6D71790BA9A9F20071E035 /* MQThreadJob.m */; };
 		DD71E7900BBD591D00E8A751 /* mindquarry-mac-svn.jar in Resources */ = {isa = PBXBuildFile; fileRef = DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */; };
+		DD7D79590C04700A007B996A /* oldDataModel.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = DD7D79580C04700A007B996A /* oldDataModel.xcdatamodel */; };
 		DD8661800B9D95E3000C7B66 /* MQRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD86617F0B9D95E3000C7B66 /* MQRequest.m */; };
 		DD8661A50B9D97E2000C7B66 /* MQTeamsRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8661A40B9D97E2000C7B66 /* MQTeamsRequest.m */; };
 		DD8662790B9D9BBD000C7B66 /* MQTasksRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8662780B9D9BBD000C7B66 /* MQTasksRequest.m */; };
@@ -184,6 +185,7 @@
 		DD6D71780BA9A9F20071E035 /* MQThreadJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQThreadJob.h; sourceTree = "<group>"; };
 		DD6D71790BA9A9F20071E035 /* MQThreadJob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQThreadJob.m; sourceTree = "<group>"; };
 		DD71E78F0BBD591D00E8A751 /* mindquarry-mac-svn.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; name = "mindquarry-mac-svn.jar"; path = "Java/dist/mindquarry-mac-svn.jar"; sourceTree = "<group>"; };
+		DD7D79580C04700A007B996A /* oldDataModel.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = wrapper.xcdatamodel; path = oldDataModel.xcdatamodel; sourceTree = "<group>"; };
 		DD86617E0B9D95E3000C7B66 /* MQRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQRequest.h; sourceTree = "<group>"; };
 		DD86617F0B9D95E3000C7B66 /* MQRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQRequest.m; sourceTree = "<group>"; };
 		DD8661A30B9D97E2000C7B66 /* MQTeamsRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MQTeamsRequest.h; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 		7756732906782D8800D1FEB8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				DD7D79580C04700A007B996A /* oldDataModel.xcdatamodel */,
 				770B37EC0679A11B001EADE2 /* Mindquarry_Desktop_Client_DataModel.xcdatamodel */,
 			);
 			name = Models;
@@ -615,6 +618,7 @@
 				DDFA7E060BAF040D0081BB87 /* NSNumber+Additions.m in Sources */,
 				DD5F20D00BB036C400DF8699 /* PathAbbreviation.m in Sources */,
 				DD29A8180BC1553400583931 /* MQSVNJob.m in Sources */,
+				DD7D79590C04700A007B996A /* oldDataModel.xcdatamodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

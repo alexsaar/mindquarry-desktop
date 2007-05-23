@@ -13,10 +13,15 @@
 
 static BOOL global_autosave_enabled = NO;
 
+static NSTimer *saveTimer = nil;
+static NSLock *saveTimerLock = nil;
+
 @implementation MQTask
 
 + (void)initialize
 {
+    saveTimerLock = [[NSLock alloc] init];
+    
 	[self setAutoSaveEnabled:NO];
 	
 	[self setKeys:[NSArray arrayWithObject:@"status"] triggerChangeNotificationsForDependentKey:@"statusIndex"];
@@ -33,6 +38,24 @@ static BOOL global_autosave_enabled = NO;
 {
 	global_autosave_enabled = enabled;
 //	NSLog(@"autosave %d", enabled);
+}
+
++ (void)saveUnsavedTasks
+{
+    NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
+    NSFetchRequest *req = [[[NSFetchRequest alloc] init] autorelease];
+    [req setEntity:[NSEntityDescription entityForName:@"Task" inManagedObjectContext:context]];
+    [req setPredicate:[NSPredicate predicateWithFormat:@"needsUpdate = YES"]];
+    NSArray *unsavedTasks = [context executeFetchRequest:req error:nil];
+    NSEnumerator *taskEnum = [unsavedTasks objectEnumerator];
+    id task;
+    int count = 0;
+    while (task = [taskEnum nextObject]) {
+//        NSLog(@"saving unsaved %@", [task valueForKey:@"title"]);
+        [task save];
+        count++;
+    }
+    NSLog(@"re-tried to commit %d unsaved tasks", count);
 }
 
 - (void)setAutoSaveEnabled:(BOOL)enabled
@@ -155,11 +178,23 @@ static BOOL global_autosave_enabled = NO;
 {
 	if ([self valueForKey:@"title"] == nil)
 		return;
+    
+    if (isSaving)
+        return;
+    
+    isSaving = YES;
 	
 //	NSLog(@"saving task %@ \"%@\"", [self valueForKey:@"id"], [self valueForKey:@"title"]);
 	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
 	[request performSelectorOnMainThread:@selector(addToQueue) withObject:nil waitUntilDone:YES];
 	[request autorelease];
+}
+
+- (void)finishSave
+{
+    [self setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
+    [self setValue:[NSNumber numberWithBool:NO] forKey:@"needsUpdate"];
+    isSaving = NO;
 }
 
 - (NSString *)dueDescription
@@ -212,15 +247,22 @@ static BOOL global_autosave_enabled = NO;
 		[key isEqualToString:@"team"] || 
 		[key isEqualToString:@"upToDate"] || 
 		[key isEqualToString:@"id"] || 
-		[key isEqualToString:@"existsOnServer"])
+		[key isEqualToString:@"existsOnServer"] || 
+        [key isEqualToString:@"needsUpdate"])
 		return;
 	
+    [self setValue:[NSNumber numberWithBool:YES] forKey:@"needsUpdate"];
+    
+    [saveTimerLock lock];
+    
 	if (saveTimer) {
 		[saveTimer invalidate];
 		[saveTimer release];
 	}
 	
-	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(save) userInfo:nil repeats:NO] retain];
+	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:[self class] selector:@selector(saveUnsavedTasks) userInfo:nil repeats:NO] retain];
+    
+    [saveTimerLock unlock];
 	
 //	NSLog(@"%@ change val for key %@", [self valueForKey:@"title"], key);
 }

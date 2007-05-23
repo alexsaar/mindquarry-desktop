@@ -10,14 +10,16 @@
 
 
 @interface MQTask : NSManagedObject {
-
-	NSTimer *saveTimer;
 	
 	BOOL autosave_enabled;
+    
+    BOOL isSaving;
 	
 }
 
 + (void)setAutoSaveEnabled:(BOOL)enabled;
+
++ (void)saveUnsavedTasks;
 
 - (void)setAutoSaveEnabled:(BOOL)enabled;
 
@@ -30,6 +32,7 @@
 - (void)setPriorityIndex:(int)_index;
 
 - (void)save;
+- (void)finishSave;
 
 - (NSString *)dueDescription;
 

@@ -157,4 +157,6 @@ enum {
 
 - (IBAction)focusSearchField:(id)sender;
 
+- (IBAction)saveUnsavedTasks:(id)sender;
+
 @end

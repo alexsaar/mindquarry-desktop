@@ -7,6 +7,7 @@
 //
 
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
+#import "MQServer.h"
 
 @implementation Mindquarry_Desktop_Client_AppDelegate
 
@@ -38,13 +39,10 @@
         return managedObjectModel;
     }
 	
-    NSMutableSet *allBundles = [[NSMutableSet alloc] init];
-    [allBundles addObject: [NSBundle mainBundle]];
-    [allBundles addObjectsFromArray: [NSBundle allFrameworks]];
-    
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles: [allBundles allObjects]] retain];
-    [allBundles release];
-    
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"Mindquarry_Desktop_Client_DataModel" ofType:@"mom"];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
+        
     return managedObjectModel;
 }
 
@@ -64,7 +62,6 @@
 
     NSFileManager *fileManager;
     NSString *applicationSupportFolder = nil;
-    NSURL *url;
     NSError *error;
     
     fileManager = [NSFileManager defaultManager];
@@ -73,12 +70,66 @@
         [fileManager createDirectoryAtPath:applicationSupportFolder attributes:nil];
     }
     
-    url = [NSURL fileURLWithPath: [applicationSupportFolder stringByAppendingPathComponent: @"PersistentStore.db"]];
     persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel: [self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSBinaryStoreType configuration:nil URL:url options:nil error:&error]){
-        [[NSApplication sharedApplication] presentError:error];
-    }    
 
+	NSString *oldPath = [applicationSupportFolder stringByAppendingPathComponent: @"PersistentStore.db"];
+    NSString *newPath = [applicationSupportFolder stringByAppendingPathComponent: @"PersistentStore.sqlite"];
+	
+	NSURL *oldUrl = [NSURL fileURLWithPath:oldPath];
+	NSURL *newUrl = [NSURL fileURLWithPath:newPath];
+	
+    BOOL oldExists = [[NSFileManager defaultManager] fileExistsAtPath:oldPath];
+    BOOL newExists = [[NSFileManager defaultManager] fileExistsAtPath:newPath];
+        
+    if (oldExists && !newExists) {
+        
+        NSString *oldModelPath = [[NSBundle mainBundle] pathForResource:@"Mindquarry_Desktop_Client_DataModel" ofType:@"mom"];
+        NSURL *oldModelUrl = [NSURL fileURLWithPath:oldModelPath];
+        NSManagedObjectModel *oldModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:oldModelUrl];
+        
+        NSPersistentStoreCoordinator *oldStore = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:oldModel];
+            
+        [oldStore addPersistentStoreWithType:NSBinaryStoreType configuration:nil URL:oldUrl options:nil error:&error];
+        
+        NSManagedObjectContext *oldContext = [[NSManagedObjectContext alloc] init];
+        [oldContext setPersistentStoreCoordinator:oldStore];
+        
+        [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:newUrl options:nil error:&error];
+        NSManagedObjectContext *newContext = [[NSManagedObjectContext alloc] init];
+        [newContext setPersistentStoreCoordinator:persistentStoreCoordinator];
+        
+        NSFetchRequest *oldServerReq = [[[NSFetchRequest alloc] init] autorelease];
+        [oldServerReq setEntity:[NSEntityDescription entityForName:@"Server" inManagedObjectContext:oldContext]];
+        NSEnumerator *oldServerEnum = [[oldContext executeFetchRequest:oldServerReq error:nil] objectEnumerator];
+        id oldServer;
+        while (oldServer = [oldServerEnum nextObject]) {
+            id newServer = [[MQServer alloc] initWithEntity:[NSEntityDescription entityForName:@"Server" inManagedObjectContext:newContext] insertIntoManagedObjectContext:newContext];
+#define SERVER_COPY(__key) [newServer setValue:[oldServer valueForKey:__key] forKey:__key];
+
+            SERVER_COPY(@"baseURL");
+            SERVER_COPY(@"localPath");
+            SERVER_COPY(@"username");
+            SERVER_COPY(@"password");
+            SERVER_COPY(@"name");
+            
+            [newServer autorelease];
+        }
+        
+        [newContext commitEditing];
+        [newContext save:nil];
+        [newContext release];
+        
+        [oldContext release];
+        [oldStore release];
+        [oldModel release];
+                		
+        [[NSFileManager defaultManager] removeFileAtPath:oldPath handler:nil];
+        NSLog(@"migrated store from binary to sqlite");
+	}
+    else if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:newUrl options:nil error:&error]){
+        [[NSApplication sharedApplication] presentError:error];
+    } 
+    
     return persistentStoreCoordinator;
 }
 

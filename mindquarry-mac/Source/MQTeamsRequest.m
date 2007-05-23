@@ -11,6 +11,7 @@
 #import "RequestController.h"
 #import "MQTasksRequest.h"
 #import "MQTaskInfoRequest.h"
+#import "MQTask.h"
 
 @implementation MQTeamsRequest
 
@@ -56,11 +57,8 @@
 		[treq addToQueue];
 		[treq autorelease];
 	}
+    
+    [[[NSApp delegate] valueForKey:@"controller"] performSelectorOnMainThread:@selector(saveUnsavedTasks:) withObject:nil waitUntilDone:NO];
 }
-
-//- (void)finishRequest
-//{
-//	
-//}
 
 @end
