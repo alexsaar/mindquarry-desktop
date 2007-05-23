@@ -13,7 +13,14 @@
 
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
 
+static MQSVNJob *currentJob = nil;
+
 @implementation MQSVNJob
+
++ (void)cancelCurrentJob
+{
+    [currentJob setValue:[NSNumber numberWithBool:YES] forKey:@"cancel"];
+}
 
 - (id)init
 {
@@ -46,6 +53,8 @@
 - (void)threadMethod
 {
 	BOOL opened = NO;
+    
+    currentJob = self;
 	
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
 	while (!cancel && (currentTeam = [teamEnum nextObject])) {
@@ -93,13 +102,13 @@
 			}
 //			NSLog(@"down   %@", updatePaths);
 			BOOL ok = NO;
-			if ([allItems count] == 0 || [allUpdateItems count] == [updatePaths count]) {
+			if (([allItems count] == 0 || [allUpdateItems count] == [updatePaths count]) && !cancel) {
 				ok = [[currentTeam svnController] updateReturnError:nil];
 			}
-			else if ([updatePaths count] > 0) {
+			else if ([updatePaths count] > 0 && !cancel) {
 				ok = [[currentTeam svnController] updateSelectedItems:updatePaths];
 			}
-			if (ok) {
+			if (ok && !cancel) {
 				[deleteObjects addObjectsFromArray:updateItems];
 			}
 			
@@ -148,6 +157,8 @@
 	
 	//	[[[[MQSVNUpdateJob alloc] initWithServer:server updates:NO] autorelease] addToQueue];
 	
+    currentJob = nil;
+    
 	[[NSApp delegate] performSelectorOnMainThread:@selector(setProgressVisible:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 

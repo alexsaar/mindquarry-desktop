@@ -96,6 +96,7 @@ JNIEXPORT jstring JNICALL Java_com_mindquarry_desktop_workspace_MacSVNHelper_get
 (JNIEnv *env, jobject jhelper)
 {
 	NSString *message = [[NSApp delegate] getCommitMessage];
+    
 	if (!message)
 		return nil;
 	return nsstring_to_jstring(env, message);

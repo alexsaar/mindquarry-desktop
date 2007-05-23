@@ -22,6 +22,8 @@
 	
 }
 
++ (void)cancelCurrentJob;
+
 - (id)initWithServer:(id)_server predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes;
 
 @end

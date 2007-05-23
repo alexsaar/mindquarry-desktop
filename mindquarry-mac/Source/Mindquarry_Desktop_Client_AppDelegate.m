@@ -8,6 +8,7 @@
 
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
 #import "MQServer.h"
+#import "MQSVNJob.h"
 
 @implementation Mindquarry_Desktop_Client_AppDelegate
 
@@ -271,8 +272,10 @@
 	[commitMessageField setSelectedRange:NSMakeRange(0, [[commitMessageField string] length])];
     [commitMessageWindow makeKeyAndOrderFront:self];
 //	[NSApp beginSheet:commitMessageWindow modalForWindow:window modalDelegate:nil didEndSelector:nil contextInfo:nil];
-	if ([NSApp runModalForWindow:commitMessageWindow] == NSRunAbortedResponse) 
+	if ([NSApp runModalForWindow:commitMessageWindow] == NSRunAbortedResponse)  {
 		message = nil;
+        [MQSVNJob cancelCurrentJob];
+    }
 	else 
 		message = [commitMessageField string];
 	[self setValue:message forKey:@"cachedMessage"];
