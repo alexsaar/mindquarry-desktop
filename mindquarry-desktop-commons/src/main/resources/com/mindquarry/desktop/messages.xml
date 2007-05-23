@@ -20,7 +20,7 @@
         </locale>
         
         <locale language="de">
-            <entry key="0">Authorisierung wurde abgelehnt. Bitte überprüfen sie ihren Login Namen und Password.</entry>
+            <entry key="0">Authorisierung wurde abgelehnt. Bitte überprüfen Sie Ihren Login-Namen und Passwort.</entry>
             <entry key="1">Unbekannter Verbindungsfehler. Status code</entry>
         </locale>
     </message>
@@ -34,7 +34,7 @@
         
         <locale language="de">
             <entry key="0">Allgemein</entry>
-            <entry key="1">Verwalten sie allgemeine Anwendungseinstellung.</entry>
+            <entry key="1">Verwalten Sie allgemeine Anwendungseinstellung.</entry>
             <entry key="2">Anzeigedauer für Nachrichten (in Sekunden)</entry>
         </locale>
     </message>
@@ -50,7 +50,7 @@
         
         <locale language="de">
             <entry key="0">Tastaturbefehle</entry>
-            <entry key="1">Verwalten sie Tastaturbefehle der Anwendung.</entry>
+            <entry key="1">Verwalten Sie Tastaturbefehle der Anwendung.</entry>
             <entry key="2">Kategorie</entry>
             <entry key="3">Aktion</entry>
             <entry key="4">Tastaturbefehl</entry>
@@ -66,7 +66,7 @@
         
         <locale language="de">
             <entry key="0">Aufgaben</entry>
-            <entry key="1">Verwalten sie ihre Einstellungen für Aufgaben.</entry>
+            <entry key="1">Verwalten Sie Ihre Einstellungen für Aufgaben.</entry>
             <entry key="2">Anzeigen beendeter Aufgaben</entry>
         </locale>
     </message>
@@ -95,22 +95,22 @@
         
         <locale language="de">
             <entry key="0">Server Profile</entry>
-            <entry key="1">Verwalten sie verschiedene Mindquarry Server Profile.</entry>
+            <entry key="1">Verwalten Sie verschiedene Mindquarry Server Profile.</entry>
             <entry key="2">Profil hinzufügen</entry>
             <entry key="3">Neues Server Profil anlegen</entry>
-            <entry key="4">Bitte geben sie einen Namen für das Profil ein</entry>
+            <entry key="4">Bitte geben Sie einen Namen für das Profil ein</entry>
             <entry key="5">Mein Mindquarry Server Profil</entry>
             <entry key="6">Profil entfernen</entry>
             <entry key="7">Server Profil umbenennen</entry>
-            <entry key="8">Bitte geben sie einen neuen Namen für das Profil ein</entry>
+            <entry key="8">Bitte geben Sie einen neuen Namen für das Profil ein</entry>
             <entry key="9">Profile Einstellungen</entry>
             <entry key="10">Ihre Login ID</entry>
             <entry key="11">Ihr Passwort</entry>
             <entry key="12">URL des Mindquarry Servers</entry>
             <entry key="13">Ordner für Arbeitplätze</entry>
             <entry key="14">Durchsuchen</entry>
-            <entry key="15">Bitte wählen sie einen Ordner für Arbeitsplätze aus.</entry>
-            <entry key="16">Profil Name muss mindestens ein Zeichen enthalten.</entry>
+            <entry key="15">Bitte wählen Sie einen Ordner für Arbeitsplätze aus.</entry>
+            <entry key="16">Profil-Name muss mindestens ein Zeichen enthalten.</entry>
             <entry key="17">Ein Profil mit demselben Namen existiert bereits. Jedes Profil muss einen eindeutigen Namen haben.</entry>
         </locale>
     </message>
