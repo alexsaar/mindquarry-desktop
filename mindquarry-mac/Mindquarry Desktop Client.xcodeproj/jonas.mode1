@@ -367,7 +367,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RequestController.m</string>
+								<string>MQTask.h</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -375,11 +375,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RequestController.m</string>
+										<string>MQTask.h</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD7D7B5E0C047DCA007B996A</string>
+										<string>DD7D7B730C047E7D007B996A</string>
 										<key>history</key>
 										<array>
 											<string>DDF001130BA853160008C3AA</string>
@@ -421,8 +421,7 @@
 											<string>DD7D7A620C0477CB007B996A</string>
 											<string>DD7D7A9A0C04798F007B996A</string>
 											<string>DD7D7AD70C047B5A007B996A</string>
-											<string>DD7D7B060C047C33007B996A</string>
-											<string>DD7D7B380C047D71007B996A</string>
+											<string>DD7D7B080C047C33007B996A</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -465,9 +464,6 @@
 											<string>DD7D787E0C046823007B996A</string>
 											<string>DD7D787F0C046823007B996A</string>
 											<string>DD7D7A640C0477CB007B996A</string>
-											<string>DD7D7B080C047C33007B996A</string>
-											<string>DD7D7B390C047D71007B996A</string>
-											<string>DD7D7B3A0C047D71007B996A</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -525,9 +521,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD7D7B0A0C047C33007B996A</string>
+				<string>DD7D7B740C047E7D007B996A</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD7D7B0B0C047C33007B996A</string>
+				<string>DD7D7B750C047E7D007B996A</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -646,7 +642,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>201620938.238424</real>
+	<real>201621117.424631</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -663,7 +659,6 @@
 	<array>
 		<string>1C0AD2B3069F1EA900FABCE6</string>
 		<string>DD39F5060B9D807800384D0C</string>
-		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/jonas/Mindquarry/meta/mindquarry-desktop-client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -683,14 +678,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RequestController.m</string>
+								<string></string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
@@ -748,7 +741,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DD39F5060B9D807800384D0C</string>
-				<string>DD7D7B2B0C047D6F007B996A</string>
+				<string>DD7D7B6C0C047E6C007B996A</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -1110,9 +1103,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>DD7D7B3C0C047D71007B996A</string>
+				<string>DD7D7B6D0C047E7B007B996A</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>DD7D7B3D0C047D71007B996A</string>
+				<string>DD7D7B6E0C047E7B007B996A</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

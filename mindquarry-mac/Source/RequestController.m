@@ -55,6 +55,8 @@
 	[taskTable reloadData];
 	
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(objectsDidChange:) name:NSManagedObjectContextObjectsDidChangeNotification object:[[NSApp delegate] managedObjectContext]];
+    
+    [serversController addObserver:self forKeyPath:@"selection" options:NSKeyValueObservingOptionNew context:nil];
 	
 	[taskColumn setDataCell:[[[MQTaskCell alloc] init] autorelease]];
 	
@@ -123,6 +125,12 @@
 	[self performSelector:@selector(afterWakeFromNib) withObject:nil afterDelay:0.5];	
 	
 	[window makeKeyAndOrderFront:self];	
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [self setTasksStringFilter:nil];
+    [self setFilesStringFilter:nil];
 }
 
 - (void)afterWakeFromNib
