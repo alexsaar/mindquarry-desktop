@@ -269,7 +269,8 @@
 	
 	[commitMessageField setString:@"<message>"];
 	[commitMessageField setSelectedRange:NSMakeRange(0, [[commitMessageField string] length])];
-	[NSApp beginSheet:commitMessageWindow modalForWindow:window modalDelegate:nil didEndSelector:nil contextInfo:nil];
+    [commitMessageWindow makeKeyAndOrderFront:self];
+//	[NSApp beginSheet:commitMessageWindow modalForWindow:window modalDelegate:nil didEndSelector:nil contextInfo:nil];
 	if ([NSApp runModalForWindow:commitMessageWindow] == NSRunAbortedResponse) 
 		message = nil;
 	else 
@@ -287,7 +288,7 @@
 		[NSApp stopModal];
 	}
 	[commitMessageWindow orderOut:self];
-	[NSApp endSheet:commitMessageWindow];
+//	[NSApp endSheet:commitMessageWindow];
 }
 
 - (void)reloadTasks
