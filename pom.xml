@@ -141,6 +141,21 @@
 				</dependency>
 			</dependencies>
 		</profile>
+    <profile>
+      <!-- the java desktop client is not distributed for mac, but as part of
+           the buildall-pom it will get built on mac os machines -->
+      <id>mac</id>
+      <activation>
+        <os><family>mac</family></os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>swt</groupId>
+          <artifactId>swt-macosx</artifactId>
+          <version>3.3M6</version>
+        </dependency>
+      </dependencies>
+    </profile>
 	</profiles>
 
 	<build>
