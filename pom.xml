@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
 
@@ -18,19 +17,28 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>com.mindquarry</groupId>
-		<artifactId>mindquarry</artifactId>
-		<version>1.2-SNAPSHOT</version>
-	</parent>
+	<packaging>pom</packaging>
 
 	<groupId>com.mindquarry.tools</groupId>
 	<artifactId>mindquarry-desktop-tools</artifactId>
 	<version>1.0-M2-SNAPSHOT</version>
-	<packaging>pom</packaging>
 
 	<name>Mindquarry Desktop Tools</name>
+	<url>http://www.mindquarry.org/mindquarry/</url>
+	<description>This is the root POM for all Mindquarry desktop projects.</description>
+
+	<licenses>
+		<license>
+			<name>Mozilla Public License Version 1.1</name>
+			<url>http://www.mozilla.org/MPL/MPL-1.1.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Mindquarry GmbH</name>
+		<url>http://www.mindquarry.com/</url>
+	</organization>
 
 	<modules>
 		<module>mindquarry-desktop-commons</module>
@@ -40,10 +48,17 @@
 	</modules>
 
 	<scm>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk</developerConnection>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk</developerConnection>
 	</scm>
 
 	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.1</version>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- XML & XPath libs -->
 		<dependency>
 			<groupId>dax</groupId>
@@ -57,16 +72,19 @@
 			<artifactId>commons-io</artifactId>
 			<version>1.2</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.0.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>commons-i18n</groupId>
 			<artifactId>commons-i18n</artifactId>
@@ -79,11 +97,13 @@
 			<artifactId>commands</artifactId>
 			<version>3.3.0.I20061114</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>common</artifactId>
 			<version>3.3.0.v20061117</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>swt</groupId>
 			<artifactId>jface</artifactId>
@@ -96,12 +116,12 @@
 			<artifactId>mindquarry-icons</artifactId>
 			<version>0.3</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.tango-project</groupId>
 			<artifactId>tango-icon-theme</artifactId>
 			<version>0.8.0</version>
 		</dependency>
-
 	</dependencies>
 
 	<profiles>
@@ -120,6 +140,7 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		
 		<profile>
 			<id>linux</id>
 			<activation>
@@ -135,16 +156,127 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		
+		<profile>
+			<id>deploybuild</id>
+			<activation>
+				<property>
+					<name>fullrelease</name>
+				</property>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<!-- export our test classes in a separate jar -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>test-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<!-- export our sources in a separate jar -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>jar</goal>
+									<goal>test-jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					
+					<plugin>
+						<!-- export our javadocs in a separate jar -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 
+	<distributionManagement>
+		<repository>
+			<id>mindquarry.releases</id>
+			<name>Mindquarry Repository</name>
+			<url>scpexe://www.mindquarry.org/home/maven/releases</url>
+		</repository>
+		
+		<snapshotRepository>
+			<id>mindquarry.snapshots</id>
+			<name>Mindquarry Snapshots Repository</name>
+			<url>scpexe://www.mindquarry.org/home/maven/snapshots</url>
+		</snapshotRepository>
+		
+		<site>
+			<id>website</id>
+			<url>scpexe://www.mindquarry.org/home/maven/site/</url>
+		</site>
+	</distributionManagement>
+
+	<ciManagement>
+		<system>hudson</system>
+		<url>http://internal.mindquarry.com/hudson/</url>
+		
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<configuration>
+					<address>builds@mindquarry.com</address>
+				</configuration>
+			</notifier>
+		</notifiers>
+	</ciManagement>
+
 	<build>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh-external</artifactId>
+				<version>1.0-alpha-5</version>
+			</extension>
+		</extensions>
+		
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<outputEncoding>UTF-8</outputEncoding>
+				</configuration>
+			</plugin>
+			
+			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0-beta-5-mindquarry</version>
+				<version>2.0-beta-6-SNAPSHOT</version>
 				<configuration>
 					<tagBase>
-						https://www.mindquarry.org/repos/mindquarry-desktop-client/tags
+						https://www.mindquarry.org/repos/mindquarry-desktop-tools/tags
 					</tagBase>
 				</configuration>
 			</plugin>
@@ -161,5 +293,67 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>mindquarry.releases</id>
+			<name>Mindquarry Repository</name>
+			<url>http://releases.mindquarry.org/</url>
+			<layout>default</layout>
+		</repository>
+		
+		<repository>
+			<id>mindquarry.snapshots</id>
+			<name>Mindquarry Snapshot Repository</name>
+			<url>http://snapshots.mindquarry.org/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mindquarry.snapshots</id>
+			<name>Mindquarry Snapshot Repository</name>
+			<url>http://snapshots.mindquarry.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>mindquarry.releases</id>
+			<name>Mindquarry Repository</name>
+			<url>http://releases.mindquarry.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>codehaus.mojo</id>
+			<name>Codehaus Repository</name>
+			<url>http://repository.codehaus.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>codehaus.mojo.snapshots</id>
+			<name>Codehaus Repository</name>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>apache.plugin.snapshots</id>
+			<name>Apache Snapshots</name>
+			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
