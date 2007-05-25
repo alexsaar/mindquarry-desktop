@@ -10,7 +10,7 @@
 	
 	<!-- NOTE: works under Windows only, as the Classpath in the JAR contains the system-dependant swt JAR but we always include Windows: -->
 	<target name="jar-dist" description="Create directories with JARs for the stand-alone distribution">
-		<copy file="${maven.build.directory}/mindquarry-desktop-client-1.0-M2-SNAPSHOT.jar" tofile="${standalone.dist.target}/mindquarry-desktop-client.jar" />
+		<copy file="${maven.build.directory}/mindquarry-desktop-client-1.1-beta.jar" tofile="${standalone.dist.target}/mindquarry-desktop-client.jar" />
 		<copy file="${maven.repo.local}/com/mindquarry/tools/mindquarry-desktop-commons/1.0-M2-SNAPSHOT/mindquarry-desktop-commons-1.0-M2-SNAPSHOT.jar" todir="${standalone.dist.target.lib}" />
 		<copy file="${maven.repo.local}/org/tango-project/tango-icon-theme/0.8.0/tango-icon-theme-0.8.0.jar" todir="${standalone.dist.target.lib}" />
 		<copy file="${maven.repo.local}/com/mindquarry/icons/mindquarry-icons/0.3/mindquarry-icons-0.3.jar" todir="${standalone.dist.target.lib}" />
@@ -50,7 +50,7 @@
 
 	<target name="web-dist" description="Create directories with JARs for the webstart distribution">
 		<!-- NOTE: target names need to be in the ...__Vxy.jar format (required by our webstart servlet)!! -->
-		<copy file="${maven.build.directory}/mindquarry-desktop-client-1.0-M2-SNAPSHOT.jar" tofile="${web.dist.target}/client/1.1/MindClient__V1.1.jar" />
+		<copy file="${maven.build.directory}/mindquarry-desktop-client-1.1-beta.jar" tofile="${web.dist.target}/client/1.1/MindClient__V1.1.jar" />
 		<copy file="${maven.repo.local}/com/mindquarry/tools/mindquarry-desktop-commons/1.0-M2-SNAPSHOT/mindquarry-desktop-commons-1.0-M2-SNAPSHOT.jar" tofile="${web.dist.target}/client/1.1/mindquarry-desktop-commons__V1.1.jar" />
 		<copy file="${maven.repo.local}/org/tango-project/tango-icon-theme/0.8.0/tango-icon-theme-0.8.0.jar" tofile="${web.dist.target}/icons/tango-icon-theme__V0.8.0.jar" />
 		<copy file="${maven.repo.local}/com/mindquarry/icons/mindquarry-icons/0.3/mindquarry-icons-0.3.jar" tofile="${web.dist.target}/icons/mindquarry-icons__V0.3.jar" />
