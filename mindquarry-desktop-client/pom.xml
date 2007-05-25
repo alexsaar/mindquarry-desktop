@@ -31,7 +31,7 @@
 	<name>Mindquarry Desktop Client</name>
 
 	<scm>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-desktop-client</developerConnection>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk/mindquarry-desktop-client</developerConnection>
 	</scm>
 
 	<dependencies>

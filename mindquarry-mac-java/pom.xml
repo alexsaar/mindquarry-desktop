@@ -39,7 +39,7 @@
 	</dependencies>
 	
 	<scm>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-client/trunk/mindquarry-mac-java</developerConnection>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk/mindquarry-mac-java</developerConnection>
 	</scm>
 
 	<build>
@@ -47,7 +47,7 @@
 			<plugin>
 				<artifactId>minijar-maven-plugin</artifactId>
 				<groupId>org.codehaus.mojo</groupId>
-				<version>1.0-alpha-3-SNAPSHOT</version>
+				<version>1.0-alpha-3</version>
 				<executions>
 					
 					<execution>
