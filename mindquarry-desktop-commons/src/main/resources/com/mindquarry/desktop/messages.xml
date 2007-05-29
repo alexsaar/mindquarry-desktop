@@ -20,7 +20,7 @@
         </locale>
         
         <locale language="de">
-            <entry key="0">Authorisierung wurde abgelehnt. Bitte überprüfen Sie Ihren Login-Namen und Passwort.</entry>
+            <entry key="0">Autorisierung wurde abgelehnt. Bitte überprüfen Sie Ihren Login-Namen und Passwort.</entry>
             <entry key="1">Unbekannter Verbindungsfehler. Status code</entry>
         </locale>
     </message>
@@ -35,7 +35,7 @@
         
         <locale language="de">
             <entry key="0">Allgemein</entry>
-            <entry key="1">Verwalten Sie allgemeine Anwendungseinstellung.</entry>
+            <entry key="1">Verwalten Sie allgemeine Anwendungseinstellungen.</entry>
             <entry key="2">Anzeigedauer für Nachrichten (in Sekunden)</entry>
             <entry key="3">Starte Desktop Client wenn Computer startet (nur Windows)</entry>
         </locale>
