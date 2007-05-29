@@ -39,12 +39,13 @@
 		<copy file="${standalone.dist.target}/windows/swt/swt-windows/3.3M5/swt-windows-3.3M5.jar" todir="${standalone.dist.target.lib}"/>
 		<delete dir="${standalone.dist.target}/windows"/>
 		<!--
-		<copy tofile="${web.dist.target}/linux/swt-linux-3.3M5.jar">
+		<copy todir="${standalone.dist.target}/linux/">
 			<resources>
 				<url url="http://releases.mindquarry.org/swt/swt-linux/3.3M5/swt-linux-3.3M5.jar" />
 			</resources>
 		</copy>
 		<copy file="${standalone.dist.target}/linux/swt/swt-linux/3.3M5/swt-linux-3.3M5.jar" todir="${standalone.dist.target.lib}"/>
+		<delete dir="${standalone.dist.target}/linux"/>
 		-->
 	</target>
 
