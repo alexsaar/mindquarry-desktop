@@ -78,7 +78,7 @@ public class HttpUtilities {
         PutMethod put = new PutMethod(address);
         put.setDoAuthentication(true);
         put.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
-        put.setRequestEntity(new ByteArrayRequestEntity(content));
+        put.setRequestEntity(new ByteArrayRequestEntity(content, "text/xml; charset=utf-8"));
 
         log.info("Executing HTTP PUT on " + address); //$NON-NLS-1$
         client.executeMethod(put);

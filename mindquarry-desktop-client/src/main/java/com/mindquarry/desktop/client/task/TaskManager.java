@@ -139,7 +139,7 @@ public class TaskManager {
         try {
             HttpUtilities.putAsXML(selectedProfile.getLogin(), selectedProfile
                     .getPassword(), task.getId(), task.getContentAsXML()
-                    .asXML().getBytes());
+                    .asXML().getBytes("utf-8"));
         } catch (Exception e) {
             log.error("An error occured while setting task with id '" //$NON-NLS-1$
                     + task.getId() + "' to done.", e); //$NON-NLS-1$
@@ -414,7 +414,7 @@ public class TaskManager {
                         if (dlg.open() == Window.OK) {
                             HttpUtilities.putAsXML(prof.getLogin(), prof
                                     .getPassword(), task.getId(), task
-                                    .getContentAsXML().asXML().getBytes());
+                                    .getContentAsXML().asXML().getBytes("utf-8"));
                         }
                     } catch (Exception e) {
                         client.showMessage(Messages.getString(
