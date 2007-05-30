@@ -142,6 +142,22 @@
 		</profile>
 		
 		<profile>
+			<id>macosx</id>
+			<activation>
+				<os>
+					<name>mac</name>
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>swt</groupId>
+					<artifactId>swt-macosx</artifactId>
+					<version>3.3M6</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		
+		<profile>
 			<id>deploybuild</id>
 			<activation>
 				<property>

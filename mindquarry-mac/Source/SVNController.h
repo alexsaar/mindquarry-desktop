@@ -36,7 +36,7 @@
 	
 }
 
-- (id)initWithRepository:(NSString *)_repo username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local;
+- (id)initWithRepository:(NSString *)_repo repository:(NSString *)_repository username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local;
 
 - (NSString *)relativePath;
 

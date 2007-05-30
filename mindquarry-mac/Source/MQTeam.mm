@@ -16,7 +16,8 @@
 - (void)initJVM
 {
 	if (!svn) {
-		svn = [[SVNController alloc] initWithRepository:[self valueForKey:@"workspaceURL"] username:[[self valueForKey:@"server"] valueForKey:@"username"] password:[[self valueForKey:@"server"] valueForKey:@"password"] localPath:[self localPath]];
+		NSLog(@"(initWithRepository): %@ -> %@", [self valueForKey:@"workspaceURL"], [self localPath]);
+		svn = [[SVNController alloc] initWithRepository:[self valueForKey:@"workspaceURL"] repository:[self valueForKey:@"workspaceURL"] username:[[self valueForKey:@"server"] valueForKey:@"username"] password:[[self valueForKey:@"server"] valueForKey:@"password"] localPath:[self localPath]];
 	}
 }
 

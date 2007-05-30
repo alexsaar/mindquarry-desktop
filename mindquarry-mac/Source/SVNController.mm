@@ -43,15 +43,17 @@
 	return self;
 }
 
-- (id)initWithRepository:(NSString *)_repo username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local
+- (id)initWithRepository:(NSString *)_repo repository:(NSString *)_repository username:(NSString *)_user password:(NSString *)_pass localPath:(NSString *)_local
 {
 	if (![self init])
 		return nil;
 	
-	[self setValue:_repo forKey:@"repository"];
+	[self setValue:_repository forKey:@"repository"];
 	[self setValue:_user forKey:@"username"];
 	[self setValue:_pass forKey:@"password"];
 	[self setValue:_local forKey:@"localPath"];
+	
+	NSLog(@"(initWithRepository): %@ -> %@", _repository, _local);
 		
 	jmethodID helperConstructor = env->GetMethodID(helperClass, "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V");
 	CHECK_EXCEPTION;
@@ -61,7 +63,7 @@
 	}
 	
 	jobject helper = env->NewObject(helperClass, helperConstructor, 
-									nsstring_to_jstring(env, _repo),
+									nsstring_to_jstring(env, _repository),
 									nsstring_to_jstring(env, _local),
 									nsstring_to_jstring(env, _user),
 									nsstring_to_jstring(env, _pass), nil);

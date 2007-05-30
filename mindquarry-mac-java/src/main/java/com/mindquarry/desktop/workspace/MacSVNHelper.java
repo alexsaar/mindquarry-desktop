@@ -14,7 +14,19 @@ import com.mindquarry.desktop.workspace.SVNHelper;
 public class MacSVNHelper extends SVNHelper {
     public MacSVNHelper(String repositoryURL, String localPath,
             String username, String password) {
-        super(repositoryURL, localPath, username, password);
+    super(repositoryURL, localPath, username, password);
+        if (repositoryURL==null) {
+          throw new RuntimeException("Repository URL cannot be null");
+        }
+        if (localPath==null) {
+          throw new RuntimeException("localPath cannot be null");
+        }
+        if (username==null) {
+          throw new RuntimeException("username cannot be null");
+        }
+        if (repositoryURL==null) {
+          throw new RuntimeException("password cannot be null");
+        }
     }
 
     public void onNotify(NotifyInformation info) {
