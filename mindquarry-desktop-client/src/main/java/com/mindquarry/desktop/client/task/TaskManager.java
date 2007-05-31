@@ -231,7 +231,8 @@ public class TaskManager {
             client.showMessage(Messages.getString(
                     "com.mindquarry.desktop.client", //$NON-NLS-1$
                     "error"), //$NON-NLS-1$
-                    Messages.getString(TaskManager.class, "0")); //$NON-NLS-1$
+                    Messages.getString(TaskManager.class, "0") + " " +
+                    e.toString()); //$NON-NLS-1$
             return;
         }
         // loop and add tasks
@@ -355,7 +356,7 @@ public class TaskManager {
                     destroyContent();
                     String errMessage = Messages.getString(TaskManager.class,
                             "5") + ":" //$NON-NLS-1$ //$NON-NLS-2$
-                            + "\n" + exception.getLocalizedMessage(); //$NON-NLS-1$
+                            + "\n" + exception.toString(); //$NON-NLS-1$
                     errorWidget = new TaskErrorComposite(taskContainer,
                             errMessage);
                 }
