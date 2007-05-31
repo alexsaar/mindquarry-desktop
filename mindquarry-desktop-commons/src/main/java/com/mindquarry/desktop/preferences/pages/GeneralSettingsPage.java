@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.preferences.pages;
 
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,6 +34,11 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
     public static final String AUTOSTART = "com.mindquarry.desktop.autostart"; //$NON-NLS-1$
 
     public static final String NOTIFY_DELAY = "com.mindquarry.desktop.notify.delay"; //$NON-NLS-1$
+    
+    /**
+     * Default notify window delay in seconds.
+     */
+    public static final int DEFAULT_NOTIFY_DELAY = 2;
 
     /**
      * ShortcutsPage default constructor
@@ -54,7 +58,7 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
     protected void createFieldEditors() {
         IPreferenceStore store = getPreferenceStore();
         store.setDefault(AUTOSTART, false);
-        store.setDefault(NOTIFY_DELAY, 2);
+        store.setDefault(NOTIFY_DELAY, DEFAULT_NOTIFY_DELAY);
 
         BooleanFieldEditor autostartFlag = new BooleanFieldEditor(AUTOSTART,
                 Messages.getString(GeneralSettingsPage.class, "3"), //$NON-NLS-1$
