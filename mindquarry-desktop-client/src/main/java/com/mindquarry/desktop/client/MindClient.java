@@ -15,14 +15,10 @@ package com.mindquarry.desktop.client;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.prefs.Preferences;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -88,7 +84,7 @@ public class MindClient {
 
     private List profilesInMenu = new ArrayList();
 
-    private Log log;
+    //private Log log;
 
     public MindClient() throws IOException {
         icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
@@ -100,7 +96,7 @@ public class MindClient {
 
         // load preferences
         store = new PreferenceStore(prefFile.getAbsolutePath());
-        log = LogFactory.getLog(MindClient.class);
+        //log = LogFactory.getLog(MindClient.class);
     }
 
     public static void main(String[] args) throws IOException {
