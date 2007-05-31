@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -71,7 +72,7 @@ public class HttpUtilities {
         return result;
     }
 
-    public static void putAsXML(String login, String pwd, String address,
+    public static String putAsXML(String login, String pwd, String address,
             byte[] content) throws Exception {
         HttpClient client = createHttpClient(login, pwd, address);
 
@@ -85,16 +86,25 @@ public class HttpUtilities {
         log.info("Finished HTTP PUT with status code: "//$NON-NLS-1$
                 + put.getStatusCode());
 
+        String id = null;
         if (put.getStatusCode() == 401) {
             throw new Exception(Messages.getString(HttpUtilities.class, "0")); //$NON-NLS-1$
         } else if (put.getStatusCode() == 302) {
-            // we received a redirect to the URL of the putted document, so
-            // everthign seems right and we have nothing to do
-        } else if (put.getStatusCode() != 200) {
+            Header locationHeader = put.getResponseHeader("location");
+            if (locationHeader != null) {
+                // we received a redirect to the URL of the putted document, so
+                // everything seems right and we just use the new ID:
+                id = locationHeader.getValue();
+            } else {
+                throw new Exception(Messages.getString(HttpUtilities.class, "1") //$NON-NLS-1$
+                        + put.getStatusCode());
+            }
+        } else {
             throw new Exception(Messages.getString(HttpUtilities.class, "1") //$NON-NLS-1$
                     + put.getStatusCode());
         }
         put.releaseConnection();
+        return id;
     }
 
     private static HttpClient createHttpClient(String login, String pwd,
