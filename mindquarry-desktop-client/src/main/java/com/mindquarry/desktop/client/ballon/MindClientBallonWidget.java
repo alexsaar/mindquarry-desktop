@@ -321,7 +321,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                                 .getPassword(), profile.getServerURL()
                                 + "/tasks/" //$NON-NLS-1$
                                 + tsDlg.getSelectedTeam() + "/new", //$NON-NLS-1$
-                                task.getContentAsXML().asXML().getBytes());
+                                task.getContentAsXML().asXML().getBytes("utf-8"));
                     }
                 } catch (Exception e) {
                     client.showMessage(Messages.getString(
