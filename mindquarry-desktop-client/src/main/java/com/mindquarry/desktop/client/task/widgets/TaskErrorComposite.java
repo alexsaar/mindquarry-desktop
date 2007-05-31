@@ -48,7 +48,7 @@ public class TaskErrorComposite extends Composite {
         label.setBackground(label.getParent().getBackground());
         label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
         
-        label = new Label(internalComp, SWT.CENTER);
+        label = new Label(internalComp, SWT.CENTER|SWT.WRAP);
         label.setText(text);
         label.setBackground(label.getParent().getBackground());
         label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
