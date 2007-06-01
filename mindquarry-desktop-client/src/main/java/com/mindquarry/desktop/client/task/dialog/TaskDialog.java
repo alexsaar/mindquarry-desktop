@@ -25,9 +25,11 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
@@ -57,8 +59,7 @@ public class TaskDialog extends TitleAreaDialog {
 
     private ImageCombo priority = null;
 
-    private Label dueDateLabel = null;
-
+    private Button dueDateCheckbox;
     private DateTime calendar;
 
     private Task task;
@@ -174,10 +175,12 @@ public class TaskDialog extends TitleAreaDialog {
          * description.getLayoutData()).grabExcessVerticalSpace = true;
          */
 
-        dueDateLabel = new Label(composite, SWT.LEFT);
-        dueDateLabel.setText(Messages.getString(TaskDialog.class, "7") //$NON-NLS-1$
+        
+        dueDateCheckbox = new Button(composite, SWT.CHECK);
+        dueDateCheckbox.setText(Messages.getString(TaskDialog.class, "7") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
-
+        dueDateCheckbox.addSelectionListener(new DueDateCheckboxListener());
+        
         calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
         calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
@@ -235,13 +238,11 @@ public class TaskDialog extends TitleAreaDialog {
                 calendar.setMonth(Integer.valueOf(dateParts[1]).intValue() - 1);
                 calendar.setYear(Integer.valueOf(dateParts[0]).intValue());
             }
+            dueDateCheckbox.setSelection(true);
+            calendar.setEnabled(true);
         } else {
-            // TODO: find a better solution for this. DateTime cannot start with
-            // no date selected. Currently yu cannot selected today as a due
-            // date
-            // because that's selected by default:
-            dueDateLabel.setText(Messages.getString(TaskDialog.class, "8") //$NON-NLS-1$
-                    + ":"); //$NON-NLS-1$
+            dueDateCheckbox.setSelection(false);
+            calendar.setEnabled(false);
         }
     }
 
@@ -273,14 +274,18 @@ public class TaskDialog extends TitleAreaDialog {
         });
         calendar.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-                Calendar cal = new GregorianCalendar();
-                cal.set(Calendar.YEAR, calendar.getYear());
-                cal.set(Calendar.MONTH, calendar.getMonth());
-                cal.set(Calendar.DAY_OF_MONTH, calendar.getDay());
-                task.setDate(sdf.format(cal.getTime()));
+                setDateFromUserInput();
             }
         });
+    }
+    
+    private void setDateFromUserInput() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+        Calendar cal = new GregorianCalendar();
+        cal.set(Calendar.YEAR, calendar.getYear());
+        cal.set(Calendar.MONTH, calendar.getMonth());
+        cal.set(Calendar.DAY_OF_MONTH, calendar.getDay());
+        task.setDate(sdf.format(cal.getTime()));
     }
 
     /**
@@ -290,4 +295,22 @@ public class TaskDialog extends TitleAreaDialog {
         super.cancelPressed();
         task = backupTask;
     }
+    
+    class DueDateCheckboxListener implements SelectionListener {
+        
+        public void widgetDefaultSelected(SelectionEvent arg0) {
+            // do nothing
+        }
+
+        public void widgetSelected(SelectionEvent arg0) {
+            if (dueDateCheckbox.getSelection()) {
+                calendar.setEnabled(true);
+                setDateFromUserInput();
+            } else {
+                calendar.setEnabled(false);
+                task.setDate(null);
+            }
+        }
+    }
+
 }
