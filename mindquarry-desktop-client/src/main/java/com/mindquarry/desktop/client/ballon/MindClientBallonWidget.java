@@ -13,10 +13,6 @@
  */
 package com.mindquarry.desktop.client.ballon;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.window.Window;
@@ -294,9 +290,6 @@ public class MindClientBallonWidget extends BalloonWindow implements
                         MindClientBallonWidget.class, "12"), //$NON-NLS-1$
                         Messages.getString(MindClientBallonWidget.class, "13")); //$NON-NLS-1$
             }
-            Calendar cal = new GregorianCalendar(); // current date
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-            String date = sdf.format(cal.getTime());
 
             // create initial task
             Task task = new Task();
@@ -306,7 +299,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                     .getString(MindClientBallonWidget.class, "14")); //$NON-NLS-1$
             task.setSummary(Messages.getString(MindClientBallonWidget.class,
                     "15")); //$NON-NLS-1$
-            task.setDate(date);
+            task.setDate(null);     // no due date by default
 
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
             if (dlg.open() == Window.OK) {
