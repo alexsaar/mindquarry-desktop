@@ -64,15 +64,16 @@ public class TaskDialog extends TitleAreaDialog {
 
     private Task task;
 
-    private Task backupTask;
-
     public TaskDialog(Shell shell, Task task) {
         super(shell);
         setShellStyle(SWT.RESIZE);
         setBlockOnOpen(true);
 
         this.task = task;
-        backupTask = task;
+    }
+    
+    public Task getChangedTask() {
+        return task;
     }
 
     /**
@@ -293,7 +294,6 @@ public class TaskDialog extends TitleAreaDialog {
      */
     protected void cancelPressed() {
         super.cancelPressed();
-        task = backupTask;
     }
     
     class DueDateCheckboxListener implements SelectionListener {

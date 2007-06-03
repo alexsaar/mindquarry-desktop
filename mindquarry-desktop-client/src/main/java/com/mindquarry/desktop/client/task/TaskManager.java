@@ -425,9 +425,16 @@ public class TaskManager {
                     Task task = (Task) element;
 
                     try {
+                        // use a clone of the task so cancel works:
                         TaskDialog dlg = new TaskDialog(MindClient.getShell(),
-                                task);
+                                task.clone());
                         if (dlg.open() == Window.OK) {
+                            int taskPos = tasks.indexOf(task);
+                            if (taskPos != -1) {
+                                // can be -1 if set to "done" while the dialog was open
+                                tasks.set(taskPos, dlg.getChangedTask());
+                            }
+                            task = dlg.getChangedTask();
                             HttpUtilities.putAsXML(prof.getLogin(), prof
                                     .getPassword(), task.getId(), task
                                     .getContentAsXML().asXML().getBytes("utf-8"));

@@ -27,7 +27,7 @@ import com.mindquarry.desktop.model.ModelBase;
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class Task extends ModelBase {
+public class Task extends ModelBase implements Cloneable {
     public static final String STATUS_NEW = "new"; //$NON-NLS-1$
 
     public static final String STATUS_RUNNING = "running"; //$NON-NLS-1$
@@ -44,6 +44,10 @@ public class Task extends ModelBase {
 
     public static final String PRIORITY_CRITICAL = "critical"; //$NON-NLS-1$
 
+    private String url;
+    private String login;
+    private String password;
+    
     private String id;
 
     private String title;
@@ -104,6 +108,9 @@ public class Task extends ModelBase {
     
     public Task(String url, String login, String password) throws Exception {
         super(url, login, password, new TaskTransformer());
+        this.url = url;
+        this.login = login;
+        this.password = password;
     }
 
     public String getTitle() {
@@ -234,4 +241,27 @@ public class Task extends ModelBase {
         }
         return doc;
     }
+
+    public Task clone() {
+        Task newTask;
+        newTask = new Task();
+        newTask.url = url;
+        newTask.login = login;
+        newTask.password = password;
+        newTask.id = id;
+        newTask.title = title;
+        newTask.status = status;
+        newTask.priority = priority;
+        newTask.summary = summary;
+        newTask.description = description;
+        newTask.date = date;
+        newTask.people = new ArrayList<Person>(people);
+        newTask.dependencies = new ArrayList<Dependency>(dependencies);
+        return newTask;
+    }
+    
+    public String toString() {
+        return id + "/" + title;
+    }
+    
 }
