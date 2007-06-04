@@ -413,8 +413,7 @@ public class MindClient {
             // at first start the store returns 0 which doesn't make sense, so use a default:
             delay = GeneralSettingsPage.DEFAULT_NOTIFY_DELAY;
         }
-        widget.show(title, message, getPreferenceStore().getInt(
-                GeneralSettingsPage.NOTIFY_DELAY) * 1000);
+        widget.show(title, message, delay * 1000);
         widget.dispose();
     }
 }
