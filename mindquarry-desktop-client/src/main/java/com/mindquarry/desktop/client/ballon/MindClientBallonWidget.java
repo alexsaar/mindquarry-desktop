@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.client.ballon;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.window.Window;
@@ -42,6 +44,7 @@ import com.mindquarry.desktop.client.team.dialog.TeamSelectionDialog;
 import com.mindquarry.desktop.client.workspace.WorkspaceSynchronizeListener;
 import com.mindquarry.desktop.client.workspace.widgets.SynchronizeWidget;
 import com.mindquarry.desktop.model.task.Task;
+import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
@@ -304,10 +307,17 @@ public class MindClientBallonWidget extends BalloonWindow implements
             TaskDialog dlg = new TaskDialog(MindClient.getShell(), task, true);
             if (dlg.open() == Window.OK) {
                 try {
-                    TeamSelectionDialog tsDlg = new TeamSelectionDialog(
-                            MindClient.getShell(), teamList.getTeams());
-                    if (tsDlg.open() == Window.OK) {
-                        tman.add(task, tsDlg.getSelectedTeam());
+                    List teams = teamList.getTeams();
+                    if (teams.size() == 1) {
+                        // don't show dialog if user is in only one team anyway
+                        Team theOnlyTeam = (Team) teams.get(0);
+                        tman.add(task, theOnlyTeam.getId());
+                    } else {
+                        TeamSelectionDialog tsDlg = new TeamSelectionDialog(
+                                MindClient.getShell(), teams);
+                        if (tsDlg.open() == Window.OK) {
+                            tman.add(task, tsDlg.getSelectedTeam());
+                        }
                     }
                 } catch (Exception e) {
                     client.showMessage(Messages.getString(
