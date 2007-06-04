@@ -63,13 +63,15 @@ public class TaskDialog extends TitleAreaDialog {
     private DateTime calendar;
 
     private Task task;
+    private boolean isNew = false;
 
-    public TaskDialog(Shell shell, Task task) {
+    public TaskDialog(Shell shell, Task task, boolean isNew) {
         super(shell);
         setShellStyle(SWT.RESIZE);
         setBlockOnOpen(true);
 
         this.task = task;
+        this.isNew = isNew;
     }
     
     public Task getChangedTask() {
@@ -201,6 +203,11 @@ public class TaskDialog extends TitleAreaDialog {
     private void initTask() {
         if (task.getTitle() != null) {
             title.setText(task.getTitle());
+            if (isNew) {
+                title.selectAll();
+            } else {
+                title.setSelection(title.getText().length());  // move cursor to end of  text
+            }
         }
         if (task.getSummary() != null) {
             summary.setText(task.getSummary());

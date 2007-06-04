@@ -427,7 +427,7 @@ public class TaskManager {
                     try {
                         // use a clone of the task so cancel works:
                         TaskDialog dlg = new TaskDialog(MindClient.getShell(),
-                                task.clone());
+                                task.clone(), false);
                         if (dlg.open() == Window.OK) {
                             int taskPos = tasks.indexOf(task);
                             if (taskPos != -1) {

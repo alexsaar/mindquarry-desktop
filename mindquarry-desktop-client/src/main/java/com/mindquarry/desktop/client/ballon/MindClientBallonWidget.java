@@ -301,7 +301,7 @@ public class MindClientBallonWidget extends BalloonWindow implements
                     "15")); //$NON-NLS-1$
             task.setDate(null);     // no due date by default
 
-            TaskDialog dlg = new TaskDialog(MindClient.getShell(), task);
+            TaskDialog dlg = new TaskDialog(MindClient.getShell(), task, true);
             if (dlg.open() == Window.OK) {
                 try {
                     TeamSelectionDialog tsDlg = new TeamSelectionDialog(
