@@ -14,6 +14,8 @@
 package com.mindquarry.desktop.widget;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -73,6 +75,15 @@ public class NotificationWidget {
         msgLabel = new Label(shell, SWT.WRAP);
         msgLabel.setLocation(2, titleLabel.getSize().y + 2);
         msgLabel.setSize(WIDTH - 6, HEIGHT - titleLabel.getSize().y - 6);
+        msgLabel.addMouseListener(new MouseListener() {
+            public void mouseDoubleClick(MouseEvent arg0) {
+            }
+            public void mouseDown(MouseEvent arg0) {
+            }
+            public void mouseUp(MouseEvent arg0) {
+                dispose();
+            }
+        });
         
         shell.open();
     }
@@ -116,6 +127,8 @@ public class NotificationWidget {
     private void updatePosition(final boolean up) {
         display.syncExec(new Runnable() {
             public void run() {
+                if (isDisposed())
+                    return;
                 int x = shell.getLocation().x;
                 int y = shell.getLocation().y;
                 if (up) {
