@@ -144,6 +144,19 @@ public class TaskManager {
                 + task.getId() + "' to done."); //$NON-NLS-1$ 
         task.setStatus(Task.STATUS_DONE);
 
+        if (taskTableViewer.getTable().getItemCount() <= 1) {
+            // must disable doneButton explicitly, because removing tasks does
+            // not fire a selection changed event
+            doneButton.setEnabled(false);
+        }
+        // don't lose selection, select the next task:
+        int oldSelectionIndex = taskTableViewer.getTable().getSelectionIndex();
+        if (oldSelectionIndex == taskTableViewer.getTable().getItemCount()-1) { // last item deleted
+            taskTableViewer.getTable().select(oldSelectionIndex-1);
+        } else {
+            taskTableViewer.getTable().select(oldSelectionIndex+1);
+        }
+
         PreferenceStore store = client.getPreferenceStore();
         if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
             tasks.remove(task);
@@ -159,9 +172,6 @@ public class TaskManager {
             log.error("An error occured while setting task with id '" //$NON-NLS-1$
                     + task.getId() + "' to done.", e); //$NON-NLS-1$
         }
-        // must disable doneButton explicitly, because removing tasks does
-        // not fire a selection changed event
-        doneButton.setEnabled(false);
 
         // check number of active tasks, if 0 display NoTasksWidget
         if (tasks.isEmpty()) {
