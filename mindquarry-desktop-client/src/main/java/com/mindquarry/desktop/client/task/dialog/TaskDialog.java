@@ -21,6 +21,10 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,6 +43,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.ballon.MindClientBallonWidget;
 import com.mindquarry.desktop.client.util.widgets.ImageCombo;
 import com.mindquarry.desktop.model.task.Task;
 
@@ -158,6 +163,30 @@ public class TaskDialog extends TitleAreaDialog {
 
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
                 | SWT.WRAP);
+        summary.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent fe) {
+                // select the default text so user can just type new text without 
+                // manually deleting the default text:
+                String defaultText = Messages.getString(MindClientBallonWidget.class,
+                        "15");//$NON-NLS-1$
+                if (summary.getText().equals(defaultText)) {
+                    summary.selectAll();
+                }   
+            }
+            public void focusLost(FocusEvent fe) {
+            }
+        });
+        summary.addKeyListener(new KeyListener() {
+                public void keyPressed(KeyEvent e) {
+                    // don't print tab in text field but move to next
+                    // widget:
+                    if (e.keyCode == SWT.TAB) {
+                        e.doit = false;
+                        dueDateCheckbox.setFocus();
+                    }
+                }
+                public void keyReleased(KeyEvent e) {}
+            });
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
                 | GridData.VERTICAL_ALIGN_FILL);
         gridData.heightHint = 100;
