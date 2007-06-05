@@ -459,7 +459,12 @@ public class TaskManager {
                                 + task.getId(), e);
                     }
                 }
-                taskTableViewer.refresh();
+                if (table != null) {
+                    // avoid crash if last bug got closed but the task dialog
+                    // was still open and then OK was pressed:
+                    // (TODO: task is submitted but not visible until manual refresh)
+                    taskTableViewer.refresh();
+                }
             }
         }
     }
