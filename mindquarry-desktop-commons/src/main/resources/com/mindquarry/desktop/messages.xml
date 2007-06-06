@@ -16,12 +16,12 @@
     <message id="com.mindquarry.desktop.util.HttpUtilities">
         <locale language="en">
             <entry key="0">Authorization has been refused. Please check your login name and password.</entry>
-            <entry key="1">Unknown connection error. Status code</entry>
+            <entry key="1">Unknown connection error. Status code </entry>
         </locale>
         
         <locale language="de">
             <entry key="0">Autorisierung wurde abgelehnt. Bitte überprüfen Sie Ihren Login-Namen und Passwort.</entry>
-            <entry key="1">Unbekannter Verbindungsfehler. Status code</entry>
+            <entry key="1">Unbekannter Verbindungsfehler. Status code </entry>
         </locale>
     </message>
     

@@ -249,15 +249,19 @@ public class TaskManager {
             taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
                     profile.getLogin(), profile.getPassword());
         } catch (Exception e) {
-            log.error("Could not update list of tasks.", e); //$NON-NLS-1$
-            updateTaskWidgetContents(false, e, false);
+            log.error("Could not update list of tasks for " + 
+                    profile.getServerURL(), e); //$NON-NLS-1$
+            // add url to exception message:
+            String errMessage = Messages.getString(TaskManager.class, "5"); //$NON-NLS-1$
+            Exception newEx = new Exception(errMessage + " " + e.getMessage() + //$NON-NLS-1$
+                    " (" +profile.getServerURL()+ ")", e);   //$NON-NLS-1$ //$NON-NLS-2$
+            updateTaskWidgetContents(false, newEx, false);
             setRefreshStatus(true);
             refreshing = false;
             client.showMessage(Messages.getString(
                     "com.mindquarry.desktop.client", //$NON-NLS-1$
                     "error"), //$NON-NLS-1$
-                    Messages.getString(TaskManager.class, "0") + " " +
-                    e.toString()); //$NON-NLS-1$
+                    newEx.toString());
             return;
         }
         // loop and add tasks
@@ -379,11 +383,8 @@ public class TaskManager {
                             Messages.getString(TaskManager.class, "4")); //$NON-NLS-1$
                 } else {
                     destroyContent();
-                    String errMessage = Messages.getString(TaskManager.class,
-                            "5") + ":" //$NON-NLS-1$ //$NON-NLS-2$
-                            + "\n" + exception.toString(); //$NON-NLS-1$
                     errorWidget = new TaskErrorComposite(taskContainer,
-                            errMessage);
+                            exception.toString());
                 }
                 taskContainer.layout(true);
             }
