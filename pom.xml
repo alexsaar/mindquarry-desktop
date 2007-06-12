@@ -5,7 +5,7 @@
 
 	<groupId>com.mindquarry.tools</groupId>
 	<artifactId>mindquarry-desktop-tools</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 
 	<name>Mindquarry Desktop Tools</name>
 	<url>http://www.mindquarry.org/mindquarry/</url>
@@ -32,7 +32,7 @@
 	</modules>
 
 	<scm>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/tags/1.1</developerConnection>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk</developerConnection>
 	</scm>
 
 	<dependencies>
