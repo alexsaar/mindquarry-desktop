@@ -7,7 +7,7 @@
 	<property name="standalone.dist.target" value="${maven.build.directory}/standalone-dist" />
 	<property name="standalone.dist.target.lib" value="${standalone.dist.target}/lib" />
 	<property name="web.dist.target" value="${maven.build.directory}/web-dist" />
-	<property name="version" value="1.1-beta-2-SNAPSHOT" />
+	<property name="version" value="1.1" />
 	<property name="mindquarry-icons-version" value="0.5" />
 	
 	<!-- NOTE: works under Windows only, as the Classpath in the JAR contains the system-dependant swt JAR but we always include Windows: -->
