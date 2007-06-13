@@ -1,8 +1,8 @@
 ====================================================================
- Mindquarry Desktop Client 1.1 (Beta) README 
+ Mindquarry Desktop Client 1.1 README 
 ====================================================================
 Name:		Mindquarry Desktop Client
-Version:	1.1 (Beta)
+Version:	1.1
 Date:		23.05.2007
 
 ====================================================================
