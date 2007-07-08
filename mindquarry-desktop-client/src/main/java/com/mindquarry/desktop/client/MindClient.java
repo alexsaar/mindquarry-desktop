@@ -172,7 +172,7 @@ public class MindClient {
         profile.setServerURL(endpoint);
         profile.setLogin(login);
         profile.setPassword(""); //$NON-NLS-1$
-        profile.setWorkspaceFolder(""); //$NON-NLS-1$
+        profile.setWorkspaceFolder(System.getProperty("user.home")); //$NON-NLS-1$
         return Profile.addProfile(store, profile);
     }
 
