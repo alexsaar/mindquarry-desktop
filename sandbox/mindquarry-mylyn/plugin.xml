@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         id="org.eclipse.mylyn.mindquarry.repository"
+         name="Mindquarry Repository"
+         point="org.eclipse.mylyn.tasks.ui.repositories">
+      <connectorCore
+            class="com.mindquarry.mylyn.repository.RepositoryConnector"
+            id="org.eclipse.mylyn.mindquarry.tasklist.repositories"
+            name="Mindquarry Repository Connector"
+            type="mindquarry">
+      </connectorCore>
+      <connectorUi
+            brandingIcon="src/main/resources/icon.png"
+            class="com.mindquarry.mylyn.repository.ui.RepositoryUi"
+            id="org.eclipse.mylyn.mindquarry.repository.ui"
+            name="Mindquarry Repository UI">
+      </connectorUi>
+      <taskListFactory
+            class="com.mindquarry.mylyn.task.TaskListFactory"
+            id="org.eclipse.mylyn.mindquarry.tasklist.factory"
+            name="Mindquarry Tasklist Factory">
+      </taskListFactory>
+   </extension>
+   <extension
+         id="org.eclipse.mylyn.mindquarry.repository.template.oss"
+         name="Mindquarry Collaboration Server Task Repository"
+         point="org.eclipse.mylyn.tasks.core.templates">
+      <repository
+            addAutomatically="true"
+            characterEncoding="UTF-8"
+            label="Mindquarry Collaboration Server Tasks"
+            repositoryKind="mindquarry"
+            urlRepository="http://www.mindquarry.org/tasks/mindquarry-collaboration-server/"
+            version="1.1.1">
+      </repository>
+   </extension>
+   <extension
+         id="org.eclipse.mylyn.mindquarry.perspective.java"
+         name="Mindquarry Java Perspective Extension"
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
