@@ -191,7 +191,7 @@
             <entry key="1">Bitte wählen Sie die Version, die als aktuelle Version verwendet werden soll.</entry>
             <entry key="2">Auflösen von Konflikten</entry>
             <entry key="3">Lokale Version</entry>
-            <entry key="4">Server Version</entry>
+            <entry key="4">Server-Version</entry>
         </locale>
     </message>
     

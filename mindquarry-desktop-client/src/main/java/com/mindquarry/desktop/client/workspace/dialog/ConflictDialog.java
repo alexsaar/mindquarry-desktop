@@ -88,7 +88,7 @@ public class ConflictDialog extends TitleAreaDialog {
         });
         remoteCopy = new Button(composite, SWT.RADIO);
         remoteCopy.setText(Messages.getString(ConflictDialog.class, "4") //$NON-NLS-1$
-                + "(Revision " //$NON-NLS-1$
+                + " (Revision " //$NON-NLS-1$
                 + remoteRevision + ")"); //$NON-NLS-1$
         remoteCopy.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
         remoteCopy.addListener(SWT.Selection, new Listener() {
