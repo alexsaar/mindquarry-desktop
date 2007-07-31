@@ -333,7 +333,6 @@ public class TaskDialog extends TitleAreaDialog {
     }
     
     class DueDateCheckboxListener implements SelectionListener {
-        
         public void widgetDefaultSelected(SelectionEvent arg0) {
             // do nothing
         }
@@ -348,5 +347,4 @@ public class TaskDialog extends TitleAreaDialog {
             }
         }
     }
-
 }
