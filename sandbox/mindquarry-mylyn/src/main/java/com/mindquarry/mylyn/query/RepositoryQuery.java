@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.mylyn.task.query;
+package com.mindquarry.mylyn.query;
 
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 

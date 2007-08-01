@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
-import com.mindquarry.mylyn.task.query.RepositoryQuery;
+import com.mindquarry.mylyn.query.RepositoryQuery;
 
 /**
  * Add summary documentation here.

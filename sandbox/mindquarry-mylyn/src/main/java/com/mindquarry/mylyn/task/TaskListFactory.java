@@ -21,7 +21,7 @@ import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
 import org.w3c.dom.Element;
 
-import com.mindquarry.mylyn.task.query.RepositoryQuery;
+import com.mindquarry.mylyn.query.RepositoryQuery;
 
 /**
  * Add summary documentation here.

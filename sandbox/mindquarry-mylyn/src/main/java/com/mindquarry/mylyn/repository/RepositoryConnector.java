@@ -33,6 +33,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.mylyn.Plugin;
+import com.mindquarry.mylyn.task.TaskDataHandler;
 import com.mindquarry.mylyn.task.TaskWrapper;
 
 /**
@@ -44,6 +45,8 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	private static final String LABEL = "Mindquarry";
 
 	public static final String KIND = "mindquarry";
+	
+	private TaskDataHandler taskDataHandler = new TaskDataHandler(this);
 
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#canCreateNewTask(org.eclipse.mylyn.tasks.core.TaskRepository)
@@ -115,7 +118,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public AbstractTaskDataHandler getTaskDataHandler() {
-		return null;
+		return taskDataHandler;
 	}
 
 	/**
@@ -123,7 +126,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public String getTaskIdFromTaskUrl(String url) {
-		return url.substring(url.lastIndexOf('/'));
+		return TaskWrapper.calculateTaskId(url);
 	}
 
 	/**
