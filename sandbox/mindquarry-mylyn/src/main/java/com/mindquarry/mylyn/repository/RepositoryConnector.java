@@ -45,7 +45,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	private static final String LABEL = "Mindquarry";
 
 	public static final String KIND = "mindquarry";
-	
+
 	private TaskDataHandler taskDataHandler = new TaskDataHandler(this);
 
 	/**
@@ -167,7 +167,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 			TaskList list = new TaskList(repository.getUrl() + "/tasks",
 					repository.getUserName(), repository.getPassword());
 			for (Task task : list.getTasks()) {
-				collector.accept(new TaskWrapper(repository, task));
+				collector.accept(new TaskWrapper(repository.getUrl(), task));
 			}
 			return Status.OK_STATUS;
 		} catch (Exception e) {
@@ -199,10 +199,10 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	public void updateTaskFromRepository(TaskRepository repository,
 			AbstractTask taskWrapper, IProgressMonitor monitor)
 			throws CoreException {
-		if(!(taskWrapper instanceof TaskWrapper)) {
+		if (!(taskWrapper instanceof TaskWrapper)) {
 			return;
 		}
-		TaskWrapper wrapper = (TaskWrapper)taskWrapper;
+		TaskWrapper wrapper = (TaskWrapper) taskWrapper;
 		try {
 			monitor.beginTask("Updating task " + taskWrapper.getTaskId(),
 					IProgressMonitor.UNKNOWN);

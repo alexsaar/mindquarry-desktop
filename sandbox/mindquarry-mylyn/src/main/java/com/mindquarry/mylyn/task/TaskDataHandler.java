@@ -27,10 +27,12 @@ import com.mindquarry.mylyn.repository.RepositoryConnector;
 
 /**
  * Add summary documentation here.
- *
+ * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
 public class TaskDataHandler extends AbstractTaskDataHandler {
+	private AbstractAttributeFactory attributeFactory = new AttributeFactory();
+	
 	private RepositoryConnector connector;
 
 	public TaskDataHandler(RepositoryConnector connector) {
@@ -38,22 +40,21 @@ public class TaskDataHandler extends AbstractTaskDataHandler {
 	}
 
 	@Override
-	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
-		return Collections.emptySet();
-	}
-
-	@Override
 	public AbstractAttributeFactory getAttributeFactory(String repositoryUrl,
 			String repositoryKind, String taskKind) {
-		// TODO Auto-generated method stub
-		return null;
+		return attributeFactory;
 	}
 
 	@Override
 	public AbstractAttributeFactory getAttributeFactory(
 			RepositoryTaskData taskData) {
-		// TODO Auto-generated method stub
-		return null;
+		return getAttributeFactory(taskData.getRepositoryUrl(), taskData
+				.getRepositoryKind(), taskData.getTaskKind());
+	}
+
+	@Override
+	public Set<String> getSubTaskIds(RepositoryTaskData taskData) {
+		return Collections.emptySet();
 	}
 
 	@Override

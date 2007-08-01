@@ -14,7 +14,6 @@
 package com.mindquarry.mylyn.task;
 
 import org.eclipse.mylyn.tasks.core.AbstractTask;
-import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.mylyn.repository.RepositoryConnector;
@@ -25,11 +24,16 @@ import com.mindquarry.mylyn.repository.RepositoryConnector;
  * @author <a hef="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
 public class TaskWrapper extends AbstractTask {
-	public TaskWrapper(TaskRepository repository, Task task) {
-		super(repository.getUrl(), calculateTaskId(task.getId()), task
+	public TaskWrapper(String repositoryUrl, Task task) {
+		super(repositoryUrl, calculateTaskId(task.getId()), task
 				.getTitle());
 		setUrl(task.getId());
 		update(task);
+	}
+
+	public TaskWrapper(String repositoryUrl, String taskId, String summary) {
+		super(repositoryUrl, taskId, summary);
+		setUrl(repositoryUrl + "/tasks" + taskId);
 	}
 
 	/**
@@ -49,7 +53,7 @@ public class TaskWrapper extends AbstractTask {
 	}
 
 	public void update(Task task) {
-		if(task.getStatus().equals(Task.STATUS_DONE)) {
+		if (task.getStatus().equals(Task.STATUS_DONE)) {
 			setCompleted(true);
 		} else {
 			setCompleted(false);
@@ -73,6 +77,7 @@ public class TaskWrapper extends AbstractTask {
 	}
 
 	public static String calculateTaskId(String url) {
-		return url.substring(url.lastIndexOf('/') + 1);
+		String[] parts = url.split("/");
+		return parts[parts.length - 2] + "/" + parts[parts.length - 1];
 	}
 }

@@ -52,8 +52,7 @@ public class TaskListFactory extends AbstractTaskListFactory {
 	@Override
 	public AbstractTask createTask(String repositoryUrl, String taskId,
 			String summary, Element element) {
-		return null;
-//		return new Task(repositoryUrl, taskId, summary);
+		return new TaskWrapper(repositoryUrl, taskId, summary);
 	}
 
 	@Override
