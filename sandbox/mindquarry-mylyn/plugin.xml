@@ -20,7 +20,7 @@
       <taskListFactory
             class="com.mindquarry.mylyn.task.TaskListFactory"
             id="org.eclipse.mylyn.mindquarry.tasklist.factory"
-            name="Mindquarry Tasklist Factory">
+            name="Mindquarry Externalizer">
       </taskListFactory>
    </extension>
    <extension

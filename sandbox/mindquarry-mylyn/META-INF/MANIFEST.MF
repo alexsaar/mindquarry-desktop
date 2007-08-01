@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Mindquarry Mylyn Plug-in
 Bundle-SymbolicName: com.mindquarry.mylyn;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-ClassPath: com.mindquarry.mylyn/
+Bundle-ClassPath: com.mindquarry.mylyn/,
+ lib/mindquarry-desktop-commons-1.2-SNAPSHOT-jar-with-dependencies.jar
 Bundle-Activator: com.mindquarry.mylyn.Plugin
 Bundle-Vendor: Mindquarry GmbH
 Require-Bundle: org.eclipse.ui,

@@ -13,9 +13,15 @@
  */
 package com.mindquarry.mylyn.task;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
 import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.AbstractTaskListFactory;
 import org.w3c.dom.Element;
+
+import com.mindquarry.mylyn.task.query.RepositoryQuery;
 
 /**
  * Add summary documentation here.
@@ -23,14 +29,20 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
 public class TaskListFactory extends AbstractTaskListFactory {
-	private static final String TASK_ELEMENT_NAME = "task";
+	private static final String KEY_MINDQUARRY = "Mindquarry";
+
+	private static final String KEY_MINDQUARRY_TASK = KEY_MINDQUARRY
+			+ AbstractTaskListFactory.KEY_TASK;
+
+	private static final String KEY_MINDQUARRY_QUERY = KEY_MINDQUARRY
+			+ AbstractTaskListFactory.KEY_QUERY;
 
 	/**
 	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#canCreate(org.eclipse.mylyn.tasks.core.AbstractTask)
 	 */
 	@Override
 	public boolean canCreate(AbstractTask task) {
-		return task instanceof Task;
+		return task instanceof TaskWrapper;
 	}
 
 	/**
@@ -40,8 +52,14 @@ public class TaskListFactory extends AbstractTaskListFactory {
 	@Override
 	public AbstractTask createTask(String repositoryUrl, String taskId,
 			String summary, Element element) {
-		Task task = new Task(repositoryUrl, taskId, summary);
-		return task;
+		return null;
+//		return new Task(repositoryUrl, taskId, summary);
+	}
+
+	@Override
+	public AbstractRepositoryQuery createQuery(String repositoryUrl,
+			String queryString, String label, Element element) {
+		return new RepositoryQuery(repositoryUrl, label);
 	}
 
 	/**
@@ -49,6 +67,32 @@ public class TaskListFactory extends AbstractTaskListFactory {
 	 */
 	@Override
 	public String getTaskElementName() {
-		return TASK_ELEMENT_NAME;
+		return KEY_MINDQUARRY_TASK;
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#canCreate(org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery)
+	 */
+	@Override
+	public boolean canCreate(AbstractRepositoryQuery category) {
+		return category instanceof RepositoryQuery;
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#getQueryElementName(org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery)
+	 */
+	@Override
+	public String getQueryElementName(AbstractRepositoryQuery query) {
+		return query instanceof RepositoryQuery ? KEY_MINDQUARRY_QUERY : "";
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#getQueryElementNames()
+	 */
+	@Override
+	public Set<String> getQueryElementNames() {
+		Set<String> names = new HashSet<String>();
+		names.add(KEY_MINDQUARRY_QUERY);
+		return names;
 	}
 }

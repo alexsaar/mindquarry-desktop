@@ -28,8 +28,10 @@ import org.eclipse.mylyn.tasks.core.ITaskCollector;
 import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
+import com.mindquarry.desktop.model.task.Task;
+import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.mylyn.Plugin;
-import com.mindquarry.mylyn.task.Task;
+import com.mindquarry.mylyn.task.TaskWrapper;
 
 /**
  * Add summary documentation here.
@@ -148,9 +150,10 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 		try {
 			monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
 
-			for (int i = 0; i < 10; i++) {
-				collector.accept(new Task(repository.getUrl(), "task" + i,
-						"summary " + i));
+			TaskList list = new TaskList(repository.getUrl() + "/tasks",
+					repository.getUserName(), repository.getPassword());
+			for (Task task : list.getTasks()) {
+				collector.accept(new TaskWrapper(repository, task));
 			}
 			return Status.OK_STATUS;
 		} catch (Exception e) {

@@ -78,6 +78,6 @@ public class QueryWizardPage extends AbstractRepositoryQueryPage {
 
 	@Override
 	public AbstractRepositoryQuery getQuery() {
-		return new RepositoryQuery(repository.getUrl(), "new query");
+		return new RepositoryQuery(repository.getUrl(), getQueryTitle());
 	}
 }
