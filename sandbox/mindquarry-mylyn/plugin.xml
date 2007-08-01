@@ -32,7 +32,7 @@
             characterEncoding="UTF-8"
             label="Mindquarry Collaboration Server Tasks"
             repositoryKind="mindquarry"
-            urlRepository="http://www.mindquarry.org/tasks/mindquarry-collaboration-server/"
+            urlRepository="http://www.mindquarry.org/"
             version="1.1.1">
       </repository>
    </extension>

@@ -13,6 +13,8 @@
  */
 package com.mindquarry.mylyn.repository;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -56,7 +58,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public boolean canCreateTaskFromKey(TaskRepository repository) {
-		return false;
+		return true;
 	}
 
 	/**
@@ -97,8 +99,15 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#getRepositoryUrlFromTaskUrl(java.lang.String)
 	 */
 	@Override
-	public String getRepositoryUrlFromTaskUrl(String url) {
-		return null;
+	public String getRepositoryUrlFromTaskUrl(String urlString) {
+		URL url;
+		try {
+			url = new URL(urlString);
+		} catch (MalformedURLException e) {
+			return null;
+		}
+		String result = url.getProtocol() + "://" + url.getHost();
+		return result;
 	}
 
 	/**
@@ -123,7 +132,8 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public String getTaskUrl(String repositoryUrl, String taskId) {
-		return repositoryUrl + "/" + taskId;
+		String url = repositoryUrl + "/tasks/" + taskId;
+		return url;
 	}
 
 	/**
@@ -134,6 +144,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	public boolean markStaleTasks(TaskRepository repository,
 			Set<AbstractTask> tasks, IProgressMonitor monitor)
 			throws CoreException {
+		System.out.println("markStaleTasks");
 		return false;
 	}
 
@@ -158,7 +169,9 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 			return Status.OK_STATUS;
 		} catch (Exception e) {
 			return new Status(IStatus.ERROR, Plugin.PLUGIN_ID, Status.ERROR,
-					"Check repository configuration: " + e.getMessage(), e);
+					"Could not execute query. "
+							+ "Please check your repository configuration: "
+							+ e.getMessage(), e);
 		} finally {
 			monitor.done();
 		}
@@ -171,7 +184,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateAttributes(TaskRepository repository,
 			IProgressMonitor monitor) throws CoreException {
-		System.out.println("updating attributes");
+		System.out.println("updateAttributes");
 	}
 
 	/**
@@ -181,8 +194,24 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	 */
 	@Override
 	public void updateTaskFromRepository(TaskRepository repository,
-			AbstractTask task, IProgressMonitor monitor) throws CoreException {
-		System.out.println();
+			AbstractTask taskWrapper, IProgressMonitor monitor)
+			throws CoreException {
+		if(!(taskWrapper instanceof TaskWrapper)) {
+			return;
+		}
+		TaskWrapper wrapper = (TaskWrapper)taskWrapper;
+		try {
+			monitor.beginTask("Updating task " + taskWrapper.getTaskId(),
+					IProgressMonitor.UNKNOWN);
+
+			Task task = new Task(taskWrapper.getUrl(),
+					repository.getUserName(), repository.getPassword());
+			wrapper.update(task);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			monitor.done();
+		}
 	}
 
 	/**
@@ -193,17 +222,6 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateTaskFromTaskData(TaskRepository repository,
 			AbstractTask task, RepositoryTaskData data) {
-		System.out.println();
-	}
-
-	/**
-	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#updateTaskFromQueryHit(org.eclipse.mylyn.tasks.core.TaskRepository,
-	 *      org.eclipse.mylyn.tasks.core.AbstractTask,
-	 *      org.eclipse.mylyn.tasks.core.AbstractTask)
-	 */
-	@Override
-	public boolean updateTaskFromQueryHit(TaskRepository repository,
-			AbstractTask task, AbstractTask task2) {
-		return super.updateTaskFromQueryHit(repository, task, task2);
+		System.out.println("updateTaskFromTaskData");
 	}
 }

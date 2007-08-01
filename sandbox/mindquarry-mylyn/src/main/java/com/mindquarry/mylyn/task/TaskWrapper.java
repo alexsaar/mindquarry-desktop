@@ -26,9 +26,10 @@ import com.mindquarry.mylyn.repository.RepositoryConnector;
  */
 public class TaskWrapper extends AbstractTask {
 	public TaskWrapper(TaskRepository repository, Task task) {
-		super(repository.getUrl(), task.getId().substring(
-				task.getId().lastIndexOf('/') + 1), task.getTitle());
-		setNotes(task.getSummary());
+		super(repository.getUrl(), calculateTaskId(task.getId()), task
+				.getTitle());
+		setUrl(task.getId());
+		update(task);
 	}
 
 	/**
@@ -45,5 +46,33 @@ public class TaskWrapper extends AbstractTask {
 	@Override
 	public boolean isLocal() {
 		return false;
+	}
+
+	public void update(Task task) {
+		if(task.getStatus().equals(Task.STATUS_DONE)) {
+			setCompleted(true);
+		} else {
+			setCompleted(false);
+		}
+		if (task.getSummary() != null) {
+			setNotes(task.getSummary());
+		}
+		if (task.getPriority() != null) {
+			if (task.getPriority().equals(Task.PRIORITY_LOW)) {
+				setPriority(PriorityLevel.P4.name());
+			} else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
+				setPriority(PriorityLevel.P3.name());
+			} else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
+				setPriority(PriorityLevel.P2.name());
+			} else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
+				setPriority(PriorityLevel.P1.name());
+			}
+		} else {
+			setPriority(PriorityLevel.P5.name());
+		}
+	}
+
+	public static String calculateTaskId(String url) {
+		return url.substring(url.lastIndexOf('/') + 1);
 	}
 }
