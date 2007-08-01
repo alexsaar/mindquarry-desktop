@@ -29,6 +29,7 @@ import org.eclipse.mylyn.tasks.core.RepositoryTaskData;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 
 import com.mindquarry.mylyn.Plugin;
+import com.mindquarry.mylyn.task.Task;
 
 /**
  * Add summary documentation here.
@@ -146,9 +147,12 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 			ITaskCollector collector) {
 		try {
 			monitor.beginTask("Running query", IProgressMonitor.UNKNOWN);
+
+			for (int i = 0; i < 10; i++) {
+				collector.accept(new Task(repository.getUrl(), "task" + i,
+						"summary " + i));
+			}
 			return Status.OK_STATUS;
-//		} catch (CoreException e) {
-//			return e.getStatus();
 		} catch (Exception e) {
 			return new Status(IStatus.ERROR, Plugin.PLUGIN_ID, Status.ERROR,
 					"Check repository configuration: " + e.getMessage(), e);
@@ -164,6 +168,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateAttributes(TaskRepository repository,
 			IProgressMonitor monitor) throws CoreException {
+		System.out.println("updating attributes");
 	}
 
 	/**
@@ -174,6 +179,7 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateTaskFromRepository(TaskRepository repository,
 			AbstractTask task, IProgressMonitor monitor) throws CoreException {
+		System.out.println();
 	}
 
 	/**
@@ -184,5 +190,17 @@ public class RepositoryConnector extends AbstractRepositoryConnector {
 	@Override
 	public void updateTaskFromTaskData(TaskRepository repository,
 			AbstractTask task, RepositoryTaskData data) {
+		System.out.println();
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractRepositoryConnector#updateTaskFromQueryHit(org.eclipse.mylyn.tasks.core.TaskRepository,
+	 *      org.eclipse.mylyn.tasks.core.AbstractTask,
+	 *      org.eclipse.mylyn.tasks.core.AbstractTask)
+	 */
+	@Override
+	public boolean updateTaskFromQueryHit(TaskRepository repository,
+			AbstractTask task, AbstractTask task2) {
+		return super.updateTaskFromQueryHit(repository, task, task2);
 	}
 }

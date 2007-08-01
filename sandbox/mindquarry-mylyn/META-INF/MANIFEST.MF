@@ -8,21 +8,7 @@ Bundle-Activator: com.mindquarry.mylyn.Plugin
 Bundle-Vendor: Mindquarry GmbH
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.mylyn,
- org.eclipse.mylyn.compatibility,
- org.eclipse.mylyn.context.core,
- org.eclipse.mylyn.context.ui,
- org.eclipse.mylyn.help.ui,
- org.eclipse.mylyn.ide.ant,
- org.eclipse.mylyn.ide.ui,
- org.eclipse.mylyn.java.ui,
- org.eclipse.mylyn.monitor.core,
- org.eclipse.mylyn.monitor.ui,
- org.eclipse.mylyn.pde.ui,
- org.eclipse.mylyn.resources.ui,
  org.eclipse.mylyn.tasks.core,
  org.eclipse.mylyn.tasks.ui,
- org.eclipse.mylyn.team.cvs,
- org.eclipse.mylyn.team.ui,
- org.tigris.subversion.subclipse.mylyn
+ org.eclipse.search
 Eclipse-LazyStart: true

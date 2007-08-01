@@ -51,8 +51,7 @@ public class RepositoryUi extends AbstractRepositoryConnectorUi {
 	@Override
 	public IWizard getQueryWizard(TaskRepository repository,
 			AbstractRepositoryQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		return new QueryWizard(repository);
 	}
 
 	/**
