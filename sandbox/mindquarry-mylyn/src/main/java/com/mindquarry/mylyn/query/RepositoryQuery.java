@@ -21,12 +21,16 @@ import com.mindquarry.mylyn.repository.RepositoryConnector;
  * Add summary documentation here.
  *
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- *
  */
 public class RepositoryQuery extends AbstractRepositoryQuery {
-	public RepositoryQuery(String repositoryURL, String description) {
+	private boolean showMyTasksOnly;
+	private String status;
+	
+	public RepositoryQuery(String repositoryURL, String description, String status, boolean myTasks) {
 		super(description);
 		
+		this.status = status;
+		this.showMyTasksOnly = myTasks;
 		this.setRepositoryUrl(repositoryURL);
 	}
 
@@ -36,5 +40,13 @@ public class RepositoryQuery extends AbstractRepositoryQuery {
 	@Override
 	public String getRepositoryKind() {
 		return RepositoryConnector.KIND;
+	}
+
+	public boolean isShowMyTasksOnly() {
+		return showMyTasksOnly;
+	}
+
+	public String getStatus() {
+		return status;
 	}
 }

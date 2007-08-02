@@ -74,10 +74,47 @@ public class TaskWrapper extends AbstractTask {
 		} else {
 			setPriority(PriorityLevel.P5.name());
 		}
+		setTaskKind(Kind.TASK.name());
 	}
-
+	
 	public static String calculateTaskId(String url) {
 		String[] parts = url.split("/");
-		return parts[parts.length - 2] + "/" + parts[parts.length - 1];
+		String taskID = parts[parts.length - 1];
+		String teamID = parts[parts.length - 2];
+		return teamID + "/" + taskID;
+	}
+	
+	public enum Kind {
+		TASK;
+
+		@Override
+		public String toString() {
+			switch (this) {
+			case TASK:
+				return "Task";
+			default:
+				return "";
+			}
+		}
+
+		public static Kind fromType(String type) {
+			if (type == null) {
+				return null;
+			}
+			if (type.equals("task")) {
+				return TASK;
+			}
+			return null;
+		}
+
+		public static Kind fromString(String type) {
+			if (type == null) {
+				return null;
+			}
+			if (type.equals("Task")) {
+				return TASK;
+			}
+			return null;
+		}
 	}
 }

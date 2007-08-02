@@ -13,13 +13,16 @@
  */
 package com.mindquarry.mylyn.repository.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery;
+import org.eclipse.mylyn.tasks.core.AbstractTask;
 import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi;
 import org.eclipse.mylyn.tasks.ui.wizards.AbstractRepositorySettingsPage;
 
 import com.mindquarry.mylyn.repository.RepositoryConnector;
+import com.mindquarry.mylyn.task.TaskWrapper.Kind;
 
 /**
  * Add summary documentation here.
@@ -68,5 +71,17 @@ public class RepositoryUi extends AbstractRepositoryConnectorUi {
 	@Override
 	public boolean hasSearchPage() {
 		return false;
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.ui.AbstractRepositoryConnectorUi#getTaskKindOverlay(org.eclipse.mylyn.tasks.core.AbstractTask)
+	 */
+	@Override
+	public ImageDescriptor getTaskKindOverlay(AbstractTask task) {
+		Kind kind = Kind.fromString(task.getTaskKind());
+		if (kind == Kind.TASK) {
+			return Images.OVERLAY_TASK;
+		}
+		return super.getTaskKindOverlay(task);
 	}
 }

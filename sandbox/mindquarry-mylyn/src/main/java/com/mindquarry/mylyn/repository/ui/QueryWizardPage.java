@@ -20,7 +20,7 @@ import org.eclipse.mylyn.tasks.core.TaskRepository;
 import org.eclipse.mylyn.tasks.ui.search.AbstractRepositoryQueryPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -29,55 +29,68 @@ import com.mindquarry.mylyn.query.RepositoryQuery;
 
 /**
  * Add summary documentation here.
- *
+ * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
 public class QueryWizardPage extends AbstractRepositoryQueryPage {
 	private static final String TITLE = "Create Mindquarry Task Repository Query";
-
 	private static final String DESCRIPTION = "Select the fields that should be contained in your query.";
+
+	private Button myTasks;
+	private Combo status;
 
 	public QueryWizardPage(TaskRepository repository) {
 		super(TITLE);
 		setTitle(TITLE);
 		setDescription(DESCRIPTION);
 		setImageDescriptor(TasksUiImages.BANNER_REPOSITORY);
-		
+
 		this.repository = repository;
 	}
 
+	/**
+	 * @see org.eclipse.mylyn.tasks.ui.search.AbstractRepositoryQueryPage#createControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
-				
-//		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-//		gridData.grabExcessVerticalSpace = false;
-		
-		Composite composite = (Composite)parent.getChildren()[0];
-//		composite.setLayoutData(gridData);
-//		composite.setLayout(new GridLayout(1, false));
+		Composite composite = (Composite) parent.getChildren()[0];
 
 		Label label = new Label(composite, SWT.LEFT);
 		label.setText("Status:");
-		
-		Combo status = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+
+		status = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
 		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		status.add("all");
 		status.add("new");
 		status.add("running");
 		status.add("paused");
 		status.add("done");
 		status.select(0);
-		
+
+		label = new Label(composite, SWT.LEFT);
+		label.setText("Show only tasks assigned to me:");
+
+		myTasks = new Button(composite, SWT.CHECK);
+
 		setPageComplete(true);
 		setControl(composite);
 	}
 
+	/**
+	 * @see org.eclipse.jface.wizard.WizardPage#getNextPage()
+	 */
 	@Override
 	public IWizardPage getNextPage() {
 		return null;
 	}
 
+	/**
+	 * @see org.eclipse.mylyn.tasks.ui.search.AbstractRepositoryQueryPage#getQuery()
+	 */
 	@Override
 	public AbstractRepositoryQuery getQuery() {
-		return new RepositoryQuery(repository.getUrl(), getQueryTitle());
+		return new RepositoryQuery(repository.getUrl(), getQueryTitle(), status
+				.getText(), myTasks.getSelection());
 	}
 }

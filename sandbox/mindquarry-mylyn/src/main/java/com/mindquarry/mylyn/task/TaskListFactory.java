@@ -55,10 +55,14 @@ public class TaskListFactory extends AbstractTaskListFactory {
 		return new TaskWrapper(repositoryUrl, taskId, summary);
 	}
 
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#createQuery(java.lang.String, java.lang.String, java.lang.String, org.w3c.dom.Element)
+	 */
 	@Override
 	public AbstractRepositoryQuery createQuery(String repositoryUrl,
 			String queryString, String label, Element element) {
-		return new RepositoryQuery(repositoryUrl, label);
+//		return new RepositoryQuery(repositoryUrl, label);
+		return null;
 	}
 
 	/**
