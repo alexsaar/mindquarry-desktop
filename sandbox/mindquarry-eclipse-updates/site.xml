@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://www.mindquarry.com/updates/eclipse">
+      Contains eclipse plugins and feature that can be used for working with the Mindquarry Collaboration Server.
+   </description>
+   <feature url="features/com.mindquarry.mylyn_1.0.0.jar" id="com.mindquarry.mylyn" version="1.0.0">
+      <category name="com.mindquarry.tasks"/>
+   </feature>
+   <category-def name="com.mindquarry.tasks" label="Mindquarry Tasks">
+      <description>
+         Contains plugins and features for the Mindquarry task management.
+      </description>
+   </category-def>
+</site>

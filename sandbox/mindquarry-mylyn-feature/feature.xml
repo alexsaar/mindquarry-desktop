@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.mindquarry.mylyn"
+      label="Mindquarry Mylyn Feature"
+      version="1.0.0"
+      provider-name="Mindquarry GmbH">
+
+   <description>
+      The Mindquarry Mylyn feature provides functionality for integrating the Mindquarry Collaboration Server with Mylyn task management.
+   </description>
+
+   <copyright>
+      Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
+   </copyright>
+
+   <license>
+      The contents of this file are subject to the Mozilla Public License Version 1.1 (the &quot;License&quot;); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+
+Software distributed under the License is distributed on an &quot;AS IS&quot; basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for the specific language governing rights and limitations under the License.
+   </license>
+
+   <url>
+      <update label="Mindquarry Eclipse Updates" url="http://www.mindquarry.com/updates/eclipse"/>
+   </url>
+
+   <plugin
+         id="com.mindquarry.mylyn"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         unpack="false"/>
+
+</feature>
