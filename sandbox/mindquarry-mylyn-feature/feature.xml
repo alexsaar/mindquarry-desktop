@@ -20,7 +20,7 @@ Software distributed under the License is distributed on an &quot;AS IS&quot; ba
    </license>
 
    <url>
-      <update label="Mindquarry Eclipse Updates" url="http://www.mindquarry.com/updates/eclipse"/>
+      <update label="Mindquarry Eclipse Updates" url="http://www.mindquarry.org/updates/eclipse/"/>
    </url>
 
    <plugin
