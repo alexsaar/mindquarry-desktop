@@ -32,7 +32,7 @@ import com.mindquarry.mylyn.repository.RepositoryConnector;
  */
 public class TaskDataHandler extends AbstractTaskDataHandler {
 	private AbstractAttributeFactory attributeFactory = new AttributeFactory();
-	
+
 	private RepositoryConnector connector;
 
 	public TaskDataHandler(RepositoryConnector connector) {
@@ -60,8 +60,9 @@ public class TaskDataHandler extends AbstractTaskDataHandler {
 	@Override
 	public RepositoryTaskData getTaskData(TaskRepository repository,
 			String taskId, IProgressMonitor monitor) throws CoreException {
-		// TODO Auto-generated method stub
-		return null;
+		RepositoryTaskData data = new RepositoryTaskData(attributeFactory,
+				RepositoryConnector.KIND, repository.getUrl(), taskId);
+		return data;
 	}
 
 	@Override

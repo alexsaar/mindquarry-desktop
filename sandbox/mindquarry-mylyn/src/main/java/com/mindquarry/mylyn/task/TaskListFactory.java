@@ -61,8 +61,8 @@ public class TaskListFactory extends AbstractTaskListFactory {
 	@Override
 	public AbstractRepositoryQuery createQuery(String repositoryUrl,
 			String queryString, String label, Element element) {
-//		return new RepositoryQuery(repositoryUrl, label);
-		return null;
+		return new RepositoryQuery(repositoryUrl, label);
+//		return null;
 	}
 
 	/**

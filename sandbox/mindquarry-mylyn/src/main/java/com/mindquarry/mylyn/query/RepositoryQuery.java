@@ -26,11 +26,17 @@ public class RepositoryQuery extends AbstractRepositoryQuery {
 	private boolean showMyTasksOnly;
 	private String status;
 	
-	public RepositoryQuery(String repositoryURL, String description, String status, boolean myTasks) {
+//	public RepositoryQuery(String repositoryURL, String description, String status, boolean myTasks) {
+//		super(description);
+//		
+//		this.status = status;
+//		this.showMyTasksOnly = myTasks;
+//		this.setRepositoryUrl(repositoryURL);
+//	}
+	
+	public RepositoryQuery(String repositoryURL, String description) {
 		super(description);
 		
-		this.status = status;
-		this.showMyTasksOnly = myTasks;
 		this.setRepositoryUrl(repositoryURL);
 	}
 

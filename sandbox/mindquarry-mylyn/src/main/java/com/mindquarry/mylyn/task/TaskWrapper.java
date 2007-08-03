@@ -74,13 +74,13 @@ public class TaskWrapper extends AbstractTask {
 		} else {
 			setPriority(PriorityLevel.P5.name());
 		}
-		setTaskKind(Kind.TASK.name());
+		setTaskKind(Kind.TASK.toString());
 	}
 	
 	public static String calculateTaskId(String url) {
 		String[] parts = url.split("/");
 		String taskID = parts[parts.length - 1];
-		String teamID = parts[parts.length - 2];
+		String teamID = parts[parts.length - 2].replaceAll("-", "_");
 		return teamID + "/" + taskID;
 	}
 	
@@ -91,27 +91,17 @@ public class TaskWrapper extends AbstractTask {
 		public String toString() {
 			switch (this) {
 			case TASK:
-				return "Task";
+				return "TASK";
 			default:
 				return "";
 			}
-		}
-
-		public static Kind fromType(String type) {
-			if (type == null) {
-				return null;
-			}
-			if (type.equals("task")) {
-				return TASK;
-			}
-			return null;
 		}
 
 		public static Kind fromString(String type) {
 			if (type == null) {
 				return null;
 			}
-			if (type.equals("Task")) {
+			if (type.equals("TASK")) {
 				return TASK;
 			}
 			return null;

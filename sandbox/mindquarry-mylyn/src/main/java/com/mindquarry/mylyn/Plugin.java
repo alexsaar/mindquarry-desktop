@@ -13,11 +13,8 @@
  */
 package com.mindquarry.mylyn;
 
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import com.mindquarry.mylyn.repository.ui.Images;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -36,13 +33,6 @@ public class Plugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-	}
-
-	@Override
-	protected ImageRegistry createImageRegistry() {
-		ImageRegistry registry = super.createImageRegistry();
-		Images.fillRegistry(registry);
-		return registry;
 	}
 
 	/**
