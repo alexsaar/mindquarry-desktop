@@ -56,13 +56,13 @@ public class TaskListFactory extends AbstractTaskListFactory {
 	}
 
 	/**
-	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#createQuery(java.lang.String, java.lang.String, java.lang.String, org.w3c.dom.Element)
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#createQuery(java.lang.String,
+	 *      java.lang.String, java.lang.String, org.w3c.dom.Element)
 	 */
 	@Override
 	public AbstractRepositoryQuery createQuery(String repositoryUrl,
 			String queryString, String label, Element element) {
 		return new RepositoryQuery(repositoryUrl, label);
-//		return null;
 	}
 
 	/**
@@ -97,5 +97,22 @@ public class TaskListFactory extends AbstractTaskListFactory {
 		Set<String> names = new HashSet<String>();
 		names.add(KEY_MINDQUARRY_QUERY);
 		return names;
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#setAdditionalAttributes(org.eclipse.mylyn.tasks.core.AbstractRepositoryQuery,
+	 *      org.w3c.dom.Element)
+	 */
+	@Override
+	public void setAdditionalAttributes(AbstractRepositoryQuery query,
+			Element node) {
+	}
+
+	/**
+	 * @see org.eclipse.mylyn.tasks.core.AbstractTaskListFactory#setAdditionalAttributes(org.eclipse.mylyn.tasks.core.AbstractTask,
+	 *      org.w3c.dom.Element)
+	 */
+	@Override
+	public void setAdditionalAttributes(AbstractTask task, Element element) {
 	}
 }
