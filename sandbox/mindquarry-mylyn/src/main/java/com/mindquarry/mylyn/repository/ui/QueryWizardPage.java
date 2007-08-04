@@ -56,22 +56,22 @@ public class QueryWizardPage extends AbstractRepositoryQueryPage {
 		super.createControl(parent);
 		Composite composite = (Composite) parent.getChildren()[0];
 
-//		Label label = new Label(composite, SWT.LEFT);
-//		label.setText("Status:");
-//
-//		status = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-//		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//		status.add("all");
-//		status.add("new");
-//		status.add("running");
-//		status.add("paused");
-//		status.add("done");
-//		status.select(0);
-//
-//		label = new Label(composite, SWT.LEFT);
-//		label.setText("Show only tasks assigned to me:");
-//
-//		myTasks = new Button(composite, SWT.CHECK);
+		Label label = new Label(composite, SWT.LEFT);
+		label.setText("Status:");
+
+		status = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		status.add("all");
+		status.add("new");
+		status.add("running");
+		status.add("paused");
+		status.add("done");
+		status.select(0);
+
+		label = new Label(composite, SWT.LEFT);
+		label.setText("Show only tasks assigned to me:");
+
+		myTasks = new Button(composite, SWT.CHECK);
 
 		setPageComplete(true);
 		setControl(composite);
@@ -90,8 +90,7 @@ public class QueryWizardPage extends AbstractRepositoryQueryPage {
 	 */
 	@Override
 	public AbstractRepositoryQuery getQuery() {
-//		return new RepositoryQuery(repository.getUrl(), getQueryTitle(), status
-//				.getText(), myTasks.getSelection());
-		return new RepositoryQuery(repository.getUrl(), getQueryTitle());
+		return new RepositoryQuery(repository.getUrl(), getQueryTitle(), status
+				.getText(), myTasks.getSelection());
 	}
 }
