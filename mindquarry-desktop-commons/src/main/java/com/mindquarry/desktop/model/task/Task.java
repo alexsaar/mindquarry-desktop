@@ -61,6 +61,10 @@ public class Task extends ModelBase implements Cloneable {
     private String description;
 
     private String date;
+    
+    private String targetTime;
+
+    private String actualTime;
 
     private List<Person> people;
 
@@ -209,6 +213,14 @@ public class Task extends ModelBase implements Cloneable {
             Element description = task.addElement("description"); //$NON-NLS-1$
             description.setText(getDescription());
         }
+        if ((getTargetTime() != null) && (!getTargetTime().equals(""))) { //$NON-NLS-1$
+            Element description = task.addElement("targettime"); //$NON-NLS-1$
+            description.setText(getTargetTime());
+        }
+        if ((getActualTime() != null) && (!getActualTime().equals(""))) { //$NON-NLS-1$
+            Element description = task.addElement("actualtime"); //$NON-NLS-1$
+            description.setText(getActualTime());
+        }
         if (people.size() > 0) {
             int count = 0;
             Element peopleEl = task.addElement("people"); //$NON-NLS-1$
@@ -257,6 +269,8 @@ public class Task extends ModelBase implements Cloneable {
         newTask.date = date;
         newTask.people = new ArrayList<Person>(people);
         newTask.dependencies = new ArrayList<Dependency>(dependencies);
+        newTask.actualTime = actualTime;
+        newTask.targetTime = targetTime;
         return newTask;
     }
     
@@ -264,4 +278,19 @@ public class Task extends ModelBase implements Cloneable {
         return id + "/" + title;
     }
     
+    public String getTargetTime() {
+    	return targetTime;
+	}
+
+    public void setTargetTime(String targetTime) {
+    	this.targetTime = targetTime;
+    }
+
+    public String getActualTime() {
+    	return actualTime;
+    }
+
+    public void setActualTime(String actualTime) {
+    	this.actualTime = actualTime;
+    }
 }

@@ -82,6 +82,16 @@ public class TaskTransformer extends TransformerBase {
     public void date(Node node) {
         task.setDate(node.getStringValue().trim());
     }
+    
+    @Path("targettime")
+    public void targettime(Node node) {
+    	task.setTargetTime(node.getStringValue().trim());
+	}
+
+    @Path("actualtime")
+    public void actualtime(Node node) {
+    	task.setActualTime(node.getStringValue().trim());
+    }
 
     @Path("people/item")
     public void people(Node node) {
