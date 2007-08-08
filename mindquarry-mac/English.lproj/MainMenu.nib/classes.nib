@@ -165,9 +165,13 @@
 				<string>id</string>
 				<key>changesTable</key>
 				<string>id</string>
+				<key>commitFilesToolbarItem</key>
+				<string>id</string>
 				<key>commitMessageField</key>
 				<string>id</string>
 				<key>commitMessageWindow</key>
+				<string>id</string>
+				<key>commitTasksToolbarItem</key>
 				<string>id</string>
 				<key>controller</key>
 				<string>id</string>

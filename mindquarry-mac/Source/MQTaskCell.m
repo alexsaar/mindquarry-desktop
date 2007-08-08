@@ -85,7 +85,7 @@ static NSDictionary *prioImages;
 	}
 	// due	
 	if (dateDesc) {
-		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - dueSize.width - 10, cellFrame.origin.y + 6) withAttributes:dateDict];
+		[dateDesc drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - dueSize.width - 10, cellFrame.origin.y + 14) withAttributes:dateDict];
 	}
 	
 	// title
@@ -124,6 +124,18 @@ static NSDictionary *prioImages;
 	NSImage *prioImage = [prioImages objectForKey:prio];
 	if (prioImage)
 		[prioImage compositeToPoint:NSMakePoint(cellFrame.origin.x + 21, cellFrame.origin.y + 36) operation:NSCompositeSourceOver];	
+	
+	// needs update?
+	
+	BOOL needsUpdate = [[[self objectValue] valueForKey:@"needsUpdate"] boolValue];
+	if (needsUpdate) {
+		NSString *needsUpdateString = @"trying to save...";
+		
+		NSDictionary *attr = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, [NSColor redColor], NSForegroundColorAttributeName, nil];
+		NSSize needsUpdateSize = [needsUpdateString sizeWithAttributes:attr];
+		
+		[needsUpdateString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - needsUpdateSize.width - 10, cellFrame.origin.y + 3) withAttributes:attr];
+	}
 	
 }
 

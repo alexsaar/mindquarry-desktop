@@ -30,7 +30,7 @@ static int saveTaskCount = 0;
 	
 	[self setKeys:[NSArray arrayWithObject:@"status"] triggerChangeNotificationsForDependentKey:@"statusIndex"];
 	[self setKeys:[NSArray arrayWithObject:@"priority"] triggerChangeNotificationsForDependentKey:@"priorityIndex"];
-	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", @"date", nil] triggerChangeNotificationsForDependentKey:@"self"];
+	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", @"date", @"needsUpdate", nil] triggerChangeNotificationsForDependentKey:@"self"];
 	
 	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"sortDate"];
 	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"inspectorDate"];
