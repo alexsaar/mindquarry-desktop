@@ -178,6 +178,15 @@
 		[item setTag:2];
 		[item setAction:@selector(commitFiles:)];
 	}
+	else if ([itemIdentifier isEqualToString:@"MQTaskCommit"]) {
+		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQTaskCommit"];
+		[item setLabel:@"Commit"];
+		[item setPaletteLabel:@"Commit Changes"];
+		[item setImage:[NSImage imageNamed:@"synchronize-vertical"]];
+		[item setTarget:self];
+		[item setTag:0];
+		[item setAction:@selector(saveUnsavedTasks:)];
+	}
 	
 	return [item autorelease];
 }
@@ -192,6 +201,7 @@
 	if ([[_toolbar identifier] isEqualToString:TASKS_TOOLBAR_ID]) {
 		[items addObject:@"MQCreateTask"];
 		[items addObject:@"MQDone"];
+		[items addObject:@"MQTaskCommit"];
 		[items addObject:@"MQInfo"];
 	}
 	else if ([[_toolbar identifier] isEqualToString:FILES_TOOLBAR_ID]) {
