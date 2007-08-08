@@ -83,7 +83,7 @@
 		[requestQueue removeObjectAtIndex:0];
 	}
 	[requestLock unlock];
-	
+
 	if (request) {
 		[requestLock lock];
 		requestRunningCount++;
@@ -94,6 +94,15 @@
 		[request startRequest];
 		[runningRequests addObject:request];
 		[request release];		
+		[runningLock unlock];
+	}
+	else {
+		[runningLock lock];
+		if ([runningRequests count] > 0) {
+			request = [runningRequests objectAtIndex:0];
+			id field = [[NSApp delegate] valueForKey:@"statusField"];
+			[field setStringValue:[request statusString]];
+		}
 		[runningLock unlock];
 	}
 }
