@@ -54,10 +54,16 @@
 	if (tag == 0) {
 		[window setToolbar:tasksToolbar];
 		[tasksToolbar setSelectedItemIdentifier:@"MQTasks"];
+		if (forcedInspectorOut) {
+			[inspectorWindow orderFront:self];
+			forcedInspectorOut = NO;
+		}
 	}
 	else if (tag == 1) {
 		[window setToolbar:workspaceToolbar];
 		[workspaceToolbar setSelectedItemIdentifier:@"MQFiles"];
+		forcedInspectorOut = [inspectorWindow isVisible];
+		[inspectorWindow orderOut:sender];
 	}
 }
 
@@ -76,8 +82,8 @@
 	}
 	else if ([itemIdentifier isEqualToString:@"MQInfo"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQInfo"];
-		[item setLabel:@"Inspector"];
-		[item setPaletteLabel:@"Inspector"];
+		[item setLabel:@"Info"];
+		[item setPaletteLabel:@"Task Info"];
 		[item setImage:[NSImage imageNamed:@"info"]];
 		[item setTarget:self];
 		[item setAction:@selector(toggleInspector:)];
@@ -182,9 +188,11 @@
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)_toolbar {
 	NSMutableArray *items = [NSMutableArray arrayWithObjects:@"MQTasks", @"MQFiles", NSToolbarSeparatorItemIdentifier, nil];
+	
 	if ([[_toolbar identifier] isEqualToString:TASKS_TOOLBAR_ID]) {
 		[items addObject:@"MQCreateTask"];
 		[items addObject:@"MQDone"];
+		[items addObject:@"MQInfo"];
 	}
 	else if ([[_toolbar identifier] isEqualToString:FILES_TOOLBAR_ID]) {
 //		[items addObject:@"MQDown"];
@@ -198,7 +206,6 @@
 	
 	[items addObject:NSToolbarSeparatorItemIdentifier];
 	[items addObject:@"MQServer"];
-	[items addObject:@"MQInfo"];
 	
     return items; 
 }

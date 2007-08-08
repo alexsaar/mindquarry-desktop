@@ -92,6 +92,8 @@ enum {
     
     BOOL hasUnsavedTasks;
 	
+	BOOL forcedInspectorOut;
+	
 }
 
 - (void)afterWakeFromNib;
