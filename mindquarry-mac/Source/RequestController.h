@@ -8,11 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+#import <Growl/GrowlApplicationBridge.h>
+
 enum {
 	MQRequestTeams
 };
 
-@interface RequestController : NSObject {
+@interface RequestController : NSObject <GrowlApplicationBridgeDelegate> {
 
 	IBOutlet id taskColumn;
 		
@@ -160,5 +162,13 @@ enum {
 - (IBAction)focusSearchField:(id)sender;
 
 - (IBAction)saveUnsavedTasks:(id)sender;
+
+// Growl
+
+- (NSDictionary *)registrationDictionaryForGrowl;
+
+- (NSString *)applicationNameForGrowl;
+
+- (void)growlNotificationWasClicked:(id)clickContext;
 
 @end

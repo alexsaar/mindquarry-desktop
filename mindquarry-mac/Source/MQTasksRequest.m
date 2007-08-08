@@ -11,6 +11,8 @@
 #import "RequestController.h"
 #import "MQTaskPropertiesRequest.h"
 
+#import "GrowlNotifications.h"
+
 @implementation MQTasksRequest
 
 - (id)initWithServer:(id)_server forTeam:(id)_team;
@@ -49,6 +51,8 @@
 		
 	NSXMLElement *root = [document rootElement];
 	
+	int task_count = 0;
+	
 	int i;
 	int count = [root childCount];
 	for (i = 0; i < count; i++) {
@@ -72,6 +76,8 @@
 		MQTaskPropertiesRequest *req = [[MQTaskPropertiesRequest alloc] initWithServer:server forTask:taskobj];
 		[req addToQueue];
 		[req autorelease];
+		
+		task_count++;
 	}
 
 	// delete stale tasks
@@ -89,6 +95,15 @@
 	}
 	if (deleted)
 		[[NSApp delegate] performSelectorOnMainThread:@selector(reloadTasks) withObject:nil waitUntilDone:NO]; 
+	
+	// send a growl notification
+	[GrowlApplicationBridge notifyWithTitle:@"Tasks Updated"
+								description:[NSString stringWithFormat:@"Team %@: %d Tasks", [team valueForKey:@"name"], task_count]
+						   notificationName:GROWL_TASKS_UPDATED
+								   iconData:nil
+								   priority:0
+								   isSticky:NO
+							   clickContext:GROWL_TASKS_UPDATED];
 }
 
 @end

@@ -23,6 +23,10 @@
 #import "PathAbbreviation.h"
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
 
+#import <Growl/Growl.h>
+
+#import "GrowlNotifications.h"
+
 @implementation RequestController
 
 + (void)initialize {
@@ -40,6 +44,8 @@
 
 - (void)awakeFromNib
 {	
+	[GrowlApplicationBridge setGrowlDelegate:self];
+		
 	[serversController fetchWithRequest:nil merge:NO error:nil];
 	[serversController setSelectionIndex:[[NSUserDefaults standardUserDefaults] integerForKey:@"selectedServer"]];
 	
@@ -643,6 +649,26 @@
 - (IBAction)saveUnsavedTasks:(id)sender
 {
     [MQTask saveUnsavedTasks];
+}
+
+#pragma mark Growl Methods
+
+- (NSDictionary *)registrationDictionaryForGrowl
+{
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSArray arrayWithObjects:GROWL_FILES_SYNCHRONIZED, GROWL_TASKS_UPDATED, GROWL_TASK_SAVED, GROWL_FILE_STATUS_UPDATED, nil], GROWL_NOTIFICATIONS_ALL,
+			[NSArray arrayWithObjects:GROWL_FILES_SYNCHRONIZED, GROWL_TASKS_UPDATED, GROWL_FILE_STATUS_UPDATED, nil], GROWL_NOTIFICATIONS_DEFAULT,
+			nil];
+}
+
+- (NSString *)applicationNameForGrowl
+{
+	return @"Mindquarry Desktop Client";
+}
+
+- (void)growlNotificationWasClicked:(id)clickContext
+{
+	NSLog(@"notification was clicked: %@", clickContext);
 }
 
 @end

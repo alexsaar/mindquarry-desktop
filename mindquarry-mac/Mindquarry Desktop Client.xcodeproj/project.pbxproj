@@ -98,6 +98,7 @@
 		DD8665650B9DB2F7000C7B66 /* task-running.png in Resources */ = {isa = PBXBuildFile; fileRef = DD8665600B9DB2F7000C7B66 /* task-running.png */; };
 		DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */; };
 		DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */; };
+		DDB81B500C69CBDD002AADF8 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB81B4F0C69CBDD002AADF8 /* Growl.framework */; };
 		DDE33FC70BA6D60400CE286B /* JNIHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBA0BA6D60400CE286B /* JNIHelper.mm */; };
 		DDE33FC80BA6D60400CE286B /* JVMController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBC0BA6D60400CE286B /* JVMController.mm */; };
 		DDE33FC90BA6D60400CE286B /* SVNController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBE0BA6D60400CE286B /* SVNController.mm */; };
@@ -203,6 +204,8 @@
 		DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MQTaskCell.m; sourceTree = "<group>"; };
 		DD8665EC0B9DB604000C7B66 /* OFGradientTableView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OFGradientTableView.h; sourceTree = "<group>"; };
 		DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = OFGradientTableView.m; sourceTree = "<group>"; };
+		DDB81B4F0C69CBDD002AADF8 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Growl.framework; sourceTree = "<group>"; };
+		DDB81B5A0C69CE0D002AADF8 /* GrowlNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GrowlNotifications.h; path = Source/GrowlNotifications.h; sourceTree = "<group>"; };
 		DDE33FB90BA6D60400CE286B /* JNIHelper.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = JNIHelper.h; sourceTree = "<group>"; };
 		DDE33FBA0BA6D60400CE286B /* JNIHelper.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = JNIHelper.mm; sourceTree = "<group>"; };
 		DDE33FBB0BA6D60400CE286B /* JVMController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = JVMController.h; sourceTree = "<group>"; };
@@ -229,6 +232,7 @@
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				DDF0016C0BA859530008C3AA /* JavaVM.framework in Frameworks */,
+				DDB81B500C69CBDD002AADF8 /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +295,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				DDB81B5A0C69CE0D002AADF8 /* GrowlNotifications.h */,
 				32CA4F630368D1EE00C91783 /* Mindquarry_Desktop_Client_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -312,6 +317,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DDB81B4F0C69CBDD002AADF8 /* Growl.framework */,
 				DDF0016B0BA859530008C3AA /* JavaVM.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
@@ -489,9 +495,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 26FC0A880875C7B200E6366F /* Build configuration list for PBXProject "Mindquarry Desktop Client" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Mindquarry Desktop Client */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Mindquarry Desktop Client */,
 				DD2EDB040B9F2180000238CE /* Disk Image */,
@@ -656,6 +664,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -678,6 +691,11 @@
 					ppc,
 					i386,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)\"";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INPUT_FILETYPE = automatic;

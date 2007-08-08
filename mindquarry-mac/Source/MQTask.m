@@ -11,6 +11,8 @@
 
 #import "MQUpdateRequest.h"
 
+#import "GrowlNotifications.h"
+
 static BOOL global_autosave_enabled = NO;
 
 static NSTimer *saveTimer = nil;
@@ -206,6 +208,15 @@ static int saveTaskCount = 0;
     if (saveTaskCount == 0) 
         [[[NSApp delegate] valueForKey:@"controller"] setValue:[NSNumber numberWithBool:NO] forKey:@"hasUnsavedTasks"];
     [saveTimerLock unlock];
+	
+	// send a growl notification
+	[GrowlApplicationBridge notifyWithTitle:@"Task Saved"
+								description:[self valueForKey:@"title"]
+						   notificationName:GROWL_TASK_SAVED
+								   iconData:nil
+								   priority:0
+								   isSticky:NO
+							   clickContext:[[self objectID] URIRepresentation]];
 }
 
 - (NSString *)dueDescription

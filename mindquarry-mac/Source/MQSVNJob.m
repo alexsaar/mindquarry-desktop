@@ -13,6 +13,8 @@
 
 #import "Mindquarry_Desktop_Client_AppDelegate.h"
 
+#import "GrowlNotifications.h"
+
 static MQSVNJob *currentJob = nil;
 
 @implementation MQSVNJob
@@ -55,6 +57,8 @@ static MQSVNJob *currentJob = nil;
 	BOOL opened = NO;
     
     currentJob = self;
+	
+	int count = 0;
 	
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
 	while (!cancel && (currentTeam = [teamEnum nextObject])) {
@@ -99,6 +103,7 @@ static MQSVNJob *currentJob = nil;
 			chEnum = [updateItems objectEnumerator];
 			while (!cancel && (change = [chEnum nextObject])) {
 				[updatePaths addObject:[change valueForKey:@"absPath"]];
+				count++;
 			}
 //			NSLog(@"down   %@", updatePaths);
 			BOOL ok = NO;
@@ -159,6 +164,26 @@ static MQSVNJob *currentJob = nil;
 	
     currentJob = nil;
     
+	// send a growl notification
+	if (synchronizes) {
+		[GrowlApplicationBridge notifyWithTitle:@"File Synchronization Completed"
+									description:[NSString stringWithFormat:@"%d files", count]
+							   notificationName:GROWL_FILES_SYNCHRONIZED
+									   iconData:nil
+									   priority:0
+									   isSticky:NO
+								   clickContext:GROWL_FILES_SYNCHRONIZED];
+	}
+	else {
+		[GrowlApplicationBridge notifyWithTitle:@"File Status Updated"
+									description:[NSString stringWithFormat:@"%d files", count]
+							   notificationName:GROWL_FILE_STATUS_UPDATED
+									   iconData:nil
+									   priority:0
+									   isSticky:NO
+								   clickContext:GROWL_FILE_STATUS_UPDATED];
+	}
+	
 	[[NSApp delegate] performSelectorOnMainThread:@selector(setProgressVisible:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
