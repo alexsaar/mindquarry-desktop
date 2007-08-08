@@ -99,6 +99,7 @@
 		DD8665B90B9DB5A4000C7B66 /* MQTaskCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665B80B9DB5A4000C7B66 /* MQTaskCell.m */; };
 		DD8665EE0B9DB604000C7B66 /* OFGradientTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD8665ED0B9DB604000C7B66 /* OFGradientTableView.m */; };
 		DDB81B500C69CBDD002AADF8 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DDB81B4F0C69CBDD002AADF8 /* Growl.framework */; };
+		DDB81BC70C69DB8D002AADF8 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = DDB81B4F0C69CBDD002AADF8 /* Growl.framework */; };
 		DDE33FC70BA6D60400CE286B /* JNIHelper.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBA0BA6D60400CE286B /* JNIHelper.mm */; };
 		DDE33FC80BA6D60400CE286B /* JVMController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBC0BA6D60400CE286B /* JVMController.mm */; };
 		DDE33FC90BA6D60400CE286B /* SVNController.mm in Sources */ = {isa = PBXBuildFile; fileRef = DDE33FBE0BA6D60400CE286B /* SVNController.mm */; };
@@ -119,6 +120,19 @@
 			remoteInfo = "Mindquarry Desktop Client";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DDB81BE00C69DBA1002AADF8 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DDB81BC70C69DB8D002AADF8 /* Growl.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -478,6 +492,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				DDB81BE00C69DBA1002AADF8 /* CopyFiles */,
 			);
 			buildRules = (
 			);
