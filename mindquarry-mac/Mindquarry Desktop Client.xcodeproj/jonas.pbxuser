@@ -83,6 +83,30 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
+			PBXConfiguration.PBXFileTableDataSource3.XCSCMDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					20,
+					667,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_SCM_ColumnID,
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
 			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
@@ -105,8 +129,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 208264046;
-			PBXWorkspaceStateSaveDate = 208264046;
+			PBXPerProjectTemplateStateSaveDate = 208267087;
+			PBXWorkspaceStateSaveDate = 208267087;
 		};
 		perUserProjectItems = {
 			DD0B892E0BC3D4E30038B25A /* PBXTextBookmark */ = DD0B892E0BC3D4E30038B25A /* PBXTextBookmark */;
@@ -183,8 +207,8 @@
 			DDB81BB30C69D9F0002AADF8 /* PBXTextBookmark */ = DDB81BB30C69D9F0002AADF8 /* PBXTextBookmark */;
 			DDB81BB50C69D9F0002AADF8 /* PBXTextBookmark */ = DDB81BB50C69D9F0002AADF8 /* PBXTextBookmark */;
 			DDB81BB90C69D9F0002AADF8 /* PBXTextBookmark */ = DDB81BB90C69D9F0002AADF8 /* PBXTextBookmark */;
-			DDB81BBB0C69DB62002AADF8 /* PBXTextBookmark */ = DDB81BBB0C69DB62002AADF8 /* PBXTextBookmark */;
-			DDB81BE10C69DBAF002AADF8 /* PBXTextBookmark */ = DDB81BE10C69DBAF002AADF8 /* PBXTextBookmark */;
+			DDB81C0A0C69DFC9002AADF8 /* PBXTextBookmark */ = DDB81C0A0C69DFC9002AADF8 /* PBXTextBookmark */;
+			DDB81C140C69E77C002AADF8 /* PBXTextBookmark */ = DDB81C140C69E77C002AADF8 /* PBXTextBookmark */;
 			DDF001130BA853160008C3AA /* PBXTextBookmark */ = DDF001130BA853160008C3AA /* PBXTextBookmark */;
 			DDF0011C0BA853160008C3AA /* PBXTextBookmark */ = DDF0011C0BA853160008C3AA /* PBXTextBookmark */;
 			DDF0011D0BA853160008C3AA /* PBXTextBookmark */ = DDF0011D0BA853160008C3AA /* PBXTextBookmark */;
@@ -665,7 +689,7 @@
 		argumentStrings = (
 		);
 		autoAttachOnCrash = 1;
-		breakpointsEnabled = 1;
+		breakpointsEnabled = 0;
 		configStateDict = {
 		};
 		customDataFormattersEnabled = 1;
@@ -705,17 +729,17 @@
 	};
 	DD39F4F90B9D7FD200384D0C /* RequestController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {869, 2450}}";
-			sepNavSelRange = "{2901, 0}";
-			sepNavVisRange = "{2203, 846}";
+			sepNavIntBoundsRect = "{{0, 0}, {856, 2450}}";
+			sepNavSelRange = "{1593, 15}";
+			sepNavVisRange = "{1426, 398}";
 			sepNavVisRect = "{{0, 1755}, {883, 555}}";
 		};
 	};
 	DD39F4FA0B9D7FD200384D0C /* RequestController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {869, 6524}}";
-			sepNavSelRange = "{19290, 0}";
-			sepNavVisRange = "{18914, 992}";
+			sepNavIntBoundsRect = "{{0, 0}, {869, 5362}}";
+			sepNavSelRange = "{5809, 0}";
+			sepNavVisRange = "{4895, 1130}";
 			sepNavVisRect = "{{0, 4733}, {883, 555}}";
 			sepNavWindowFrame = "{{19, 155}, {1209, 1018}}";
 		};
@@ -1699,25 +1723,25 @@
 		vrLen = 1136;
 		vrLoc = 4698;
 	};
-	DDB81BBB0C69DB62002AADF8 /* PBXTextBookmark */ = {
+	DDB81C0A0C69DFC9002AADF8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */;
-		name = "RequestController.m: 660";
+		name = "RequestController.m: 38";
 		rLen = 0;
-		rLoc = 19663;
+		rLoc = 1012;
 		rType = 0;
-		vrLen = 984;
-		vrLoc = 18922;
+		vrLen = 1256;
+		vrLoc = 157;
 	};
-	DDB81BE10C69DBAF002AADF8 /* PBXTextBookmark */ = {
+	DDB81C140C69E77C002AADF8 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = DD39F4FA0B9D7FD200384D0C /* RequestController.m */;
-		name = "RequestController.m: 654";
+		name = "RequestController.m: 150";
 		rLen = 0;
-		rLoc = 19290;
+		rLoc = 5809;
 		rType = 0;
-		vrLen = 992;
-		vrLoc = 18914;
+		vrLen = 1130;
+		vrLoc = 4895;
 	};
 	DDE33FB90BA6D60400CE286B /* JNIHelper.h */ = {
 		uiCtxt = {

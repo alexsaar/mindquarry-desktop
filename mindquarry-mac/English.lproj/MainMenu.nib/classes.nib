@@ -1,92 +1,202 @@
-{
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            CLASS = LRFilterBar; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {originalSender = id; }; 
-            SUPERCLASS = NSView; 
-        }, 
-        {
-            ACTIONS = {commit = id; saveAction = id; }; 
-            CLASS = "Mindquarry_Desktop_Client_AppDelegate"; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                changesController = id; 
-                changesTable = id; 
-                commitMessageField = id; 
-                commitMessageWindow = id; 
-                controller = id; 
-                progressController = id; 
-                progressWindow = id; 
-                refreshToolbarItem = id; 
-                serverController = id; 
-                statusField = id; 
-                statusSpinner = id; 
-                stopToolbarItem = id; 
-                taskController = id; 
-                taskTable = id; 
-                window = NSWindow; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSDatePicker; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {CLASS = OFGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
-        {
-            ACTIONS = {
-                cancelCreateTask = id; 
-                commitFiles = id; 
-                createTask = id; 
-                fileDoubleClick = id; 
-                fileSortSelectionChanged = id; 
-                finishCreateTask = id; 
-                focusSearchField = id; 
-                refresh = id; 
-                saveTask = id; 
-                saveUnsavedTasks = id; 
-                selectMode = id; 
-                setDone = id; 
-                setServerLocalPath = id; 
-                stopTasks = id; 
-                taskDoubleClick = id; 
-                titlebarSelectionChanged = id; 
-                toggleInspector = id; 
-            }; 
-            CLASS = RequestController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                changeColumn = id; 
-                changeEnabledColumn = id; 
-                changesController = id; 
-                changesFilterbar = id; 
-                createTaskSheet = id; 
-                createTaskTeamButton = id; 
-                createTaskTitle = id; 
-                filesSearchField = id; 
-                filesTeamSelector = id; 
-                filterBar = id; 
-                inspectorWindow = id; 
-                passwordField = id; 
-                priorityButton = id; 
-                rootView = id; 
-                serverDrawer = id; 
-                serversController = id; 
-                statusButton = id; 
-                taskColumn = id; 
-                taskTable = id; 
-                tasksController = id; 
-                tasksSearchField = id; 
-                tasksTeamSelector = id; 
-                tasksToolbar = id; 
-                tasksView = id; 
-                teamsController = id; 
-                window = id; 
-                workspaceTable = id; 
-                workspaceToolbar = id; 
-                workspaceView = id; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>LRFilterBar</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>originalSender</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>cancelCreateTask</key>
+				<string>id</string>
+				<key>commitFiles</key>
+				<string>id</string>
+				<key>createTask</key>
+				<string>id</string>
+				<key>fileDoubleClick</key>
+				<string>id</string>
+				<key>fileSortSelectionChanged</key>
+				<string>id</string>
+				<key>finishCreateTask</key>
+				<string>id</string>
+				<key>focusSearchField</key>
+				<string>id</string>
+				<key>refresh</key>
+				<string>id</string>
+				<key>saveTask</key>
+				<string>id</string>
+				<key>saveUnsavedTasks</key>
+				<string>id</string>
+				<key>selectMode</key>
+				<string>id</string>
+				<key>setDone</key>
+				<string>id</string>
+				<key>setServerLocalPath</key>
+				<string>id</string>
+				<key>stopTasks</key>
+				<string>id</string>
+				<key>taskDoubleClick</key>
+				<string>id</string>
+				<key>titlebarSelectionChanged</key>
+				<string>id</string>
+				<key>toggleInspector</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>RequestController</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>changeColumn</key>
+				<string>id</string>
+				<key>changeEnabledColumn</key>
+				<string>id</string>
+				<key>changesController</key>
+				<string>id</string>
+				<key>changesFilterbar</key>
+				<string>id</string>
+				<key>createTaskSheet</key>
+				<string>id</string>
+				<key>createTaskTeamButton</key>
+				<string>id</string>
+				<key>createTaskTitle</key>
+				<string>id</string>
+				<key>filesSearchField</key>
+				<string>id</string>
+				<key>filesTeamSelector</key>
+				<string>id</string>
+				<key>filterBar</key>
+				<string>id</string>
+				<key>inspectorWindow</key>
+				<string>id</string>
+				<key>passwordField</key>
+				<string>id</string>
+				<key>priorityButton</key>
+				<string>id</string>
+				<key>rootView</key>
+				<string>id</string>
+				<key>serverDrawer</key>
+				<string>id</string>
+				<key>serversController</key>
+				<string>id</string>
+				<key>statusButton</key>
+				<string>id</string>
+				<key>taskColumn</key>
+				<string>id</string>
+				<key>taskTable</key>
+				<string>id</string>
+				<key>tasksController</key>
+				<string>id</string>
+				<key>tasksSearchField</key>
+				<string>id</string>
+				<key>tasksTeamSelector</key>
+				<string>id</string>
+				<key>tasksToolbar</key>
+				<string>id</string>
+				<key>tasksView</key>
+				<string>id</string>
+				<key>teamsController</key>
+				<string>id</string>
+				<key>window</key>
+				<string>id</string>
+				<key>workspaceTable</key>
+				<string>id</string>
+				<key>workspaceToolbar</key>
+				<string>id</string>
+				<key>workspaceView</key>
+				<string>id</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>NSDatePicker</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSControl</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>OFGradientTableView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSTableView</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>commit</key>
+				<string>id</string>
+				<key>saveAction</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>Mindquarry_Desktop_Client_AppDelegate</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>changesController</key>
+				<string>id</string>
+				<key>changesTable</key>
+				<string>id</string>
+				<key>commitMessageField</key>
+				<string>id</string>
+				<key>commitMessageWindow</key>
+				<string>id</string>
+				<key>controller</key>
+				<string>id</string>
+				<key>progressController</key>
+				<string>id</string>
+				<key>progressWindow</key>
+				<string>id</string>
+				<key>refreshToolbarItem</key>
+				<string>id</string>
+				<key>serverController</key>
+				<string>id</string>
+				<key>statusField</key>
+				<string>id</string>
+				<key>statusSpinner</key>
+				<string>id</string>
+				<key>stopToolbarItem</key>
+				<string>id</string>
+				<key>taskController</key>
+				<string>id</string>
+				<key>taskTable</key>
+				<string>id</string>
+				<key>window</key>
+				<string>NSWindow</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

@@ -33,7 +33,7 @@
 	[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInt:1], @"sortBy", 
 		[NSNumber numberWithInt:0], @"filesSortBy", 
-		[NSNumber numberWithBool:YES], @"dblClickTask", 
+		[NSNumber numberWithBool:NO], @"dblClickTask", 
 		[NSNumber numberWithBool:YES], @"dblClickFile", 
 		[NSNumber numberWithBool:YES], @"showProgressPanel", 
 		
@@ -143,9 +143,9 @@
 {
 	[MQTask setAutoSaveEnabled:YES];
 	
-	[NSTimer scheduledTimerWithTimeInterval:600 target:self selector:@selector(backgroundRefresh) userInfo:nil repeats:YES];
+	// [NSTimer scheduledTimerWithTimeInterval:600 target:self selector:@selector(backgroundRefresh) userInfo:nil repeats:YES];
 	
-	[self performSelector:@selector(backgroundRefresh) withObject:nil afterDelay:3];
+	[self performSelector:@selector(backgroundRefresh) withObject:nil afterDelay:2];
 }
 
 - (void)dealloc
@@ -461,14 +461,15 @@
 
 - (IBAction)taskDoubleClick:(id)sender
 {
-	if (![[NSUserDefaults standardUserDefaults] boolForKey:@"dblClickTask"])
-		return;
-	
 	if ([[tasksController selectedObjects] count] == 0)
 		return;
+	
 	id task = [[tasksController selectedObjects] objectAtIndex:0];
 	
-	[[NSWorkspace sharedWorkspace] openURL:[task webURL]];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:@"dblClickTask"])
+		[[NSWorkspace sharedWorkspace] openURL:[task webURL]];
+	else
+		[inspectorWindow makeKeyAndOrderFront:sender];
 }
 
 - (IBAction)fileDoubleClick:(id)sender
