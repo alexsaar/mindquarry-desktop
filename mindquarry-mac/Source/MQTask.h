@@ -19,7 +19,7 @@
 
 + (void)setAutoSaveEnabled:(BOOL)enabled;
 
-+ (void)saveUnsavedTasks;
++ (void)saveUnsavedTasksVerbose:(BOOL)verbose;
 
 - (void)setAutoSaveEnabled:(BOOL)enabled;
 
@@ -31,7 +31,7 @@
 
 - (void)setPriorityIndex:(int)_index;
 
-- (void)save;
+- (BOOL)save;
 - (void)finishSave;
 
 - (NSString *)dueDescription;
@@ -43,9 +43,5 @@
 - (void)setInspectorDate:(NSDate *)date;
 
 - (NSURL *)webURL;
-
-//- (id)importantData;
-//
-//- (void)setImportantData:(id)data;
 
 @end

@@ -649,7 +649,7 @@
 
 - (IBAction)saveUnsavedTasks:(id)sender
 {
-    [MQTask saveUnsavedTasks];
+    [MQTask saveUnsavedTasksVerbose:sender != nil];
 }
 
 #pragma mark Growl Methods

@@ -20,6 +20,9 @@ static NSLock *saveTimerLock = nil;
 
 static int saveTaskCount = 0;
 
+static NSMutableSet *verboseSaveJobs = nil;
+static int verboseSaveCount = 0;
+
 @implementation MQTask
 
 + (void)initialize
@@ -44,7 +47,7 @@ static int saveTaskCount = 0;
 //	NSLog(@"autosave %d", enabled);
 }
 
-+ (void)saveUnsavedTasks
++ (void)saveUnsavedTasksVerbose:(BOOL)verbose
 {
     NSManagedObjectContext *context = [[NSApp delegate] managedObjectContext];
     NSFetchRequest *req = [[[NSFetchRequest alloc] init] autorelease];
@@ -55,14 +58,21 @@ static int saveTaskCount = 0;
     id task;
     saveTaskCount = 0;
     while (task = [taskEnum nextObject]) {
-//        NSLog(@"saving unsaved %@", [task valueForKey:@"title"]);
-        [task save];
-        saveTaskCount++;
+        if ([task save]) {
+			saveTaskCount++;
+			if (verbose) {
+				if (!verboseSaveJobs)
+					verboseSaveJobs = [[NSMutableSet alloc] init];
+				[verboseSaveJobs addObject:task];
+			}
+		}
     }
-//    NSLog(@"re-tried to commit %d unsaved tasks", saveTaskCount);
     
+	verboseSaveCount = saveTaskCount;
     if (saveTaskCount)
         [[[NSApp delegate] valueForKey:@"controller"] setValue:[NSNumber numberWithBool:YES] forKey:@"hasUnsavedTasks"];
+	else if (verbose)
+		NSRunInformationalAlertPanel(@"No unsaved tasks", @"There are no tasks that need to be saved", @"OK", nil, nil);
 }
 
 - (void)setAutoSaveEnabled:(BOOL)enabled
@@ -181,20 +191,21 @@ static int saveTaskCount = 0;
 	[self setValue:prio forKey:@"priority"];
 }
 
-- (void)save
+- (BOOL)save
 {
 	if ([self valueForKey:@"title"] == nil)
-		return;
+		return NO;
     
     if (isSaving)
-        return;
+        return NO;
     
     isSaving = YES;
 	
 //	NSLog(@"saving task %@ \"%@\"", [self valueForKey:@"id"], [self valueForKey:@"title"]);
-	MQUpdateRequest *request = [[MQUpdateRequest alloc] initWithServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self];
-	[request performSelectorOnMainThread:@selector(addToQueue) withObject:nil waitUntilDone:YES];
-	[request autorelease];
+	MQUpdateRequest *request = [[[MQUpdateRequest alloc] initWithServer:[[self valueForKey:@"team"] valueForKey:@"server"] forTask:self] autorelease];
+	[request performSelectorOnMainThread:@selector(addToQueue) withObject:nil waitUntilDone:NO];
+	
+	return request != nil;
 }
 
 - (void)finishSave
@@ -208,6 +219,13 @@ static int saveTaskCount = 0;
     if (saveTaskCount == 0) 
         [[[NSApp delegate] valueForKey:@"controller"] setValue:[NSNumber numberWithBool:NO] forKey:@"hasUnsavedTasks"];
     [saveTimerLock unlock];
+	
+	if ([verboseSaveJobs containsObject:self]) {
+		[verboseSaveJobs removeObject:self];
+		if ([verboseSaveJobs count] == 0) {
+			NSRunInformationalAlertPanel(@"Tasks saved", [NSString stringWithFormat:@"%d tasks have been saved to the server.", verboseSaveCount], @"OK", nil, nil);
+		}
+	}
 	
 	// send a growl notification
 	[GrowlApplicationBridge notifyWithTitle:@"Task Saved"
@@ -249,19 +267,10 @@ static int saveTaskCount = 0;
 		return [NSString stringWithFormat:@"%@ ago", timeString];
 }
 
-//- (id)importantData
-//{
-//	return nil;
-//}
-//
-//- (void)setImportantData:(id)data
-//{
-//	[self save];
-//}
-//
 - (void)didChangeValueForKey:(NSString *)key
 {
 	[super didChangeValueForKey:key];
+	
 	if (!global_autosave_enabled || !autosave_enabled)
 		return;
 
@@ -282,7 +291,7 @@ static int saveTaskCount = 0;
 		[saveTimer release];
 	}
 	
-	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:[self class] selector:@selector(saveUnsavedTasks) userInfo:nil repeats:NO] retain];
+	saveTimer = [[NSTimer scheduledTimerWithTimeInterval:1 target:[self class] selector:@selector(saveUnsavedTasksVerbose:) userInfo:nil repeats:NO] retain];
     
     [saveTimerLock unlock];
 	
