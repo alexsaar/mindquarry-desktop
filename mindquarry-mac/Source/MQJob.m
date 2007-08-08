@@ -55,6 +55,9 @@ static int request_running_count = 0;
 		//		[tbItem setImage:[NSImage imageNamed:@"AlertStopIcon"]];
 		//		[tbItem setLabel:@"Stop"];
 		
+		[[[NSApp delegate] valueForKey:@"commitFilesToolbarItem"] setEnabled:NO];
+		[[[NSApp delegate] valueForKey:@"commitTasksToolbarItem"] setEnabled:NO];
+		
 		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
 		[stopItem setEnabled:YES];
 	}
@@ -83,6 +86,9 @@ static int request_running_count = 0;
 		
 		id tbItem = [[NSApp delegate] valueForKey:@"refreshToolbarItem"];		
 		[tbItem setEnabled:YES];
+		
+		[[[NSApp delegate] valueForKey:@"commitFilesToolbarItem"] setEnabled:YES];
+		[[[NSApp delegate] valueForKey:@"commitTasksToolbarItem"] setEnabled:YES];
 		
 		id stopItem = [[NSApp delegate] valueForKey:@"stopToolbarItem"];
 		[stopItem setEnabled:NO];

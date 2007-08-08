@@ -27,6 +27,8 @@
 	
 	id refreshToolbarItem;
     id stopToolbarItem;
+	id commitFilesToolbarItem;
+	id commitTasksToolbarItem;
 	
 	IBOutlet id commitMessageWindow;
 	IBOutlet id commitMessageField;

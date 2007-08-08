@@ -159,6 +159,7 @@
 		[item setTarget:self];
 		[item setTag:0];
 		[item setAction:@selector(commitFiles:)];
+		[[NSApp delegate] setValue:item forKey:@"commitFilesToolbarItem"];
 	}
 	else if ([itemIdentifier isEqualToString:@"MQDown"]) {
 		item = [[NSToolbarItem alloc] initWithItemIdentifier:@"MQDown"];
@@ -186,6 +187,7 @@
 		[item setTarget:self];
 		[item setTag:0];
 		[item setAction:@selector(saveUnsavedTasks:)];
+		[[NSApp delegate] setValue:item forKey:@"commitTasksToolbarItem"];
 	}
 	
 	return [item autorelease];
