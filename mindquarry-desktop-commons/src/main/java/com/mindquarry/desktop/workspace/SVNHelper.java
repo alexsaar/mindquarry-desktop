@@ -220,24 +220,7 @@ public abstract class SVNHelper implements Notify2 {
             for (ChangePath change : changes) {
                 String absPath = change.getPath();
                 
-                // check if we already added this change to our list
-                ChangePath existing = null;
-                for (ChangePath oldChange : changePaths) {
-                    if (oldChange.getPath().equals(absPath)) {
-                        existing = oldChange;
-                        break;
-                    }
-                }
-                if (existing != null) {
-                    // remove it if it's been deleted
-                    if (change.getAction() == 'D') {
-                        changePaths.remove(existing);
-                    }
-                    continue;
-                }
-                
                 String path;
-                
                 // truncate path to be relative to wc root
                 if (absPath.length() > trimLength) {
                     path = absPath.substring(trimLength + 1);
@@ -267,7 +250,23 @@ public abstract class SVNHelper implements Notify2 {
                 if (itemRev > revision) {
                     continue;
                 }
-
+                
+                // check if we already added this change to our list
+                ChangePath existing = null;
+                for (ChangePath oldChange : changePaths) {
+                    if (oldChange.getPath().equals(absPath)) {
+                        existing = oldChange;
+                        break;
+                    }
+                }
+                if (existing != null) {
+                    // remove it if it's been deleted
+                    if (change.getAction() == 'D') {
+                        changePaths.remove(existing);
+                    }
+                    continue;
+                }
+                
                 // add the change path to the result array
                 changePaths.add(change);
             }
