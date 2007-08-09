@@ -311,6 +311,10 @@
 		NSString *path = jstring_to_nsstring(env, jpath);
 		CHECK_EXCEPTION;
 		
+		path = [self truncatePathToBundle:path];
+		if ([[changeList filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"%K = %@", @"absPath", path]] count])
+			continue;
+		
 		NSMutableDictionary *change = [NSMutableDictionary dictionary];
 		
         NSString *relPath = [path substringFromIndex:MIN([localPath length], [path length])];
@@ -475,6 +479,11 @@
 		
 		NSString *relPath = jstring_to_nsstring(env, jpath);
 		relPath = [relPath substringFromIndex:[rel length] + 1];
+		
+		relPath = [self truncatePathToBundle:relPath];
+		if ([[changeList filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"%K = %@", @"relPath", relPath]] count])
+			continue;
+
 		NSMutableDictionary *changeDict = [NSMutableDictionary dictionary];
 		
 		[changeDict setObject:[localPath stringByAppendingPathComponent:relPath] forKey:@"absPath"];
@@ -606,6 +615,24 @@
 	}
 	
 	return YES;
+}
+
+- (NSString *)truncatePathToBundle:(NSString *)path
+{
+	static NSArray *bundleExtensions = nil;
+	if (!bundleExtensions)
+		bundleExtensions = [[NSArray alloc] initWithObjects:@".pages/", @".key/", @".app/", nil];
+	
+	int i;
+	int location;
+	for (i = 0; i < [bundleExtensions count]; i++) {
+		NSString *extension = [bundleExtensions objectAtIndex:i];
+		if ((location = [path rangeOfString:extension].location) != NSNotFound) {
+			path = [path substringToIndex:location + [extension length] - 1];
+		}
+	}
+	
+	return path;
 }
 
 @end

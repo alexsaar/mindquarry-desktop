@@ -69,4 +69,6 @@
 
 - (BOOL)cancelReturnError:(NSError **)error;
 
+- (NSString *)truncatePathToBundle:(NSString *)path;
+
 @end
