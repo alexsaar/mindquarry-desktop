@@ -17,6 +17,8 @@
 	BOOL synchronizes;
 	
 	id currentTeam;
+	
+	id selectedTeam;
     
     NSPredicate *predicate;
 	
@@ -24,6 +26,6 @@
 
 + (void)cancelCurrentJob;
 
-- (id)initWithServer:(id)_server predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes;
+- (id)initWithServer:(id)_server selectedTeam:(id)_selectedTeam predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes;
 
 @end

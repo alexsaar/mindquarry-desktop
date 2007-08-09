@@ -34,10 +34,12 @@ static MQSVNJob *currentJob = nil;
 	return self;
 }
 
-- (id)initWithServer:(id)_server predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes
+- (id)initWithServer:(id)_server selectedTeam:(id)_selectedTeam predicate:(NSPredicate *)_pred synchronizes:(BOOL)_synchronizes;
 {
 	if (![super initWithServer:_server])
 		return nil;
+	
+	selectedTeam = [_selectedTeam retain];
 	
 	synchronizes = _synchronizes;
     predicate = [_pred retain];
@@ -49,6 +51,10 @@ static MQSVNJob *currentJob = nil;
 {
     [predicate release];
     predicate = nil;
+	
+	[selectedTeam autorelease];
+	selectedTeam = nil;
+	
     [super dealloc];
 }
 
@@ -62,6 +68,10 @@ static MQSVNJob *currentJob = nil;
 	
 	NSEnumerator *teamEnum = [[server valueForKey:@"teams"] objectEnumerator];
 	while (!cancel && (currentTeam = [teamEnum nextObject])) {
+		
+		if (selectedTeam && currentTeam != selectedTeam)
+			continue;
+		
 		[currentTeam initJVM];
 		[[currentTeam svnController] attachCurrentThread];
 		

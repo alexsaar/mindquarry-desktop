@@ -143,6 +143,8 @@ enum {
 - (id)teamList;
 - (void)setTeamList:(id)list;
 
+- (id)fileFilterSelectedTeam;
+
 - (int)tasksTeamSelection;
 - (void)setTasksTeamSelection:(int)selection;
 

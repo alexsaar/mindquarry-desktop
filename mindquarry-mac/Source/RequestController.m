@@ -272,7 +272,7 @@
 
 - (void)refreshWorkspaceWithUpdate:(BOOL)update 
 {
-	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] predicate:[changesController filterPredicate] synchronizes:NO] autorelease] addToQueue];
+	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] selectedTeam:[self fileFilterSelectedTeam] predicate:[changesController filterPredicate] synchronizes:NO] autorelease] addToQueue];
 
 //	[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:update] autorelease] addToQueue];
 }
@@ -354,24 +354,13 @@
 - (IBAction)commitFiles:(id)sender
 {
 	int tag = [sender tag];
-
+	
     BOOL willCommit = [[[changesController arrangedObjects] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"enabled = TRUE AND local = TRUE"]] count] > 0;
     if (willCommit)
         [[NSApp delegate] getCommitMessage];
     
-	if (tag == 0) {
-		[[[[MQSVNJob alloc] initWithServer:[self selectedServer] predicate:[changesController filterPredicate] synchronizes:YES] autorelease] addToQueue];
-	}
-	
-//	if (tag == 0 || tag == 1) {
-//		// down
-//		[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:YES] autorelease] addToQueue];
-//	}
-//	
-//	if (tag == 0 || tag == 2) {
-//		// up
-//		[[[[MQSVNCommitJob alloc] initWithServer:[self selectedServer]] autorelease] addToQueue];
-//	}
+	if (tag == 0)
+		[[[[MQSVNJob alloc] initWithServer:[self selectedServer] selectedTeam:[self fileFilterSelectedTeam] predicate:[changesController filterPredicate] synchronizes:YES] autorelease] addToQueue];
 }
 
 - (id)selectedServer
@@ -538,6 +527,13 @@
 	
 	[oldTeamsList release];
 	oldTeamsList = [list retain];
+}
+
+- (id)fileFilterSelectedTeam
+{
+	if (_filesTeamSelection >= 2 && [[teamsController arrangedObjects] count])
+		return [[teamsController arrangedObjects] objectAtIndex:_filesTeamSelection - 2];
+	return nil;
 }
 
 - (int)tasksTeamSelection
