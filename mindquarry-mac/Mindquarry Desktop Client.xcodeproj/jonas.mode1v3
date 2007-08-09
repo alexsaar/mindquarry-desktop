@@ -297,7 +297,7 @@
 							<real>324</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>16 129 1276 739 0 0 1440 877 </string>
+						<string>63 402 1276 739 0 0 1920 1177 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -327,7 +327,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD8561730C6A21D4002681E1</string>
+										<string>DD98100D0C6A5DB800EDA428</string>
 										<key>history</key>
 										<array>
 											<string>DDF001130BA853160008C3AA</string>
@@ -372,7 +372,7 @@
 											<string>DDD270B30C6A0FD900F24B70</string>
 											<string>DDD270B40C6A0FD900F24B70</string>
 											<string>DD8561700C6A21D4002681E1</string>
-											<string>DD8561710C6A21D4002681E1</string>
+											<string>DD8561730C6A21D4002681E1</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -419,7 +419,6 @@
 											<string>DDD270520C69FE3D00F24B70</string>
 											<string>DDD270B70C6A0FD900F24B70</string>
 											<string>DDD270B80C6A0FD900F24B70</string>
-											<string>DD8561720C6A21D4002681E1</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -433,7 +432,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {930, 572}}</string>
 								<key>RubberWindowFrame</key>
-								<string>16 129 1276 739 0 0 1440 877 </string>
+								<string>63 402 1276 739 0 0 1920 1177 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -453,7 +452,7 @@
 								<key>Frame</key>
 								<string>{{0, 577}, {930, 121}}</string>
 								<key>RubberWindowFrame</key>
-								<string>16 129 1276 739 0 0 1440 877 </string>
+								<string>63 402 1276 739 0 0 1920 1177 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -477,9 +476,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD85616D0C6A1886002681E1</string>
+				<string>DD98100E0C6A5DB800EDA428</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD85616E0C6A1886002681E1</string>
+				<string>DD98100F0C6A5DB800EDA428</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -611,11 +610,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>DDB81B700C69CE27002AADF8</string>
 		<string>/Users/jonas/Desktop/Desktop Client/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>16 129 1276 739 0 0 1440 877 </string>
+	<string>63 402 1276 739 0 0 1920 1177 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>

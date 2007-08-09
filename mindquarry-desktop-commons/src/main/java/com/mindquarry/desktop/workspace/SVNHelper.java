@@ -264,7 +264,7 @@ public abstract class SVNHelper implements Notify2 {
 
                 // if our copy of this item is newer that the log message, skip it
                 // and wait for possibly newer log messages
-                if (itemRev > revision - 1) {
+                if (itemRev > revision) {
                     continue;
                 }
 
