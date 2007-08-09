@@ -230,9 +230,9 @@ public abstract class SVNHelper implements Notify2 {
                 }
                 
                 // get the items local revision
-                long itemRev = 0;
+                String itemLocalPath = localPath + "/" + path; //$NON-NLS-1$
+                long itemRev = -1;
                 try {
-                    String itemLocalPath = localPath + "/" + path; //$NON-NLS-1$
                     Info itemInfo = client.info(itemLocalPath);
 /*                    // skip directories
                     if (itemInfo.getNodeKind() != NodeKind.file) {
@@ -241,8 +241,12 @@ public abstract class SVNHelper implements Notify2 {
                     if (itemInfo != null) {
                         itemRev = itemInfo.getLastChangedRevision();
                     }
-                    
-                } catch (ClientException e) {
+                } catch (ClientException e) { }
+
+                // couldn't get local rev, file is probably missing
+                // so: skip if deleted on server
+                if (itemRev == -1 && change.getAction() == 'D') {
+                    continue;
                 }
 
                 // if our copy of this item is newer that the log message, skip it
