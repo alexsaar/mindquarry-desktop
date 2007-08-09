@@ -32,7 +32,7 @@
 - (void)setPriorityIndex:(int)_index;
 
 - (BOOL)save;
-- (void)finishSave;
+- (void)finishSave:(NSNumber *)success;
 
 - (NSString *)dueDescription;
 

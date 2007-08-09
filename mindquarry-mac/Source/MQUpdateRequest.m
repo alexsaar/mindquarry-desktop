@@ -119,7 +119,7 @@
 
 - (void)handleResponseData:(NSData *)data
 {
-    [task performSelectorOnMainThread:@selector(finishSave) withObject:nil waitUntilDone:NO];
+    [task performSelectorOnMainThread:@selector(finishSave:) withObject:[NSNumber numberWithBool:YES] waitUntilDone:NO];
 }
 
 - (NSString *)statusString
@@ -129,9 +129,11 @@
 
 - (void)handleHTTPErrorCode:(int)statusCode
 {
-	NSRunAlertPanel(@"Failed to save task", [NSString stringWithFormat:@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [task valueForKey:@"title"]], @"OK", nil, nil);
+	NSLog(@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [task valueForKey:@"title"]);
 	
-    [task performSelectorOnMainThread:@selector(finishSave) withObject:nil waitUntilDone:NO];
+	// NSRunAlertPanel(@"Failed to save task", [NSString stringWithFormat:@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [task valueForKey:@"title"]], @"OK", nil, nil);
+	
+    [task performSelectorOnMainThread:@selector(finishSave:) withObject:[NSNumber numberWithBool:NO] waitUntilDone:NO];
 }
 
 @end

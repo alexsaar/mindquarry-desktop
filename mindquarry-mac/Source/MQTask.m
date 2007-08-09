@@ -205,11 +205,15 @@ static int verboseSaveCount = 0;
 	return request != nil;
 }
 
-- (void)finishSave
+- (void)finishSave:(NSNumber *)success
 {
-    [self setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
-    [self setValue:[NSNumber numberWithBool:NO] forKey:@"needsUpdate"];
     isSaving = NO;
+	
+	if (![success boolValue])
+		return;
+	
+	[self setValue:[NSNumber numberWithBool:YES] forKey:@"existsOnServer"];
+	[self setValue:[NSNumber numberWithBool:NO] forKey:@"needsUpdate"];		
     
     [saveTimerLock lock];
     saveTaskCount--;
