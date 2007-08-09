@@ -128,7 +128,7 @@ static NSDictionary *prioImages;
 	// needs update?
 	BOOL needsUpdate = [[[self objectValue] valueForKey:@"needsUpdate"] boolValue];
 	if (needsUpdate) {
-		NSString *needsUpdateString = @"trying to save...";
+		NSString *needsUpdateString = @"Has local changes";
 		NSDictionary *attr = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont boldSystemFontOfSize:9], NSFontAttributeName, [NSColor redColor], NSForegroundColorAttributeName, nil];
 		NSSize needsUpdateSize = [needsUpdateString sizeWithAttributes:attr];
 		[needsUpdateString drawAtPoint:NSMakePoint(cellFrame.origin.x + cellFrame.size.width - needsUpdateSize.width - 10, cellFrame.origin.y + 22) withAttributes:attr];
