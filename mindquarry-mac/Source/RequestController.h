@@ -118,6 +118,8 @@ enum {
 
 - (IBAction)saveTask:(id)sender;
 
+- (IBAction)commitTaskInspector:(id)sender;
+
 - (IBAction)createTask:(id)sender;
 
 - (IBAction)finishCreateTask:(id)sender;

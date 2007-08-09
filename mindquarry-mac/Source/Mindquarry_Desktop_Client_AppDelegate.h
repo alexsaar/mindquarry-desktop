@@ -27,7 +27,7 @@
 	
 	IBOutlet id serverUsernameField;
 	IBOutlet id serverPasswordField;
-	
+		
 	id refreshToolbarItem;
     id stopToolbarItem;
 	id commitFilesToolbarItem;

@@ -32,6 +32,8 @@
 				<string>id</string>
 				<key>commitFiles</key>
 				<string>id</string>
+				<key>commitTaskInspector</key>
+				<string>id</string>
 				<key>createTask</key>
 				<string>id</string>
 				<key>fileDoubleClick</key>

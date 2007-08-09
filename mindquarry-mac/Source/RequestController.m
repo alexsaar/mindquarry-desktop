@@ -312,6 +312,21 @@
 	[[tasks objectAtIndex:0] save];
 }
 
+- (IBAction)commitTaskInspector:(id)sender
+{
+	// validate editing in all inspector controls
+	id currentView = nil;
+	NSMutableSet *views = [NSMutableSet setWithObject:[inspectorWindow contentView]];
+	while (currentView = [views anyObject]) {
+		[views removeObject:currentView];
+		[views addObjectsFromArray:[currentView subviews]];
+		if ([currentView respondsToSelector:@selector(validateEditing)])
+			[currentView validateEditing];
+	}
+					
+	[inspectorWindow orderOut:sender];
+}
+
 - (IBAction)createTask:(id)sender
 {
 	if (![createTaskSheet isVisible]) {
