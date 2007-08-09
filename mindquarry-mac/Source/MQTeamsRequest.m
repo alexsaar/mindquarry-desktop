@@ -43,7 +43,7 @@
 		if (!name || !team_id)
 			continue;
 		
-		NSLog(@"team %@ name %@", team_id, name);
+		// NSLog(@"team %@ name %@", team_id, name);
 
 		id teamobj = [[[NSApp delegate] valueForKey:@"controller"] teamWithId:team_id forServer:server];
 		

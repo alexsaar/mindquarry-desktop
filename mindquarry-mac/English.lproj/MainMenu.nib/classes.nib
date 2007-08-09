@@ -183,6 +183,10 @@
 				<string>id</string>
 				<key>serverController</key>
 				<string>id</string>
+				<key>serverPasswordField</key>
+				<string>id</string>
+				<key>serverUsernameField</key>
+				<string>id</string>
 				<key>statusField</key>
 				<string>id</string>
 				<key>statusSpinner</key>

@@ -17,6 +17,8 @@
 	if (![super initWithServer:_server])
 		return nil;
 	
+	[[[NSApp delegate] valueForKey:@"serverUsernameField"] performSelectorOnMainThread:@selector(validateEditing) withObject:nil waitUntilDone:YES];
+	[[[NSApp delegate] valueForKey:@"serverPasswordField"] performSelectorOnMainThread:@selector(validateEditing) withObject:nil waitUntilDone:YES];
 		
 	[self setValue:[_server valueForKey:@"username"] forKey:@"username"];
 	[self setValue:[_server valueForKey:@"password"] forKey:@"password"];
@@ -154,6 +156,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
 	NSLog(@"URL request failed: %@", error);
+	NSRunInformationalAlertPanel(@"URL request failed", [NSString stringWithFormat:@"The request for %@ failed:\n\n%@", url, error], @"OK", nil, nil);
 	
 	[responseData release];
 	responseData = nil;
@@ -183,6 +186,7 @@
 {
 	if ([challenge previousFailureCount] > 0) {
 		NSLog(@"Authentication failed (username: %@)", username);
+		NSRunInformationalAlertPanel(@"Authentication failed", [NSString stringWithFormat:@"Authentication failed for user name %@", username], @"OK", nil, nil);
 		[[challenge sender] cancelAuthenticationChallenge:challenge];
 		return;
 	}

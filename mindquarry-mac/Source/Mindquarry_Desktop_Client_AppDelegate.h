@@ -25,6 +25,9 @@
 	IBOutlet id changesController;
 	IBOutlet id changesTable;
 	
+	IBOutlet id serverUsernameField;
+	IBOutlet id serverPasswordField;
+	
 	id refreshToolbarItem;
     id stopToolbarItem;
 	id commitFilesToolbarItem;
