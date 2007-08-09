@@ -58,7 +58,7 @@
 	}
 	
 	if ([task valueForKey:@"date"]) {
-		NSDateFormatter *formatter = [[NSDateFormatter alloc] initWithDateFormat:@"%m/%d/%Y" allowNaturalLanguage:NO];
+		NSDateFormatter *formatter = [[NSDateFormatter alloc] initWithDateFormat:@"%Y-%m-%d" allowNaturalLanguage:NO];
 		[formatter setFormatterBehavior:NSDateFormatterBehavior10_0];
 		NSString *dateString = [formatter stringFromDate:[task valueForKey:@"date"]];
 		if (dateString) {
@@ -129,9 +129,9 @@
 
 - (void)handleHTTPErrorCode:(int)statusCode
 {
-	NSRunAlertPanel(@"Failed to save task", [NSString stringWithFormat:@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [self valueForKey:@"title"]], @"OK", nil, nil);
+	NSRunAlertPanel(@"Failed to save task", [NSString stringWithFormat:@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [task valueForKey:@"title"]], @"OK", nil, nil);
 	
-	[self finishRequest];
+    [task performSelectorOnMainThread:@selector(finishSave) withObject:nil waitUntilDone:NO];
 }
 
 @end
