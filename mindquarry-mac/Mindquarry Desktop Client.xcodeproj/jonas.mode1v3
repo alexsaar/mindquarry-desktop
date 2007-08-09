@@ -273,13 +273,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>73</integer>
-									<integer>67</integer>
+									<integer>29</integer>
+									<integer>23</integer>
+									<integer>4</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {324, 680}}</string>
+							<string>{{0, 2}, {324, 680}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -298,7 +299,7 @@
 							<real>324</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>141 124 1276 739 0 0 1440 877 </string>
+						<string>82 131 1276 739 0 0 1440 877 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -314,7 +315,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>RequestController.m</string>
+								<string>MQTask.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -322,11 +323,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RequestController.m</string>
+										<string>MQTask.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DDFAED720C6B457C00F3BF8F</string>
+										<string>DDFAED920C6B492E00F3BF8F</string>
 										<key>history</key>
 										<array>
 											<string>DDF001130BA853160008C3AA</string>
@@ -358,8 +359,6 @@
 											<string>DDB81BB00C69D9F0002AADF8</string>
 											<string>DDB81BB10C69D9F0002AADF8</string>
 											<string>DDD270B30C6A0FD900F24B70</string>
-											<string>DDD270B40C6A0FD900F24B70</string>
-											<string>DD8561700C6A21D4002681E1</string>
 											<string>DD7AB06F0C6B064B00A295C9</string>
 											<string>DD7AB07A0C6B08AD00A295C9</string>
 											<string>DD7AB08F0C6B0B0400A295C9</string>
@@ -371,7 +370,9 @@
 											<string>DD83D3140C6B12D400979CEE</string>
 											<string>DD83D3350C6B155E00979CEE</string>
 											<string>DD83D3360C6B155E00979CEE</string>
-											<string>DDFAED6C0C6B42C800F3BF8F</string>
+											<string>DDFAED8A0C6B491200F3BF8F</string>
+											<string>DDFAED8B0C6B491200F3BF8F</string>
+											<string>DDFAED910C6B492E00F3BF8F</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -418,6 +419,9 @@
 											<string>DD83D3080C6B0EEA00979CEE</string>
 											<string>DD83D3170C6B12D400979CEE</string>
 											<string>DD83D3190C6B12D400979CEE</string>
+											<string>DDFAED8D0C6B491200F3BF8F</string>
+											<string>DDFAED8E0C6B491200F3BF8F</string>
+											<string>DDFAED8F0C6B491200F3BF8F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -431,7 +435,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {930, 572}}</string>
 								<key>RubberWindowFrame</key>
-								<string>141 124 1276 739 0 0 1440 877 </string>
+								<string>82 131 1276 739 0 0 1440 877 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -451,7 +455,7 @@
 								<key>Frame</key>
 								<string>{{0, 577}, {930, 121}}</string>
 								<key>RubberWindowFrame</key>
-								<string>141 124 1276 739 0 0 1440 877 </string>
+								<string>82 131 1276 739 0 0 1440 877 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -609,10 +613,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>DDB81B700C69CE27002AADF8</string>
 		<string>/Users/jonas/Desktop/Mindquarry/desktop/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>141 124 1276 739 0 0 1440 877 </string>
+	<string>82 131 1276 739 0 0 1440 877 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -691,7 +697,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>DDB81B700C69CE27002AADF8</string>
-				<string>DD83D34D0C6B15D300979CEE</string>
+				<string>DDFAED780C6B491100F3BF8F</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -851,7 +857,7 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>RequestController.m</string>
+										<string>MQUpdateRequest.m</string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -907,8 +913,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>DD83D3310C6B150D00979CEE</string>
-				<string>DD83D3320C6B150D00979CEE</string>
+				<string>DDFAED880C6B491100F3BF8F</string>
+				<string>DDFAED890C6B491100F3BF8F</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

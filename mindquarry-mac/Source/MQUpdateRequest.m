@@ -129,6 +129,8 @@
 
 - (void)handleHTTPErrorCode:(int)statusCode
 {
+	NSRunAlertPanel(@"Failed to save task", [NSString stringWithFormat:@"HTTP Error %d has been encountered while trying to save the task %@", statusCode, [self valueForKey:@"title"]], @"OK", nil, nil);
+	
 	[self finishRequest];
 }
 

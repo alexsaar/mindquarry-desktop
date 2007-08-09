@@ -37,14 +37,11 @@ static int verboseSaveCount = 0;
 	
 	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"sortDate"];
 	[self setKeys:[NSArray arrayWithObject:@"date"] triggerChangeNotificationsForDependentKey:@"inspectorDate"];
-	
-//	[self setKeys:[NSArray arrayWithObjects:@"status", @"statusIndex", @"priority", @"priorityIndex", @"title", @"summary", nil] triggerChangeNotificationsForDependentKey:@"importantData"];
 }
 
 + (void)setAutoSaveEnabled:(BOOL)enabled
 {
 	global_autosave_enabled = enabled;
-//	NSLog(@"autosave %d", enabled);
 }
 
 + (void)saveUnsavedTasksVerbose:(BOOL)verbose
