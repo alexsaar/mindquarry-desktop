@@ -273,8 +273,6 @@
 - (void)refreshWorkspaceWithUpdate:(BOOL)update 
 {
 	[[[[MQSVNJob alloc] initWithServer:[self selectedServer] selectedTeam:[self fileFilterSelectedTeam] predicate:[changesController filterPredicate] synchronizes:NO] autorelease] addToQueue];
-
-//	[[[[MQSVNUpdateJob alloc] initWithServer:[self selectedServer] updates:update] autorelease] addToQueue];
 }
 
 - (void)refreshTasks
