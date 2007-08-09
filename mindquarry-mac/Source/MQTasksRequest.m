@@ -85,7 +85,7 @@
 	taskEnum = [[[team valueForKey:@"tasks"] allObjects] objectEnumerator];
 	BOOL deleted = NO;
 	while (task = [taskEnum nextObject]) {
-		if (![[task valueForKey:@"upToDate"] boolValue]) {
+		if (![[task valueForKey:@"upToDate"] boolValue] && ![[task valueForKey:@"needsUpdate"] boolValue]) {
 //			NSLog(@"task is stale: %@", [task valueForKey:@"title"]);
 			[task setValue:nil forKey:@"server"];
 			[task setValue:nil forKey:@"team"];

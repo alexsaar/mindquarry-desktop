@@ -271,14 +271,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>13</integer>
-									<integer>12</integer>
+									<integer>40</integer>
+									<integer>32</integer>
 									<integer>4</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 86}, {324, 680}}</string>
+							<string>{{0, 297}, {324, 680}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -315,7 +315,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>MQUpdateRequest.m</string>
+								<string>MQTasksRequest.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -323,11 +323,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MQUpdateRequest.m</string>
+										<string>MQTasksRequest.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>DD7AB0660C6B05F600A295C9</string>
+										<string>DD7AB0720C6B064B00A295C9</string>
 										<key>history</key>
 										<array>
 											<string>DDF001130BA853160008C3AA</string>
@@ -365,13 +365,13 @@
 											<string>DDB81B8B0C69D3EE002AADF8</string>
 											<string>DDB81BB00C69D9F0002AADF8</string>
 											<string>DDB81BB10C69D9F0002AADF8</string>
-											<string>DDB81BB20C69D9F0002AADF8</string>
 											<string>DDB81BB30C69D9F0002AADF8</string>
 											<string>DDD2704F0C69FE3D00F24B70</string>
 											<string>DDD270B30C6A0FD900F24B70</string>
 											<string>DDD270B40C6A0FD900F24B70</string>
 											<string>DD8561700C6A21D4002681E1</string>
-											<string>DD7AB0600C6B053D00A295C9</string>
+											<string>DD7AB06F0C6B064B00A295C9</string>
+											<string>DD7AB0700C6B064B00A295C9</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -417,6 +417,7 @@
 											<string>DDD270520C69FE3D00F24B70</string>
 											<string>DDD270B70C6A0FD900F24B70</string>
 											<string>DDD270B80C6A0FD900F24B70</string>
+											<string>DD7AB0710C6B064B00A295C9</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -474,9 +475,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>DD7AB0620C6B053D00A295C9</string>
+				<string>DD7AB0730C6B064B00A295C9</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>DD7AB0630C6B053D00A295C9</string>
+				<string>DD7AB0740C6B064B00A295C9</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -608,7 +609,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>DDB81B700C69CE27002AADF8</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>/Users/jonas/Desktop/Mindquarry/desktop/mindquarry-mac/Mindquarry Desktop Client.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
@@ -844,14 +845,12 @@
 							<key>Dock</key>
 							<array>
 								<dict>
-									<key>BecomeActive</key>
-									<true/>
 									<key>ContentConfiguration</key>
 									<dict>
 										<key>PBXProjectModuleGUID</key>
 										<string>1CDD528C0622207200134675</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>MQTeamsRequest.m</string>
+										<string></string>
 										<key>StatusBarVisibility</key>
 										<true/>
 									</dict>
@@ -872,6 +871,8 @@
 							<string>344pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -907,8 +908,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>DDD270A90C6A0CCC00F24B70</string>
-				<string>DDD270AA0C6A0CCC00F24B70</string>
+				<string>DD7AB06D0C6B064600A295C9</string>
+				<string>DD7AB06E0C6B064600A295C9</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
