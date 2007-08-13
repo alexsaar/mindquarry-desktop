@@ -15,6 +15,8 @@ package com.mindquarry.desktop.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -59,361 +61,377 @@ import com.mindquarry.desktop.widget.NotificationWidget;
  *         Saar</a>
  */
 public class MindClient {
-    public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
+	public static final String APPLICATION_NAME = "Mindquarry Desktop Client"; //$NON-NLS-1$
 
-    public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
-            + "/mindclient.settings"; //$NON-NLS-1$
+	public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
+			+ "/mindclient.settings"; //$NON-NLS-1$
 
-    private static Shell shell;
+	private static Shell shell;
 
-    private final Image icon;
+	private final Image icon;
 
-    private File prefFile;
+	private File prefFile;
 
-    private static TrayItem item;
+	private static TrayItem item;
 
-    private static IconActionThread iconAction;
+	private static IconActionThread iconAction;
 
-    private PreferenceStore store;
+	private PreferenceStore store;
 
-    private MindClientBallonWidget ballonWindow;
+	private MindClientBallonWidget ballonWindow;
 
-    private Menu menu;
+	private Menu menu;
 
-    private Menu profilesMenu;
+	private Menu profilesMenu;
 
-    private List profilesInMenu = new ArrayList();
+	private List profilesInMenu = new ArrayList();
 
-    //private Log log;
+	// private Log log;
 
-    public MindClient() throws IOException {
-        icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
-                DesktopConstants.MINDQUARRY_ICON));
-        Window.setDefaultImage(icon);
+	public MindClient() throws IOException {
+		icon = new Image(Display.getCurrent(), getClass().getResourceAsStream(
+				DesktopConstants.MINDQUARRY_ICON));
+		Window.setDefaultImage(icon);
 
-        // init settings
-        prefFile = new File(PREF_FILE);
+		// init settings
+		prefFile = new File(PREF_FILE);
 
-        // load preferences
-        store = new PreferenceStore(prefFile.getAbsolutePath());
-        //log = LogFactory.getLog(MindClient.class);
-    }
+		// load preferences
+		store = new PreferenceStore(prefFile.getAbsolutePath());
+		// log = LogFactory.getLog(MindClient.class);
+	}
 
-    public static void main(String[] args) throws IOException {
-        // init display & shell
-        Display display = new Display();
-        Display.setAppName(APPLICATION_NAME);
-        display.setWarnings(true);
+	public static void main(String[] args) throws IOException {
+		// init display & shell
+		Display display = new Display();
+		Display.setAppName(APPLICATION_NAME);
+		display.setWarnings(true);
 
-        shell = new Shell(display, SWT.NONE);
-        shell.setText(APPLICATION_NAME);
+		shell = new Shell(display, SWT.NONE);
+		shell.setText(APPLICATION_NAME);
 
-        // init splash screen
-        SplashScreen splash = SplashScreen.newInstance(3);
-        splash.show();
+		// init splash screen
+		SplashScreen splash = SplashScreen.newInstance(3);
+		splash.show();
 
-        // init client
-        MindClient mindclient = new MindClient();
-        splash.step();
+		// init client
+		MindClient mindclient = new MindClient();
+		splash.step();
 
-        mindclient.checkArguments(args);
-        splash.step();
+		mindclient.checkArguments(args);
+		splash.step();
 
-        mindclient.createTrayIconAndMenu(display);
-        splash.step();
+		mindclient.createTrayIconAndMenu(display);
+		splash.step();
 
-        while (!display.isDisposed()) {
-            if (!display.readAndDispatch()) {
-                display.sleep();
-            }
-        }
-        display.dispose();
-    }
+		while (!display.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+		display.dispose();
+	}
 
-    private void checkArguments(String[] args) {
-        if (args.length == 3 && prefFile.exists()) {
-            loadOptions();
-            if (!profileNameExists(args[0])) {
-                addNewProfile(args[0], args[1], args[2]);
-                showPreferenceDialog(true, false);
-            } else {
-                // don't show dialog -- probably started via Windows desktop
-                // link
-            }
-        } else if (args.length == 3 && !prefFile.exists()) {
-            addNewProfile(args[0], args[1], args[2]);
-            showPreferenceDialog(true);
-        } else if (!prefFile.exists()) {
-            addNewProfile(
-                    Messages.getString(MindClient.class, "0"), "http://server", //$NON-NLS-1$//$NON-NLS-2$
-                    "Login ID"); //$NON-NLS-1$
-            showPreferenceDialog(true);
-        } else {
-            loadOptions();
-        }
-    }
+	private void checkArguments(String[] args) {
+		if (args.length == 3 && prefFile.exists()) {
+			loadOptions();
+			if (!profileNameExists(args[0])) {
+				addNewProfile(args[0], args[1], args[2]);
+				showPreferenceDialog(true, false);
+			} else {
+				// don't show dialog -- probably started via Windows desktop
+				// link
+			}
+		} else if (args.length == 3 && !prefFile.exists()) {
+			addNewProfile(args[0], args[1], args[2]);
+			showPreferenceDialog(true);
+		} else if (!prefFile.exists()) {
+			addNewProfile(
+					Messages.getString(MindClient.class, "0"), "http://your.mindquarry.server", //$NON-NLS-1$//$NON-NLS-2$
+					"LoginID"); //$NON-NLS-1$
+			showPreferenceDialog(true);
+		} else {
+			loadOptions();
+		}
+	}
 
-    private boolean profileNameExists(String name) {
-        String[] keys = store.preferenceNames();
-        for (int i = 0; i < keys.length; i++) {
-            if (keys[i].endsWith("." //$NON-NLS-1$
-                    + Profile.PREF_NAME)
-                    && store.getString(keys[i]).equals(name)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean profileNameExists(String name) {
+		String[] keys = store.preferenceNames();
+		for (int i = 0; i < keys.length; i++) {
+			if (keys[i].endsWith("." //$NON-NLS-1$
+					+ Profile.PREF_NAME)
+					&& store.getString(keys[i]).equals(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    private boolean addNewProfile(String name, String endpoint, String login) {
-        // add new profile entry
-        Profile profile = new Profile();
-        profile.setName(name);
-        profile.setServerURL(endpoint);
-        profile.setLogin(login);
-        profile.setPassword(""); //$NON-NLS-1$
-        profile.setWorkspaceFolder(System.getProperty("user.home")); //$NON-NLS-1$
-        return Profile.addProfile(store, profile);
-    }
+	private boolean addNewProfile(String name, String endpoint, String login) {
+		// add new profile entry
+		Profile profile = new Profile();
+		profile.setName(name);
+		profile.setServerURL(endpoint);
+		profile.setLogin(login);
+		profile.setPassword(""); //$NON-NLS-1$
 
-    private void createTrayIconAndMenu(Display display) {
-        Tray tray = display.getSystemTray();
+		File wsFolder = new File(System.getProperty("user.home") //$NON-NLS-1$ 
+				+ "/Mindquarry Workspaces");
+		if (!wsFolder.exists()) {
+			wsFolder.mkdirs();
+		}
+		URL url;
+		try {
+			url = new URL(endpoint);
+			profile.setWorkspaceFolder(wsFolder.getAbsolutePath() + "/"
+					+ url.getHost());
+		} catch (MalformedURLException e) {
+			showMessage("Error", e.getLocalizedMessage());
+			profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
+		}
+		return Profile.addProfile(store, profile);
+	}
 
-        item = new TrayItem(tray, SWT.NONE);
-        item.setImage(icon);
+	private void createTrayIconAndMenu(Display display) {
+		Tray tray = display.getSystemTray();
 
-        ballonWindow = new MindClientBallonWidget(display, this);
+		item = new TrayItem(tray, SWT.NONE);
+		item.setImage(icon);
 
-        menu = new Menu(shell, SWT.POP_UP);
-        // right-click / context menu => menu
-        item.addListener(SWT.MenuDetect, new Listener() {
-            public void handleEvent(Event event) {
-                menu.setVisible(true);
-            }
-        });
-        // left-click => balloon window
-        item.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(final Event event) {
-                ballonWindow.handleEvent(event);
-            }
-        });
+		ballonWindow = new MindClientBallonWidget(display, this);
 
-        // profiles sub menu
-        MenuItem menuItem = new MenuItem(menu, SWT.CASCADE);
-        menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
+		menu = new Menu(shell, SWT.POP_UP);
+		// right-click / context menu => menu
+		item.addListener(SWT.MenuDetect, new Listener() {
+			public void handleEvent(Event event) {
+				menu.setVisible(true);
+			}
+		});
+		// left-click => balloon window
+		item.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(final Event event) {
+				ballonWindow.handleEvent(event);
+			}
+		});
+		// profiles sub menu
+		MenuItem menuItem = new MenuItem(menu, SWT.CASCADE);
+		menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
 
-        profilesMenu = new Menu(shell, SWT.DROP_DOWN);
-        menuItem.setMenu(profilesMenu);
+		profilesMenu = new Menu(shell, SWT.DROP_DOWN);
+		menuItem.setMenu(profilesMenu);
 
-        // list all profiles in the menu
-        updateProfileSelector();
+		// list all profiles in the menu
+		updateProfileSelector();
 
-        // add separator
-        menuItem = new MenuItem(menu, SWT.SEPARATOR);
+		// add separator
+		menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
-        // go to webpage
-        menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString(MindClient.class, "2")); //$NON-NLS-1$
-        menuItem.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                if (Profile.getSelectedProfile(store) != null) {
-                    Program.launch(Profile.getSelectedProfile(store)
-                            .getServerURL());
-                }
-            }
-        });
-        menuItem
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/16x16/apps/internet-web-browser.png"))); //$NON-NLS-1$
-        // synchronize
-        menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString(MindClient.class, "3")); //$NON-NLS-1$
-        menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
-                .getInstance(this, menuItem, null));
-        menuItem
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/com/mindquarry/icons/16x16/actions/synchronize-vertical.png"))); //$NON-NLS-1$
+		// go to webpage
+		menuItem = new MenuItem(menu, SWT.PUSH);
+		menuItem.setText(Messages.getString(MindClient.class, "2")); //$NON-NLS-1$
+		menuItem.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				if (Profile.getSelectedProfile(store) != null) {
+					Program.launch(Profile.getSelectedProfile(store)
+							.getServerURL());
+				}
+			}
+		});
+		menuItem
+				.setImage(new Image(
+						Display.getCurrent(),
+						getClass()
+								.getResourceAsStream(
+										"/org/tango-project/tango-icon-theme/16x16/apps/internet-web-browser.png"))); //$NON-NLS-1$
+		// synchronize
+		menuItem = new MenuItem(menu, SWT.PUSH);
+		menuItem.setText(Messages.getString(MindClient.class, "3")); //$NON-NLS-1$
+		menuItem.addListener(SWT.Selection, WorkspaceSynchronizeListener
+				.getInstance(this, menuItem, null));
+		menuItem
+				.setImage(new Image(
+						Display.getCurrent(),
+						getClass()
+								.getResourceAsStream(
+										"/com/mindquarry/icons/16x16/actions/synchronize-vertical.png"))); //$NON-NLS-1$
+		// add separator
+		menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
-        // add separator
-        menuItem = new MenuItem(menu, SWT.SEPARATOR);
+		// options dialog
+		menuItem = new MenuItem(menu, SWT.PUSH);
+		menuItem.setText(Messages.getString(MindClient.class, "4") //$NON-NLS-1$
+				+ "..."); //$NON-NLS-1$
+		menuItem.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				showPreferenceDialog(false);
+			}
+		});
+		menuItem
+				.setImage(new Image(
+						Display.getCurrent(),
+						getClass()
+								.getResourceAsStream(
+										"/org/tango-project/tango-icon-theme/16x16/categories/preferences-system.png"))); //$NON-NLS-1$
+		// add separator
+		menuItem = new MenuItem(menu, SWT.SEPARATOR);
 
-        // options dialog
-        menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString(MindClient.class, "4") //$NON-NLS-1$
-                + "..."); //$NON-NLS-1$
-        menuItem.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                showPreferenceDialog(false);
-            }
-        });
-        menuItem
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/16x16/categories/preferences-system.png"))); //$NON-NLS-1$
-        // add separator
-        menuItem = new MenuItem(menu, SWT.SEPARATOR);
+		// close application
+		menuItem = new MenuItem(menu, SWT.PUSH);
+		menuItem.setText(Messages.getString(MindClient.class, "5")); //$NON-NLS-1$
+		menuItem.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event event) {
+				saveOptions();
+				System.exit(1);
+			}
+		});
+		menuItem
+				.setImage(new Image(
+						Display.getCurrent(),
+						getClass()
+								.getResourceAsStream(
+										"/org/tango-project/tango-icon-theme/16x16/actions/process-stop.png"))); //$NON-NLS-1$
+		iconAction = new IconActionThread(item);
+		iconAction.setDaemon(true);
+		iconAction.start();
+	}
 
-        // close application
-        menuItem = new MenuItem(menu, SWT.PUSH);
-        menuItem.setText(Messages.getString(MindClient.class, "5")); //$NON-NLS-1$
-        menuItem.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                saveOptions();
-                System.exit(1);
-            }
-        });
-        menuItem
-                .setImage(new Image(
-                        Display.getCurrent(),
-                        getClass()
-                                .getResourceAsStream(
-                                        "/org/tango-project/tango-icon-theme/16x16/actions/process-stop.png"))); //$NON-NLS-1$
-        iconAction = new IconActionThread(item);
-        iconAction.setDaemon(true);
-        iconAction.start();
-    }
+	public void updateProfileSelector() {
+		if ((menu == null) || (profilesMenu == null)) {
+			return; // happens at very first start
+		}
+		MenuItem[] menuItems = profilesMenu.getItems();
 
-    public void updateProfileSelector() {
-        if ((menu == null) || (profilesMenu == null)) {
-            return; // happens at very first start
-        }
-        MenuItem[] menuItems = profilesMenu.getItems();
+		// remove the existing profiles first
+		for (int i = 0; i < menuItems.length; i++) {
+			if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
+				menuItems[i].dispose();
+			}
+		}
+		Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
+		boolean hasSelection = false;
+		profilesInMenu = new ArrayList();
+		int i = 0;
+		while (pIt.hasNext()) {
+			Profile profile = (Profile) pIt.next();
+			final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
+			i++;
+			menuItem.setText(profile.getName());
+			menuItem.addListener(SWT.Selection, new Listener() {
+				public void handleEvent(Event event) {
+					Profile.selectProfile(getPreferenceStore(), menuItem
+							.getText());
 
-        // remove the existing profiles first
-        for (int i = 0; i < menuItems.length; i++) {
-            if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
-                menuItems[i].dispose();
-            }
-        }
-        Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
-        boolean hasSelection = false;
-        profilesInMenu = new ArrayList();
-        int i = 0;
-        while (pIt.hasNext()) {
-            Profile profile = (Profile) pIt.next();
-            final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
-            i++;
-            menuItem.setText(profile.getName());
-            menuItem.addListener(SWT.Selection, new Listener() {
-                public void handleEvent(Event event) {
-                    Profile.selectProfile(getPreferenceStore(), menuItem
-                            .getText());
+					// TODO trigger task synchronization, this needs
+					// interruption of the task synchronization
+					
+					// TaskManager tm = TaskManager.getInstance();
+					// if (tm != null) {
+					// tm.asyncRefresh();
+					// }
+				}
+			});
+			// activate selected profile in menu
+			if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
+					&& (profile.getName().equals(Profile.getSelectedProfile(
+							getPreferenceStore()).getName()))) {
+				menuItem.setSelection(true);
+				hasSelection = true;
+			}
+			profilesInMenu.add(menuItem);
+		}
+		if (!hasSelection && profilesInMenu.size() > 0) {
+			MenuItem mi = (MenuItem) profilesInMenu.get(0);
+			mi.setSelection(true);
+		}
+	}
 
-                    // TODO trigger task synchronization, this needs
-                    // interruption of the task synchronization
-                    // TaskManager tm = TaskManager.getInstance();
-                    // if (tm != null) {
-                    // tm.asyncRefresh();
-                    // }
-                }
-            });
-            if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
-                    && (profile.getName().equals(Profile.getSelectedProfile(
-                            getPreferenceStore()).getName()))) {
-                menuItem.setSelection(true);
-                hasSelection = true;
-            }
-            profilesInMenu.add(menuItem);
-        }
-        if (!hasSelection && profilesInMenu.size() > 0) {
-            MenuItem mi = (MenuItem) profilesInMenu.get(0);
-            mi.setSelection(true);
-        }
-    }
+	private void showPreferenceDialog(boolean showProfiles) {
+		showPreferenceDialog(showProfiles, true);
+	}
 
-    private void showPreferenceDialog(boolean showProfiles) {
-        showPreferenceDialog(showProfiles, true);
-    }
+	private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
+		if (loadProfiles) {
+			loadOptions();
+		}
 
-    private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
-        if (loadProfiles) {
-            loadOptions();
-        }
+		// request preference values from user
+		PreferenceManager mgr = PreferenceUtilities
+				.getDefaultPreferenceManager();
+		mgr.addToRoot(new PreferenceNode(TaskPage.NAME, new TaskPage()));
 
-        // request preference values from user
-        PreferenceManager mgr = PreferenceUtilities
-                .getDefaultPreferenceManager();
-        mgr.addToRoot(new PreferenceNode(TaskPage.NAME, new TaskPage()));
+		// Create the preferences dialog
+		FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(
+				SWT.ON_TOP), mgr);
+		dlg.setPreferenceStore(store);
+		if (showProfiles) {
+			dlg.setSelectedNode(ServerProfilesPage.NAME);
+		}
+		dlg.open();
+		saveOptions();
+	}
 
-        // Create the preferences dialog
-        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
-                mgr);
-        dlg.setPreferenceStore(store);
-        if (showProfiles) {
-            dlg.setSelectedNode(ServerProfilesPage.NAME);
-        }
-        dlg.open();
-        saveOptions();
-    }
+	private void loadOptions() {
+		try {
+			PreferenceUtilities.checkPreferenceFile(prefFile);
+			store.load();
+		} catch (Exception e) {
+			showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
+					"error"), //$NON-NLS-1$
+					Messages.getString(MindClient.class, "6") //$NON-NLS-1$
+							+ ": "//$NON-NLS-1$
+							+ e.toString());
+		}
+	}
 
-    private void loadOptions() {
-        try {
-            PreferenceUtilities.checkPreferenceFile(prefFile);
-            store.load();
-        } catch (Exception e) {
-            showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
-                    "error"), //$NON-NLS-1$
-                    Messages.getString(MindClient.class, "6") //$NON-NLS-1$
-                            + ": "//$NON-NLS-1$
-                            + e.toString());
-        }
-    }
+	public void saveOptions() {
+		try {
+			store.save();
+		} catch (Exception e) {
+			showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
+					"error"), //$NON-NLS-1$
+					Messages.getString(MindClient.class, "7") //$NON-NLS-1$
+							+ ": "//$NON-NLS-1$
+							+ e.toString());
+		}
+		updateProfileSelector();
+		AutostartUtilities.setAutostart(store
+				.getBoolean(GeneralSettingsPage.AUTOSTART),
+				"mindquarry-desktop-client.jar"); //$NON-NLS-1$
+	}
 
-    public void saveOptions() {
-        try {
-            store.save();
-        } catch (Exception e) {
-            showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
-                    "error"), //$NON-NLS-1$
-                    Messages.getString(MindClient.class, "7") //$NON-NLS-1$
-                            + ": "//$NON-NLS-1$
-                            + e.toString());
-        }
-        updateProfileSelector();
-        AutostartUtilities.setAutostart(store
-                .getBoolean(GeneralSettingsPage.AUTOSTART),
-                "mindquarry-desktop-client.jar"); //$NON-NLS-1$
-    }
+	protected void finalize() throws Throwable {
+		if (icon != null) {
+			icon.dispose();
+		}
+	}
 
-    protected void finalize() throws Throwable {
-        if (icon != null) {
-            icon.dispose();
-        }
-    }
+	public final Image getIcon() {
+		return icon;
+	}
 
-    public final Image getIcon() {
-        return icon;
-    }
+	public PreferenceStore getPreferenceStore() {
+		return store;
+	}
 
-    public PreferenceStore getPreferenceStore() {
-        return store;
-    }
+	public static Shell getShell() {
+		return shell;
+	}
 
-    public static Shell getShell() {
-        return shell;
-    }
+	public static IconActionThread getIconActionHandler() {
+		return MindClient.iconAction;
+	}
 
-    public static IconActionThread getIconActionHandler() {
-        return MindClient.iconAction;
-    }
-
-    public synchronized void showMessage(final String title,
-            final String message) {
-        NotificationWidget widget = new NotificationWidget(shell.getDisplay());
-        int delay = getPreferenceStore().getInt(GeneralSettingsPage.NOTIFY_DELAY);
-        if (delay == 0) {
-            // at first start the store returns 0 which doesn't make sense, so use a default:
-            delay = GeneralSettingsPage.DEFAULT_NOTIFY_DELAY;
-        }
-        widget.show(title, message, delay * 1000);
-        widget.dispose();
-    }
+	public synchronized void showMessage(final String title,
+			final String message) {
+		NotificationWidget widget = new NotificationWidget(shell.getDisplay());
+		int delay = getPreferenceStore().getInt(
+				GeneralSettingsPage.NOTIFY_DELAY);
+		if (delay == 0) {
+			// at first start the store returns 0 which doesn't make sense, so
+			// use a default:
+			delay = GeneralSettingsPage.DEFAULT_NOTIFY_DELAY;
+		}
+		widget.show(title, message, delay * 1000);
+		widget.dispose();
+	}
 }

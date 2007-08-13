@@ -63,7 +63,7 @@ public class SplashScreen {
         screen.steps = steps;
         
         Display display = Display.getCurrent();
-        screen.splash = new Shell(SWT.NONE);
+        screen.splash = new Shell(SWT.ON_TOP);
 
         screen.image = new Image(display, SplashScreen.class
                 .getResourceAsStream("/com/mindquarry/splash/splash.png")); //$NON-NLS-1$

@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.tigris.subversion.javahl.NotifyAction;
@@ -37,76 +38,77 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  */
 public class JavaSVNHelper extends SVNHelper {
 
-    private Log log = LogFactory.getLog(this.getClass());
+	private Log log = LogFactory.getLog(this.getClass());
 
-    private String commitMessage = ""; //$NON-NLS-1$
+	private String commitMessage = ""; //$NON-NLS-1$
 
-    private String commitInfo;
+	private String commitInfo;
 
-    private int conflictResolveMethod;
+	private int conflictResolveMethod;
 
-    public JavaSVNHelper(String repositoryURL, String localPath,
-            String username, String password) {
-        super(repositoryURL, localPath, username, password);
-    }
+	public JavaSVNHelper(String repositoryURL, String localPath,
+			String username, String password) {
+		super(repositoryURL, localPath, username, password);
+	}
 
-    public void onNotify(NotifyInformation info) {
-        switch (info.getAction()) {
-        case NotifyAction.commit_added:
-            log.info("SVN notify: added " + info.getPath()); //$NON-NLS-1$
-            break;
+	public void onNotify(NotifyInformation info) {
+		switch (info.getAction()) {
+		case NotifyAction.commit_added:
+			log.info("SVN notify: added " + info.getPath()); //$NON-NLS-1$
+			break;
 
-        case NotifyAction.commit_deleted:
-            log.info("SVN notify: deleted " + info.getPath()); //$NON-NLS-1$
-            break;
+		case NotifyAction.commit_deleted:
+			log.info("SVN notify: deleted " + info.getPath()); //$NON-NLS-1$
+			break;
 
-        case NotifyAction.commit_modified:
-            log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
-            break;
-        }
-        log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
-    }
+		case NotifyAction.commit_modified:
+			log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
+			break;
+		}
+		log.info("SVN notify: modified " + info.getPath()); //$NON-NLS-1$
+	}
 
-    protected int resolveConflict(final Status status) {
-        Display.getDefault().syncExec(new Runnable() {
-            public void run() {
-                // retrieve revision number
-                long revision = status.getReposLastCmtRevisionNumber();
-                if (revision == -1) {
-                    revision = status.getRevisionNumber();
-                }
-                // show conflict dialog
-                ConflictDialog dlg = new ConflictDialog(new Shell(), revision);
-                if (dlg.open() == Window.OK) {
-                    conflictResolveMethod = dlg.getResolveMethod();
-                }
-            }
-        });
-        return conflictResolveMethod;
-    }
+	protected int resolveConflict(final Status status) {
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				// retrieve revision number
+				long revision = status.getReposLastCmtRevisionNumber();
+				if (revision == -1) {
+					revision = status.getRevisionNumber();
+				}
+				// show conflict resolving dialog
+				ConflictDialog dlg = new ConflictDialog(new Shell(SWT.ON_TOP),
+						revision);
+				if (dlg.open() == Window.OK) {
+					conflictResolveMethod = dlg.getResolveMethod();
+				}
+			}
+		});
+		return conflictResolveMethod;
+	}
 
-    public void setCommitInfo(String commitInfo) {
-        this.commitInfo = commitInfo;
-    }
+	public void setCommitInfo(String commitInfo) {
+		this.commitInfo = commitInfo;
+	}
 
-    protected String getCommitMessage() {
-        // retrieve (asynchronously) commit message
-        final InputDialog dlg = new InputDialog(MindClient.getShell(), Messages
-                .getString(JavaSVNHelper.class, "0"), commitInfo, //$NON-NLS-1$
-                Messages.getString(JavaSVNHelper.class, "1"), null); //$NON-NLS-1$
+	protected String getCommitMessage() {
+		// retrieve (asynchronously) commit message
+		final InputDialog dlg = new InputDialog(MindClient.getShell(), Messages
+				.getString(JavaSVNHelper.class, "0"), commitInfo, //$NON-NLS-1$
+				Messages.getString(JavaSVNHelper.class, "1"), null); //$NON-NLS-1$
 
-        MindClient.getShell().getDisplay().syncExec(new Runnable() {
-            public void run() {
-                dlg.setBlockOnOpen(true);
-                if (dlg.open() == Dialog.OK) {
-                    setCommitMessage(dlg.getValue());
-                }
-            }
-        });
-        return commitMessage;
-    }
+		MindClient.getShell().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				dlg.setBlockOnOpen(true);
+				if (dlg.open() == Dialog.OK) {
+					setCommitMessage(dlg.getValue());
+				}
+			}
+		});
+		return commitMessage;
+	}
 
-    private void setCommitMessage(String message) {
-        commitMessage = message;
-    }
+	private void setCommitMessage(String message) {
+		commitMessage = message;
+	}
 }

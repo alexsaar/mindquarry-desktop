@@ -31,49 +31,48 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public abstract class ModelBase {
-    protected Log log;
+	protected Log log = LogFactory.getLog(this.getClass());
 
-    public ModelBase() {
-        log = LogFactory.getLog(this.getClass());
-        initModel();
-    }
+	public ModelBase() {
+		initModel();
+	}
 
-    public ModelBase(InputStream data, TransformerBase transformer) {
-        initModel();
-        parseInput(data, transformer);
-    }
+	public ModelBase(InputStream data, TransformerBase transformer) {
+		initModel();
+		parseInput(data, transformer);
+	}
 
-    public ModelBase(String url, String login, String password,
-            TransformerBase transformer) throws Exception {
-        initModel();
-        InputStream content = getContent(url, login, password);
-        parseInput(content, transformer);
-    }
+	public ModelBase(String url, String login, String password,
+			TransformerBase transformer) throws Exception {
+		initModel();
+		InputStream content = getContent(url, login, password);
+		parseInput(content, transformer);
+	}
 
-    /**
-     * Can be overidden by subclasses for initializing member variables when
-     * constructor initialization with transformer is used.
-     */
-    protected void initModel() {
-        // nothing to do here
-    }
+	/**
+	 * Can be overidden by subclasses for initializing member variables when
+	 * constructor initialization with transformer is used.
+	 */
+	protected void initModel() {
+		// nothing to do here
+	}
 
-    private InputStream getContent(String url, String login, String password)
-            throws Exception {
-        InputStream content = HttpUtilities.getContentAsXML(login, password,
-                url);
-        return content;
-    }
+	private InputStream getContent(String url, String login, String password)
+			throws Exception {
+		InputStream content = HttpUtilities.getContentAsXML(login, password,
+				url);
+		return content;
+	}
 
-    private void parseInput(InputStream data, TransformerBase transformer) {
-        SAXReader reader = new SAXReader();
-        Document doc;
-        try {
-            doc = reader.read(data);
-        } catch (DocumentException e) {
-            log.error("Error while reading document.", e); //$NON-NLS-1$
-            return;
-        }
-        transformer.execute(this, doc);
-    }
+	private void parseInput(InputStream data, TransformerBase transformer) {
+		SAXReader reader = new SAXReader();
+		Document doc;
+		try {
+			doc = reader.read(data);
+		} catch (DocumentException e) {
+			log.error("Error while reading document.", e); //$NON-NLS-1$
+			return;
+		}
+		transformer.execute(this, doc);
+	}
 }
