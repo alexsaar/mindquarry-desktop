@@ -26,6 +26,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -298,6 +300,15 @@ public class ServerProfilesPage extends PreferencePage {
 				}
 			}
 		});
+		login.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				login.selectAll();
+			}
+
+			public void focusLost(FocusEvent e) {
+				// nothing to do here
+			}
+		});
 		// init password section
 		CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
 		pwdLabel.setText(Messages.getString(ServerProfilesPage.class, "11") //$NON-NLS-1$
@@ -314,6 +325,15 @@ public class ServerProfilesPage extends PreferencePage {
 					profile.setPassword(pwd.getText());
 					performValidation();
 				}
+			}
+		});
+		pwd.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				pwd.selectAll();
+			}
+
+			public void focusLost(FocusEvent e) {
+				// nothing to do here
 			}
 		});
 		// init server URL section
@@ -333,6 +353,15 @@ public class ServerProfilesPage extends PreferencePage {
 					profile.setServerURL(url.getText());
 					performValidation();
 				}
+			}
+		});
+		url.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				url.selectAll();
+			}
+
+			public void focusLost(FocusEvent e) {
+				// nothing to do here
 			}
 		});
 		// init workspace folder section
@@ -362,6 +391,15 @@ public class ServerProfilesPage extends PreferencePage {
 					profile.setWorkspaceFolder(folder.getText());
 					performValidation();
 				}
+			}
+		});
+		folder.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent e) {
+				folder.selectAll();
+			}
+
+			public void focusLost(FocusEvent e) {
+				// nothing to do here
 			}
 		});
 		Button selectWSLocationButton = new Button(locationArea, SWT.PUSH);

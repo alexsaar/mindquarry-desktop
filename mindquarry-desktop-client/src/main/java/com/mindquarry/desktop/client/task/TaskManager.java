@@ -253,15 +253,15 @@ public class TaskManager {
                     profile.getServerURL(), e); //$NON-NLS-1$
             // add url to exception message:
             String errMessage = Messages.getString(TaskManager.class, "5"); //$NON-NLS-1$
-            Exception newEx = new Exception(errMessage + " " + e.getMessage() + //$NON-NLS-1$
-                    " (" +profile.getServerURL()+ ")", e);   //$NON-NLS-1$ //$NON-NLS-2$
-            updateTaskWidgetContents(false, newEx, false);
+            errMessage += " " + e.getMessage(); //$NON-NLS-1$
+                    
+            updateTaskWidgetContents(false, errMessage, false);
             setRefreshStatus(true);
             refreshing = false;
             client.showMessage(Messages.getString(
                     "com.mindquarry.desktop.client", //$NON-NLS-1$
                     "error"), //$NON-NLS-1$
-                    newEx.toString());
+                    errMessage);
             return;
         }
         // loop and add tasks
@@ -328,7 +328,7 @@ public class TaskManager {
     }
 
     private void updateTaskWidgetContents(final boolean refreshing,
-            final Exception exception, final boolean empty) {
+            final String errMessage, final boolean empty) {
         taskContainer.getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (refreshing) {
@@ -336,7 +336,7 @@ public class TaskManager {
                     refreshWidget = new TaskUpdateComposite(taskContainer,
                             Messages.getString(TaskManager.class, "2") //$NON-NLS-1$
                                     + " ..."); //$NON-NLS-1$
-                } else if (exception == null && !empty) {
+                } else if (errMessage == null && !empty) {
                     destroyContent();
                     table = new Table(taskContainer, SWT.BORDER);
                     table.setHeaderVisible(false);
@@ -377,14 +377,14 @@ public class TaskManager {
                                     taskTableViewer, doneButton));
                     taskTableViewer
                             .addDoubleClickListener(new TaskTableDoubleClickListener());
-                } else if (exception == null && empty) {
+                } else if (errMessage == null && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksComposite(taskContainer,
                             Messages.getString(TaskManager.class, "4")); //$NON-NLS-1$
                 } else {
                     destroyContent();
                     errorWidget = new TaskErrorComposite(taskContainer,
-                            exception.toString());
+                    		errMessage);
                 }
                 taskContainer.layout(true);
             }
