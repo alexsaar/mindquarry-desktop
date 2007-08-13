@@ -32,65 +32,69 @@ import com.mindquarry.desktop.workspace.SVNHelper;
  *         Saar</a>
  */
 public class UpdateOperation extends SvnOperation {
-    private HashMap workspaces;
+	private HashMap workspaces;
 
-    public UpdateOperation(final MindClient client, List synAreas,
-            HashMap workspaces) {
-        super(client, synAreas);
-        this.workspaces = workspaces;
-    }
+	public UpdateOperation(final MindClient client, List synAreas,
+			HashMap workspaces) {
+		super(client, synAreas);
+		this.workspaces = workspaces;
+	}
 
-    public void run() {
-        resetProgress();
-        updateWorkspaces();
-        resetProgress();
-    }
+	public void run() {
+		resetProgress();
+		updateWorkspaces();
+		resetProgress();
+	}
 
-    private void updateWorkspaces() {
-        Profile profile = Profile.getSelectedProfile(client
-                .getPreferenceStore());
+	private void updateWorkspaces() {
+		Profile profile = Profile.getSelectedProfile(client
+				.getPreferenceStore());
 
-        // get directory for workspaces
-        File wsHome = new File(profile.getWorkspaceFolder());
+		// get directory for workspaces
+		File wsHome = new File(profile.getWorkspaceFolder());
 
-        // check if teamspace dir already exists, if not create it
-        if (!wsHome.exists()) {
-            wsHome.mkdirs();
-        }
-        // init progress steps for progress dialog
-        int wsCount = workspaces.size();
-        int wsNbr = 0;
+		// check if teamspace dir already exists, if not create it
+		if (!wsHome.exists()) {
+			wsHome.mkdirs();
+		}
+		// init progress steps for progress dialog
+		int wsCount = workspaces.size();
+		int wsNbr = 0;
 
-        setProgressSteps(wsCount);
+		setProgressSteps(wsCount);
 
-        // loop workspaces
-        Iterator idIt = workspaces.keySet().iterator();
-        while (idIt.hasNext()) {
-            String id = (String) idIt.next();
-            setMessage("Updating workspace" //$NON-NLS-1$
-                    + " (" //$NON-NLS-1$
-                    + ++wsNbr + " of " //$NON-NLS-1$
-                    + wsCount + ")"); //$NON-NLS-1$
+		// loop workspaces
+		Iterator idIt = workspaces.keySet().iterator();
+		while (idIt.hasNext()) {
+			String id = (String) idIt.next();
+			setMessage("Updating workspace" //$NON-NLS-1$
+					+ " (" //$NON-NLS-1$
+					+ ++wsNbr + " of " //$NON-NLS-1$
+					+ wsCount + ")"); //$NON-NLS-1$
 
-            // create directory for the new workspace
-            File wsDir = new File(wsHome.getAbsolutePath() + "/" + id); //$NON-NLS-1$
-            SVNHelper svnHelper = new JavaSVNHelper(
-                    (String) workspaces.get(id), wsDir.getAbsolutePath(),
-                    profile.getLogin(), profile.getPassword());
-            try {
-                // TODO pipe local changes to commit operation
-                svnHelper.getLocalChanges();
-                svnHelper.update();
-            } catch (ClientException e) {
-                client.showMessage(Messages.getString(
-                        "com.mindquarry.desktop.client", //$NON-NLS-1$
-                        "error"), //$NON-NLS-1$
-                        Messages.getString(UpdateOperation.class, "0") //$NON-NLS-1$
-                                + " " + id + ": " + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
-                log.error("Could not update workspace " //$NON-NLS-1$
-                        + id, e);
-            }
-            updateProgress();
-        }
-    }
+			// create directory for the new workspace
+			File wsDir = new File(wsHome.getAbsolutePath() + "/" + id); //$NON-NLS-1$
+			SVNHelper svnHelper = new JavaSVNHelper(
+					(String) workspaces.get(id), wsDir.getAbsolutePath(),
+					profile.getLogin(), profile.getPassword());
+			try {
+				// TODO pipe local changes to commit operation
+				svnHelper.getLocalChanges();
+				svnHelper.update();
+			} catch (ClientException e) {
+				String errMessage = Messages.getString(UpdateOperation.class,
+						"0") //$NON-NLS-1$
+						+ " " + id;//$NON-NLS-1$
+				errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+
+				client.showMessage(Messages.getString(
+						"com.mindquarry.desktop.client", //$NON-NLS-1$
+						"error"), //$NON-NLS-1$
+						errMessage); //$NON-NLS-1$ //$NON-NLS-2$
+				log.error("Could not update workspace " //$NON-NLS-1$
+						+ id, e);
+			}
+			updateProgress();
+		}
+	}
 }

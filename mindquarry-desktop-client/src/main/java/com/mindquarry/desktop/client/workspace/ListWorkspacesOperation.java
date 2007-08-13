@@ -33,59 +33,62 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class ListWorkspacesOperation extends SvnOperation {
-    private Log log;
+	private Log log;
 
-    private HashMap workspaces;
+	private HashMap workspaces;
 
-    public ListWorkspacesOperation(final MindClient client, List synAreas) {
-        super(client, synAreas);
-        log = LogFactory.getLog(ListWorkspacesOperation.class);
-    }
+	public ListWorkspacesOperation(final MindClient client, List synAreas) {
+		super(client, synAreas);
+		log = LogFactory.getLog(ListWorkspacesOperation.class);
+	}
 
-    public void run() {
-        resetProgress();
-        workspaces = new HashMap();
-        if (!getTeamspaceList(workspaces)) {
-            resetProgress();
-            return;
-        }
-        resetProgress();
-    }
+	public void run() {
+		resetProgress();
+		workspaces = new HashMap();
+		if (!getTeamspaceList(workspaces)) {
+			resetProgress();
+			return;
+		}
+		resetProgress();
+	}
 
-    private boolean getTeamspaceList(HashMap teamspaces) {
-        setMessage(Messages.getString(ListWorkspacesOperation.class, "0") //$NON-NLS-1$
-                + "..."); //$NON-NLS-1$
-        log.info("Retrieving teamspace list for workspace synchronization..."); //$NON-NLS-1$
+	private boolean getTeamspaceList(HashMap teamspaces) {
+		setMessage(Messages.getString(ListWorkspacesOperation.class, "0") //$NON-NLS-1$
+				+ "..."); //$NON-NLS-1$
+		log.info("Retrieving teamspace list for workspace synchronization..."); //$NON-NLS-1$
 
-        Profile profile = Profile.getSelectedProfile(client
-                .getPreferenceStore());
+		Profile profile = Profile.getSelectedProfile(client
+				.getPreferenceStore());
 
-        TeamList teamList = null;
-        try {
-            teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
-                    profile.getLogin(), profile.getPassword());
-        } catch (Exception e) {
-            client.showMessage(Messages.getString(
-                    "com.mindquarry.desktop.client", //$NON-NLS-1$
-                    "error"), //$NON-NLS-1$
-                    Messages.getString(ListWorkspacesOperation.class, "1")); //$NON-NLS-1$
-            log.error("Could not retrieve list of tasks " //$NON-NLS-1$
-                    + "for workspace synchronization.", e); //$NON-NLS-1$
-            return false;
-        }
-        List teams = teamList.getTeams();
+		TeamList teamList = null;
+		try {
+			teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
+					profile.getLogin(), profile.getPassword());
+		} catch (Exception e) {
+			String errMessage = Messages.getString(
+					ListWorkspacesOperation.class, "1");//$NON-NLS-1$
+			errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+			client.showMessage(Messages.getString(
+					"com.mindquarry.desktop.client", //$NON-NLS-1$
+					"error"), //$NON-NLS-1$
+					errMessage);
+			log.error("Could not retrieve list of tasks " //$NON-NLS-1$
+					+ "for workspace synchronization.", e); //$NON-NLS-1$
+			return false;
+		}
+		List teams = teamList.getTeams();
 
-        // loop teamspace descriptions
-        Iterator tIt = teams.iterator();
-        while (tIt.hasNext()) {
-            Team team = (Team) tIt.next();
-            workspaces.put(team.getName(), team.getWorkspaceURL());
-            log.info("Added workspace from " + team.getWorkspaceURL()); //$NON-NLS-1$
-        }
-        return true;
-    }
+		// loop teamspace descriptions
+		Iterator tIt = teams.iterator();
+		while (tIt.hasNext()) {
+			Team team = (Team) tIt.next();
+			workspaces.put(team.getName(), team.getWorkspaceURL());
+			log.info("Added workspace from " + team.getWorkspaceURL()); //$NON-NLS-1$
+		}
+		return true;
+	}
 
-    public HashMap getWorkspaces() {
-        return workspaces;
-    }
+	public HashMap getWorkspaces() {
+		return workspaces;
+	}
 }

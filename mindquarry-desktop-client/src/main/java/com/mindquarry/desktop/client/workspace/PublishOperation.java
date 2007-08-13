@@ -30,73 +30,78 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class PublishOperation extends SvnOperation {
-    private HashMap workspaces;
+	private HashMap workspaces;
 
-    public PublishOperation(final MindClient client, List synAreas,
-            HashMap workspaces) {
-        super(client, synAreas);
-        this.workspaces = workspaces;
-    }
+	public PublishOperation(final MindClient client, List synAreas,
+			HashMap workspaces) {
+		super(client, synAreas);
+		this.workspaces = workspaces;
+	}
 
-    public void run() {
-        resetProgress();
-        setMessage(Messages.getString(PublishOperation.class, "0") //$NON-NLS-1$
-                + "..."); //$NON-NLS-1$
+	public void run() {
+		resetProgress();
+		setMessage(Messages.getString(PublishOperation.class, "0") //$NON-NLS-1$
+				+ "..."); //$NON-NLS-1$
 
-        Profile profile = Profile.getSelectedProfile(client
-                .getPreferenceStore());
+		Profile profile = Profile.getSelectedProfile(client
+				.getPreferenceStore());
 
-        // get directory for workspaces
-        File wsHome = new File(profile.getWorkspaceFolder());
+		// get directory for workspaces
+		File wsHome = new File(profile.getWorkspaceFolder());
 
-        // init progress steps for progress dialog
-        final int wsCount = workspaces.keySet().size();
-        setProgressSteps(wsCount);
-        int wsNbr = 0;
+		// init progress steps for progress dialog
+		final int wsCount = workspaces.keySet().size();
+		setProgressSteps(wsCount);
+		int wsNbr = 0;
 
-        Iterator idIt = workspaces.keySet().iterator();
-        while (idIt.hasNext()) {
-            String id = (String) idIt.next();
-            setMessage(Messages.getString(PublishOperation.class, "1") //$NON-NLS-1$
-                    + " (" //$NON-NLS-1$
-                    + ++wsNbr + " of " //$NON-NLS-1$
-                    + wsCount + ")"); //$NON-NLS-1$
+		Iterator idIt = workspaces.keySet().iterator();
+		while (idIt.hasNext()) {
+			String id = (String) idIt.next();
+			setMessage(Messages.getString(PublishOperation.class, "1") //$NON-NLS-1$
+					+ " (" //$NON-NLS-1$
+					+ ++wsNbr + " of " //$NON-NLS-1$
+					+ wsCount + ")"); //$NON-NLS-1$
 
-            File wsDir = new File(wsHome.getAbsolutePath() + "/" //$NON-NLS-1$ 
-                    + id);
-            JavaSVNHelper svnHelper = new JavaSVNHelper((String) workspaces
-                    .get(id), wsDir.getAbsolutePath(), profile.getLogin(),
-                    profile.getPassword());
-            try {
-                Status[] changes = svnHelper.getLocalChanges();
-                List changedPaths = new ArrayList();
+			File wsDir = new File(wsHome.getAbsolutePath() + "/" //$NON-NLS-1$ 
+					+ id);
+			JavaSVNHelper svnHelper = new JavaSVNHelper((String) workspaces
+					.get(id), wsDir.getAbsolutePath(), profile.getLogin(),
+					profile.getPassword());
+			try {
+				Status[] changes = svnHelper.getLocalChanges();
+				List changedPaths = new ArrayList();
 
-                StringBuffer commitInfo = new StringBuffer();
-                commitInfo.append(Messages.getString(PublishOperation.class,
-                        "2") //$NON-NLS-1$
-                        + id + ":\n\n"); //$NON-NLS-1$
-                commitInfo
-                        .append(getStatiDescription(changes, wsDir.getPath()));
+				StringBuffer commitInfo = new StringBuffer();
+				commitInfo.append(Messages.getString(PublishOperation.class,
+						"2") //$NON-NLS-1$
+						+ id + ":\n\n"); //$NON-NLS-1$
+				commitInfo
+						.append(getStatiDescription(changes, wsDir.getPath()));
 
-                for (int i = 0; i < changes.length; i++) {
-                    Status change = changes[i];
-                    changedPaths.add(change.getPath());
-                }
-                if (changedPaths.size() > 0) {
-                    svnHelper.setCommitInfo(commitInfo.toString());
-                    svnHelper.commit((String[]) changedPaths
-                            .toArray(new String[0]));
-                }
-            } catch (Exception e) {
-                client.showMessage(Messages.getString(
-                        "com.mindquarry.desktop.client", //$NON-NLS-1$
-                        "error"), //$NON-NLS-1$
-                        Messages.getString(PublishOperation.class, "3") + id); //$NON-NLS-1$
-                log.error("Could not publish workspace changes " //$NON-NLS-1$
-                        + id, e);
-            }
-            updateProgress();
-        }
-        resetProgress();
-    }
+				for (int i = 0; i < changes.length; i++) {
+					Status change = changes[i];
+					changedPaths.add(change.getPath());
+				}
+				if (changedPaths.size() > 0) {
+					svnHelper.setCommitInfo(commitInfo.toString());
+					svnHelper.commit((String[]) changedPaths
+							.toArray(new String[0]));
+				}
+			} catch (Exception e) {
+				String errMessage = Messages.getString(PublishOperation.class,
+						"3") //$NON-NLS-1$
+						+ id;
+				errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+
+				client.showMessage(Messages.getString(
+						"com.mindquarry.desktop.client", //$NON-NLS-1$
+						"error"), //$NON-NLS-1$
+						errMessage); //$NON-NLS-1$
+				log.error("Could not publish workspace changes " //$NON-NLS-1$
+						+ id, e);
+			}
+			updateProgress();
+		}
+		resetProgress();
+	}
 }

@@ -253,7 +253,7 @@ public class TaskManager {
                     profile.getServerURL(), e); //$NON-NLS-1$
             // add url to exception message:
             String errMessage = Messages.getString(TaskManager.class, "5"); //$NON-NLS-1$
-            errMessage += " " + e.getMessage(); //$NON-NLS-1$
+            errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
                     
             updateTaskWidgetContents(false, errMessage, false);
             setRefreshStatus(true);
