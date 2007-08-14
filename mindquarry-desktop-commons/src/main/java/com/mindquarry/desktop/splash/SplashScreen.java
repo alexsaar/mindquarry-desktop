@@ -62,7 +62,7 @@ public class SplashScreen {
         SplashScreen screen = new SplashScreen();
         screen.steps = steps;
         
-        Display display = Display.getCurrent();
+        Display display = Display.getDefault();
         screen.splash = new Shell(SWT.ON_TOP);
 
         screen.image = new Image(display, SplashScreen.class

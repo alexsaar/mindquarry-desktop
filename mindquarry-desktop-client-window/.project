@@ -1,0 +1,16 @@
+<projectDescription>
+  <name>mindquarry-desktop-client-window</name>
+  <comment>This is the root POM for all Mindquarry desktop projects.</comment>
+  <projects>
+    <project>mindquarry-desktop-commons</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+      <arguments/>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

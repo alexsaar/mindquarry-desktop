@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
+    
+    The contents of this file are subject to the Mozilla Public License
+    Version 1.1 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at
+    http://www.mozilla.org/MPL/
+    
+    Software distributed under the License is distributed on an "AS IS"
+    basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+    License for the specific language governing rights and limitations
+    under the License.
+-->
+<messages>
+    <message id="com.mindquarry.desktop.client">
+        <locale language="en">
+            <entry key="error">Error</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="error">Fehler</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.MindClient">
+        <locale language="en">
+            <entry key="0">Your Mindquarry Server Profile</entry>
+            <entry key="1">Server Profiles</entry>
+            <entry key="5">Close</entry>
+            <entry key="6">Could not load MindClient settings</entry>
+            <entry key="7">Could not save MindClient settings</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Ihr Mindquarry Server Profil</entry>
+            <entry key="1">Server Profile</entry>
+            <entry key="5">Beenden</entry>
+            <entry key="6">MindClient Einstellungen konnten nicht geladen werden</entry>
+            <entry key="7">MindClient Einstellungen konnten nicht gespeichert werden</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog">
+        <locale language="en">
+            <entry key="0">summary of the task</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Zusammenfassung der Aufgabe</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.task.TaskManager">
+        <locale language="en">
+            <entry key="0">Could not update list of tasks.</entry>
+            <entry key="1">Synchronizing tasks</entry>
+            <entry key="2">Updating task list</entry>
+            <entry key="3">Description</entry>
+            <entry key="4">Currently no tasks are active.</entry>
+            <entry key="5">List of tasks could not be updated</entry>
+            <entry key="6">Network error</entry>
+            <entry key="7">Could not update the task</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Liste der Aufgaben konnte nicht aktualisiert werden.</entry>
+            <entry key="1">Synchronisiere Aufgaben</entry>
+            <entry key="2">Aktualisiere Aufgabenliste</entry>
+            <entry key="3">Beschreibung</entry>
+            <entry key="4">Zur Zeit sind keine Aufgaben verfügbar.</entry>
+            <entry key="5">Aufgabenliste konnte nicht aktualisiert werden</entry>
+            <entry key="6">Netzwerkfehler</entry>
+            <entry key="7">Aufgabe konnte nicht aktualisiert werden</entry>
+        </locale>
+    </message>
+    
+    <!-- 
+        ACTION MESSAGES 
+    -->
+    <message id="com.mindquarry.desktop.client.action.CloseAction">
+        <locale language="en">
+            <entry key="text">Close</entry>
+            <entry key="tooltip">Exit the desktop client application.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Beenden</entry>
+            <entry key="tooltip">Beendet die Desktop Client Anwendung.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.OpenWebpageAction">
+        <locale language="en">
+            <entry key="text">Go to webpage</entry>
+            <entry key="tooltip">Open the web interface of the current profiles server.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Öffne Webseite</entry>
+            <entry key="tooltip">Öffne die Webseite des ausgewählten Servers.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.PreferencesAction">
+        <locale language="en">
+            <entry key="text">Options</entry>
+            <entry key="tooltip">Open settings dialog of the desktop client.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Einstellungen</entry>
+            <entry key="tooltip">Öffne den Dialog zum Verändern der Desktop Client Einstellungen.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.SynchronizeWorkspacesAction">
+        <locale language="en">
+            <entry key="text">Synchronize workspaces</entry>
+            <entry key="tooltip">Synchronize workspaces with your desktop.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Arbeitsplätze synchronisieren</entry>
+            <entry key="tooltip">Synchronisierung der Arbeitplätze mit dem Desktop.</entry>
+        </locale>
+    </message>
+</messages>

@@ -27,6 +27,7 @@
 	<modules>
 		<module>mindquarry-desktop-commons</module>
 		<module>mindquarry-desktop-client</module>
+		<module>mindquarry-desktop-client-window</module>
 		<module>mindquarry-mac-java</module>
 		<!--module>mindquarry-minutes-editor</module-->
 	</modules>
@@ -98,7 +99,7 @@
 		<dependency>
 			<groupId>com.mindquarry.icons</groupId>
 			<artifactId>mindquarry-icons</artifactId>
-			<version>0.5</version>
+			<version>0.7-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
