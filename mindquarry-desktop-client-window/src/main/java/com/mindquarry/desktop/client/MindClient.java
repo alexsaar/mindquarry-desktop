@@ -293,14 +293,6 @@ public class MindClient extends ApplicationWindow {
 		return parent;
 	}
 
-    /**
-     * ApplicationWindow should not handle the close event for us, 
-     * as we just want to iconify.
-     */
-    protected boolean canHandleShellCloseEvent() {
-        return false;
-    }
-
 	// #########################################################################
 	// ### PRIVATE METHODS
 	// #########################################################################
@@ -463,6 +455,8 @@ public class MindClient extends ApplicationWindow {
                     getShell().setVisible(false);
                 } else {
                     getShell().setVisible(true);
+                    getShell().forceActive();
+                    getShell().forceFocus();
                 }
 			}
 		});
@@ -514,13 +508,13 @@ public class MindClient extends ApplicationWindow {
 
 	class IconifyingShellListener implements ShellListener {
 	    // called when the close button of the window is clicked:
-        public void shellClosed(ShellEvent e) {
-            hideMainWindow();
-        }
+        public void shellClosed(ShellEvent e) {}
         public void shellActivated(ShellEvent arg0) {}
         public void shellDeactivated(ShellEvent arg0) {}
         public void shellDeiconified(ShellEvent arg0) {}
-        public void shellIconified(ShellEvent arg0) {}
+        public void shellIconified(ShellEvent arg0) {
+            hideMainWindow();
+        }
      }
 	
 }
