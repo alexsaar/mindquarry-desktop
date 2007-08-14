@@ -184,7 +184,6 @@ public class MindClient extends ApplicationWindow {
 							+ ": "//$NON-NLS-1$
 							+ e.toString());
 		}
-		updateProfileSelector();
 		AutostartUtilities.setAutostart(store
 				.getBoolean(GeneralSettingsPage.AUTOSTART),
 				"mindquarry-desktop-client.jar"); //$NON-NLS-1$
@@ -397,6 +396,7 @@ public class MindClient extends ApplicationWindow {
 		}
 		dlg.open();
 		saveOptions();
+        updateProfileSelector();
 	}
 
 	private void loadOptions() {
