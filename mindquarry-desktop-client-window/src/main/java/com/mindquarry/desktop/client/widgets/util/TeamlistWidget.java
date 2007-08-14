@@ -23,7 +23,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.widgets.WidgetBase;
+import com.mindquarry.desktop.client.widget.WidgetBase;
 
 /**
  * Add summary documentation here.

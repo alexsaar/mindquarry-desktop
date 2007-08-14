@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.TabItem;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
-import com.mindquarry.desktop.client.widgets.WidgetBase;
+import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.client.widgets.task.TaskContainerWidget;
 import com.mindquarry.desktop.client.widgets.workspace.WorkspaceBrowserWidget;
 

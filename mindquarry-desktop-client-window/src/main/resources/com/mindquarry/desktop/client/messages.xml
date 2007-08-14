@@ -41,7 +41,7 @@
         </locale>
     </message>
 
-    <message id="com.mindquarry.desktop.client.widgets.task.TaskTableLabelProvider">
+    <message id="com.mindquarry.desktop.client.widget.task.TaskTableLabelProvider">
         <locale language="en">
             <entry key="0">Title</entry>
             <entry key="1">Status</entry>
@@ -65,7 +65,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.widgets.task.TaskContainerWidget">
+    <message id="com.mindquarry.desktop.client.widget.task.TaskContainerWidget">
         <locale language="en">
             <entry key="0">Could not update list of tasks.</entry>
             <entry key="1">Synchronizing tasks</entry>
@@ -89,7 +89,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.widgets.util.IconActionThread">
+    <message id="com.mindquarry.desktop.client.widget.util.IconActionThread">
         <locale language="en">
             <entry key="0">Currently no action is running.</entry>
         </locale>

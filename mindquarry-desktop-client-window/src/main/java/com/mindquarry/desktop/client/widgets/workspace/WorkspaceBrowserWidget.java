@@ -38,7 +38,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.widgets.WidgetBase;
+import com.mindquarry.desktop.client.widget.WidgetBase;
+import com.mindquarry.desktop.client.widgets.WorkspaceBrowserWidget;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
