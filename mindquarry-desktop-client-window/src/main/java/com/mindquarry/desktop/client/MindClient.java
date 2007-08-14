@@ -36,6 +36,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -280,6 +282,7 @@ public class MindClient extends ApplicationWindow {
 
 		// init window shell
 		Window.setDefaultImage(JFaceResources.getImage(CLIENT_IMG_KEY));
+        getShell().addShellListener(new IconifyingShellListener());
 		getShell().setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
 		getShell().setText(APPLICATION_NAME);
 		getShell().setSize(800, 600);
@@ -289,6 +292,14 @@ public class MindClient extends ApplicationWindow {
 		createTrayIconAndMenu(Display.getDefault());
 		return parent;
 	}
+
+    /**
+     * ApplicationWindow should not handle the close event for us, 
+     * as we just want to iconify.
+     */
+    protected boolean canHandleShellCloseEvent() {
+        return false;
+    }
 
 	// #########################################################################
 	// ### PRIVATE METHODS
@@ -443,11 +454,16 @@ public class MindClient extends ApplicationWindow {
 		});
 		trayItem.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO double-click => show window
+                // double click: nothing to do here
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-				// nothing to do here
+                // single left click => show window
+                if (getShell().isVisible()) {
+                    getShell().setVisible(false);
+                } else {
+                    getShell().setVisible(true);
+                }
 			}
 		});
 		// profiles sub menu
@@ -487,4 +503,24 @@ public class MindClient extends ApplicationWindow {
 		iconAction.setDaemon(true);
 		iconAction.start();
 	}
+	
+	private void hideMainWindow() {
+	    getShell().setVisible(false);
+	}
+	
+    // #########################################################################
+    // ### INNER CLASSES
+    // #########################################################################
+
+	class IconifyingShellListener implements ShellListener {
+	    // called when the close button of the window is clicked:
+        public void shellClosed(ShellEvent e) {
+            hideMainWindow();
+        }
+        public void shellActivated(ShellEvent arg0) {}
+        public void shellDeactivated(ShellEvent arg0) {}
+        public void shellDeiconified(ShellEvent arg0) {}
+        public void shellIconified(ShellEvent arg0) {}
+     }
+	
 }
