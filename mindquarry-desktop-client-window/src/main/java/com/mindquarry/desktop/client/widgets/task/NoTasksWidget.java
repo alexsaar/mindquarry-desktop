@@ -37,7 +37,7 @@ public class NoTasksWidget extends Composite {
 	}
 
 	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true, 2, 2));
+		setLayoutData(new GridData(GridData.FILL_BOTH));
 		setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		setLayout(new GridLayout(1, true));
 		((GridData) getLayoutData()).heightHint = ((GridData) parent

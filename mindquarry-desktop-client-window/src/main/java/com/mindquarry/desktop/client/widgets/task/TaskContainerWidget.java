@@ -13,9 +13,7 @@
  */
 package com.mindquarry.desktop.client.widgets.task;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +30,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -76,7 +75,16 @@ public class TaskContainerWidget extends WidgetBase {
 	// ### WIDGET METHODS
 	// #########################################################################
 	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(GridData.FILL_BOTH));
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 0));
+		((GridData) getLayoutData()).heightHint = 150;
+		
+		setLayout(new GridLayout(1, true));
+		((GridLayout) getLayout()).horizontalSpacing = 0;
+		((GridLayout) getLayout()).verticalSpacing = 0;
+		((GridLayout) getLayout()).marginHeight = 0;
+		((GridLayout) getLayout()).marginWidth = 0;
+
+		setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 	}
 
 	// #########################################################################
@@ -108,7 +116,7 @@ public class TaskContainerWidget extends WidgetBase {
 	private void refresh() {
 		log.info("Starting task list refresh."); //$NON-NLS-1$
 		refreshing = true;
-		
+
 		Profile profile = Profile.getSelectedProfile(client
 				.getPreferenceStore());
 
@@ -128,9 +136,10 @@ public class TaskContainerWidget extends WidgetBase {
 			log.error("Could not update list of tasks for "
 					+ profile.getServerURL(), e); //$NON-NLS-1$
 			String errMessage = "message"; //$NON-NLS-1$
-			
+
 			// TODO fix message
-//			String errMessage = Messages.getString(TaskManager.class, "5"); //$NON-NLS-1$
+			// String errMessage = Messages.getString(TaskManager.class, "5");
+			// //$NON-NLS-1$
 			errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
 
 			updateTaskWidgetContents(false, errMessage, false);
@@ -143,12 +152,12 @@ public class TaskContainerWidget extends WidgetBase {
 		}
 		// add task to internal list of tasks, if not yet exist
 		PreferenceStore store = client.getPreferenceStore();
-		
+
 		// loop and add tasks
 		Iterator tIt = tasks.getTasks().iterator();
 		while (tIt.hasNext()) {
 			Task task = (Task) tIt.next();
-			
+
 			boolean listTask = true;
 			if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
 				if ((task.getStatus() != null)
@@ -158,7 +167,7 @@ public class TaskContainerWidget extends WidgetBase {
 			}
 			if (!listTask) {
 				log.info("Removing task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
-//				tasks.getTasks().remove(task);
+				tIt.remove();
 			}
 		}
 		if (tasks.getTasks().isEmpty()) {
@@ -196,18 +205,21 @@ public class TaskContainerWidget extends WidgetBase {
 					destroyContent();
 					refreshWidget = new TaskUpdateWidget(self, "message" //$NON-NLS-1$
 							+ " ..."); //$NON-NLS-1$
-					
+
 					// TODO fix message
-//					refreshWidget = new TaskUpdateWidget(self, Messages
-//							.getString(TaskManager.class, "2") //$NON-NLS-1$
-//							+ " ...", client); //$NON-NLS-1$
+					// refreshWidget = new TaskUpdateWidget(self, Messages
+					// .getString(TaskManager.class, "2") //$NON-NLS-1$
+					// + " ...", client); //$NON-NLS-1$
 				} else if (errMessage == null && !empty) {
 					destroyContent();
 					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
-					table.setHeaderVisible(false);
 					table.setLayoutData(new GridData(GridData.FILL_BOTH));
+					table.setHeaderVisible(false);
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
+					
+					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+                            true));
 
 					// create table viewer
 					taskTableViewer = new TableViewer(table);
@@ -218,10 +230,11 @@ public class TaskContainerWidget extends WidgetBase {
 					titleCol.setResizable(false);
 					titleCol.setWidth(100);
 					titleCol.setText("message"); //$NON-NLS-1$
-					
+
 					// TODO fix message
-//					titleCol
-//							.setText(Messages.getString(TaskManager.class, "3")); //$NON-NLS-1$
+					// titleCol
+					// .setText(Messages.getString(TaskManager.class, "3"));
+					// //$NON-NLS-1$
 
 					TableViewerColumn vCol = new TableViewerColumn(
 							taskTableViewer, titleCol);
@@ -245,10 +258,11 @@ public class TaskContainerWidget extends WidgetBase {
 				} else if (errMessage == null && empty) {
 					destroyContent();
 					noTasksWidget = new NoTasksWidget(self, "message"); //$NON-NLS-1$
-					
+
 					// TODO fix message
-//					noTasksWidget = new NoTasksWidget(self, Messages.getString(
-//							TaskManager.class, "4"), client); //$NON-NLS-1$
+					// noTasksWidget = new NoTasksWidget(self,
+					// Messages.getString(
+					// TaskManager.class, "4"), client); //$NON-NLS-1$
 				} else {
 					destroyContent();
 					errorWidget = new TaskErrorWidget(self, errMessage);
@@ -302,7 +316,8 @@ public class TaskContainerWidget extends WidgetBase {
 							if (taskPos != -1) {
 								// can be -1 if set to "done" while the dialog
 								// was open
-								tasks.getTasks().set(taskPos, dlg.getChangedTask());
+								tasks.getTasks().set(taskPos,
+										dlg.getChangedTask());
 							}
 							task = dlg.getChangedTask();
 							HttpUtilities.putAsXML(prof.getLogin(), prof
@@ -312,12 +327,13 @@ public class TaskContainerWidget extends WidgetBase {
 						}
 					} catch (Exception e) {
 						// TODO fix message
-						
-//						client.showMessage(Messages.getString(
-//								TaskManager.class, "6"), //$NON-NLS-1$
-//								Messages.getString(TaskManager.class, "7") //$NON-NLS-1$
-//										+ ": " //$NON-NLS-1$
-//										+ e.toString());
+
+						// client.showMessage(Messages.getString(
+						// TaskManager.class, "6"), //$NON-NLS-1$
+						// Messages.getString(TaskManager.class, "7")
+						// //$NON-NLS-1$
+						// + ": " //$NON-NLS-1$
+						// + e.toString());
 						log.error("Could not update task with id " //$NON-NLS-1$
 								+ task.getId(), e);
 					}

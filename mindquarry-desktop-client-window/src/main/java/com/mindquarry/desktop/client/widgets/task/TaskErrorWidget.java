@@ -38,7 +38,7 @@ public class TaskErrorWidget extends Composite {
     }
 
 	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true, 2, 2));
+		setLayoutData(new GridData(GridData.FILL_BOTH));
         setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         setLayout(new GridLayout(1, true));
         ((GridData) getLayoutData()).heightHint = ((GridData) parent
@@ -47,8 +47,7 @@ public class TaskErrorWidget extends Composite {
         Composite internalComp = new Composite(parent, SWT.NONE);
         internalComp.setBackground(internalComp.getParent().getBackground());
         internalComp.setLayout(new GridLayout(1, true));
-        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                true));
+        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
         Image icon = new Image(null, getClass().getResourceAsStream(
                 "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
