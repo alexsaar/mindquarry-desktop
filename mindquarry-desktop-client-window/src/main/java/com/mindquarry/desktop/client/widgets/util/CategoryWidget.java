@@ -45,5 +45,6 @@ public class CategoryWidget extends WidgetBase {
 		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
 				client);
 		tabItem.setControl(taskContainer);
+		taskContainer.asyncRefresh();
 	}
 }

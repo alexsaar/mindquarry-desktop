@@ -14,32 +14,34 @@
 package com.mindquarry.desktop.client.widgets.task;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 
-import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.widgets.WidgetBase;
-
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class TaskUpdateWidget extends WidgetBase {
+public class TaskUpdateWidget extends Composite {
 	private String message;
 	
-    public TaskUpdateWidget(Composite parent, String message, MindClient client) {
-        super(parent, SWT.BORDER, client);
-        this.message = message;
+    public TaskUpdateWidget(Composite parent, String message) {
+    	super(parent, SWT.BORDER);
+		this.message = message;
+		
+		// init layout and content
+		setLayout(new FillLayout());
+		createContents(this);
     }
 
 	protected void createContents(Composite parent) {
 		setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true, 2, 2));
         setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
         setLayout(new GridLayout(1, true));
-        ((GridData) getLayoutData()).heightHint = ((GridData) getParent()
+        ((GridData) getLayoutData()).heightHint = ((GridData) parent
                 .getLayoutData()).heightHint;
 
         Composite internalComp = new Composite(this, SWT.NONE);

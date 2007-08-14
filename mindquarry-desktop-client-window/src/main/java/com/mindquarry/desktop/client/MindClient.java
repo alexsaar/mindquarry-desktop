@@ -53,10 +53,10 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 
 import com.mindquarry.desktop.client.action.ActionBase;
-import com.mindquarry.desktop.client.action.CloseAction;
-import com.mindquarry.desktop.client.action.OpenWebpageAction;
-import com.mindquarry.desktop.client.action.PreferencesAction;
-import com.mindquarry.desktop.client.action.SynchronizeWorkspacesAction;
+import com.mindquarry.desktop.client.action.app.CloseAction;
+import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
+import com.mindquarry.desktop.client.action.app.PreferencesAction;
+import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.widgets.util.CategoryWidget;
 import com.mindquarry.desktop.client.widgets.util.IconActionThread;
 import com.mindquarry.desktop.client.widgets.util.TeamlistWidget;
@@ -215,6 +215,7 @@ public class MindClient extends ApplicationWindow {
 				public void handleEvent(Event event) {
 					Profile.selectProfile(getPreferenceStore(), menuItem
 							.getText());
+					saveOptions();
 				}
 			});
 			// activate selected profile in menu

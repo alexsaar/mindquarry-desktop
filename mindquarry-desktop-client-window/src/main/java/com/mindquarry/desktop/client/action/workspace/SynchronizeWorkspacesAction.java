@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action;
+package com.mindquarry.desktop.client.action.workspace;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.ActionBase;
 
 /**
  * Add summary documentation here.
@@ -26,27 +27,27 @@ import com.mindquarry.desktop.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class PreferencesAction extends ActionBase {
-	public static final String ID = "client-preferences";
+public class SynchronizeWorkspacesAction extends ActionBase {
+	public static final String ID = "sync-workspaces";
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
-			PreferencesAction.class
-					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/categories/preferences-system.png")); //$NON-NLS-1$
+			SynchronizeWorkspacesAction.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
 
-	public PreferencesAction(MindClient client) {
+	public SynchronizeWorkspacesAction(MindClient client) {
 		super(client);
 
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT + " ...");//$NON-NLS-1$
+		setText(TEXT);
 		setToolTipText(TOOLTIP);
-		setAccelerator(SWT.CTRL + 'O');
+		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 
 	public void run() {
-		client.showPreferenceDialog(false);
+		// TODO Auto-generated method stub
 	}
 }

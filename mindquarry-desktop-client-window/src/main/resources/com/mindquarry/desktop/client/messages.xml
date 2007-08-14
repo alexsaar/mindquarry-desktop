@@ -78,7 +78,7 @@
     <!-- 
         ACTION MESSAGES 
     -->
-    <message id="com.mindquarry.desktop.client.action.CloseAction">
+    <message id="com.mindquarry.desktop.client.action.app.CloseAction">
         <locale language="en">
             <entry key="text">Close</entry>
             <entry key="tooltip">Exit the desktop client application.</entry>
@@ -90,7 +90,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.action.OpenWebpageAction">
+    <message id="com.mindquarry.desktop.client.action.app.OpenWebpageAction">
         <locale language="en">
             <entry key="text">Go to webpage</entry>
             <entry key="tooltip">Open the web interface of the current profiles server.</entry>
@@ -102,7 +102,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.action.PreferencesAction">
+    <message id="com.mindquarry.desktop.client.action.app.PreferencesAction">
         <locale language="en">
             <entry key="text">Options</entry>
             <entry key="tooltip">Open settings dialog of the desktop client.</entry>
@@ -114,7 +114,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.action.SynchronizeWorkspacesAction">
+    <message id="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction">
         <locale language="en">
             <entry key="text">Synchronize workspaces</entry>
             <entry key="tooltip">Synchronize workspaces with your desktop.</entry>

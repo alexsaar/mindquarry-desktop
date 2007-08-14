@@ -76,7 +76,7 @@ public class TaskContainerWidget extends WidgetBase {
 	// ### WIDGET METHODS
 	// #########################################################################
 	protected void createContents(Composite parent) {
-
+		setLayoutData(new GridData(GridData.FILL_BOTH));
 	}
 
 	// #########################################################################
@@ -99,7 +99,7 @@ public class TaskContainerWidget extends WidgetBase {
 			public void run() {
 				refresh();
 			}
-		}).start();
+		}, "task-update").start();
 	}
 
 	// #########################################################################
@@ -120,10 +120,9 @@ public class TaskContainerWidget extends WidgetBase {
 		}
 		updateTaskWidgetContents(true, null, false);
 
-		TaskList taskList = null;
 		try {
 			log.info("Retrieving list of tasks."); //$NON-NLS-1$
-			taskList = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
+			tasks = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
 					profile.getLogin(), profile.getPassword());
 		} catch (Exception e) {
 			log.error("Could not update list of tasks for "
@@ -142,13 +141,14 @@ public class TaskContainerWidget extends WidgetBase {
 					errMessage);
 			return;
 		}
+		// add task to internal list of tasks, if not yet exist
+		PreferenceStore store = client.getPreferenceStore();
+		
 		// loop and add tasks
-		Iterator tIt = taskList.getTasks().iterator();
+		Iterator tIt = tasks.getTasks().iterator();
 		while (tIt.hasNext()) {
 			Task task = (Task) tIt.next();
-			// add task to internal list of tasks, if not yet exist
-			PreferenceStore store = client.getPreferenceStore();
-
+			
 			boolean listTask = true;
 			if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
 				if ((task.getStatus() != null)
@@ -156,9 +156,9 @@ public class TaskContainerWidget extends WidgetBase {
 					listTask = false;
 				}
 			}
-			if (listTask && (!tasks.getTasks().contains(task))) {
-				log.info("Adding task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
-				tasks.getTasks().add(task);
+			if (!listTask) {
+				log.info("Removing task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
+//				tasks.getTasks().remove(task);
 			}
 		}
 		if (tasks.getTasks().isEmpty()) {
@@ -195,7 +195,7 @@ public class TaskContainerWidget extends WidgetBase {
 				if (refreshing) {
 					destroyContent();
 					refreshWidget = new TaskUpdateWidget(self, "message" //$NON-NLS-1$
-							+ " ...", client); //$NON-NLS-1$
+							+ " ..."); //$NON-NLS-1$
 					
 					// TODO fix message
 //					refreshWidget = new TaskUpdateWidget(self, Messages
@@ -203,12 +203,9 @@ public class TaskContainerWidget extends WidgetBase {
 //							+ " ...", client); //$NON-NLS-1$
 				} else if (errMessage == null && !empty) {
 					destroyContent();
-					table = new Table(self, SWT.BORDER);
+					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
 					table.setHeaderVisible(false);
-					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-							true));
-					((GridData) table.getLayoutData()).heightHint = ((GridData) table
-							.getParent().getLayoutData()).heightHint;
+					table.setLayoutData(new GridData(GridData.FILL_BOTH));
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
 
@@ -247,14 +244,14 @@ public class TaskContainerWidget extends WidgetBase {
 							.addDoubleClickListener(new TaskTableDoubleClickListener());
 				} else if (errMessage == null && empty) {
 					destroyContent();
-					noTasksWidget = new NoTasksWidget(self, "message", client); //$NON-NLS-1$
+					noTasksWidget = new NoTasksWidget(self, "message"); //$NON-NLS-1$
 					
 					// TODO fix message
 //					noTasksWidget = new NoTasksWidget(self, Messages.getString(
 //							TaskManager.class, "4"), client); //$NON-NLS-1$
 				} else {
 					destroyContent();
-					errorWidget = new TaskErrorWidget(self, errMessage, client);
+					errorWidget = new TaskErrorWidget(self, errMessage);
 				}
 				layout(true);
 			}

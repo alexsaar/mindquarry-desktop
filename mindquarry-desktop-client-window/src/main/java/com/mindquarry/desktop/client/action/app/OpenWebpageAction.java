@@ -11,14 +11,18 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action;
+package com.mindquarry.desktop.client.action.app;
 
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * Add summary documentation here.
@@ -26,27 +30,30 @@ import com.mindquarry.desktop.client.MindClient;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class SynchronizeWorkspacesAction extends ActionBase {
-	public static final String ID = "sync-workspaces";
+public class OpenWebpageAction extends ActionBase {
+	public static final String ID = "client-close";//$NON-NLS-1$
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
-			SynchronizeWorkspacesAction.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
+			OpenWebpageAction.class
+					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/apps/internet-web-browser.png")); //$NON-NLS-1$
 
-	public SynchronizeWorkspacesAction(MindClient client) {
+	public OpenWebpageAction(MindClient client) {
 		super(client);
 
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT);
+		setText(TEXT + " ...");//$NON-NLS-1$
 		setToolTipText(TOOLTIP);
-		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
+		setAccelerator(SWT.CTRL + SWT.SHIFT + 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 
 	public void run() {
-		// TODO Auto-generated method stub
+		PreferenceStore store = client.getPreferenceStore();
+		if (Profile.getSelectedProfile(store) != null) {
+			Program.launch(Profile.getSelectedProfile(store).getServerURL());
+		}
 	}
 }

@@ -11,17 +11,15 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action;
+package com.mindquarry.desktop.client.action.app;
 
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.client.action.ActionBase;
 
 /**
  * Add summary documentation here.
@@ -29,15 +27,15 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class OpenWebpageAction extends ActionBase {
-	public static final String ID = "client-close";//$NON-NLS-1$
+public class PreferencesAction extends ActionBase {
+	public static final String ID = "client-preferences";
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
-			OpenWebpageAction.class
-					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/apps/internet-web-browser.png")); //$NON-NLS-1$
+			PreferencesAction.class
+					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/categories/preferences-system.png")); //$NON-NLS-1$
 
-	public OpenWebpageAction(MindClient client) {
+	public PreferencesAction(MindClient client) {
 		super(client);
 
 		setId(ID);
@@ -45,14 +43,11 @@ public class OpenWebpageAction extends ActionBase {
 
 		setText(TEXT + " ...");//$NON-NLS-1$
 		setToolTipText(TOOLTIP);
-		setAccelerator(SWT.CTRL + SWT.SHIFT + 'O');
+		setAccelerator(SWT.CTRL + 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 
 	public void run() {
-		PreferenceStore store = client.getPreferenceStore();
-		if (Profile.getSelectedProfile(store) != null) {
-			Program.launch(Profile.getSelectedProfile(store).getServerURL());
-		}
+		client.showPreferenceDialog(false);
 	}
 }
