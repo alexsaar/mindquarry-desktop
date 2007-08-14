@@ -33,6 +33,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -75,16 +77,14 @@ public class TaskContainerWidget extends WidgetBase {
 	// ### WIDGET METHODS
 	// #########################################################################
 	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 0));
+		setLayoutData(new GridData(GridData.FILL_BOTH));
 		((GridData) getLayoutData()).heightHint = 150;
-		
+
 		setLayout(new GridLayout(1, true));
 		((GridLayout) getLayout()).horizontalSpacing = 0;
 		((GridLayout) getLayout()).verticalSpacing = 0;
 		((GridLayout) getLayout()).marginHeight = 0;
 		((GridLayout) getLayout()).marginWidth = 0;
-
-		setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 	}
 
 	// #########################################################################
@@ -217,9 +217,9 @@ public class TaskContainerWidget extends WidgetBase {
 					table.setHeaderVisible(false);
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
-					
+
 					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-                            true));
+							true));
 
 					// create table viewer
 					taskTableViewer = new TableViewer(table);
@@ -228,7 +228,7 @@ public class TaskContainerWidget extends WidgetBase {
 					// create columns
 					TableColumn titleCol = new TableColumn(table, SWT.NONE);
 					titleCol.setResizable(false);
-					titleCol.setWidth(100);
+					titleCol.setWidth(200);
 					titleCol.setText("message"); //$NON-NLS-1$
 
 					// TODO fix message
@@ -247,7 +247,15 @@ public class TaskContainerWidget extends WidgetBase {
 					editors[0] = new CheckboxCellEditor(table.getParent());
 
 					taskTableViewer.setCellEditors(editors);
-					taskTableViewer.getTable().getColumn(0).setWidth(300);
+					taskTableViewer.getTable().getColumn(0).setWidth(
+							getSize().x);
+					getShell().addListener(SWT.Resize, new Listener() {
+						public void handleEvent(Event event) {
+							taskTableViewer.getTable().getColumn(0).setWidth(
+									getSize().x);
+						}
+					});
+
 					taskTableViewer
 							.setContentProvider(new TaskTableContentProvider());
 					taskTableViewer

@@ -29,7 +29,7 @@ public class TaskUpdateWidget extends Composite {
 	private String message;
 	
     public TaskUpdateWidget(Composite parent, String message) {
-    	super(parent, SWT.BORDER);
+    	super(parent, SWT.NONE);
 		this.message = message;
 		
 		// init layout and content

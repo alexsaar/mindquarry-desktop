@@ -37,14 +37,14 @@ public class CategoryWidget extends WidgetBase {
 		TabFolder tabFolder = new TabFolder(parent, SWT.TOP);
 
 		TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
-		tabItem.setText("Files");
+		tabItem.setText("Tasks");
 		
 		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
 				client);
 		tabItem.setControl(taskContainer);
 
 		tabItem = new TabItem(tabFolder, SWT.NULL);
-		tabItem.setText("Tasks");
+		tabItem.setText("Files");
 
 		taskContainer.asyncRefresh();
 	}
