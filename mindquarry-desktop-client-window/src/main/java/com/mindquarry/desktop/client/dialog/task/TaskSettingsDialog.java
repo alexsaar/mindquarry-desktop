@@ -190,19 +190,6 @@ public class TaskSettingsDialog extends DialogBase {
         ((GridData) summary.getLayoutData()).verticalSpan = 3;
         ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
-        /*
-         * label = new Label(composite, SWT.LEFT);
-         * label.setText("Description:");
-         * 
-         * description = new Text(composite, SWT.MULTI | SWT.BORDER |
-         * SWT.V_SCROLL | SWT.WRAP); description.setLayoutData(new
-         * GridData(GridData.HORIZONTAL_ALIGN_FILL |
-         * GridData.VERTICAL_ALIGN_FILL)); ((GridData)
-         * description.getLayoutData()).verticalSpan = 3; ((GridData)
-         * description.getLayoutData()).grabExcessVerticalSpace = true;
-         */
-
-        
         dueDateCheckbox = new Button(composite, SWT.CHECK);
         dueDateCheckbox.setText(Messages.getString(TaskSettingsDialog.class, "7") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$

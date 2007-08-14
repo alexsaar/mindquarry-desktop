@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.client.action;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.Action;
 
 import com.mindquarry.desktop.client.Messages;
@@ -29,6 +31,8 @@ public abstract class ActionBase extends Action {
 
 	protected final String TEXT = Messages.getString(getClass(), "text"); //$NON-NLS-1$
 	protected final String TOOLTIP = Messages.getString(getClass(), "tooltip"); //$NON-NLS-1$
+	
+	protected Log log = LogFactory.getLog(getClass());
 	
 	protected MindClient client;
 

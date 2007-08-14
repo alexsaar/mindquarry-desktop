@@ -56,7 +56,7 @@ import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
-import com.mindquarry.desktop.client.action.task.AddTaskAction;
+import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.FinishTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
@@ -266,7 +266,7 @@ public class MindClient extends ApplicationWindow {
 		// fill tasks group
 		manager.appendToGroup(TASK_ACTION_GROUP,
 				getAction(SynchronizeTasksAction.class.getName()));
-		manager.appendToGroup(TASK_ACTION_GROUP, getAction(AddTaskAction.class
+		manager.appendToGroup(TASK_ACTION_GROUP, getAction(CreateTaskAction.class
 				.getName()));
 		manager.appendToGroup(TASK_ACTION_GROUP,
 				getAction(FinishTaskAction.class.getName()));
@@ -300,6 +300,7 @@ public class MindClient extends ApplicationWindow {
 		setStatus("Ready.");
 
 		createTrayIconAndMenu(Display.getDefault());
+		getAction(SynchronizeTasksAction.class.getName()).run();
 		return parent;
 	}
 
@@ -314,7 +315,7 @@ public class MindClient extends ApplicationWindow {
 
 		// create task actions
 		actions.add(new SynchronizeTasksAction(this));
-		actions.add(new AddTaskAction(this));
+		actions.add(new CreateTaskAction(this));
 		actions.add(new FinishTaskAction(this));
 
 		// create management actions

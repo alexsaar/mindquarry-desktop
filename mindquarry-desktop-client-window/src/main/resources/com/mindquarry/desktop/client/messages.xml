@@ -57,11 +57,39 @@
     
     <message id="com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog">
         <locale language="en">
-            <entry key="0">summary of the task</entry>
+            <entry key="0">Edit the contents of a task</entry>
+            <entry key="1">Please enter the tasks data and press OK for adding/changing the task.</entry>
+            <entry key="2">Edit Task</entry>
+            <entry key="3">Title</entry>
+            <entry key="4">Status</entry>
+            <entry key="5">Priority</entry>
+            <entry key="6">Summary</entry>
+            <entry key="7">Due Date</entry>
+            <entry key="8">No Due date set for this task, select one below</entry>
         </locale>
         
         <locale language="de">
-            <entry key="0">Zusammenfassung der Aufgabe</entry>
+            <entry key="0">Editieren Sie eine Aufgabe</entry>
+            <entry key="1">Bitte gegeben Sie die Daten der Aufgabe ein und drücken Sie OK zum Ändern/Anlegen der Aufgabe.</entry>
+            <entry key="2">Aufgabe bearbeiten</entry>
+            <entry key="3">Titel</entry>
+            <entry key="4">Status</entry>
+            <entry key="5">Priorität</entry>
+            <entry key="6">Zusammenfassung</entry>
+            <entry key="7">Fälligkeitsdatum</entry>
+            <entry key="8">Es wurde kein Fälligkeitsdatum gesetzt, bitte wählen Sie eines</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.dialog.team.TeamSelectionDialog">
+        <locale language="en">
+            <entry key="0">Select a Team</entry>
+            <entry key="1">Please select one of your teams.</entry>
+        </locale>
+        
+        <locale language="en">
+            <entry key="0">Wählen Sie ein Team</entry>
+            <entry key="1">Bitte wählen Sie eines Ihrer Teams aus.</entry>
         </locale>
     </message>
     
@@ -166,15 +194,31 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.action.task.AddTaskAction">
+    <message id="com.mindquarry.desktop.client.action.task.CreateTaskAction">
         <locale language="en">
             <entry key="text">New Task</entry>
             <entry key="tooltip">Creates a new task.</entry>
+            
+            <entry key="0">Could not update team list.</entry>
+            <entry key="1">Authorization Error</entry>
+            <entry key="2">You are not a member of a team. Thus you can not create new tasks.</entry>
+            <entry key="3">new task</entry>
+            <entry key="4">summary of the task</entry>
+            <entry key="5">Network error</entry>
+            <entry key="6">Could not create the task.</entry>
         </locale>
         
         <locale language="de">
             <entry key="text">Neue Aufgabe</entry>
             <entry key="tooltip">Legt eine neue Aufgabe an.</entry>
+            
+            <entry key="0">Liste der Teams konnte nicht aktualisiert werden.</entry>
+            <entry key="1">Autorisierungsfehler</entry>
+            <entry key="2">Sie sind in keinen Team Mitglied und können keine Aufgabe anlegen.</entry>
+            <entry key="3">Neue Aufgabe</entry>
+            <entry key="4">Zusammenfassung der Aufgabe</entry>
+            <entry key="5">Netzwerkfehler</entry>
+            <entry key="6">Aufgabe konnte nicht angelegt werden.</entry>
         </locale>
     </message>
     
