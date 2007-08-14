@@ -24,6 +24,18 @@
 			<artifactId>mindquarry-desktop-commons</artifactId>
 			<version>1.2-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+			<version>0.1.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

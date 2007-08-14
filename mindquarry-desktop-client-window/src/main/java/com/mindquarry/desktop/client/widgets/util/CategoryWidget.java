@@ -22,6 +22,7 @@ import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.widgets.WidgetBase;
 import com.mindquarry.desktop.client.widgets.task.TaskContainerWidget;
+import com.mindquarry.desktop.client.widgets.workspace.WorkspaceBrowserWidget;
 
 /**
  * Add summary documentation here.
@@ -48,5 +49,9 @@ public class CategoryWidget extends WidgetBase {
 
 		tabItem = new TabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Files");
+
+		WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
+				tabFolder, client);
+		tabItem.setControl(workspaceBrowser);
 	}
 }
