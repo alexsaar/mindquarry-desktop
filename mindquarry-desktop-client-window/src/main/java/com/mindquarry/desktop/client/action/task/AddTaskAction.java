@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action.workspace;
+package com.mindquarry.desktop.client.action.task;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -27,15 +27,15 @@ import com.mindquarry.desktop.client.action.ActionBase;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class SynchronizeWorkspacesAction extends ActionBase {
-	public static final String ID = "sync-workspaces";
+public class AddTaskAction extends ActionBase {
+	public static final String ID = "add-task";
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
-			SynchronizeWorkspacesAction.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
+			AddTaskAction.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/task-new.png")); //$NON-NLS-1$
 
-	public SynchronizeWorkspacesAction(MindClient client) {
+	public AddTaskAction(MindClient client) {
 		super(client);
 
 		setId(ID);
@@ -43,7 +43,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
 		setText(TEXT);
 		setToolTipText(TOOLTIP);
-		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
+		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'A');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 

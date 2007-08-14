@@ -65,7 +65,7 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.task.TaskManager">
+    <message id="com.mindquarry.desktop.client.widgets.task.TaskContainerWidget">
         <locale language="en">
             <entry key="0">Could not update list of tasks.</entry>
             <entry key="1">Synchronizing tasks</entry>
@@ -86,6 +86,16 @@
             <entry key="5">Aufgabenliste konnte nicht aktualisiert werden</entry>
             <entry key="6">Netzwerkfehler</entry>
             <entry key="7">Aufgabe konnte nicht aktualisiert werden</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.widgets.util.IconActionThread">
+        <locale language="en">
+            <entry key="0">Currently no action is running.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Zur Zeit wird keine Aktion ausgeführt.</entry>
         </locale>
     </message>
     
@@ -132,11 +142,51 @@
         <locale language="en">
             <entry key="text">Synchronize workspaces</entry>
             <entry key="tooltip">Synchronize workspaces with your desktop.</entry>
+            
+            <entry key="0">Synchronizing workspaces</entry>
         </locale>
         
         <locale language="de">
             <entry key="text">Arbeitsplätze synchronisieren</entry>
             <entry key="tooltip">Synchronisierung der Arbeitplätze mit dem Desktop.</entry>
+            
+            <entry key="0">Synchronisiere Arbeitplätze</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.task.SynchronizeTasksAction">
+        <locale language="en">
+            <entry key="text">Refresh tasklist</entry>
+            <entry key="tooltip">Refresh the list of tasks.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Aufgabenliste aktualisieren</entry>
+            <entry key="tooltip">Aktualisieren der Aufgabenliste.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.task.AddTaskAction">
+        <locale language="en">
+            <entry key="text">New Task</entry>
+            <entry key="tooltip">Creates a new task.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Neue Aufgabe</entry>
+            <entry key="tooltip">Legt eine neue Aufgabe an.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.action.task.FinishTaskAction">
+        <locale language="en">
+            <entry key="text">Mark Done</entry>
+            <entry key="tooltip">Use this button to finish a running task.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="text">Erledigt</entry>
+            <entry key="tooltip">Verwenden Sie diese Schaltfläche, um eine Aufgabe als erledigt zu markieren.</entry>
         </locale>
     </message>
 </messages>

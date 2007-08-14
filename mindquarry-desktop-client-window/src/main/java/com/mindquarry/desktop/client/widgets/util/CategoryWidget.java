@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.widgets.WidgetBase;
 import com.mindquarry.desktop.client.widgets.task.TaskContainerWidget;
 
@@ -38,14 +39,14 @@ public class CategoryWidget extends WidgetBase {
 
 		TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Tasks");
-		
+
 		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
 				client);
+		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
+				.getName())).setTaskContainer(taskContainer);
 		tabItem.setControl(taskContainer);
 
 		tabItem = new TabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Files");
-
-		taskContainer.asyncRefresh();
 	}
 }

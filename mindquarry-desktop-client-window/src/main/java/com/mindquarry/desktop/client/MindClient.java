@@ -56,6 +56,9 @@ import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
+import com.mindquarry.desktop.client.action.task.AddTaskAction;
+import com.mindquarry.desktop.client.action.task.FinishTaskAction;
+import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.widgets.util.CategoryWidget;
 import com.mindquarry.desktop.client.widgets.util.IconActionThread;
@@ -235,11 +238,11 @@ public class MindClient extends ApplicationWindow {
 	public void showPreferenceDialog(boolean showProfiles) {
 		showPreferenceDialog(showProfiles, true);
 	}
-	
+
 	public void startAction(String description) {
 		iconAction.startAction(description);
 	}
-	
+
 	public void stopAction(String description) {
 		iconAction.stopAction(description);
 	}
@@ -252,20 +255,27 @@ public class MindClient extends ApplicationWindow {
 
 		// create toolbar groups
 		manager.add(new GroupMarker(WORKSPACE_ACTION_GROUP));
-		manager.add(new Separator());
 		manager.add(new GroupMarker(TASK_ACTION_GROUP));
-		manager.add(new Separator());
 		manager.add(new GroupMarker(MANAGEMENT_ACTION_GROUP));
 
 		// fill workspace group
 		manager.appendToGroup(WORKSPACE_ACTION_GROUP,
 				getAction(SynchronizeWorkspacesAction.class.getName()));
+		manager.appendToGroup(WORKSPACE_ACTION_GROUP, new Separator());
+
+		// fill tasks group
+		manager.appendToGroup(TASK_ACTION_GROUP,
+				getAction(SynchronizeTasksAction.class.getName()));
+		manager.appendToGroup(TASK_ACTION_GROUP, getAction(AddTaskAction.class
+				.getName()));
+		manager.appendToGroup(TASK_ACTION_GROUP,
+				getAction(FinishTaskAction.class.getName()));
+		manager.appendToGroup(TASK_ACTION_GROUP, new Separator());
 
 		// fill management group
 		manager.appendToGroup(MANAGEMENT_ACTION_GROUP,
 				getAction(PreferencesAction.class.getName()));
-		manager.appendToGroup(MANAGEMENT_ACTION_GROUP,
-				getAction(CloseAction.class.getName()));
+
 		return manager;
 	}
 
@@ -282,7 +292,7 @@ public class MindClient extends ApplicationWindow {
 
 		// init window shell
 		Window.setDefaultImage(JFaceResources.getImage(CLIENT_IMG_KEY));
-        getShell().addShellListener(new IconifyingShellListener());
+		getShell().addShellListener(new IconifyingShellListener());
 		getShell().setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
 		getShell().setText(APPLICATION_NAME);
 		getShell().setSize(800, 600);
@@ -302,13 +312,18 @@ public class MindClient extends ApplicationWindow {
 		// create workspace actions
 		actions.add(new SynchronizeWorkspacesAction(this));
 
+		// create task actions
+		actions.add(new SynchronizeTasksAction(this));
+		actions.add(new AddTaskAction(this));
+		actions.add(new FinishTaskAction(this));
+
 		// create management actions
 		actions.add(new PreferencesAction(this));
 		actions.add(new OpenWebpageAction(this));
 		actions.add(new CloseAction(this));
 	}
 
-	private ActionBase getAction(String id) {
+	public ActionBase getAction(String id) {
 		for (ActionBase action : actions) {
 			if (action.getId().equals(id)) {
 				return action;
@@ -396,7 +411,7 @@ public class MindClient extends ApplicationWindow {
 		}
 		dlg.open();
 		saveOptions();
-        updateProfileSelector();
+		updateProfileSelector();
 	}
 
 	private void loadOptions() {
@@ -447,18 +462,19 @@ public class MindClient extends ApplicationWindow {
 		});
 		trayItem.addSelectionListener(new SelectionListener() {
 			public void widgetDefaultSelected(SelectionEvent e) {
-                // double click: nothing to do here
+				// double click: nothing to do here
 			}
 
 			public void widgetSelected(SelectionEvent e) {
-                // single left click => show window
-                if (getShell().isVisible()) {
-                    getShell().setVisible(false);
-                } else {
-                    getShell().setVisible(true);
-                    getShell().forceActive();
-                    getShell().forceFocus();
-                }
+				// single left click => show window
+				if (getShell().isVisible()) {
+					getShell().setVisible(false);
+				} else {
+					getShell().setVisible(true);
+					getShell().forceActive();
+					getShell().forceFocus();
+					getShell().setFocus();
+				}
 			}
 		});
 		// profiles sub menu
@@ -498,24 +514,31 @@ public class MindClient extends ApplicationWindow {
 		iconAction.setDaemon(true);
 		iconAction.start();
 	}
-	
+
 	private void hideMainWindow() {
-	    getShell().setVisible(false);
+		getShell().setVisible(false);
 	}
-	
-    // #########################################################################
-    // ### INNER CLASSES
-    // #########################################################################
+
+	// #########################################################################
+	// ### INNER CLASSES
+	// #########################################################################
 
 	class IconifyingShellListener implements ShellListener {
-	    // called when the close button of the window is clicked:
-        public void shellClosed(ShellEvent e) {}
-        public void shellActivated(ShellEvent arg0) {}
-        public void shellDeactivated(ShellEvent arg0) {}
-        public void shellDeiconified(ShellEvent arg0) {}
-        public void shellIconified(ShellEvent arg0) {
-            hideMainWindow();
-        }
-     }
-	
+		// called when the close button of the window is clicked:
+		public void shellClosed(ShellEvent e) {
+		}
+
+		public void shellActivated(ShellEvent arg0) {
+		}
+
+		public void shellDeactivated(ShellEvent arg0) {
+		}
+
+		public void shellDeiconified(ShellEvent arg0) {
+		}
+
+		public void shellIconified(ShellEvent arg0) {
+			hideMainWindow();
+		}
+	}
 }

@@ -103,11 +103,17 @@ public class TaskContainerWidget extends WidgetBase {
 			return;
 		}
 		refreshing = true;
-		new Thread(new Runnable() {
+		Thread updateThread = new Thread(new Runnable() {
 			public void run() {
+				client.startAction(Messages.getString(
+						TaskContainerWidget.class, "1"));
 				refresh();
+				client.stopAction(Messages.getString(TaskContainerWidget.class,
+						"1"));
 			}
-		}, "task-update").start();
+		}, "task-update");
+		updateThread.setDaemon(true);
+		updateThread.start();
 	}
 
 	// #########################################################################
@@ -135,11 +141,10 @@ public class TaskContainerWidget extends WidgetBase {
 		} catch (Exception e) {
 			log.error("Could not update list of tasks for "
 					+ profile.getServerURL(), e); //$NON-NLS-1$
-			String errMessage = "message"; //$NON-NLS-1$
 
-			// TODO fix message
-			// String errMessage = Messages.getString(TaskManager.class, "5");
-			// //$NON-NLS-1$
+			String errMessage = Messages.getString(TaskContainerWidget.class,
+					"5");
+			//$NON-NLS-1$
 			errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
 
 			updateTaskWidgetContents(false, errMessage, false);
@@ -203,13 +208,9 @@ public class TaskContainerWidget extends WidgetBase {
 			public void run() {
 				if (refreshing) {
 					destroyContent();
-					refreshWidget = new TaskUpdateWidget(self, "message" //$NON-NLS-1$
+					refreshWidget = new TaskUpdateWidget(self, Messages
+							.getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
 							+ " ..."); //$NON-NLS-1$
-
-					// TODO fix message
-					// refreshWidget = new TaskUpdateWidget(self, Messages
-					// .getString(TaskManager.class, "2") //$NON-NLS-1$
-					// + " ...", client); //$NON-NLS-1$
 				} else if (errMessage == null && !empty) {
 					destroyContent();
 					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
@@ -229,12 +230,8 @@ public class TaskContainerWidget extends WidgetBase {
 					TableColumn titleCol = new TableColumn(table, SWT.NONE);
 					titleCol.setResizable(false);
 					titleCol.setWidth(200);
-					titleCol.setText("message"); //$NON-NLS-1$
-
-					// TODO fix message
-					// titleCol
-					// .setText(Messages.getString(TaskManager.class, "3"));
-					// //$NON-NLS-1$
+					titleCol.setText(Messages.getString(
+							TaskContainerWidget.class, "3"));//$NON-NLS-1$
 
 					TableViewerColumn vCol = new TableViewerColumn(
 							taskTableViewer, titleCol);
@@ -265,12 +262,8 @@ public class TaskContainerWidget extends WidgetBase {
 							.addDoubleClickListener(new TaskTableDoubleClickListener());
 				} else if (errMessage == null && empty) {
 					destroyContent();
-					noTasksWidget = new NoTasksWidget(self, "message"); //$NON-NLS-1$
-
-					// TODO fix message
-					// noTasksWidget = new NoTasksWidget(self,
-					// Messages.getString(
-					// TaskManager.class, "4"), client); //$NON-NLS-1$
+					noTasksWidget = new NoTasksWidget(self, Messages.getString(
+							TaskContainerWidget.class, "4")); //$NON-NLS-1$
 				} else {
 					destroyContent();
 					errorWidget = new TaskErrorWidget(self, errMessage);
@@ -334,14 +327,12 @@ public class TaskContainerWidget extends WidgetBase {
 									.getBytes("utf-8"));
 						}
 					} catch (Exception e) {
-						// TODO fix message
-
-						// client.showMessage(Messages.getString(
-						// TaskManager.class, "6"), //$NON-NLS-1$
-						// Messages.getString(TaskManager.class, "7")
-						// //$NON-NLS-1$
-						// + ": " //$NON-NLS-1$
-						// + e.toString());
+						client.showMessage(Messages.getString(
+								TaskContainerWidget.class, "6"), //$NON-NLS-1$
+								Messages.getString(TaskContainerWidget.class,
+										"7")//$NON-NLS-1$
+										+ ": " //$NON-NLS-1$
+										+ e.toString());
 						log.error("Could not update task with id " //$NON-NLS-1$
 								+ task.getId(), e);
 					}

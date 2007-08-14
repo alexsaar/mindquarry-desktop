@@ -64,7 +64,7 @@ public class IconActionThread extends Thread {
 	public void run() {
 		while (true) {
 			if (running) {
-				// increase or descrease counter depending on current modus
+				// increase or decrease counter depending on current modus
 				if (ascending) {
 					count++;
 				} else {
@@ -134,11 +134,20 @@ public class IconActionThread extends Thread {
 		} else {
 			tooltip += Messages.getString(IconActionThread.class, "0"); //$NON-NLS-1$
 		}
-		item.setToolTipText(tooltip);
+		final String util = tooltip;
+		shell.getDisplay().syncExec(new Runnable() {
+			public void run() {
+				item.setToolTipText(util);
+			}
+		});
 	}
 
 	private void reset() {
-		item.setImage(getImage(10));
+		shell.getDisplay().syncExec(new Runnable() {
+			public void run() {
+				item.setImage(getImage(10));
+			}
+		});
 		ascending = false;
 		count = 10;
 	}

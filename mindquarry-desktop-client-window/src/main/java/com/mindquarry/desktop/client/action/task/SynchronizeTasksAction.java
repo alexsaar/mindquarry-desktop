@@ -11,15 +11,17 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action.workspace;
+package com.mindquarry.desktop.client.action.task;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.widgets.task.TaskContainerWidget;
 
 /**
  * Add summary documentation here.
@@ -27,15 +29,17 @@ import com.mindquarry.desktop.client.action.ActionBase;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class SynchronizeWorkspacesAction extends ActionBase {
-	public static final String ID = "sync-workspaces";
+public class SynchronizeTasksAction extends ActionBase {
+	public static final String ID = "sync-tasks";
+
+	private TaskContainerWidget taskContainer;
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
-			SynchronizeWorkspacesAction.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
+			SynchronizeTasksAction.class
+					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
 
-	public SynchronizeWorkspacesAction(MindClient client) {
+	public SynchronizeTasksAction(MindClient client) {
 		super(client);
 
 		setId(ID);
@@ -48,6 +52,10 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	}
 
 	public void run() {
-		
+		taskContainer.asyncRefresh();
+	}
+
+	public void setTaskContainer(TaskContainerWidget taskContainer) {
+		this.taskContainer = taskContainer;
 	}
 }
