@@ -40,6 +40,20 @@
             <entry key="7">MindClient Einstellungen konnten nicht gespeichert werden</entry>
         </locale>
     </message>
+
+    <message id="com.mindquarry.desktop.client.widgets.task.TaskTableLabelProvider">
+        <locale language="en">
+            <entry key="0">Title</entry>
+            <entry key="1">Status</entry>
+            <entry key="2">Summary</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Titel</entry>
+            <entry key="1">Status</entry>
+            <entry key="2">Zusammenfassung</entry>
+        </locale>
+    </message>
     
     <message id="com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog">
         <locale language="en">
