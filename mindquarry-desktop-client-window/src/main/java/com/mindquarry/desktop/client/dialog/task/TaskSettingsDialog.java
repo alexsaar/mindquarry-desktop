@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.dialog.DialogBase;
-import com.mindquarry.desktop.client.widgets.util.ImageCombo;
+import com.mindquarry.desktop.client.widget.util.ImageCombo;
 import com.mindquarry.desktop.model.task.Task;
 
 /**

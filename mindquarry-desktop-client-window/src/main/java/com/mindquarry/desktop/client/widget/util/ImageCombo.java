@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *     Tom Seidel      - enhancements for image-handling
  *******************************************************************************/
-package com.mindquarry.desktop.client.widgets.util;
+package com.mindquarry.desktop.client.widget.util;
 
 import java.util.Arrays;
 

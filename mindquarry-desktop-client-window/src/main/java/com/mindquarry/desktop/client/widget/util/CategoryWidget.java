@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.widgets.util;
+package com.mindquarry.desktop.client.widget.util;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -21,8 +21,8 @@ import org.eclipse.swt.widgets.TabItem;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
-import com.mindquarry.desktop.client.widgets.task.TaskContainerWidget;
-import com.mindquarry.desktop.client.widgets.workspace.WorkspaceBrowserWidget;
+import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
+import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 
 /**
  * Add summary documentation here.
