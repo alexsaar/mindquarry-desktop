@@ -16,6 +16,7 @@ package com.mindquarry.desktop.client.workspace.dialog;
 import java.io.File;
 import java.io.FilenameFilter;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -27,12 +28,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -48,6 +48,13 @@ public class SyncSelectionDialog extends TitleAreaDialog {
 	public SyncSelectionDialog(Shell shell) {
 		super(shell);
 		setBlockOnOpen(true);
+	}
+
+	/**
+	 * @see org.eclipse.jface.window.Window#setShellStyle(int)
+	 */
+	protected void setShellStyle(int newShellStyle) {
+		super.setShellStyle(newShellStyle | SWT.RESIZE | SWT.MAX);
 	}
 
 	/**
@@ -87,7 +94,7 @@ public class SyncSelectionDialog extends TitleAreaDialog {
 		col1.setText("Name");
 		col1.setWidth(200);
 		TreeColumn col2 = new TreeColumn(tree, SWT.LEFT);
-		col2.setText("Status");
+		col2.setText("Synchronize as Link");
 		col2.setWidth(200);
 
 		TreeViewer viewer = new TreeViewer(tree);
@@ -95,13 +102,21 @@ public class SyncSelectionDialog extends TitleAreaDialog {
 		viewer.setContentProvider(new TreeContentProvider());
 		viewer.setInput(new File("."));
 		checkItems(tree.getItems());
+		
+		composite = new Composite(composite, SWT.NONE);
+		composite.setLayout(new GridLayout(2, true));
+		
+		Button selectAll = new Button(composite, SWT.PUSH);
+		selectAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		selectAll.setText("Select all");
+		Button deselectAll = new Button(composite, SWT.PUSH);
+		deselectAll.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		deselectAll.setText("Deselect all");		
 		return composite;
 	}
-
+	
 	private void checkItems(TreeItem[] items) {
 		for (TreeItem item : items) {
-			System.err.println(item);
-
 			item.setChecked(true);
 			checkItems(item.getItems());
 		}
@@ -151,8 +166,32 @@ public class SyncSelectionDialog extends TitleAreaDialog {
 
 	private class TreeLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		private Image folderImg = new Image(
+				Display.getCurrent(),
+				getClass()
+						.getResourceAsStream(
+								"/org/tango-project/tango-icon-theme/16x16/places/folder.png")); //$NON-NLS-1$
+
+		private Image fileImg = new Image(
+				Display.getCurrent(),
+				getClass()
+						.getResourceAsStream(
+								"/org/tango-project/tango-icon-theme/16x16/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+
 		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
+			File file = (File) element;
+
+			Image result = null;
+			switch (columnIndex) {
+			case 0:
+				if (file.isDirectory()) {
+					result = folderImg;
+				} else if (file.isFile()) {
+					result = fileImg;
+				}
+				break;
+			}
+			return result;
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
