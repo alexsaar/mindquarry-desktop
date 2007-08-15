@@ -40,23 +40,17 @@ public class TeamTransformer extends TransformerBase {
         team = (Team) model;
     }
 
-    @Path("//teamspace")
-    public void teamspace(Node node) {
-        log.info("Retrieved new teamspace description."); //$NON-NLS-1$
-        applyTemplates(node);
-    }
-
-    @Path("workspace")
+    @Path("/teamspace/workspace")
     public void workspace(Node node) {
         team.setWorkspaceURL(node.getStringValue().trim());
     }
 
-    @Path("name")
+    @Path("/teamspace/name")
     public void name(Node node) {
         team.setName(node.getStringValue().trim());
     }
     
-    @Path("id")
+    @Path("/teamspace/id")
     public void id(Node node) {
         team.setId(node.getStringValue().trim());
     }
