@@ -13,6 +13,10 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
+import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -20,18 +24,25 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.model.team.TeamList;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
- * Add summary documentation here.
+ * Simple table listing the teams with checkboxes.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
 public class TeamlistWidget extends WidgetBase {
+    
+    private Log log = LogFactory.getLog(getClass());
+    
 	/**
 	 * {@inheritDoc}
 	 */
@@ -64,9 +75,32 @@ public class TeamlistWidget extends WidgetBase {
 				| SWT.FULL_SELECTION | SWT.BORDER);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		TableColumn titleColumn = new TableColumn(table, SWT.NONE);
-		titleColumn.setResizable(false);
-
 		TableViewer viewer = new TableViewer(table);
+        viewer.setContentProvider(new TeamlistContentProvider());
+        viewer.setInput(this);
 	}
+	
+    Object[] getTeams() {
+        Profile profile = Profile.getSelectedProfile(client.getPreferenceStore());
+        TeamList teamList;
+        try {
+            teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
+                        profile.getLogin(), profile.getPassword());
+            String[] teamNames = new String[teamList.getTeams().size()];
+            int i = 0;
+            for (Iterator iterator = teamList.getTeams().iterator(); iterator.hasNext();) {
+                Team team = (Team) iterator.next();
+                teamNames[i++] = team.getName();
+            }
+            return teamNames;
+        } catch (Exception e) {
+            client.showMessage(Messages.getString(
+                    "com.mindquarry.desktop.client", //$NON-NLS-1$
+                    "error"), //$NON-NLS-1$
+                    Messages.getString(CreateTaskAction.class, "0")); //$NON-NLS-1$
+            log.error("Error while updating team list at " + profile.getServerURL(), e); //$NON-NLS-1$
+            return new String[]{};
+        }
+    }
+
 }
