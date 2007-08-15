@@ -92,6 +92,14 @@ public class TaskContainerWidget extends WidgetBase {
 	// #########################################################################
 	// ### PUBLIC METHODS
 	// #########################################################################
+	public void addTask(Task task) {
+		if (tableViewer != null) {
+			TaskList content = (TaskList) tableViewer.getInput();
+			content.getTasks().add(task);
+			tableViewer.setInput(content);
+			tableViewer.refresh();
+		}
+	}
 
 	/**
 	 * Runs task update in a separate thread, so that GUI can continue
@@ -220,7 +228,8 @@ public class TaskContainerWidget extends WidgetBase {
 					table.setHeaderVisible(false);
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
-					table.setFont(JFaceResources.getFont(MindClient.TASK_TITLE_FONT_KEY));
+					table.setFont(JFaceResources
+							.getFont(MindClient.TASK_TITLE_FONT_KEY));
 
 					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 							true));
@@ -233,9 +242,9 @@ public class TaskContainerWidget extends WidgetBase {
 					TableColumn col = new TableColumn(table, SWT.NONE);
 					col.setResizable(false);
 					col.setWidth(200);
-					col.setText(Messages.getString(
-							TaskContainerWidget.class, "3"));//$NON-NLS-1$
-					
+					col.setText(Messages.getString(TaskContainerWidget.class,
+							"3"));//$NON-NLS-1$
+
 					TableViewerColumn vCol = new TableViewerColumn(tableViewer,
 							col);
 					vCol.setLabelProvider(new TaskTableLabelProvider());

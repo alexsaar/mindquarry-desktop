@@ -27,6 +27,7 @@ import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
 import com.mindquarry.desktop.client.dialog.team.TeamSelectionDialog;
+import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
@@ -41,6 +42,8 @@ import com.mindquarry.desktop.util.HttpUtilities;
  */
 public class CreateTaskAction extends ActionBase {
 	public static final String ID = "add-task";
+	
+	private TaskContainerWidget taskContainer;
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
@@ -92,17 +95,21 @@ public class CreateTaskAction extends ActionBase {
 				task, true);
 		if (dlg.open() == Window.OK) {
 			try {
+				boolean published = false;
 				List teams = teamList.getTeams();
 				if (teams.size() == 1) {
 					// don't show dialog if user is in only one team anyway
 					Team theOnlyTeam = (Team) teams.get(0);
-					publishTask(task, theOnlyTeam.getId());
+					published = publishTask(task, theOnlyTeam.getId());
 				} else {
 					TeamSelectionDialog tsDlg = new TeamSelectionDialog(
 							new Shell(SWT.ON_TOP), teams);
 					if (tsDlg.open() == Window.OK) {
-						publishTask(task, tsDlg.getSelectedTeam());
+						published = publishTask(task, tsDlg.getSelectedTeam());
 					}
+				}
+				if(published) {
+					taskContainer.addTask(task);
 				}
 			} catch (Exception e) {
 				client.showMessage(Messages.getString(getClass(), "5"), //$NON-NLS-1$
@@ -112,7 +119,8 @@ public class CreateTaskAction extends ActionBase {
 		}
 	}
 
-	private void publishTask(Task task, String teamID) {
+	private boolean publishTask(Task task, String teamID) {
+		boolean published = true;
 		Profile profile = Profile.getSelectedProfile(client
 				.getPreferenceStore());
 		try {
@@ -122,9 +130,15 @@ public class CreateTaskAction extends ActionBase {
 					task.getContentAsXML().asXML().getBytes("utf-8"));//$NON-NLS-1$
 			task.setId(taskID);
 		} catch (Exception e) {
+			published = false;
 			client.showMessage(Messages.getString(getClass(), "5"), //$NON-NLS-1$
 					Messages.getString(getClass(), "6")); //$NON-NLS-1$
 			log.error(Messages.getString(getClass(), "6"), e); //$NON-NLS-1$
 		}
+		return published;
+	}
+	
+	public void setTaskContainer(TaskContainerWidget taskContainer) {
+		this.taskContainer = taskContainer;
 	}
 }

@@ -13,25 +13,20 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
-import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabFolder2Adapter;
-import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
-import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
-import com.mindquarry.desktop.client.widget.task.TaskTableLabelProvider;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 
 /**
@@ -79,7 +74,6 @@ public class CategoryWidget extends WidgetBase {
 				}
 			}
 		});
-
 		CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Tasks");
 		tabItem.setImage(tasksIcon);
@@ -87,7 +81,12 @@ public class CategoryWidget extends WidgetBase {
 
 		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
 				client);
+		
+		// set action fields
 		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
+				.getName())).setTaskContainer(taskContainer);
+		tabItem.setControl(taskContainer);
+		((CreateTaskAction) client.getAction(CreateTaskAction.class
 				.getName())).setTaskContainer(taskContainer);
 		tabItem.setControl(taskContainer);
 

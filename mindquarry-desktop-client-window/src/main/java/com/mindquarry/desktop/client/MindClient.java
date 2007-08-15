@@ -23,6 +23,7 @@ import java.util.List;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
@@ -240,12 +241,22 @@ public class MindClient extends ApplicationWindow {
 		showPreferenceDialog(showProfiles, true);
 	}
 
-	public void startAction(String description) {
+	public void startAction(final String description) {
 		iconAction.startAction(description);
+		getShell().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				getStatusLineManager().setMessage(description);
+			}
+		});
 	}
 
 	public void stopAction(String description) {
 		iconAction.stopAction(description);
+		getShell().getDisplay().syncExec(new Runnable() {
+			public void run() {
+				getStatusLineManager().setMessage("Ready");
+			}
+		});
 	}
 
 	public void setTasksActive() {
