@@ -46,7 +46,7 @@ public class CategoryWidget extends WidgetBase {
 		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
 				.getName())).setTaskContainer(taskContainer);
 		tabItem.setControl(taskContainer);
-
+		
 		tabItem = new TabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Files");
 

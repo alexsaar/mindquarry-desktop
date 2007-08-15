@@ -13,8 +13,6 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
-import java.awt.peer.LightweightPeer;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;

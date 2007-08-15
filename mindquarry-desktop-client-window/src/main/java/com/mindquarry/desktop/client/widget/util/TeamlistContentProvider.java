@@ -17,20 +17,21 @@ package com.mindquarry.desktop.client.widget.util;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.model.team.TeamList;
+
 public class TeamlistContentProvider implements IStructuredContentProvider {
+	public void dispose() {
+	}
 
-    public void dispose() {
-    }
+	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+	}
 
-    public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-    }
-
-    public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof TeamlistWidget) {
-            TeamlistWidget teamlist = (TeamlistWidget) inputElement;
-            return teamlist.getTeams();
-        }
-        return new Object[] {};
-    }
-
+	public Object[] getElements(Object inputElement) {
+		if (inputElement instanceof TeamList) {
+			TeamList teamList = (TeamList) inputElement;
+			return teamList.getTeams().toArray(new Team[0]);
+		}
+		return new Object[] {};
+	}
 }

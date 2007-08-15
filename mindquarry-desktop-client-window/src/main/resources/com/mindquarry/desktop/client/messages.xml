@@ -81,6 +81,16 @@
         </locale>
     </message>
     
+    <message id="com.mindquarry.desktop.client.widget.util.TeamlistLabelProvider.java">
+        <locale language="en">
+            <entry key="0">Name</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Name</entry>
+        </locale>
+    </message>
+    
     <message id="com.mindquarry.desktop.client.dialog.team.TeamSelectionDialog">
         <locale language="en">
             <entry key="0">Select a Team</entry>
