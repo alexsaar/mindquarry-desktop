@@ -25,6 +25,7 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -49,6 +50,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
@@ -164,30 +166,14 @@ public class MindClient extends ApplicationWindow {
 		return store;
 	}
 
-	public synchronized void showMessage(final String title,
-			final String message) {
-		NotificationWidget widget = new NotificationWidget(getShell()
-				.getDisplay());
-		int delay = getPreferenceStore().getInt(
-				GeneralSettingsPage.NOTIFY_DELAY);
-		if (delay == 0) {
-			// at first start the store returns 0 which doesn't make sense, so
-			// use a default:
-			delay = GeneralSettingsPage.DEFAULT_NOTIFY_DELAY;
-		}
-		widget.show(title, message, delay * 1000);
-		widget.dispose();
-	}
-
 	public void saveOptions() {
 		try {
 			store.save();
 		} catch (Exception e) {
-			showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
-					"error"), //$NON-NLS-1$
-					Messages.getString(MindClient.class, "7") //$NON-NLS-1$
-							+ ": "//$NON-NLS-1$
-							+ e.toString());
+			MessageDialog.openError(getShell(), Messages.getString(
+					"com.mindquarry.desktop.client", "error"), Messages
+					.getString(MindClient.class, "7")
+					+ ": " + e.toString());
 		}
 		AutostartUtilities.setAutostart(store
 				.getBoolean(GeneralSettingsPage.AUTOSTART),
@@ -284,9 +270,13 @@ public class MindClient extends ApplicationWindow {
 				getAction(FinishTaskAction.class.getName()).getId());
 		getToolBarManager().update(true);
 	}
-	
+
 	public List getSelectedTeams() {
 		return teamList.getSelectedTeamIDs();
+	}
+
+	public List getTeams() {
+		return teamList.getTeamIDs();
 	}
 
 	// #########################################################################
@@ -322,7 +312,7 @@ public class MindClient extends ApplicationWindow {
 
 	private CategoryWidget categories;
 	private TeamlistWidget teamList;
-	
+
 	protected Control createContents(Composite parent) {
 		initRegistries();
 
@@ -431,7 +421,8 @@ public class MindClient extends ApplicationWindow {
 			profile.setWorkspaceFolder(wsFolder.getAbsolutePath() + "/"
 					+ url.getHost());
 		} catch (MalformedURLException e) {
-			showMessage("Error", e.getLocalizedMessage());
+			MessageDialog.openError(getShell(), "Error", e
+					.getLocalizedMessage());
 			profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
 		}
 		return Profile.addProfile(store, profile);
@@ -464,11 +455,10 @@ public class MindClient extends ApplicationWindow {
 			PreferenceUtilities.checkPreferenceFile(prefFile);
 			store.load();
 		} catch (Exception e) {
-			showMessage(Messages.getString("com.mindquarry.desktop.client", //$NON-NLS-1$
-					"error"), //$NON-NLS-1$
-					Messages.getString(MindClient.class, "6") //$NON-NLS-1$
-							+ ": "//$NON-NLS-1$
-							+ e.toString());
+			MessageDialog.openError(getShell(), Messages.getString(
+					"com.mindquarry.desktop.client", "error"), Messages
+					.getString(MindClient.class, "6")
+					+ ": " + e.toString());
 		}
 	}
 
@@ -533,13 +523,7 @@ public class MindClient extends ApplicationWindow {
 				getAction(OpenWebpageAction.class.getName()));
 		webpageAction.fill(trayMenu, trayMenu.getItemCount());
 
-		// synchronize action
-		ActionContributionItem syncAction = new ActionContributionItem(
-				getAction(SynchronizeWorkspacesAction.class.getName()));
-		syncAction.fill(trayMenu, trayMenu.getItemCount());
-
 		// options dialog
-		menuItem = new MenuItem(trayMenu, SWT.SEPARATOR);
 		ActionContributionItem preferencesAction = new ActionContributionItem(
 				getAction(PreferencesAction.class.getName()));
 		preferencesAction.fill(trayMenu, trayMenu.getItemCount());

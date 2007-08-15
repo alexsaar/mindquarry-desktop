@@ -15,11 +15,14 @@ package com.mindquarry.desktop.client.action.task;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.Messages;
@@ -30,7 +33,6 @@ import com.mindquarry.desktop.client.dialog.team.TeamSelectionDialog;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.team.Team;
-import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.HttpUtilities;
 
@@ -42,7 +44,7 @@ import com.mindquarry.desktop.util.HttpUtilities;
  */
 public class CreateTaskAction extends ActionBase {
 	public static final String ID = "add-task";
-	
+
 	private TaskContainerWidget taskContainer;
 
 	private static final Image IMAGE = new Image(
@@ -63,26 +65,9 @@ public class CreateTaskAction extends ActionBase {
 	}
 
 	public void run() {
-		Profile profile = Profile.getSelectedProfile(client
-				.getPreferenceStore());
+		PreferenceStore store = client.getPreferenceStore();
+		Profile profile = Profile.getSelectedProfile(store);
 
-		// retrieve list of teams
-		TeamList teamList;
-		try {
-			teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
-					profile.getLogin(), profile.getPassword());
-		} catch (Exception e) {
-			client.showMessage(Messages.getString(
-					"com.mindquarry.desktop.client", //$NON-NLS-1$
-					"error"), //$NON-NLS-1$
-					Messages.getString(CreateTaskAction.class, "0")); //$NON-NLS-1$
-			log.error("Error while updating team list.", e); //$NON-NLS-1$
-			return;
-		}
-		if (teamList.getTeams().size() == 0) {
-			client.showMessage(Messages.getString(CreateTaskAction.class, "1"), //$NON-NLS-1$
-					Messages.getString(CreateTaskAction.class, "2")); //$NON-NLS-1$
-		}
 		// create initial task
 		Task task = new Task();
 		task.setStatus("new"); //$NON-NLS-1$
@@ -91,30 +76,34 @@ public class CreateTaskAction extends ActionBase {
 		task.setSummary(Messages.getString(getClass(), "4")); //$NON-NLS-1$
 		task.setDate(null); // no due date by default
 
+		List teams = client.getSelectedTeams();
+		if (teams.size() == 0) {
+			MessageDialog.openWarning(new Shell(SWT.ON_TOP), Messages
+					.getString(CreateTaskAction.class, "1"), Messages
+					.getString(CreateTaskAction.class, "2"));
+			return;
+		}
+
 		TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(SWT.ON_TOP),
 				task, true);
 		if (dlg.open() == Window.OK) {
-			try {
-				boolean published = false;
-				List teams = teamList.getTeams();
-				if (teams.size() == 1) {
-					// don't show dialog if user is in only one team anyway
-					Team theOnlyTeam = (Team) teams.get(0);
-					published = publishTask(task, theOnlyTeam.getId());
-				} else {
-					TeamSelectionDialog tsDlg = new TeamSelectionDialog(
-							new Shell(SWT.ON_TOP), teams);
-					if (tsDlg.open() == Window.OK) {
-						published = publishTask(task, tsDlg.getSelectedTeam());
-					}
+			boolean published = false;
+			String teamID = null;
+			if (teams.size() == 1) {
+				// don't show dialog if user is in only one team anyway
+				teamID = ((Team) teams.get(0)).getId();
+				published = publishTask(task, teamID);
+			} else {
+				// display dialog for team selection
+				TeamSelectionDialog tsDlg = new TeamSelectionDialog(new Shell(
+						SWT.ON_TOP), teams);
+				if (tsDlg.open() == Window.OK) {
+					teamID = tsDlg.getSelectedTeam();
+					published = publishTask(task, teamID);
 				}
-				if(published) {
-					taskContainer.addTask(task);
-				}
-			} catch (Exception e) {
-				client.showMessage(Messages.getString(getClass(), "5"), //$NON-NLS-1$
-						Messages.getString(getClass(), "6")); //$NON-NLS-1$
-				log.error(Messages.getString(getClass(), "6"), e); //$NON-NLS-1$
+			}
+			if (published) {
+				taskContainer.addTask(task);
 			}
 		}
 	}
@@ -131,13 +120,13 @@ public class CreateTaskAction extends ActionBase {
 			task.setId(taskID);
 		} catch (Exception e) {
 			published = false;
-			client.showMessage(Messages.getString(getClass(), "5"), //$NON-NLS-1$
-					Messages.getString(getClass(), "6")); //$NON-NLS-1$
+			MessageDialog.openError(new Shell(SWT.ON_TOP), Messages.getString(
+					getClass(), "5"), Messages.getString(getClass(), "6"));
 			log.error(Messages.getString(getClass(), "6"), e); //$NON-NLS-1$
 		}
 		return published;
 	}
-	
+
 	public void setTaskContainer(TaskContainerWidget taskContainer) {
 		this.taskContainer = taskContainer;
 	}

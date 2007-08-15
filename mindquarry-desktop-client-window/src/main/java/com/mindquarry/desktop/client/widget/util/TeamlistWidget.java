@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -45,12 +46,12 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class TeamlistWidget extends WidgetBase {
-    private static Log log = LogFactory.getLog(TeamlistWidget.class);
-    
-    private TableViewer viewer;
+	private static Log log = LogFactory.getLog(TeamlistWidget.class);
 
-    private List selectedTeamIDs = new ArrayList();
-    
+	private TableViewer viewer;
+
+	private List selectedTeamIDs = new ArrayList();
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -85,56 +86,68 @@ public class TeamlistWidget extends WidgetBase {
 		table.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
 		viewer = new TableViewer(table);
-        viewer.setContentProvider(new TeamlistContentProvider());
-        viewer.setLabelProvider(new TeamlistLabelProvider());
-        table.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // double click, do nothing
-            }
-            
-            public void widgetSelected(SelectionEvent event) {
-                // single click, remeber new team selection:
-                List teamNames  = new ArrayList();
-                TableItem[] tis = table.getItems();
-                for (int i = 0; i < tis.length; i++) {
-                    TableItem ti = tis[i];
-                    if (ti.getChecked()) {
-                        Team team = (Team) ti.getData();
-                        teamNames.add(team.getId());
-                    }
-                }
-                setSelectedTeamIDs(teamNames);
-            }
-        });
-        refresh();
+		viewer.setContentProvider(new TeamlistContentProvider());
+		viewer.setLabelProvider(new TeamlistLabelProvider());
+		table.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// double click, do nothing
+			}
+
+			public void widgetSelected(SelectionEvent event) {
+				// single click, remeber new team selection:
+				List teamNames = new ArrayList();
+				TableItem[] tis = table.getItems();
+				for (int i = 0; i < tis.length; i++) {
+					TableItem ti = tis[i];
+					if (ti.getChecked()) {
+						Team team = (Team) ti.getData();
+						teamNames.add(team.getId());
+					}
+				}
+				setSelectedTeamIDs(teamNames);
+			}
+		});
+		refresh();
 	}
-	
+
 	private void setSelectedTeamIDs(List selectedTeamIDs) {
-	    this.selectedTeamIDs = selectedTeamIDs;
-    }
-	
+		this.selectedTeamIDs = selectedTeamIDs;
+	}
+
 	public List getSelectedTeamIDs() {
-	    return selectedTeamIDs;
+		return selectedTeamIDs;
+	}
+
+	public List getTeamIDs() {
+		List teams = new ArrayList();
+		TableItem[] tis = viewer.getTable().getItems();
+		for (TableItem item : tis) {
+			Team team = (Team) item.getData();
+			teams.add(team.getId());
+		}
+		return teams;
 	}
 
 	public void refresh() {
 		viewer.setInput(getTeams());
 	}
 
-    private TeamList getTeams() {
-        Profile profile = Profile.getSelectedProfile(client.getPreferenceStore());
-        TeamList teamList;
-        try {
-            teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
-                        profile.getLogin(), profile.getPassword());
-            return teamList;
-        } catch (Exception e) {
-            client.showMessage(Messages.getString(
-                    "com.mindquarry.desktop.client", //$NON-NLS-1$
-                    "error"), //$NON-NLS-1$
-                    Messages.getString(CreateTaskAction.class, "0")); //$NON-NLS-1$
-            log.error("Error while updating team list at " + profile.getServerURL(), e); //$NON-NLS-1$
-            return null;
-        }
-    }
- }
+	private TeamList getTeams() {
+		Profile profile = Profile.getSelectedProfile(client
+				.getPreferenceStore());
+		TeamList teamList;
+		try {
+			teamList = new TeamList(profile.getServerURL() + "/teams", //$NON-NLS-1$
+					profile.getLogin(), profile.getPassword());
+			return teamList;
+		} catch (Exception e) {
+			MessageDialog.openError(getShell(), Messages.getString(
+					"com.mindquarry.desktop.client", "error"), Messages
+					.getString(CreateTaskAction.class, "0"));
+			log
+					.error(
+							"Error while updating team list at " + profile.getServerURL(), e); //$NON-NLS-1$
+			return null;
+		}
+	}
+}

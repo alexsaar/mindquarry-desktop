@@ -17,6 +17,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellEditor;
@@ -161,10 +162,8 @@ public class TaskContainerWidget extends WidgetBase {
 
 				updateTaskWidgetContents(false, errMessage, false);
 				refreshing = false;
-				client.showMessage(Messages.getString(
-						"com.mindquarry.desktop.client", //$NON-NLS-1$
-						"error"), //$NON-NLS-1$
-						errMessage);
+				MessageDialog.openError(getShell(), Messages.getString(
+						"com.mindquarry.desktop.client", "error"), errMessage);
 				return;
 			}
 		}

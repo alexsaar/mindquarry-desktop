@@ -211,7 +211,7 @@
             
             <entry key="0">Could not update team list.</entry>
             <entry key="1">Authorization Error</entry>
-            <entry key="2">You are not a member of a team. Thus you can not create new tasks.</entry>
+            <entry key="2">You are not a member of a team or no team is selected. Thus you can not create new tasks.</entry>
             <entry key="3">new task</entry>
             <entry key="4">summary of the task</entry>
             <entry key="5">Network error</entry>
@@ -224,7 +224,7 @@
             
             <entry key="0">Liste der Teams konnte nicht aktualisiert werden.</entry>
             <entry key="1">Autorisierungsfehler</entry>
-            <entry key="2">Sie sind in keinen Team Mitglied und können keine Aufgabe anlegen.</entry>
+            <entry key="2">Sie sind in keinen Team Mitglied oder es wurde kein Team ausgewählt. Sie können keine Aufgabe anlegen.</entry>
             <entry key="3">Neue Aufgabe</entry>
             <entry key="4">Zusammenfassung der Aufgabe</entry>
             <entry key="5">Netzwerkfehler</entry>
