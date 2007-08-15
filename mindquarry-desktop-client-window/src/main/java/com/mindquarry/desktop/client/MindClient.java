@@ -436,14 +436,10 @@ public class MindClient extends ApplicationWindow {
 				MindClient.class
 						.getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
 		reg.put(CLIENT_IMG_KEY, img);
-		img = new Image(
-				Display.getCurrent(),
-				MindClient.class
-						.getResourceAsStream("/org/tango-project/tango-icon-theme/22x22/emotes/face-smile.png")); //$NON-NLS-1$
-
+		
 		FontRegistry fReg = JFaceResources.getFontRegistry();
 		fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
-				10, SWT.ITALIC) });
+				12, SWT.ITALIC) });
 	}
 
 	private void createTrayIconAndMenu(Display display) {
@@ -471,10 +467,7 @@ public class MindClient extends ApplicationWindow {
 				if (getShell().isVisible()) {
 					getShell().setVisible(false);
 				} else {
-					getShell().setVisible(true);
-					getShell().forceActive();
-					getShell().forceFocus();
-					getShell().setFocus();
+					getShell().open();
 				}
 			}
 		});
@@ -525,20 +518,11 @@ public class MindClient extends ApplicationWindow {
 	// #########################################################################
 
 	class IconifyingShellListener implements ShellListener {
-		// called when the close button of the window is clicked:
-		public void shellClosed(ShellEvent e) {
-		}
-
-		public void shellActivated(ShellEvent arg0) {
-		}
-
-		public void shellDeactivated(ShellEvent arg0) {
-		}
-
-		public void shellDeiconified(ShellEvent arg0) {
-		}
-
-		public void shellIconified(ShellEvent arg0) {
+		public void shellClosed(ShellEvent e) {}
+		public void shellActivated(ShellEvent e) {}
+		public void shellDeactivated(ShellEvent e) {}
+		public void shellDeiconified(ShellEvent e) {}
+		public void shellIconified(ShellEvent e) {
 			hideMainWindow();
 		}
 	}

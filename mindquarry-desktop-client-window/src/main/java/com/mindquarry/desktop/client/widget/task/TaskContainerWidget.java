@@ -18,6 +18,8 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -63,7 +65,7 @@ public class TaskContainerWidget extends WidgetBase {
 	private TaskList tasks;
 
 	private Table table;
-	private TableViewer taskTableViewer;
+	private TableViewer tableViewer;
 
 	private Composite noTasksWidget;
 	private Composite refreshWidget;
@@ -184,10 +186,10 @@ public class TaskContainerWidget extends WidgetBase {
 			log.info("Updating list of tasks."); //$NON-NLS-1$
 			getDisplay().syncExec(new Runnable() {
 				public void run() {
-					taskTableViewer.setInput(tasks);
+					tableViewer.setInput(tasks);
 
 					// set background color for every second table item
-					TableItem[] items = taskTableViewer.getTable().getItems();
+					TableItem[] items = tableViewer.getTable().getItems();
 					for (int i = 0; i < items.length; i++) {
 						if (i % 2 == 1) {
 							items[i].setBackground(new Color(Display
@@ -212,54 +214,57 @@ public class TaskContainerWidget extends WidgetBase {
 							.getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
 							+ " ..."); //$NON-NLS-1$
 				} else if (errMessage == null && !empty) {
+					FontRegistry fReg = JFaceResources.getFontRegistry();
+					
 					destroyContent();
 					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
 					table.setLayoutData(new GridData(GridData.FILL_BOTH));
 					table.setHeaderVisible(false);
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
+					table.setFont(fReg.get(MindClient.TASK_TITLE_FONT_KEY));
 
 					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 							true));
 
 					// create table viewer
-					taskTableViewer = new TableViewer(table);
-					taskTableViewer.activateCustomTooltips();
+					tableViewer = new TableViewer(table);
+					tableViewer.activateCustomTooltips();
 
 					// create columns
-					TableColumn titleCol = new TableColumn(table, SWT.NONE);
-					titleCol.setResizable(false);
-					titleCol.setWidth(200);
-					titleCol.setText(Messages.getString(
+					TableColumn col = new TableColumn(table, SWT.NONE);
+					col.setResizable(false);
+					col.setWidth(200);
+					col.setText(Messages.getString(
 							TaskContainerWidget.class, "3"));//$NON-NLS-1$
-
-					TableViewerColumn vCol = new TableViewerColumn(
-							taskTableViewer, titleCol);
+					
+					TableViewerColumn vCol = new TableViewerColumn(tableViewer,
+							col);
 					vCol.setLabelProvider(new TaskTableLabelProvider());
-					taskTableViewer.setColumnPart(vCol, 0);
+					tableViewer.setColumnPart(vCol, 0);
 
 					// create task list
 					CellEditor[] editors = new CellEditor[table
 							.getColumnCount()];
 					editors[0] = new CheckboxCellEditor(table.getParent());
 
-					taskTableViewer.setCellEditors(editors);
-					taskTableViewer.getTable().getColumn(0).setWidth(
-							getSize().x);
+					tableViewer.setCellEditors(editors);
+					tableViewer.getTable().getColumn(0).setWidth(getSize().x);
 					getShell().addListener(SWT.Resize, new Listener() {
 						public void handleEvent(Event event) {
-							taskTableViewer.getTable().getColumn(0).setWidth(
+							tableViewer.getTable().getColumn(0).setWidth(
 									getSize().x);
 						}
 					});
 
-					taskTableViewer
+					tableViewer
 							.setContentProvider(new TaskTableContentProvider());
-					taskTableViewer
+					tableViewer
 							.addSelectionChangedListener(new TaskSelectionChangedListener(
-									taskTableViewer, null));
-					taskTableViewer
-							.addDoubleClickListener(new TaskTableDoubleClickListener());
+									tableViewer, null));
+					tableViewer
+							.addDoubleClickListener(new TaskTableDoubleClickListener(
+									client, table, tableViewer, tasks));
 				} else if (errMessage == null && empty) {
 					destroyContent();
 					noTasksWidget = new NoTasksWidget(self, Messages.getString(
@@ -290,61 +295,5 @@ public class TaskContainerWidget extends WidgetBase {
 				}
 			}
 		});
-	}
-
-	class TaskTableDoubleClickListener implements IDoubleClickListener {
-		public void doubleClick(DoubleClickEvent event) {
-			Profile prof = Profile.getSelectedProfile(client
-					.getPreferenceStore());
-
-			ISelection selection = event.getSelection();
-
-			if (selection instanceof StructuredSelection) {
-				StructuredSelection structsel = (StructuredSelection) selection;
-				Object element = structsel.getFirstElement();
-
-				if (element instanceof Task) {
-					Task task = (Task) element;
-
-					try {
-						// use a clone of the task so cancel works:
-						TaskSettingsDialog dlg = new TaskSettingsDialog(
-								new Shell(Display.getDefault()), task.clone(),
-								false);
-
-						if (dlg.open() == Window.OK) {
-							int taskPos = tasks.getTasks().indexOf(task);
-							if (taskPos != -1) {
-								// can be -1 if set to "done" while the dialog
-								// was open
-								tasks.getTasks().set(taskPos,
-										dlg.getChangedTask());
-							}
-							task = dlg.getChangedTask();
-							HttpUtilities.putAsXML(prof.getLogin(), prof
-									.getPassword(), task.getId(), task
-									.getContentAsXML().asXML()
-									.getBytes("utf-8"));
-						}
-					} catch (Exception e) {
-						client.showMessage(Messages.getString(
-								TaskContainerWidget.class, "6"), //$NON-NLS-1$
-								Messages.getString(TaskContainerWidget.class,
-										"7")//$NON-NLS-1$
-										+ ": " //$NON-NLS-1$
-										+ e.toString());
-						log.error("Could not update task with id " //$NON-NLS-1$
-								+ task.getId(), e);
-					}
-				}
-				if (table != null) {
-					// avoid crash if last bug got closed but the task dialog
-					// was still open and then OK was pressed:
-					// (TODO: task is submitted but not visible until manual
-					// refresh)
-					taskTableViewer.refresh();
-				}
-			}
-		}
 	}
 }

@@ -13,7 +13,10 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DecorationOverlayIcon;
+import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -27,21 +30,50 @@ import com.mindquarry.desktop.model.task.Task;
  *         Saar</a>
  */
 public class TaskTableLabelProvider extends ColumnLabelProvider {
-	private Image newTask = new Image(Display.getCurrent(), getClass()
-			.getResourceAsStream(
-					"/com/mindquarry/icons/16x16/status/task-new.png")); //$NON-NLS-1$
+	private static final String ICON_SIZE = "32x32";//$NON-NLS-1$
+	private static final String OVERLAY_ICON_SIZE = "16x16";//$NON-NLS-1$
 
-	private Image runningTask = new Image(Display.getCurrent(), getClass()
-			.getResourceAsStream(
-					"/com/mindquarry/icons/16x16/status/task-running.png")); //$NON-NLS-1$
+	// priority images
+	private static Image lowPriority = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-low.png")); //$NON-NLS-1$
+	
+	private static Image mediumPriority = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-medium.png")); //$NON-NLS-1$
+	
+	private static Image importantPriority = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-important.png")); //$NON-NLS-1$
+	
+	private static Image criticalPriority = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-critical.png")); //$NON-NLS-1$
 
-	private Image pausedTask = new Image(Display.getCurrent(), getClass()
-			.getResourceAsStream(
-					"/com/mindquarry/icons/16x16/status/task-paused.png")); //$NON-NLS-1$
+	// status images
+	private static Image newTask = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-new.png")); //$NON-NLS-1$
 
-	private Image doneTask = new Image(Display.getCurrent(), getClass()
-			.getResourceAsStream(
-					"/com/mindquarry/icons/16x16/status/task-done.png")); //$NON-NLS-1$
+	private static Image runningTask = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-running.png")); //$NON-NLS-1$
+
+	private static Image pausedTask = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-paused.png")); //$NON-NLS-1$
+
+	private static Image doneTask = new Image(
+			Display.getCurrent(),
+			TaskTableLabelProvider.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-done.png")); //$NON-NLS-1$
 
 	public Image getImage(Object element) {
 		Task task = (Task) element;
@@ -49,15 +81,39 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
 			return null;
 		}
 		if (task.getStatus().equals(Task.STATUS_NEW)) {
-			return newTask;
+			return createOverlayIcon(task, newTask);
 		} else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-			return runningTask;
+			return createOverlayIcon(task, runningTask);
 		} else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-			return pausedTask;
+			return createOverlayIcon(task, pausedTask);
 		} else if (task.getStatus().equals(Task.STATUS_DONE)) {
-			return doneTask;
+			return createOverlayIcon(task, doneTask);
 		}
 		return null;
+	}
+
+	private Image createOverlayIcon(Task task, Image image) {
+		Image overlay = image;
+		if (task.getPriority() != null) {
+			if (task.getPriority().equals(Task.PRIORITY_LOW)) {
+				overlay = new DecorationOverlayIcon(image, ImageDescriptor
+						.createFromImage(lowPriority),
+						IDecoration.BOTTOM_RIGHT).createImage();
+			} else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
+				overlay = new DecorationOverlayIcon(image, ImageDescriptor
+						.createFromImage(mediumPriority),
+						IDecoration.BOTTOM_RIGHT).createImage();
+			} else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
+				overlay = new DecorationOverlayIcon(image, ImageDescriptor
+						.createFromImage(importantPriority),
+						IDecoration.BOTTOM_RIGHT).createImage();
+			} else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
+				overlay = new DecorationOverlayIcon(image, ImageDescriptor
+						.createFromImage(criticalPriority),
+						IDecoration.BOTTOM_RIGHT).createImage();
+			}
+		}
+		return overlay;
 	}
 
 	public String getText(Object element) {

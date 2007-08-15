@@ -27,7 +27,7 @@ import com.mindquarry.desktop.client.MindClient;
  *         Saar</a>
  */
 public abstract class ActionBase extends Action {
-	protected static final String ICON_SIZE = "16x16";
+	protected static final String ICON_SIZE = "32x32";
 
 	protected final String TEXT = Messages.getString(getClass(), "text"); //$NON-NLS-1$
 	protected final String TOOLTIP = Messages.getString(getClass(), "tooltip"); //$NON-NLS-1$
