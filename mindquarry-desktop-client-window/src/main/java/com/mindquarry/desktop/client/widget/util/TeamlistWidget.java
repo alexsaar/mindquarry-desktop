@@ -13,21 +13,28 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
+import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
@@ -38,9 +45,11 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class TeamlistWidget extends WidgetBase {
-    private Log log = LogFactory.getLog(getClass());
+    private static Log log = LogFactory.getLog(TeamlistWidget.class);
     
     private TableViewer viewer;
+
+    private List selectedTeamIDs = new ArrayList();
     
 	/**
 	 * {@inheritDoc}
@@ -70,7 +79,7 @@ public class TeamlistWidget extends WidgetBase {
 		Label label = new Label(parent, SWT.LEFT);
 		label.setText("Teams:");
 
-		Table table = new Table(parent, SWT.SINGLE | SWT.CHECK
+		final Table table = new Table(parent, SWT.SINGLE | SWT.CHECK
 				| SWT.FULL_SELECTION | SWT.BORDER);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
 		table.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
@@ -78,14 +87,41 @@ public class TeamlistWidget extends WidgetBase {
 		viewer = new TableViewer(table);
         viewer.setContentProvider(new TeamlistContentProvider());
         viewer.setLabelProvider(new TeamlistLabelProvider());
+        table.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // double click, do nothing
+            }
+            public void widgetSelected(SelectionEvent event) {
+                // single click, remeber new team selection:
+                List teamNames  = new ArrayList();
+                TableItem[] tis = table.getItems();
+                for (int i = 0; i < tis.length; i++) {
+                    TableItem ti = tis[i];
+                    if (ti.getChecked()) {
+                        Team team = (Team) ti.getData();
+                        teamNames.add(team.getId());
+                    }
+                }
+                setSelectedTeamIDs(teamNames);
+            }
+        });
+
         refresh();
 	}
 	
+	private void setSelectedTeamIDs(List selectedTeamIDs) {
+	    this.selectedTeamIDs = selectedTeamIDs;
+    }
+	
+	public List getSelectedTeamIDs() {
+	    return selectedTeamIDs;
+	}
+
 	public void refresh() {
 		viewer.setInput(getTeams());
 	}
-	
-	private TeamList getTeams() {
+
+    private TeamList getTeams() {
         Profile profile = Profile.getSelectedProfile(client.getPreferenceStore());
         TeamList teamList;
         try {
@@ -101,4 +137,4 @@ public class TeamlistWidget extends WidgetBase {
             return null;
         }
     }
-}
+ }
