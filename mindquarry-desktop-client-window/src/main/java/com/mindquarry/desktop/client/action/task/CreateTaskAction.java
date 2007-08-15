@@ -45,7 +45,7 @@ public class CreateTaskAction extends ActionBase {
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
 			CreateTaskAction.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/task-new.png")); //$NON-NLS-1$
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/task-add.png")); //$NON-NLS-1$
 
 	public CreateTaskAction(MindClient client) {
 		super(client);
@@ -80,7 +80,6 @@ public class CreateTaskAction extends ActionBase {
 			client.showMessage(Messages.getString(CreateTaskAction.class, "1"), //$NON-NLS-1$
 					Messages.getString(CreateTaskAction.class, "2")); //$NON-NLS-1$
 		}
-
 		// create initial task
 		Task task = new Task();
 		task.setStatus("new"); //$NON-NLS-1$

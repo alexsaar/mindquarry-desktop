@@ -55,278 +55,279 @@ import com.mindquarry.desktop.model.task.Task;
 public class TaskSettingsDialog extends DialogBase {
 	private Text title = null;
 	private Text summary = null;
-    
-    private ImageCombo status = null;
-    private ImageCombo priority = null;
 
-    private Button dueDateCheckbox;
-    private DateTime calendar;
+	private ImageCombo status = null;
+	private ImageCombo priority = null;
 
-    private Task task;
-    private boolean isNew = false;
+	private Button dueDateCheckbox;
+	private DateTime calendar;
 
-    public TaskSettingsDialog(Shell shell, Task task, boolean isNew) {
-        super(shell);
-        setShellStyle(SWT.RESIZE);
-        setBlockOnOpen(true);
+	private Task task;
+	private boolean isNew = false;
 
-        this.task = task;
-        this.isNew = isNew;
-    }
-    
-    public Task getChangedTask() {
-        return task;
-    }
+	public TaskSettingsDialog(Shell shell, Task task, boolean isNew) {
+		super(shell);
+		setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
+		setBlockOnOpen(true);
 
-    /**
-     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
-     */
-    protected Control createContents(Composite parent) {
-        Control contents = super.createContents(parent);
+		this.task = task;
+		this.isNew = isNew;
+	}
 
-        setTitle(Messages.getString(TaskSettingsDialog.class, "0")); //$NON-NLS-1$
-        setMessage(Messages.getString(TaskSettingsDialog.class, "1"), //$NON-NLS-1$
-                IMessageProvider.INFORMATION);
-        getShell().setText(Messages.getString(TaskSettingsDialog.class, "2") //$NON-NLS-1$
-                + ": " //$NON-NLS-1$
-                + task.getTitle());
+	public Task getChangedTask() {
+		return task;
+	}
 
-        getShell().setSize(400, 650);
-        getShell().redraw();
-        return contents;
-    }
+	/**
+	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
+	 */
+	protected Control createContents(Composite parent) {
+		Control contents = super.createContents(parent);
 
-    /**
-     * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
-     */
-    protected Control createDialogArea(Composite parent) {
-        Composite composite = (Composite) super.createDialogArea(parent);
-        composite.setLayout(new GridLayout(1, true));
+		setTitle(Messages.getString(TaskSettingsDialog.class, "0")); //$NON-NLS-1$
+		setMessage(Messages.getString(TaskSettingsDialog.class, "1"), //$NON-NLS-1$
+				IMessageProvider.INFORMATION);
+		getShell().setText(Messages.getString(TaskSettingsDialog.class, "2") //$NON-NLS-1$
+				+ ": " //$NON-NLS-1$
+				+ task.getTitle());
 
-        createTaskDataSection(composite);
-        initTask();
-        registerListeners();
+		getShell().setSize(400, 650);
+		getShell().redraw();
+		return contents;
+	}
 
-        return composite;
-    }
+	/**
+	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+	 */
+	protected Control createDialogArea(Composite parent) {
+		Composite composite = (Composite) super.createDialogArea(parent);
+		composite.setLayout(new GridLayout(1, true));
 
-    private void createTaskDataSection(Composite composite) {
-        Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString(TaskSettingsDialog.class, "3") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+		createTaskDataSection(composite);
+		initTask();
+		registerListeners();
 
-        title = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		return composite;
+	}
 
-        label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString(TaskSettingsDialog.class, "4") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+	private void createTaskDataSection(Composite composite) {
+		Label label = new Label(composite, SWT.LEFT);
+		label.setText(Messages.getString(TaskSettingsDialog.class, "3") //$NON-NLS-1$
+				+ ":"); //$NON-NLS-1$
 
-        status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
-                | SWT.FLAT);
-        status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        status.setBackground(Display.getCurrent().getSystemColor(
-                SWT.COLOR_WHITE));
-        status.add("New", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
-                "/com/mindquarry/icons/16x16/status/task-new.png"))); //$NON-NLS-1$
-        status.add("Running", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
-                "/com/mindquarry/icons/16x16/status/task-running.png"))); //$NON-NLS-1$
-        status.add("Paused", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
-                "/com/mindquarry/icons/16x16/status/task-paused.png"))); //$NON-NLS-1$
-        status.add("Done", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
-                "/com/mindquarry/icons/16x16/status/task-done.png"))); //$NON-NLS-1$
-        status.select(0);
+		title = new Text(composite, SWT.BORDER | SWT.SINGLE);
+		title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString(TaskSettingsDialog.class, "5") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+		label = new Label(composite, SWT.LEFT);
+		label.setText(Messages.getString(TaskSettingsDialog.class, "4") //$NON-NLS-1$
+				+ ":"); //$NON-NLS-1$
 
-        priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
-                | SWT.FLAT);
-        priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        priority.setBackground(Display.getCurrent().getSystemColor(
-                SWT.COLOR_WHITE));
-        priority.add("Low", null); //$NON-NLS-1$
-        priority.add("Medium", null); //$NON-NLS-1$
-        priority.add("Important", null); //$NON-NLS-1$
-        priority.add("Critical", null); //$NON-NLS-1$
-        priority.select(0);
+		status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
+				| SWT.FLAT);
+		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		status.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		status.add("New", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
+				"/com/mindquarry/icons/16x16/status/task-new.png"))); //$NON-NLS-1$
+		status.add("Running", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
+				"/com/mindquarry/icons/16x16/status/task-running.png"))); //$NON-NLS-1$
+		status.add("Paused", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
+				"/com/mindquarry/icons/16x16/status/task-paused.png"))); //$NON-NLS-1$
+		status.add("Done", new Image(null, getClass().getResourceAsStream( //$NON-NLS-1$
+				"/com/mindquarry/icons/16x16/status/task-done.png"))); //$NON-NLS-1$
+		status.select(0);
 
-        label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString(TaskSettingsDialog.class, "6") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+		label = new Label(composite, SWT.LEFT);
+		label.setText(Messages.getString(TaskSettingsDialog.class, "5") //$NON-NLS-1$
+				+ ":"); //$NON-NLS-1$
 
-        summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
-                | SWT.WRAP);
-        summary.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent fe) {
-                // select the default text so user can just type new text without 
-                // manually deleting the default text:
-                String defaultText = Messages.getString(TaskSettingsDialog.class,
-                        "0");//$NON-NLS-1$
-                if (summary.getText().equals(defaultText)) {
-                    summary.selectAll();
-                }   
-            }
-            public void focusLost(FocusEvent fe) {
-            }
-        });
-        summary.addKeyListener(new KeyListener() {
-                public void keyPressed(KeyEvent e) {
-                    // don't print tab in text field but move to next
-                    // widget:
-                    if (e.keyCode == SWT.TAB) {
-                        e.doit = false;
-                        dueDateCheckbox.setFocus();
-                    }
-                }
-                public void keyReleased(KeyEvent e) {}
-            });
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_FILL);
-        gridData.heightHint = 100;
-        gridData.widthHint = 360;
-        summary.setLayoutData(gridData);
-        ((GridData) summary.getLayoutData()).verticalSpan = 3;
-        ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
+		priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
+				| SWT.FLAT);
+		priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		priority.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		priority.add("Low", null); //$NON-NLS-1$
+		priority.add("Medium", null); //$NON-NLS-1$
+		priority.add("Important", null); //$NON-NLS-1$
+		priority.add("Critical", null); //$NON-NLS-1$
+		priority.select(0);
 
-        dueDateCheckbox = new Button(composite, SWT.CHECK);
-        dueDateCheckbox.setText(Messages.getString(TaskSettingsDialog.class, "7") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
-        dueDateCheckbox.addSelectionListener(new DueDateCheckboxListener());
-        
-        calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
-        calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    }
+		label = new Label(composite, SWT.LEFT);
+		label.setText(Messages.getString(TaskSettingsDialog.class, "6") //$NON-NLS-1$
+				+ ":"); //$NON-NLS-1$
 
-    /**
-     * Creates the buttons for the button bar
-     * 
-     * @param parent the parent composite
-     */
-    protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-                true);
-        createButton(parent, IDialogConstants.CANCEL_ID,
-                IDialogConstants.CANCEL_LABEL, false);
-    }
+		summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
+				| SWT.WRAP);
+		summary.addFocusListener(new FocusListener() {
+			public void focusGained(FocusEvent fe) {
+				// select the default text so user can just type new text
+				// without
+				// manually deleting the default text:
+				String defaultText = Messages.getString(
+						TaskSettingsDialog.class, "0");//$NON-NLS-1$
+				if (summary.getText().equals(defaultText)) {
+					summary.selectAll();
+				}
+			}
 
-    private void initTask() {
-        if (task.getTitle() != null) {
-            title.setText(task.getTitle());
-            if (isNew) {
-                title.selectAll();
-            } else {
-                title.setSelection(title.getText().length());  // move cursor to end of  text
-            }
-        }
-        if (task.getSummary() != null) {
-            summary.setText(task.getSummary());
-        }
-        /*
-         * if (task.getDescription() != null) {
-         * description.setText(task.getDescription()); }
-         */
-        if (task.getStatus() != null) {
-            if (task.getStatus().equals(Task.STATUS_NEW)) {
-                status.select(0);
-            } else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-                status.select(1);
-            } else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-                status.select(2);
-            } else if (task.getStatus().equals(Task.STATUS_DONE)) {
-                status.select(3);
-            }
-        }
-        if (task.getPriority() != null) {
-            if (task.getPriority().equals(Task.PRIORITY_LOW)) {
-                priority.select(0);
-            } else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
-                priority.select(1);
-            } else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
-                priority.select(2);
-            } else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
-                priority.select(3);
-            }
-        }
-        if (task.getDate() != null && !task.getDate().trim().equals("")) { //$NON-NLS-1$
-            // iso 8601 date format:
-            String[] dateParts = task.getDate().split("-"); //$NON-NLS-1$
-            if (dateParts.length == 3) {
-                calendar.setDay(Integer.valueOf(dateParts[2]).intValue());
-                calendar.setMonth(Integer.valueOf(dateParts[1]).intValue() - 1);
-                calendar.setYear(Integer.valueOf(dateParts[0]).intValue());
-            }
-            dueDateCheckbox.setSelection(true);
-            calendar.setEnabled(true);
-        } else {
-            dueDateCheckbox.setSelection(false);
-            calendar.setEnabled(false);
-        }
-    }
+			public void focusLost(FocusEvent fe) {
+			}
+		});
+		summary.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				// don't print tab in text field but move to next
+				// widget:
+				if (e.keyCode == SWT.TAB) {
+					e.doit = false;
+					dueDateCheckbox.setFocus();
+				}
+			}
 
-    private void registerListeners() {
-        title.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                task.setTitle(title.getText());
-            }
-        });
-        status.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                task.setStatus(status.getText().toLowerCase());
-            }
-        });
-        summary.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                task.setSummary(summary.getText());
-            }
-        });
-        /*
-         * description.addModifyListener(new ModifyListener() { public void
-         * modifyText(ModifyEvent e) {
-         * task.setDescription(description.getText()); } });
-         */
-        priority.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                task.setPriority(priority.getText().toLowerCase());
-            }
-        });
-        calendar.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                setDateFromUserInput();
-            }
-        });
-    }
-    
-    private void setDateFromUserInput() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-        Calendar cal = new GregorianCalendar();
-        cal.set(Calendar.YEAR, calendar.getYear());
-        cal.set(Calendar.MONTH, calendar.getMonth());
-        cal.set(Calendar.DAY_OF_MONTH, calendar.getDay());
-        task.setDate(sdf.format(cal.getTime()));
-    }
+			public void keyReleased(KeyEvent e) {
+			}
+		});
+		GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.VERTICAL_ALIGN_FILL);
+		gridData.heightHint = 100;
+		gridData.widthHint = 360;
+		summary.setLayoutData(gridData);
+		((GridData) summary.getLayoutData()).verticalSpan = 3;
+		((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
-    /**
-     * @see org.eclipse.jface.dialogs.Dialog#cancelPressed()
-     */
-    protected void cancelPressed() {
-        super.cancelPressed();
-    }
-    
-    class DueDateCheckboxListener implements SelectionListener {
-        public void widgetDefaultSelected(SelectionEvent arg0) {
-            // do nothing
-        }
+		dueDateCheckbox = new Button(composite, SWT.CHECK);
+		dueDateCheckbox.setText(Messages.getString(TaskSettingsDialog.class,
+				"7") //$NON-NLS-1$
+				+ ":"); //$NON-NLS-1$
+		dueDateCheckbox.addSelectionListener(new DueDateCheckboxListener());
 
-        public void widgetSelected(SelectionEvent arg0) {
-            if (dueDateCheckbox.getSelection()) {
-                calendar.setEnabled(true);
-                setDateFromUserInput();
-            } else {
-                calendar.setEnabled(false);
-                task.setDate(null);
-            }
-        }
-    }
+		calendar = new DateTime(composite, SWT.BORDER | SWT.CALENDAR);
+		calendar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+	}
+
+	/**
+	 * Creates the buttons for the button bar
+	 * 
+	 * @param parent
+	 *            the parent composite
+	 */
+	protected void createButtonsForButtonBar(Composite parent) {
+		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+				true);
+		createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+	}
+
+	private void initTask() {
+		if (task.getTitle() != null) {
+			title.setText(task.getTitle());
+			if (isNew) {
+				title.selectAll();
+			} else {
+				title.setSelection(title.getText().length()); // move cursor
+																// to end of
+																// text
+			}
+		}
+		if (task.getSummary() != null) {
+			summary.setText(task.getSummary());
+		}
+		/*
+		 * if (task.getDescription() != null) {
+		 * description.setText(task.getDescription()); }
+		 */
+		if (task.getStatus() != null) {
+			if (task.getStatus().equals(Task.STATUS_NEW)) {
+				status.select(0);
+			} else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
+				status.select(1);
+			} else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
+				status.select(2);
+			} else if (task.getStatus().equals(Task.STATUS_DONE)) {
+				status.select(3);
+			}
+		}
+		if (task.getPriority() != null) {
+			if (task.getPriority().equals(Task.PRIORITY_LOW)) {
+				priority.select(0);
+			} else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
+				priority.select(1);
+			} else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
+				priority.select(2);
+			} else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
+				priority.select(3);
+			}
+		}
+		if (task.getDate() != null && !task.getDate().trim().equals("")) { //$NON-NLS-1$
+			// iso 8601 date format:
+			String[] dateParts = task.getDate().split("-"); //$NON-NLS-1$
+			if (dateParts.length == 3) {
+				calendar.setDay(Integer.valueOf(dateParts[2]).intValue());
+				calendar.setMonth(Integer.valueOf(dateParts[1]).intValue() - 1);
+				calendar.setYear(Integer.valueOf(dateParts[0]).intValue());
+			}
+			dueDateCheckbox.setSelection(true);
+			calendar.setEnabled(true);
+		} else {
+			dueDateCheckbox.setSelection(false);
+			calendar.setEnabled(false);
+		}
+	}
+
+	private void registerListeners() {
+		title.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				task.setTitle(title.getText());
+			}
+		});
+		status.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				task.setStatus(status.getText().toLowerCase());
+			}
+		});
+		summary.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				task.setSummary(summary.getText());
+			}
+		});
+		/*
+		 * description.addModifyListener(new ModifyListener() { public void
+		 * modifyText(ModifyEvent e) {
+		 * task.setDescription(description.getText()); } });
+		 */
+		priority.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				task.setPriority(priority.getText().toLowerCase());
+			}
+		});
+		calendar.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				setDateFromUserInput();
+			}
+		});
+	}
+
+	private void setDateFromUserInput() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+		Calendar cal = new GregorianCalendar();
+		cal.set(Calendar.YEAR, calendar.getYear());
+		cal.set(Calendar.MONTH, calendar.getMonth());
+		cal.set(Calendar.DAY_OF_MONTH, calendar.getDay());
+		task.setDate(sdf.format(cal.getTime()));
+	}
+
+	class DueDateCheckboxListener implements SelectionListener {
+		public void widgetDefaultSelected(SelectionEvent arg0) {
+			// do nothing
+		}
+
+		public void widgetSelected(SelectionEvent arg0) {
+			if (dueDateCheckbox.getSelection()) {
+				calendar.setEnabled(true);
+				setDateFromUserInput();
+			} else {
+				calendar.setEnabled(false);
+				task.setDate(null);
+			}
+		}
+	}
 }

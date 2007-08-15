@@ -21,7 +21,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 
@@ -75,7 +75,7 @@ public class TaskTableDoubleClickListener implements IDoubleClickListener {
 				try {
 					// use a clone of the task so cancel works:
 					TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(
-							Display.getDefault()), task.clone(), false);
+							SWT.ON_TOP), task.clone(), false);
 
 					if (dlg.open() == Window.OK) {
 						int taskPos = tasks.getTasks().indexOf(task);
