@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.activation.FileTypeMap;
+import javax.activation.MimetypesFileTypeMap;
+
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
@@ -115,6 +118,11 @@ public class MindClient extends ApplicationWindow {
 	private TrayItem trayItem;
 	private List<ActionBase> actions;
 
+	private CategoryWidget categories;
+	private TeamlistWidget teamList;
+
+	private FileTypeMap mimeMap = MimetypesFileTypeMap.getDefaultFileTypeMap();
+
 	// #########################################################################
 	// ### CONSTRUCTORS & MAIN
 	// #########################################################################
@@ -203,9 +211,12 @@ public class MindClient extends ApplicationWindow {
 			menuItem.setText(profile.getName());
 			menuItem.addListener(SWT.Selection, new Listener() {
 				public void handleEvent(Event event) {
-					Profile.selectProfile(getPreferenceStore(), menuItem
-							.getText());
-					saveOptions();
+					if (((MenuItem) event.widget).getSelection()) {
+						Profile.selectProfile(getPreferenceStore(), menuItem
+								.getText());
+						saveOptions();
+						teamList.refresh();
+					}
 				}
 			});
 			// activate selected profile in menu
@@ -228,6 +239,10 @@ public class MindClient extends ApplicationWindow {
 	}
 
 	public void startAction(final String description) {
+		if (iconAction == null) {
+			// happens at startup
+			return;
+		}
 		iconAction.startAction(description);
 		getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {
@@ -237,6 +252,10 @@ public class MindClient extends ApplicationWindow {
 	}
 
 	public void stopAction(String description) {
+		if (iconAction == null) {
+			// happens at startup
+			return;
+		}
 		iconAction.stopAction(description);
 		getShell().getDisplay().syncExec(new Runnable() {
 			public void run() {
@@ -279,6 +298,10 @@ public class MindClient extends ApplicationWindow {
 		return teamList.getTeamIDs();
 	}
 
+	public String getMimeType(File file) {
+		return mimeMap.getContentType(file);
+	}
+
 	// #########################################################################
 	// ### PROTECTED METHODS
 	// #########################################################################
@@ -309,9 +332,6 @@ public class MindClient extends ApplicationWindow {
 
 		return manager;
 	}
-
-	private CategoryWidget categories;
-	private TeamlistWidget teamList;
 
 	protected Control createContents(Composite parent) {
 		initRegistries();

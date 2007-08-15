@@ -157,9 +157,6 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 			return result;
 		}
 
-		private FileTypeMap mimeMap = MimetypesFileTypeMap
-				.getDefaultFileTypeMap();
-
 		public String getColumnText(Object element, int columnIndex) {
 			File file = (File) element;
 
@@ -170,7 +167,7 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 				break;
 			case 1:
 				if (file.isFile()) {
-					result = mimeMap.getContentType(file);
+					result = client.getMimeType(file);
 					if (result.equals("application/octet-stream")) {
 						try {
 							MagicMatch match = Magic.getMagicMatch(file, true,

@@ -88,40 +88,25 @@ public class TeamlistWidget extends WidgetBase {
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(new TeamlistContentProvider());
 		viewer.setLabelProvider(new TeamlistLabelProvider());
-		table.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// double click, do nothing
-			}
-
-			public void widgetSelected(SelectionEvent event) {
-				// single click, remeber new team selection:
-				List teamNames = new ArrayList();
-				TableItem[] tis = table.getItems();
-				for (int i = 0; i < tis.length; i++) {
-					TableItem ti = tis[i];
-					if (ti.getChecked()) {
-						Team team = (Team) ti.getData();
-						teamNames.add(team.getId());
-					}
-				}
-				setSelectedTeamIDs(teamNames);
-			}
-		});
+		
 		refresh();
 	}
 
-	private void setSelectedTeamIDs(List selectedTeamIDs) {
-		this.selectedTeamIDs = selectedTeamIDs;
-	}
-
 	public List getSelectedTeamIDs() {
-		return selectedTeamIDs;
+		return getTeamIDs(true);
 	}
 
 	public List getTeamIDs() {
+		return getTeamIDs(false);
+	}
+	
+	private List getTeamIDs(boolean selectedOnly) {
 		List teams = new ArrayList();
 		TableItem[] tis = viewer.getTable().getItems();
 		for (TableItem item : tis) {
+			if(selectedOnly && !item.getChecked()) {
+				continue;
+			}
 			Team team = (Team) item.getData();
 			teams.add(team.getId());
 		}
@@ -129,7 +114,15 @@ public class TeamlistWidget extends WidgetBase {
 	}
 
 	public void refresh() {
+		client.startAction("Updating list of teams");
 		viewer.setInput(getTeams());
+		
+		List teams = new ArrayList();
+		TableItem[] tis = viewer.getTable().getItems();
+		for (TableItem item : tis) {
+			item.setChecked(true);
+		}
+		client.stopAction("Updating list of teams");
 	}
 
 	private TeamList getTeams() {

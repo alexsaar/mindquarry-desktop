@@ -13,7 +13,9 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -145,7 +147,13 @@ public class TaskContainerWidget extends WidgetBase {
 		tasks.getTasks().clear();
 
 		// retrieve tasks for all selected teams
-		for (Object item : client.getSelectedTeams()) {
+		final List items = new ArrayList();
+		Display.getDefault().syncExec(new Runnable() {
+			public void run() {
+				items.addAll(client.getSelectedTeams());
+			}
+		});
+		for (Object item : items) {
 			String teamID = (String) item;
 			try {
 				tasks.getTasks().addAll(
