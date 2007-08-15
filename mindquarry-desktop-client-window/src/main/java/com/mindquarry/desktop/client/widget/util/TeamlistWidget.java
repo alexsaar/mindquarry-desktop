@@ -91,6 +91,7 @@ public class TeamlistWidget extends WidgetBase {
             public void widgetDefaultSelected(SelectionEvent arg0) {
                 // double click, do nothing
             }
+            
             public void widgetSelected(SelectionEvent event) {
                 // single click, remeber new team selection:
                 List teamNames  = new ArrayList();
@@ -105,7 +106,6 @@ public class TeamlistWidget extends WidgetBase {
                 setSelectedTeamIDs(teamNames);
             }
         });
-
         refresh();
 	}
 	

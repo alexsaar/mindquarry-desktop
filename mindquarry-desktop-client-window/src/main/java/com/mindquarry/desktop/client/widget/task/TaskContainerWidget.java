@@ -18,17 +18,11 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
@@ -37,20 +31,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
-import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -133,8 +124,8 @@ public class TaskContainerWidget extends WidgetBase {
 		log.info("Starting task list refresh."); //$NON-NLS-1$
 		refreshing = true;
 
-		Profile profile = Profile.getSelectedProfile(client
-				.getPreferenceStore());
+		PreferenceStore store = client.getPreferenceStore();
+		Profile profile = Profile.getSelectedProfile(store);
 
 		// check profile
 		if (profile == null) {
@@ -144,31 +135,40 @@ public class TaskContainerWidget extends WidgetBase {
 		}
 		updateTaskWidgetContents(true, null, false);
 
-		try {
-			log.info("Retrieving list of tasks."); //$NON-NLS-1$
-			tasks = new TaskList(profile.getServerURL() + "/tasks", //$NON-NLS-1$
-					profile.getLogin(), profile.getPassword());
-		} catch (Exception e) {
-			log.error("Could not update list of tasks for "
-					+ profile.getServerURL(), e); //$NON-NLS-1$
+		log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
-			String errMessage = Messages.getString(TaskContainerWidget.class,
-					"5");
-			//$NON-NLS-1$
-			errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
-
-			updateTaskWidgetContents(false, errMessage, false);
-			refreshing = false;
-			client.showMessage(Messages.getString(
-					"com.mindquarry.desktop.client", //$NON-NLS-1$
-					"error"), //$NON-NLS-1$
-					errMessage);
-			return;
+		// cleanup current task list
+		if (tasks == null) {
+			tasks = new TaskList();
 		}
-		// add task to internal list of tasks, if not yet exist
-		PreferenceStore store = client.getPreferenceStore();
+		tasks.getTasks().clear();
 
-		// loop and add tasks
+		// retrieve tasks for all selected teams
+		for (Object item : client.getSelectedTeams()) {
+			String teamID = (String) item;
+			try {
+				tasks.getTasks().addAll(
+						new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
+								+ teamID + "/", profile.getLogin(), profile
+								.getPassword()).getTasks());
+			} catch (Exception e) {
+				log.error("Could not update list of tasks for "
+						+ profile.getServerURL(), e); //$NON-NLS-1$
+
+				String errMessage = Messages.getString(
+						TaskContainerWidget.class, "5"); //$NON-NLS-1$
+				errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+
+				updateTaskWidgetContents(false, errMessage, false);
+				refreshing = false;
+				client.showMessage(Messages.getString(
+						"com.mindquarry.desktop.client", //$NON-NLS-1$
+						"error"), //$NON-NLS-1$
+						errMessage);
+				return;
+			}
+		}
+		// remove tasks that should not be displayed
 		Iterator tIt = tasks.getTasks().iterator();
 		while (tIt.hasNext()) {
 			Task task = (Task) tIt.next();

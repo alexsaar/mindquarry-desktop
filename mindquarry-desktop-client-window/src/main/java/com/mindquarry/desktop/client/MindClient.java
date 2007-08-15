@@ -284,6 +284,10 @@ public class MindClient extends ApplicationWindow {
 				getAction(FinishTaskAction.class.getName()).getId());
 		getToolBarManager().update(true);
 	}
+	
+	public List getSelectedTeams() {
+		return teamList.getSelectedTeamIDs();
+	}
 
 	// #########################################################################
 	// ### PROTECTED METHODS
@@ -316,14 +320,17 @@ public class MindClient extends ApplicationWindow {
 		return manager;
 	}
 
+	private CategoryWidget categories;
+	private TeamlistWidget teamList;
+	
 	protected Control createContents(Composite parent) {
 		initRegistries();
 
 		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		new TeamlistWidget(sashForm, SWT.NONE, this);
-		new CategoryWidget(sashForm, SWT.NONE, this);
+		teamList = new TeamlistWidget(sashForm, SWT.NONE, this);
+		categories = new CategoryWidget(sashForm, SWT.NONE, this);
 
 		sashForm.setWeights(new int[] { 1, 3 });
 
