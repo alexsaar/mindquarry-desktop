@@ -91,6 +91,7 @@ public class MindClient extends ApplicationWindow {
 	public static final String CLIENT_IMG_KEY = "client-icon";
 
 	public static final String TASK_TITLE_FONT_KEY = "task-title";
+	public static final String TEAM_NAME_FONT_KEY = "team-name";
 
 	public static final String WORKSPACE_ACTION_GROUP = "workspace-actions";
 	public static final String TASK_ACTION_GROUP = "task-actions";
@@ -440,6 +441,8 @@ public class MindClient extends ApplicationWindow {
 		FontRegistry fReg = JFaceResources.getFontRegistry();
 		fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
 				12, SWT.ITALIC) });
+		fReg.put(TEAM_NAME_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
+				10, SWT.NONE) });
 	}
 
 	private void createTrayIconAndMenu(Display display) {
@@ -474,7 +477,7 @@ public class MindClient extends ApplicationWindow {
 		// profiles sub menu
 		MenuItem menuItem = new MenuItem(trayMenu, SWT.CASCADE);
 		menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
-
+		
 		profilesMenu = new Menu(shell, SWT.DROP_DOWN);
 		menuItem.setMenu(profilesMenu);
 

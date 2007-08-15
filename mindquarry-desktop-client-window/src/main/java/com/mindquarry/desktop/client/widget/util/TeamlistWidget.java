@@ -15,6 +15,7 @@ package com.mindquarry.desktop.client.widget.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -72,6 +73,7 @@ public class TeamlistWidget extends WidgetBase {
 		Table table = new Table(parent, SWT.SINGLE | SWT.CHECK
 				| SWT.FULL_SELECTION | SWT.BORDER);
 		table.setLayoutData(new GridData(GridData.FILL_BOTH));
+		table.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
 		viewer = new TableViewer(table);
         viewer.setContentProvider(new TeamlistContentProvider());

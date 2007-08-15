@@ -214,15 +214,13 @@ public class TaskContainerWidget extends WidgetBase {
 							.getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
 							+ " ..."); //$NON-NLS-1$
 				} else if (errMessage == null && !empty) {
-					FontRegistry fReg = JFaceResources.getFontRegistry();
-					
 					destroyContent();
 					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
 					table.setLayoutData(new GridData(GridData.FILL_BOTH));
 					table.setHeaderVisible(false);
 					table.setLinesVisible(false);
 					table.setToolTipText(""); //$NON-NLS-1$
-					table.setFont(fReg.get(MindClient.TASK_TITLE_FONT_KEY));
+					table.setFont(JFaceResources.getFont(MindClient.TASK_TITLE_FONT_KEY));
 
 					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 							true));
