@@ -93,4 +93,8 @@ public class Team extends ModelBase {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public String toString() {
+        return id;
+    }
 }
