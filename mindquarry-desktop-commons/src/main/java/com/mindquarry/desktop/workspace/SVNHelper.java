@@ -16,6 +16,8 @@ package com.mindquarry.desktop.workspace;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Info;
@@ -35,6 +37,8 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
  *         Saar</a>
  */
 public abstract class SVNHelper implements Notify2 {
+    private Log log = LogFactory.getLog(this.getClass());
+    
     public static final int CONFLICT_RESET_FROM_SERVER = 0;
 
     public static final int CONFLICT_OVERRIDE_FROM_WC = 1;
@@ -111,16 +115,18 @@ public abstract class SVNHelper implements Notify2 {
         try {
             Status[] stati = client.status(localPath, true, false, true);
             for (Status stat : stati) {
-/*                if (stat.getTextStatus() == StatusKind.unversioned) {
-                    client.add(stat.getPath(), true);
-                }
-                else */
-                if (stat.getTextStatus() == StatusKind.missing) {
+                if (stat.getTextStatus() == StatusKind.missing || stat.getTextStatus() == StatusKind.deleted) {
+                    // first remove files that the user deleted manually (otherwise
+                    // the update following later would re-fetch them):
+                    //System.err.println("remove and commit " + stat.getPath() + " -> stat.getTextStatus() " + stat.getTextStatus());
                     client.remove(new String[] { stat.getPath() }, null, true);
+                    client.commit(new String[] { stat.getPath() }, null, true);
                 }
             }
         }   
-        catch (ClientException e) { }
+        catch (ClientException e) {
+            log.error(e.toString(), e);
+        }
     }
 
     /**
@@ -177,11 +183,6 @@ public abstract class SVNHelper implements Notify2 {
                 }
                 if (isConflictRelatedFile) {
                     continue;
-                }
-
-                // remove files that the user deleted manually
-                if (stat.getTextStatus() == StatusKind.missing) {
-                    client.remove(new String[] { stat.getPath() }, null, true);
                 }
 
                 // add changed or modified files to the results array
