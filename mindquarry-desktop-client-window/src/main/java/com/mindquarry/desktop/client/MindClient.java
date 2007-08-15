@@ -26,7 +26,6 @@ import javax.activation.MimetypesFileTypeMap;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceManager;
@@ -53,7 +52,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
@@ -63,7 +61,6 @@ import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
-import com.mindquarry.desktop.client.action.task.FinishTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.widget.util.CategoryWidget;
@@ -77,7 +74,6 @@ import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
-import com.mindquarry.desktop.widget.NotificationWidget;
 
 /**
  * Main class for the Mindquarry Desktop Client.
@@ -272,8 +268,6 @@ public class MindClient extends ApplicationWindow {
 				getAction(SynchronizeTasksAction.class.getName()));
 		getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
 				getAction(CreateTaskAction.class.getName()));
-		getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
-				getAction(FinishTaskAction.class.getName()));
 		getToolBarManager().update(true);
 	}
 
@@ -285,8 +279,6 @@ public class MindClient extends ApplicationWindow {
 				getAction(SynchronizeTasksAction.class.getName()).getId());
 		getToolBarManager().remove(
 				getAction(CreateTaskAction.class.getName()).getId());
-		getToolBarManager().remove(
-				getAction(FinishTaskAction.class.getName()).getId());
 		getToolBarManager().update(true);
 	}
 
@@ -322,8 +314,6 @@ public class MindClient extends ApplicationWindow {
 				getAction(SynchronizeTasksAction.class.getName()));
 		manager.appendToGroup(TASK_ACTION_GROUP,
 				getAction(CreateTaskAction.class.getName()));
-		manager.appendToGroup(TASK_ACTION_GROUP,
-				getAction(FinishTaskAction.class.getName()));
 
 		// fill management group
 		manager.appendToGroup(MANAGEMENT_ACTION_GROUP, new Separator());
@@ -370,7 +360,6 @@ public class MindClient extends ApplicationWindow {
 		// create task actions
 		actions.add(new SynchronizeTasksAction(this));
 		actions.add(new CreateTaskAction(this));
-		actions.add(new FinishTaskAction(this));
 
 		// create management actions
 		actions.add(new PreferencesAction(this));
