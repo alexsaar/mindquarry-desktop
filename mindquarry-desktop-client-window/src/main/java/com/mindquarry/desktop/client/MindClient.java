@@ -248,6 +248,32 @@ public class MindClient extends ApplicationWindow {
 		iconAction.stopAction(description);
 	}
 
+	public void setTasksActive() {
+		getToolBarManager().remove(
+				getAction(SynchronizeWorkspacesAction.class.getName()).getId());
+
+		getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
+				getAction(SynchronizeTasksAction.class.getName()));
+		getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
+				getAction(CreateTaskAction.class.getName()));
+		getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
+				getAction(FinishTaskAction.class.getName()));
+		getToolBarManager().update(true);
+	}
+
+	public void setFilesActive() {
+		getToolBarManager().appendToGroup(WORKSPACE_ACTION_GROUP,
+				getAction(SynchronizeWorkspacesAction.class.getName()));
+
+		getToolBarManager().remove(
+				getAction(SynchronizeTasksAction.class.getName()).getId());
+		getToolBarManager().remove(
+				getAction(CreateTaskAction.class.getName()).getId());
+		getToolBarManager().remove(
+				getAction(FinishTaskAction.class.getName()).getId());
+		getToolBarManager().update(true);
+	}
+
 	// #########################################################################
 	// ### PROTECTED METHODS
 	// #########################################################################
@@ -260,20 +286,19 @@ public class MindClient extends ApplicationWindow {
 		manager.add(new GroupMarker(MANAGEMENT_ACTION_GROUP));
 
 		// fill workspace group
-		manager.appendToGroup(WORKSPACE_ACTION_GROUP,
-				getAction(SynchronizeWorkspacesAction.class.getName()));
-		manager.appendToGroup(WORKSPACE_ACTION_GROUP, new Separator());
+		// manager.appendToGroup(WORKSPACE_ACTION_GROUP,
+		// getAction(SynchronizeWorkspacesAction.class.getName()));
 
 		// fill tasks group
 		manager.appendToGroup(TASK_ACTION_GROUP,
 				getAction(SynchronizeTasksAction.class.getName()));
-		manager.appendToGroup(TASK_ACTION_GROUP, getAction(CreateTaskAction.class
-				.getName()));
+		manager.appendToGroup(TASK_ACTION_GROUP,
+				getAction(CreateTaskAction.class.getName()));
 		manager.appendToGroup(TASK_ACTION_GROUP,
 				getAction(FinishTaskAction.class.getName()));
-		manager.appendToGroup(TASK_ACTION_GROUP, new Separator());
 
 		// fill management group
+		manager.appendToGroup(MANAGEMENT_ACTION_GROUP, new Separator());
 		manager.appendToGroup(MANAGEMENT_ACTION_GROUP,
 				getAction(PreferencesAction.class.getName()));
 
@@ -437,7 +462,7 @@ public class MindClient extends ApplicationWindow {
 				MindClient.class
 						.getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
 		reg.put(CLIENT_IMG_KEY, img);
-		
+
 		FontRegistry fReg = JFaceResources.getFontRegistry();
 		fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
 				12, SWT.ITALIC) });
@@ -477,7 +502,7 @@ public class MindClient extends ApplicationWindow {
 		// profiles sub menu
 		MenuItem menuItem = new MenuItem(trayMenu, SWT.CASCADE);
 		menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
-		
+
 		profilesMenu = new Menu(shell, SWT.DROP_DOWN);
 		menuItem.setMenu(profilesMenu);
 
@@ -521,10 +546,18 @@ public class MindClient extends ApplicationWindow {
 	// #########################################################################
 
 	class IconifyingShellListener implements ShellListener {
-		public void shellClosed(ShellEvent e) {}
-		public void shellActivated(ShellEvent e) {}
-		public void shellDeactivated(ShellEvent e) {}
-		public void shellDeiconified(ShellEvent e) {}
+		public void shellClosed(ShellEvent e) {
+		}
+
+		public void shellActivated(ShellEvent e) {
+		}
+
+		public void shellDeactivated(ShellEvent e) {
+		}
+
+		public void shellDeiconified(ShellEvent e) {
+		}
+
 		public void shellIconified(ShellEvent e) {
 			hideMainWindow();
 		}

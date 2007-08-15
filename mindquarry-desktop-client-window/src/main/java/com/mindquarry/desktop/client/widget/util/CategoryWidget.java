@@ -13,15 +13,25 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Adapter;
+import org.eclipse.swt.custom.CTabFolderEvent;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
+import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
+import com.mindquarry.desktop.client.widget.task.TaskTableLabelProvider;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 
 /**
@@ -31,24 +41,59 @@ import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
  *         Saar</a>
  */
 public class CategoryWidget extends WidgetBase {
+	private static final String ICON_SIZE = "22x22";//$NON-NLS-1$
+
+	private static Image tasksIcon = new Image(
+			Display.getCurrent(),
+			CategoryWidget.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-tasks.png")); //$NON-NLS-1$
+
+	private static Image docsIcon = new Image(
+			Display.getCurrent(),
+			CategoryWidget.class
+					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
+
 	public CategoryWidget(Composite parent, int style, MindClient client) {
 		super(parent, style, client);
 	}
 
 	protected void createContents(Composite parent) {
-		TabFolder tabFolder = new TabFolder(parent, SWT.TOP);
+		final CTabFolder tabFolder = new CTabFolder(parent, SWT.TOP | SWT.FLAT
+				| SWT.BORDER);
+		tabFolder.setSimple(false);
+		tabFolder.setUnselectedImageVisible(false);
+		tabFolder.setUnselectedCloseVisible(false);
+		tabFolder.setMinimizeVisible(false);
+		tabFolder.setMaximizeVisible(false);
 
-		TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+		tabFolder.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// nothing to do here
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				if (tabFolder.getSelection().getText().equals("Tasks")) {
+					client.setTasksActive();
+				} else if (tabFolder.getSelection().getText().equals("Files")) {
+					client.setFilesActive();
+				}
+			}
+		});
+
+		CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Tasks");
+		tabItem.setImage(tasksIcon);
+		tabFolder.setSelection(tabItem);
 
 		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
 				client);
 		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
 				.getName())).setTaskContainer(taskContainer);
 		tabItem.setControl(taskContainer);
-		
-		tabItem = new TabItem(tabFolder, SWT.NULL);
+
+		tabItem = new CTabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Files");
+		tabItem.setImage(docsIcon);
 
 		WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
 				tabFolder, client);
