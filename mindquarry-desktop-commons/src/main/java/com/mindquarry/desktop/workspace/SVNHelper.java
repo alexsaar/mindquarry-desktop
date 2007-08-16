@@ -221,13 +221,10 @@ public abstract class SVNHelper implements Notify2 {
             for (ChangePath change : changes) {
                 String absPath = change.getPath();
                 
-                String path;
+                String path = absPath;
                 // truncate path to be relative to wc root
                 if (absPath.length() > trimLength) {
                     path = absPath.substring(trimLength + 1);
-                }
-                else {
-                    continue;
                 }
                 
                 // get the items local revision
