@@ -11,7 +11,9 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.workspace;
+package com.mindquarry.desktop.workspace.conflict;
+
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Callback handler the client of SVNSynchronizer has to implement (ie. GUI). 
@@ -21,4 +23,6 @@ package com.mindquarry.desktop.workspace;
  */
 public interface ConflictHandler {
 	public void visit(AddConflict conflict) throws CancelException;
+
+	public void visit(AddInDeletedConflict conflict) throws CancelException;
 }

@@ -11,29 +11,28 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.workspace;
+package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.workspace.exception.CancelException;
+
 /**
- * Local add conflicts with remote add of object with the same name.
+ * Local add conflicts with remotely deleted parent folder.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- * 
  */
-public class AddConflict extends Conflict {
+public class AddInDeletedConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
-		UNKNOWN, RENAME, REPLACE;
+		UNKNOWN, READD, DELETE, MOVE;
 	}
 	
-	private String newName;
-	
-	public AddConflict(Status localStatus, Status remoteStatus) {
-		super(localStatus, remoteStatus);
+	public AddInDeletedConflict(Status localStatus) {
+		super(localStatus);
 	}
 
 	public void handleBeforeUpdate() {
@@ -42,23 +41,16 @@ public class AddConflict extends Conflict {
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			System.err.println("AddConflict with no action set: " + localStatus.getPath());
+			System.err.println("AddInDeletedConflict with no action set: " + localStatus.getPath());
 			break;
 			
-		case RENAME:
-			System.out.println("renaming to " + newName);
-			
-			if (!file.renameTo(new File(file.getParentFile(), newName))) {
-				System.err.println("rename to " + newName + " failed.");
-				// TODO: callback for error handling
-				System.exit(-1);
-			}
-			// FIXME: if status.getTextStatus() == StatusKind.added we have to
-			// revert before the rename (only when user uses svn client with svn add)
+		case READD:
+			System.out.println("readding to " + localStatus.getPath());
+			// nothing to do here, got this for free
 			break;
 			
-		case REPLACE:
-			System.out.println("replacing with new file/folder from server: " + localStatus.getPath());
+		case DELETE:
+			System.out.println("deleting file/folder: " + localStatus.getPath());
 			
 			if (!file.delete()) {
 				System.err.println("deleting failed.");
@@ -77,16 +69,19 @@ public class AddConflict extends Conflict {
 		handler.visit(this);
 	}
 
-	public void doRename(String newName) {
-		this.action = Action.RENAME;
-		this.newName = newName;
+	public void doReAdd() {
+		this.action = Action.READD;
 	}
 	
-	public void doReplace() {
-		this.action = Action.REPLACE;
+	public void doDelete() {
+		this.action = Action.DELETE;
 	}
+	
+//	public void doMove() {
+//		this.action = Action.MOVE;
+//	}
 	
 	public String toString() {
-		return "Add/Add Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+		return "Add/InDeleted Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
 }

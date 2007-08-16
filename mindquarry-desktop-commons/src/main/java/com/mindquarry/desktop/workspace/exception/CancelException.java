@@ -1,4 +1,4 @@
-package com.mindquarry.desktop.workspace;
+package com.mindquarry.desktop.workspace.exception;
 
 public class CancelException extends Exception {
 

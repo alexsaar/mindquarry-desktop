@@ -9,6 +9,11 @@ import org.junit.Test;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 
+import com.mindquarry.desktop.workspace.conflict.AddConflict;
+import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
+import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.exception.CancelException;
+
 public class SVNHelper2Test implements Notify2, ConflictHandler {
 	private String repositoryURL = "https://secure.mindquarry.com/repos/test/trunk";
 
@@ -47,8 +52,13 @@ public class SVNHelper2Test implements Notify2, ConflictHandler {
 	}
 
 	public void visit(AddConflict conflict) throws CancelException {
-		System.out.println("Rename locally added file to: ");
+		System.out.print("Rename locally added file/folder to: ");
 		// FIXME: check for non-existing file/foldername
 		conflict.doRename(readLine());
+	}
+
+	public void visit(AddInDeletedConflict conflict)
+			throws CancelException {
+		conflict.doReAdd();
 	}
 }

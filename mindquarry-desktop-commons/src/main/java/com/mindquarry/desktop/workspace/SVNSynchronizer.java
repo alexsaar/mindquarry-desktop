@@ -29,7 +29,14 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
+import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
+
+import com.mindquarry.desktop.workspace.conflict.AddConflict;
+import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
+import com.mindquarry.desktop.workspace.conflict.Conflict;
+import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Helper class for working with SVNkit.
@@ -128,6 +135,10 @@ public class SVNSynchronizer {
 				return left.getPath().compareTo(right.getPath());
 			}
 		});
+		
+		for (Status s: statusList) {
+			System.out.println(s.getTextStatusDescription() + " " + s.getPath());
+		}
 
 		return statusList;
 	}
@@ -141,7 +152,14 @@ public class SVNSynchronizer {
 	 */
 	public List<Status> getRemoteAndLocalChanges() throws ClientException {
 		System.out.println("remote changes:");
-		return Arrays.asList(client.status(localPath, true, true, false));
+		
+		List<Status> statusList = Arrays.asList(client.status(localPath, true, true, false));
+		
+		for (Status s: statusList) {
+			System.out.println(Kind.getDescription(s.getRepositoryTextStatus()) + " " + s.getPath());
+		}
+		
+		return statusList;
 	}
 
 	private List<Conflict> analyzeChanges(List<Status> localChanges,
@@ -159,17 +177,36 @@ public class SVNSynchronizer {
 			if (status.getTextStatus() == StatusKind.added
 					|| status.getTextStatus() == StatusKind.unversioned) {
 				
-				// check for remote version
+				// check for existence of a remote version
 				if (remoteAndLocalMap.containsKey(status.getPath())) {
 					Status remoteStatus = remoteAndLocalMap.get(status.getPath());
 					// if the file exists remotely, it will have a URL set
 					if (remoteStatus.getUrl() != null) {
-						conflicts.add(new AddConflict(status, remoteStatus));
+						conflicts.add(new AddConflict(status));
+					}
+				}
+				// check for adds in remotely deleted folders
+				for(Status remoteStatus : remoteAndLocalChanges) {
+					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
+							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
+						conflicts.add(new AddInDeletedConflict(status));
 					}
 				}
 			}
 		}
 		return conflicts;
+	}
+
+	private boolean isParent(String parentPath, String childPath) {
+		File parent = new File(parentPath);
+		File child = new File(childPath);
+		
+		while ((child = child.getParentFile()) != null) {
+			if (child.equals(parent)) {
+				return true;
+			}
+		}		
+		return false;
 	}
 
 	private void askUserForConflicts(List<Conflict> conflicts,

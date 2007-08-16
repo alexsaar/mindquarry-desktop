@@ -1,6 +1,8 @@
-package com.mindquarry.desktop.workspace;
+package com.mindquarry.desktop.workspace.conflict;
 
 import org.tigris.subversion.javahl.Status;
+
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Abstract base class for structure conflicts.
@@ -10,12 +12,9 @@ import org.tigris.subversion.javahl.Status;
  */
 public abstract class Conflict {
 	protected Status localStatus;
-	
-	protected Status remoteStatus;
 
-	public Conflict(Status localStatus, Status remoteStatus) {
+	public Conflict(Status localStatus) {
 		this.localStatus = localStatus;
-		this.remoteStatus = remoteStatus;
 	}
 	
 	public abstract void handleBeforeUpdate();
@@ -25,9 +24,5 @@ public abstract class Conflict {
 
 	public Status getLocalStatus() {
 		return localStatus;
-	}
-
-	public Status getRemoteStatus() {
-		return remoteStatus;
 	}
 }
