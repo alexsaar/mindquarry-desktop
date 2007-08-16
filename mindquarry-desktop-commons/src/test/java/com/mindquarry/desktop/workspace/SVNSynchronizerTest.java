@@ -12,16 +12,20 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
-public class SVNHelper2Test implements Notify2, ConflictHandler {
+public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 	private String repositoryURL = "https://secure.mindquarry.com/repos/test/trunk";
 
 	private String localPath = "C:\\Dokumente und Einstellungen\\alexs\\Eigene Dateien\\tmp\\svn-test";
+    //private String localPath = "/Users/alex/Mindquarry/work/checkout/super/";
 
 	private String username = "tester";
+    //private String username = "admin";
 
 	private String password = "sec4561";
+    //private String password = "admin";
 
 	private SVNSynchronizer helper;
 
@@ -61,4 +65,9 @@ public class SVNHelper2Test implements Notify2, ConflictHandler {
 			throws CancelException {
 		conflict.doReAdd();
 	}
+
+    public void visit(DeleteWithModificationConflict conflict)
+            throws CancelException {
+        conflict.doKeepAdded();
+    }
 }

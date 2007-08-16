@@ -22,7 +22,10 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  *
  */
 public interface ConflictHandler {
+    
 	public void visit(AddConflict conflict) throws CancelException;
 
 	public void visit(AddInDeletedConflict conflict) throws CancelException;
+
+    public void visit(DeleteWithModificationConflict conflict) throws CancelException;
 }

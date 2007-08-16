@@ -36,6 +36,7 @@ import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -93,7 +94,7 @@ public class SVNSynchronizer {
 
 			handleConflictsBeforeUpdate(conflicts);
 			// here something goes over the wire
-			client.update(localPath, Revision.HEAD, true);
+			//client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
 
 			
@@ -192,6 +193,12 @@ public class SVNSynchronizer {
 						conflicts.add(new AddInDeletedConflict(status));
 					}
 				}
+			// locally deleted conflicts with remote (missing is the typcial case)
+			} else if (status.getTextStatus() == StatusKind.deleted ||
+			        status.getTextStatus() == StatusKind.missing) {
+			    // TODO: check for remote adds/mods
+			    // TODO: collect *all* remote adds/mods and add them to the conflict object
+			    //conflicts.add(new DeleteWithModificationConflict(status));
 			}
 		}
 		return conflicts;
