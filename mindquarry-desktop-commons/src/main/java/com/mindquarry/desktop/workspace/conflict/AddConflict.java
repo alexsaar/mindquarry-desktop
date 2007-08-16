@@ -23,7 +23,8 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * Local add conflicts with remote add of object with the same name.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- * 
+ * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
+ * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public class AddConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
@@ -44,14 +45,14 @@ public class AddConflict extends Conflict {
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			System.err.println("AddConflict with no action set: " + localStatus.getPath());
+			log.error("AddConflict with no action set: " + localStatus.getPath());
 			break;
 			
 		case RENAME:
-			System.out.println("renaming to " + newName);
+			log.info("renaming to " + newName);
 			
 			if (!file.renameTo(new File(file.getParentFile(), newName))) {
-				System.err.println("rename to " + newName + " failed.");
+				log.error("rename to " + newName + " failed.");
 				// TODO: callback for error handling
 				System.exit(-1);
 			}
@@ -60,10 +61,10 @@ public class AddConflict extends Conflict {
 			break;
 			
 		case REPLACE:
-			System.out.println("replacing with new file/folder from server: " + localStatus.getPath());
+			log.info("replacing with new file/folder from server: " + localStatus.getPath());
 			
 			if (!file.delete()) {
-				System.err.println("deleting failed.");
+				log.error("deleting failed.");
 				// TODO: callback for error handling
 				System.exit(-1);
 			}

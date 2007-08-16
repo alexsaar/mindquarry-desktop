@@ -23,9 +23,9 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * Local delete (of folder or file) conflicts with remote modification of
  * file or contents of the folder.
  * 
- * @author <a href="mailto:alexander(dot)klimetschek(at)mindquarry(dot)com">
- *         Alexander Klimetschek</a>
- *
+ * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
+ * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
+ * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public class DeleteWithModificationConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
@@ -45,19 +45,17 @@ public class DeleteWithModificationConflict extends Conflict {
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			System.err.println("AddConflict with no action set: " + localStatus.getPath());
+			log.error("AddConflict with no action set: " + localStatus.getPath());
 			break;
 			
 		case DELETE:
-			System.out.println("deleting " + localStatus.getPath());
+			log.info("deleting " + localStatus.getPath());
 			
 			// delete the added/remote one
-			
 			break;
 			
 		case KEEPADDED:
-			System.out.println("keeping added from remote: " + localStatus.getPath());
-			
+			log.info("keeping added from remote: " + localStatus.getPath());
 			break;
 		}
 	}

@@ -23,6 +23,8 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * Local add conflicts with remotely deleted parent folder.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
+ * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
+ * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public class AddInDeletedConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
@@ -45,15 +47,15 @@ public class AddInDeletedConflict extends Conflict {
 			break;
 			
 		case READD:
-			System.out.println("readding to " + localStatus.getPath());
+			log.info("readding to " + localStatus.getPath());
 			// nothing to do here, got this for free
 			break;
 			
 		case DELETE:
-			System.out.println("deleting file/folder: " + localStatus.getPath());
+			log.info("deleting file/folder: " + localStatus.getPath());
 			
 			if (!file.delete()) {
-				System.err.println("deleting failed.");
+				log.error("deleting failed.");
 				// TODO: callback for error handling
 				System.exit(-1);
 			}

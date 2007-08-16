@@ -16,16 +16,21 @@ package com.mindquarry.desktop.workspace.conflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
- * Callback handler the client of SVNSynchronizer has to implement (ie. GUI). 
- *
+ * Callback handler the client of {@link SVNSynchronizer} has to implement (ie.
+ * the graphical user interface). Callback methods are called to handle
+ * synchronization conflicts. Callback handler has to call
+ * {@link Conflict#accept(ConflictHandler)} to indicate that it is able to
+ * handle a conflict.
+ * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- *
+ * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
+ * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public interface ConflictHandler {
-    
 	public void visit(AddConflict conflict) throws CancelException;
 
 	public void visit(AddInDeletedConflict conflict) throws CancelException;
 
-    public void visit(DeleteWithModificationConflict conflict) throws CancelException;
+	public void visit(DeleteWithModificationConflict conflict)
+			throws CancelException;
 }
