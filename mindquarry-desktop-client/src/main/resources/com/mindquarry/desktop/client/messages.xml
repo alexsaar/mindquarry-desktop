@@ -194,6 +194,118 @@
             <entry key="4">Server-Version</entry>
         </locale>
     </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.AbstractConflictDialog">
+        <locale language="en">
+            <entry key="0">Resolve conflicts</entry>
+            <entry key="1">Resolving conflicts</entry>
+            <entry key="2">Filename</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Konflikte auflösen</entry>
+            <entry key="1">Auflösen von Konflikten</entry>
+            <entry key="2">Dateiname</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.AlreadyAddedConflictDialog">
+        <locale language="en">
+            <entry key="0">One of the local files you want to upload to the server already exists on the server. This case can occur if you created a file or renamed an existing file and someone created the file in between (by creating it or renaming an existing file).</entry>
+            <entry key="1">Rename file and upload it under the new name</entry>
+            <entry key="2">Overwrite the file on the server with your local version</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Eine Ihrer lokalen Dateien, die Sie auf den Server hochladen möchten, existiert bereits auf dem Server. Dies kann passieren, wenn Sie eine Datei lokal angelegt oder umbenannt haben und jemand anders einer Datei den gleichen Namen gegeben hat (durch Anlegen der Datei oder Umbenennen)</entry>
+            <entry key="1">Datei umbenennen und unter einem anderen Namen hochladen</entry>
+            <entry key="2">Datei auf dem Server mit Ihrer lokalen Datei überschreiben</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.ContainerDeletedConflictDialog">
+        <locale language="en">
+            <entry key="0">One of your local modifications cannot be uploaded because the directory with your modification has been deleted on the server.</entry>
+            <entry key="1">Move the file to a different directory and then upload it</entry>
+            <entry key="2">Create the deleted directory on the server and upload your file</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Eine Ihrer lokalen Änderungen kann nicht auf dem Server hochgeladen werden, da das Verzeichnis mit den Änderungen inzwischen auf dem Server gelöscht wurde.</entry>
+            <entry key="1">Die Datei lokal in ein anderes Verzeichnis verschieben und dann hochladen</entry>
+            <entry key="2">Das gelöschte Verzeichnis auf dem Server neu anlegen und Ihre Änderung hochladen</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.FileDeletedConflictDialog">
+        <locale language="en">
+            <entry key="0">One of your local modifications cannot be uploaded because the directory with your modification has been deleted on the server.</entry>
+            <entry key="1">Move the file to a different directory and then upload it</entry>
+            <entry key="2">Create the deleted directory on the server and upload your file</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Eine Ihrer lokal geänderten Dateien kann nicht auf dem Server hochgeladen werden, da die Datei inzwischen auf dem Server gelöscht wurde.</entry>
+            <entry key="1">Die Datei auf dem Server neu anlegen und dann hochladen</entry>
+            <entry key="2">Die Datei umbenennen und dann hochladen</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteContainerWithAddConflictDialog">
+        <locale language="en">
+            <entry key="0">You are trying to delete a directory in which someone else added a file on the server.</entry>
+            <entry key="1">Delete the directory on the server anyway</entry>
+            <entry key="2">Don't delete the directory and fetch the new files from the server</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Sie möchten ein Verzeichnis löschen, zu dem auf dem Server inzwischen Dateien hinzugefügt wurden.</entry>
+            <entry key="1">Das Verzeichnis auf dem Server trotzdem löschen</entry>
+            <entry key="2">Das Verzeichnis nicht löschen und die neuen Dateien übernehmen</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteContainerWithChangeConflictDialog">
+        <locale language="en">
+            <entry key="0">You are trying to delete a directory in which someone else modified a file on the server.</entry>
+            <entry key="1">Delete the directory on the server anyway</entry>
+            <entry key="2">Don't delete the directory and fetch the modified files from the server</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Sie möchten ein Verzeichnis löschen, in dem auf dem Server inzwischen Dateien geändert wurden.</entry>
+            <entry key="1">Das Verzeichnis auf dem Server trotzdem löschen</entry>
+            <entry key="2">Das Verzeichnis nicht löschen und die geänderten Dateien übernehmen</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteFileWithChangeConflictDialog">
+        <locale language="en">
+            <entry key="0">You are trying to delete a file which someone else modified a file on the server.</entry>
+            <entry key="1">Delete the file on the server anyway</entry>
+            <entry key="2">Don't delete the file and fetch the modified files from the server</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Sie möchten eine Datei löschen, die inzwischen auf dem Server geändert wurde.</entry>
+            <entry key="1">Datei auf dem Server trotzdem löschen</entry>
+            <entry key="2">Datei nicht löschen und die geänderte Datei vom Server übernehmen</entry>
+        </locale>
+    </message>
+
+    <message id="com.mindquarry.desktop.client.workspace.dialog.ModifyConflictDialog">
+        <locale language="en">
+            <entry key="0">Somebody else modified the file your are trying to synchronize. Please select the version that should be treated as the current version.</entry>
+            <entry key="1">Your local Version</entry>
+            <entry key="2">Remote Version, last change by user </entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Jemand hat die Datei, die Sie auf den Server laden wollen, geändert. Bitte wählen Sie die Version, die als aktuelle Version verwendet werden soll.</entry>
+            <entry key="1">Ihre lokale Version</entry>
+            <entry key="2">Server-Version, letzte Änderung von Benutzer </entry>
+        </locale>
+    </message>
     
     <message id="com.mindquarry.desktop.client.workspace.JavaSVNHelper">
         <locale language="en">
