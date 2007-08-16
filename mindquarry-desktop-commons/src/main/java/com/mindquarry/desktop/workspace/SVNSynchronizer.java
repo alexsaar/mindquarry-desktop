@@ -37,7 +37,7 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class SVNHelper2 {
+public class SVNSynchronizer {
 	private static final String REPOSITORY_PREFIX = "/trunk/";
 
 	protected String repositoryURL;
@@ -50,7 +50,7 @@ public class SVNHelper2 {
 
 	protected SVNClientImpl client;
 
-	public SVNHelper2(String repositoryURL, String localPath, String username,
+	public SVNSynchronizer(String repositoryURL, String localPath, String username,
 			String password, Notify2 notifyListener) {
 		this.repositoryURL = repositoryURL;
 		this.localPath = localPath;

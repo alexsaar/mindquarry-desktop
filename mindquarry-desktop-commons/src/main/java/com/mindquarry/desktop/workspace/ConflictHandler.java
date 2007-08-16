@@ -14,7 +14,7 @@
 package com.mindquarry.desktop.workspace;
 
 /**
- * Add summary documentation here.
+ * Callback handler the client of SVNSynchronizer has to implement (ie. GUI). 
  *
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  *

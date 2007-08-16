@@ -2,6 +2,12 @@ package com.mindquarry.desktop.workspace;
 
 import org.tigris.subversion.javahl.Status;
 
+/**
+ * Abstract base class for structure conflicts.
+ *
+ * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
+ *
+ */
 public abstract class Conflict {
 	protected Status localStatus;
 	

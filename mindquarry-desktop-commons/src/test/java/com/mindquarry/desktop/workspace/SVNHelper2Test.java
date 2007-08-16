@@ -18,11 +18,11 @@ public class SVNHelper2Test implements Notify2, ConflictHandler {
 
 	private String password = "sec4561";
 
-	private SVNHelper2 helper;
+	private SVNSynchronizer helper;
 
 	@Before
 	public void setUp() throws Exception {
-		helper = new SVNHelper2(repositoryURL, localPath, username, password,
+		helper = new SVNSynchronizer(repositoryURL, localPath, username, password,
 				this);
 	}
 
@@ -32,7 +32,7 @@ public class SVNHelper2Test implements Notify2, ConflictHandler {
 	}
 
 	public void onNotify(NotifyInformation info) {
-		System.out.println(SVNHelper2.notifyToString(info));
+		System.out.println(SVNSynchronizer.notifyToString(info));
 	}
 	
 	public String readLine() {
