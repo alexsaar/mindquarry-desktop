@@ -126,7 +126,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	public SVNSynchronizer setupTest(String name) {
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
-		String repoUrl = "file://" + new File(targetPath + "/repo").getAbsolutePath();
+		String repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
 		String wcPath = targetPath + "wc";
 
 		extractZip(zipPath, targetPath);

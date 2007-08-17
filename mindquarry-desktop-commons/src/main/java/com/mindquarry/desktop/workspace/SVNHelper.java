@@ -275,7 +275,6 @@ public abstract class SVNHelper implements Notify2 {
                 changePaths.add(change);
             }
         }
-
         return changePaths.toArray(new ChangePath[0]);
     }
 
