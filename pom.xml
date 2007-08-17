@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>swt</groupId>
 			<artifactId>jface</artifactId>
-			<version>3.3.0.I20070606-0010</version>
+			<version>3.3.0.I20061213-0010</version>
 		</dependency>
 
 		<!-- icon libs -->
