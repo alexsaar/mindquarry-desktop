@@ -113,16 +113,6 @@ public class MindClient extends ApplicationWindow {
     private TrayItem trayItem;
     private List<ActionBase> actions;
 
-    protected MenuManager createMenuManager() {
-        MenuManager taskMenuManager = new MenuManager("&Tasks");
-        taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
-
-        MenuManager manager = super.createMenuManager();
-        manager.add(taskMenuManager);
-
-        return manager;
-    }
-
     private TeamlistWidget teamList;
 
     private FileTypeMap mimeMap = MimetypesFileTypeMap.getDefaultFileTypeMap();
@@ -161,11 +151,9 @@ public class MindClient extends ApplicationWindow {
 
         client.addToolBar(SWT.FLAT | SWT.WRAP);
         splash.step();
-        
+
         client.addStatusLine();
         splash.step();
-        
-        
 
         client.setBlockOnOpen(true);
         splash.step();
@@ -195,52 +183,6 @@ public class MindClient extends ApplicationWindow {
         AutostartUtilities.setAutostart(store
                 .getBoolean(GeneralSettingsPage.AUTOSTART),
                 "mindquarry-desktop-client.jar"); //$NON-NLS-1$
-    }
-
-    public void updateProfileSelector() {
-        if ((trayMenu == null) || (profilesMenu == null)) {
-            return; // happens at very first start
-        }
-        MenuItem[] menuItems = profilesMenu.getItems();
-
-        // remove the existing profiles first
-        for (int i = 0; i < menuItems.length; i++) {
-            if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
-                menuItems[i].dispose();
-            }
-        }
-        Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
-        boolean hasSelection = false;
-        profilesInMenu = new ArrayList();
-        int i = 0;
-        while (pIt.hasNext()) {
-            Profile profile = (Profile) pIt.next();
-            final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
-            i++;
-            menuItem.setText(profile.getName());
-            menuItem.addListener(SWT.Selection, new Listener() {
-                public void handleEvent(Event event) {
-                    if (((MenuItem) event.widget).getSelection()) {
-                        Profile.selectProfile(getPreferenceStore(), menuItem
-                                .getText());
-                        saveOptions();
-                        teamList.refresh();
-                    }
-                }
-            });
-            // activate selected profile in menu
-            if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
-                    && (profile.getName().equals(Profile.getSelectedProfile(
-                            getPreferenceStore()).getName()))) {
-                menuItem.setSelection(true);
-                hasSelection = true;
-            }
-            profilesInMenu.add(menuItem);
-        }
-        if (!hasSelection && profilesInMenu.size() > 0) {
-            MenuItem mi = (MenuItem) profilesInMenu.get(0);
-            mi.setSelection(true);
-        }
     }
 
     public void showPreferenceDialog(boolean showProfiles) {
@@ -294,6 +236,15 @@ public class MindClient extends ApplicationWindow {
                 getAction(CreateTaskAction.class.getName()).getId());
         getToolBarManager().update(true);
     }
+    
+    public ActionBase getAction(String id) {
+        for (ActionBase action : actions) {
+            if (action.getId().equals(id)) {
+                return action;
+            }
+        }
+        return null;
+    }
 
     public List getSelectedTeams() {
         return teamList.getSelectedTeams();
@@ -343,7 +294,7 @@ public class MindClient extends ApplicationWindow {
         sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         teamList = new TeamlistWidget(sashForm, SWT.NONE, this);
-        CategoryWidget categories = new CategoryWidget(sashForm, SWT.NONE, this);
+        new CategoryWidget(sashForm, SWT.NONE, this);
 
         sashForm.setWeights(new int[] { 1, 3 });
 
@@ -358,6 +309,16 @@ public class MindClient extends ApplicationWindow {
 
         createTrayIconAndMenu(Display.getDefault());
         return parent;
+    }
+    
+    protected MenuManager createMenuManager() {
+        MenuManager taskMenuManager = new MenuManager("&Tasks");
+        taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
+
+        MenuManager manager = super.createMenuManager();
+        manager.add(taskMenuManager);
+
+        return manager;
     }
 
     // #########################################################################
@@ -377,15 +338,6 @@ public class MindClient extends ApplicationWindow {
         actions.add(new PreferencesAction(this));
         actions.add(new OpenWebpageAction(this));
         actions.add(new CloseAction(this));
-    }
-
-    public ActionBase getAction(String id) {
-        for (ActionBase action : actions) {
-            if (action.getId().equals(id)) {
-                return action;
-            }
-        }
-        return null;
     }
 
     private void checkArguments(String[] args) {
@@ -453,7 +405,6 @@ public class MindClient extends ApplicationWindow {
         if (loadProfiles) {
             loadOptions();
         }
-
         // Create the preferences dialog
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(
                 SWT.ON_TOP), PreferenceUtilities.getDefaultPreferenceManager());
@@ -463,7 +414,6 @@ public class MindClient extends ApplicationWindow {
         }
         dlg.open();
         saveOptions();
-        updateProfileSelector();
     }
 
     private void loadOptions() {
@@ -528,10 +478,12 @@ public class MindClient extends ApplicationWindow {
         menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
 
         profilesMenu = new Menu(shell, SWT.DROP_DOWN);
+        profilesMenu.addListener(SWT.Show, new Listener() {
+            public void handleEvent(Event event) {
+                updateProfileSelector();
+            }
+        });
         menuItem.setMenu(profilesMenu);
-
-        // list all profiles in the menu
-        updateProfileSelector();
 
         // open web page action
         menuItem = new MenuItem(trayMenu, SWT.SEPARATOR);
@@ -554,6 +506,52 @@ public class MindClient extends ApplicationWindow {
         iconAction.setDaemon(true);
         iconAction.start();
     }
+    
+    private void updateProfileSelector() {
+        if ((trayMenu == null) || (profilesMenu == null)) {
+            return; // happens at very first start
+        }
+        MenuItem[] menuItems = profilesMenu.getItems();
+
+        // remove the existing profiles first
+        for (int i = 0; i < menuItems.length; i++) {
+            if ((menuItems[i].getStyle() & SWT.RADIO) != 0) {
+                menuItems[i].dispose();
+            }
+        }
+        Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
+        boolean hasSelection = false;
+        profilesInMenu = new ArrayList();
+        int i = 0;
+        while (pIt.hasNext()) {
+            Profile profile = (Profile) pIt.next();
+            final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
+            i++;
+            menuItem.setText(profile.getName());
+            menuItem.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(Event event) {
+                    if (((MenuItem) event.widget).getSelection()) {
+                        Profile.selectProfile(getPreferenceStore(), menuItem
+                                .getText());
+                        saveOptions();
+                        teamList.refresh();
+                    }
+                }
+            });
+            // activate selected profile in menu
+            if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
+                    && (profile.getName().equals(Profile.getSelectedProfile(
+                            getPreferenceStore()).getName()))) {
+                menuItem.setSelection(true);
+                hasSelection = true;
+            }
+            profilesInMenu.add(menuItem);
+        }
+        if (!hasSelection && profilesInMenu.size() > 0) {
+            MenuItem mi = (MenuItem) profilesInMenu.get(0);
+            mi.setSelection(true);
+        }
+    }
 
     private void hideMainWindow() {
         getShell().setVisible(false);
@@ -567,7 +565,6 @@ public class MindClient extends ApplicationWindow {
     // #########################################################################
     // ### INNER CLASSES
     // #########################################################################
-
     class IconifyingShellListener implements ShellListener {
         boolean first = true;
 

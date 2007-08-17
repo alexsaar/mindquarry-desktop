@@ -176,6 +176,7 @@ public class TaskContainerWidget extends WidgetBase {
             // update table
             tableViewer.setInput(content);
             tableViewer.refresh();
+            markColumns();
         }
     }
 
@@ -262,20 +263,22 @@ public class TaskContainerWidget extends WidgetBase {
                 public void run() {
                     // tableViewer.setInput(tasks);
                     applyFacets();
-
-                    // set background color for every second table item
-                    TableItem[] items = tableViewer.getTable().getItems();
-                    for (int i = 0; i < items.length; i++) {
-                        if (i % 2 == 1) {
-                            items[i].setBackground(new Color(Display
-                                    .getCurrent(), 233, 233, 251));
-                        }
-                    }
                 }
             });
         }
         refreshing = false;
         initialized = true;
+    }
+    
+    private void markColumns() {
+        // set background color for every second table item
+        TableItem[] items = tableViewer.getTable().getItems();
+        for (int i = 0; i < items.length; i++) {
+            if (i % 2 == 1) {
+                items[i].setBackground(new Color(Display
+                        .getCurrent(), 233, 233, 251));
+            }
+        }
     }
 
     private void updateTaskWidgetContents(final boolean refreshing,

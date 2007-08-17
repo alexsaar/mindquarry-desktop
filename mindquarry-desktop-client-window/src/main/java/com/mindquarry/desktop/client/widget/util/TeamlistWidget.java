@@ -78,6 +78,7 @@ public class TeamlistWidget extends WidgetBase {
 
         Label label = new Label(parent, SWT.LEFT);
         label.setText("Teams:");
+        label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         // create team list table
         final Table table = new Table(parent, SWT.SINGLE | SWT.CHECK
@@ -94,6 +95,7 @@ public class TeamlistWidget extends WidgetBase {
         Button button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.setText("Select All");
+        button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 selectAll();
@@ -103,6 +105,7 @@ public class TeamlistWidget extends WidgetBase {
         button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.setText("Deselect All");
+        button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 deselectAll();
