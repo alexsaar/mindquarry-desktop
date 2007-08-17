@@ -16,6 +16,7 @@ package com.mindquarry.desktop.client.workspace.dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -49,16 +50,16 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
         this.remoteStatus = remoteStatus;
         setBlockOnOpen(true);
         resolveMethod = defaultResolve;
-        //TODO: limit width getShell().set
-        shell.getBounds().width = 300;
-        //shell.setBounds(0, 0, 200, 150);
     }
 
+    
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
         setTitle(Messages.getString(AbstractConflictDialog.class, "0")); //$NON-NLS-1$
         setMessage(getMessage(), IMessageProvider.INFORMATION);
         getShell().setText(Messages.getString(AbstractConflictDialog.class, "1")); //$NON-NLS-1$
+        getShell().setSize(600, 250);
+        getShell().redraw();
         return contents;
     }
 
