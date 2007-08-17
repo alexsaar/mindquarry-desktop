@@ -14,9 +14,15 @@
 package com.mindquarry.desktop.client.workspace.dialog;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.Status;
@@ -43,13 +49,27 @@ public class AlreadyAddedConflictDialog extends AbstractConflictDialog {
 
     @Override
     protected void createLowerDialogArea(Composite composite) {
-        makeRadioButton(composite, Messages.getString(AlreadyAddedConflictDialog.class, "1"),  //$NON-NLS-1$
+        Composite subComposite = new Composite(composite, SWT.NONE);
+        subComposite.setLayout(new GridLayout(2, false));
+        Button button1 = makeRadioButton(subComposite, Messages.getString(AlreadyAddedConflictDialog.class, "1"),  //$NON-NLS-1$
                 SVNHelper.CONFLICT_RENAME_AND_RETRY);
-        // TODO: fix layout
-        newNameField = new Text(composite, SWT.BORDER | SWT.SINGLE);
+        button1.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                newNameField.setEnabled(true);
+            }
+        });
+        newNameField = new Text(subComposite, SWT.BORDER | SWT.SINGLE);
+        // TODO: make field wider
         String nameSuggestion = getNameSuggestion(name);
         newNameField.setText(nameSuggestion);
         newName = nameSuggestion;
+        newNameField.addFocusListener(new FocusListener() {
+            public void focusGained(FocusEvent arg0) {
+                newNameField.selectAll();
+            }
+            public void focusLost(FocusEvent arg0) {
+            }
+        });
         newNameField.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent arg0) {
             }
@@ -57,8 +77,13 @@ public class AlreadyAddedConflictDialog extends AbstractConflictDialog {
                 newName = newNameField.getText();
             }
         });
-        makeRadioButton(composite, Messages.getString(AlreadyAddedConflictDialog.class, "2"),  //$NON-NLS-1$
+        Button button2 = makeRadioButton(subComposite, Messages.getString(AlreadyAddedConflictDialog.class, "2"),  //$NON-NLS-1$
                 SVNHelper.CONFLICT_OVERRIDE_FROM_WC);
+        button2.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                newNameField.setEnabled(false);
+            }
+        });
     }
 
     private String getNameSuggestion(String name) {
