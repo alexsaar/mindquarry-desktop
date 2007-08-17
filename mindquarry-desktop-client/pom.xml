@@ -53,9 +53,6 @@
 								<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
-						<manifestEntries>
-							<Implementation-Vendor>Mindquarry GmbH</Implementation-Vendor>
-						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
