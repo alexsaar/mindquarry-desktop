@@ -69,6 +69,16 @@ public class SVNSynchronizer {
 	
 	protected ConflictHandler handler;
 
+	/**
+	 * Constructor for SVNSynchronizer that has all mandatory fields as
+	 * parameter.
+	 * 
+	 * @param repositoryURL URL of the central SVN repository
+	 * @param localPath local working copy path (typically the root of the wc)
+	 * @param username subversion username
+	 * @param password subversion password
+	 * @param handler callback handler to resolve conflicts in the GUI
+	 */
 	public SVNSynchronizer(String repositoryURL, String localPath,
 			String username, String password,
 			ConflictHandler handler) {
@@ -77,6 +87,10 @@ public class SVNSynchronizer {
 		this.username = username;
 		this.password = password;
 		this.handler = handler;
+		
+		if (handler == null) {
+		    throw new NullPointerException("Constructor parameter ConflictHandler handler cannot be null");
+		}
 
 		// create SVN client, set authentication info
 		client = SVNClientImpl.newInstance();
@@ -88,11 +102,19 @@ public class SVNSynchronizer {
 		}
 	}
 	
+	/**
+	 * Sets an optional notify listener to get notifications directly from the
+	 * svn client upon update and commit.
+	 */
 	public void setNotifyListener(Notify2 notifyListener) {
         // register for svn notifications on update and commit
         client.notification2(notifyListener);
 	}
 	
+	/**
+	 * Central method: will do a full synchronization, including update and
+	 * commit. During that the ConflictHandler will be asked
+	 */
 	public void synchronize() {
 		try {
 			client.cleanup(localPath);
