@@ -310,71 +310,6 @@ public class SVNSynchronizer {
         
         conflicts.addAll(findAllModifiedDeleteConflicts(remoteAndLocalChanges));
         
-		
-        /*
-		// go through local changes
-		for (Status status : localChanges) {
-		    
-
-		    // local ADD (as we added everything, unversioned shouldn't happen)
-			if (status.getTextStatus() == StatusKind.added
-					|| status.getTextStatus() == StatusKind.unversioned) {
-
-//				// check for existence of a remote version (ADD vs ADD)
-//				if (remoteAndLocalMap.containsKey(status.getPath())) {
-//					Status remoteStatus = remoteAndLocalMap.get(status
-//							.getPath());
-//					// if the file exists remotely, it will have a URL set
-//					if (remoteStatus.getUrl() != null) {
-//						conflicts.addConflict(new AddConflict(status));
-//					}
-//				}
-//				// check for adds in remotely deleted folders (ADD in DELETED)
-//				for (Status remoteStatus : remoteAndLocalChanges) {
-//					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
-//							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
-//						conflicts.addConflict(new ModificationInDeletedConflict(status));
-//					}
-//				}
-				
-			// locally DELETED (as we deleted all missing, missing shouldn't happen)
-			} else if (status.getTextStatus() == StatusKind.deleted ||
-			        status.getTextStatus() == StatusKind.missing) {
-			    // collect *all* remote adds/mods and add them to the conflict object
-			    List<Status> remoteModList = new ArrayList<Status>();
-			    
-			    if (status.getNodeKind() == NodeKind.dir) {
-			        // FOLDER DELETE vs MODIFIED/ADD inside
-                    List<Status> children = getChildren(status.getPath(), remoteAndLocalChanges);
-                    for (Status childStatus : children) {
-                        // when it's locally gone, it can only be an added or replaced
-                        // (deleted is ok as it matches with our delete)
-                        if (childStatus.getRepositoryTextStatus() == StatusKind.added ||
-                                childStatus.getRepositoryTextStatus() == StatusKind.replaced) {
-                            remoteModList.add(childStatus);
-                        }
-                    }
-
-                    // only if there was any modification found, we have a conflict
-                    if (remoteModList.size() > 0) {
-                        presentNewConflict(new DeleteWithModificationConflict(status, remoteModList), conflicts);
-                    }
-			    } else {
-			        // TODO: check this with a test case
-	                // check for existence of a modified remote version
-			        // DELETE vs MODIFIED
-	                if (remoteAndLocalMap.containsKey(status.getPath())) {
-	                    Status remoteStatus = remoteAndLocalMap.get(status.getPath());
-	                    if (remoteStatus.getRepositoryTextStatus() != StatusKind.normal) {
-	                        remoteModList.add(remoteStatus);
-	                        presentNewConflict(new DeleteWithModificationConflict(status, remoteModList), conflicts);
-	                    }
-	                }
-			    }
-			}
-		}
-		*/
-        
 		return conflicts;
 	}
 
@@ -483,7 +418,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(conflictParent, remoteModList), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(true, conflictParent, remoteModList), conflicts);
                 }
                 
                 // reset global iterator for next conflict search
@@ -535,7 +470,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(conflictParent, localModList), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(false, conflictParent, localModList), conflicts);
                 }
                 
                 // reset global iterator for next conflict search

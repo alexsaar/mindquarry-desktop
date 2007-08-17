@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
@@ -22,9 +22,9 @@ import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
-import com.mindquarry.desktop.workspace.conflict.ModificationInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ModificationInDeletedConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
@@ -36,45 +36,41 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	    deleteDir(dest);
 	    dest.mkdirs();
 		try {
-			byte[] buf = new byte[1024];
+			byte[] buffer = new byte[1024];
 			ZipEntry zipEntry;
 			ZipInputStream zipInputStream = new ZipInputStream(
 					new FileInputStream(
 							"src/test/resources/com/mindquarry/desktop/workspace/"
 									+ zipName));
 
-			zipEntry = zipInputStream.getNextEntry();
-			while (zipEntry != null) {
-				// for each entry to be extracted
-				String entryName = zipEntry.getName();
-				File newFile = new File(entryName);
+	        while (null != (zipEntry = zipInputStream.getNextEntry())) {
 
-				String directory = newFile.getParent();
-				if (directory == null) {
-					if (newFile.isDirectory())
-						break;
-				}
+	            File zippedFile = new File(destinationPath + zipEntry.getName());
 
-				directory = (new File(destinationPath + entryName)).getParent();
-				new File(directory).mkdirs();
-				FileOutputStream fileOutputStream = new FileOutputStream(
-						destinationPath + entryName);
-
-				int n;
-				while ((n = zipInputStream.read(buf, 0, 1024)) > -1)
-					fileOutputStream.write(buf, 0, n);
-
-				fileOutputStream.close();
-				zipInputStream.closeEntry();
-				zipEntry = zipInputStream.getNextEntry();
-
-			}
+	            if (zipEntry.isDirectory()) {
+	                zippedFile.mkdirs();
+	            } else {
+	                // ensure the parent directory exists
+                    zippedFile.getParentFile().mkdirs();
+                    
+	                OutputStream fileOutStream = new FileOutputStream(zippedFile);
+	                transferBytes(zipInputStream, fileOutStream, buffer);
+	                fileOutStream.close();
+	            }
+	        }
 
 			zipInputStream.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+    private void transferBytes(InputStream in, OutputStream out, byte[] buffer)
+    throws IOException {
+        int nRead;
+        while (-1 != (nRead = in.read(buffer, 0, buffer.length)))
+            out.write(buffer, 0, nRead);
+    }
 
 	private boolean deleteDir(File dir) {
 		// to see if this directory is actually a symbolic link to a directory,
@@ -193,7 +189,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 
 	public void handle(DeleteWithModificationConflict conflict)
 			throws CancelException {
-		for (Status s : conflict.getRemoteMods()) {
+		for (Status s : conflict.getOtherMods()) {
 			System.out.println("remote "
 					+ Kind.getDescription(s.getRepositoryTextStatus()) + " "
 					+ s.getPath());

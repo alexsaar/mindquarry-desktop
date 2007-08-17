@@ -16,7 +16,6 @@ package com.mindquarry.desktop.workspace.conflict;
 import java.io.File;
 import java.util.List;
 
-import org.tigris.subversion.javahl.SVNClient;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -36,11 +35,13 @@ public class DeleteWithModificationConflict extends Conflict {
 		UNKNOWN, DELETE, KEEPMODIFIED, REVERTDELETE;
 	}
 	
-	private List<Status> remoteMods;
+	private List<Status> otherMods;
+    private boolean localDelete;
 	
-	public DeleteWithModificationConflict(Status localStatus, List<Status> remoteMods) {
-		super(localStatus);
-		this.remoteMods = remoteMods;
+	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods) {
+		super(status);
+		this.localDelete = localDelete;
+		this.otherMods = otherMods;
 	}
 
 	public void handleBeforeUpdate() {
@@ -112,7 +113,16 @@ public class DeleteWithModificationConflict extends Conflict {
 		return "Delete/Modification Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
 
-    public List<Status> getRemoteMods() {
-        return remoteMods;
+    public List<Status> getOtherMods() {
+        return otherMods;
+    }
+
+    /**
+     * True if status refers to a local delete and getOtherMods() to remote
+     * modifications or false if it is a remote delete and getOtherMods()
+     * contains local modifications.
+     */
+    public boolean isLocalDelete() {
+        return localDelete;
     }
 }

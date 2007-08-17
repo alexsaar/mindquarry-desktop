@@ -78,7 +78,7 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 
     public void handle(DeleteWithModificationConflict conflict)
             throws CancelException {
-        for (Status s : conflict.getRemoteMods()) {
+        for (Status s : conflict.getOtherMods()) {
             System.out.println("remote " + Kind.getDescription(s.getRepositoryTextStatus()) + " " + s.getPath());
         }
         System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
