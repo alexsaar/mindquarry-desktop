@@ -60,6 +60,9 @@ public class AddInDeletedConflict extends Conflict {
 				System.exit(-1);
 			}
 			break;
+		case MOVE:
+		    log.error("AddInDeletedConflict: action MOVE not implemented yet");
+		    break;
 		}
 	}
 

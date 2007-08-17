@@ -32,7 +32,7 @@ public class DeleteWithModificationConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
-		UNKNOWN, DELETE, KEEPADDED;
+		UNKNOWN, DELETE, KEEPMODIFIED, REVERTDELETE;
 	}
 	
 	private List<Status> remoteMods;
@@ -43,28 +43,52 @@ public class DeleteWithModificationConflict extends Conflict {
 	}
 
 	public void handleBeforeUpdate() {
-		File file = new File(localStatus.getPath());
-		
-		switch (action) {
-		case UNKNOWN:
-			// client did not set a conflict resolution
-			log.error("DeleteWithModificationConflict with no action set: " + localStatus.getPath());
-			break;
-			
-		case DELETE:
-			log.info("deleting " + localStatus.getPath());
-			
-			// delete the added/remote one
-			break;
-			
-		case KEEPADDED:
-			log.info("keeping added from remote: " + localStatus.getPath());
-			break;
-		}
+        // NOTE: here we could implement a fast-path avoiding the download
+        // of the new files by simply deleting the folder on the server
+        // before we run the update
+	    // if (action == Action.DELETE) {
+        // nothing to do here, we have to wait for the update and delete
+        // the folder again (svn will recreate it due to the remote mods)
+	    // }
+
+	    if (action == Action.REVERTDELETE) {
+	        // TODO: revert delete before update
+	        
+	        // status probably missing (not svn deleted yet) because it's a conflict
+	    }
 	}
 
 	public void handleAfterUpdate() {
-		// nothing to do here
+        switch (action) {
+        case UNKNOWN:
+            // client did not set a conflict resolution
+            log.error("DeleteWithModificationConflict with no action set: " + localStatus.getPath());
+            break;
+            
+        case DELETE:
+            log.info("now deleting again " + localStatus.getPath());
+            
+            File file = new File(localStatus.getPath());
+            if (!file.delete()) {
+                log.error("deleting failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            
+            break;
+            
+        case KEEPMODIFIED:
+            log.info("keeping added/modified from remote: " + localStatus.getPath());
+            
+            break;
+            
+        case REVERTDELETE:
+            log.info("reverting delete: " + localStatus.getPath());
+            
+            // TODO: revert deleted status
+            
+            break;
+        }
 	}
 
 	public void accept(ConflictHandler handler) throws CancelException {
@@ -75,8 +99,12 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.action = Action.DELETE;
 	}
 	
-    public void doKeepAdded() {
-        this.action = Action.KEEPADDED;
+    public void doKeepModified() {
+        this.action = Action.KEEPMODIFIED;
+    }
+    
+    public void doReverDelete() {
+        this.action = Action.REVERTDELETE;
     }
     
 	public String toString() {

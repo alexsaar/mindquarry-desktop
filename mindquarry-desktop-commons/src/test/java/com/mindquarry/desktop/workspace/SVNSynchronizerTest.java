@@ -34,12 +34,12 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 	@Before
 	public void setUp() throws Exception {
 		helper = new SVNSynchronizer(repositoryURL, localPath, username, password,
-				this);
+				this, this);
 	}
 
 	@Test
 	public void testSynchronize() {
-		helper.synchronize(this);
+		helper.synchronize();
 	}
 
 	public void onNotify(NotifyInformation info) {
@@ -73,6 +73,6 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
         for (Status s : conflict.getRemoteMods()) {
             System.out.println("remote " + Kind.getDescription(s.getRepositoryTextStatus()) + " " + s.getPath());
         }
-        conflict.doKeepAdded();
+        conflict.doKeepModified();
     }
 }

@@ -39,6 +39,7 @@ import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ConflictList;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -65,13 +66,16 @@ public class SVNSynchronizer {
 	protected String password;
 
 	protected SVNClientImpl client;
+	
+	protected ConflictHandler handler;
 
 	public SVNSynchronizer(String repositoryURL, String localPath,
-			String username, String password, Notify2 notifyListener) {
+			String username, String password, Notify2 notifyListener, ConflictHandler handler) {
 		this.repositoryURL = repositoryURL;
 		this.localPath = localPath;
 		this.username = username;
 		this.password = password;
+		this.handler = handler;
 
 		// create SVN client, set authentication info
 		client = SVNClientImpl.newInstance();
@@ -85,35 +89,36 @@ public class SVNSynchronizer {
 		client.notification2(notifyListener);
 	}
 
-	public void synchronize(ConflictHandler handler) {
+	public void synchronize() {
 		try {
 			client.cleanup(localPath);
+			// TODO: enable locking
 			// client.lock(new String[] {localPath}, "locking for
 			// synchronization", false);
 
+            // no need to call svn del and add manually for the user
+            deleteMissingAndAddUnversioned();
+            
 			List<Status> localChanges = getLocalChanges();
 			List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
 
-			List<Conflict> conflicts = analyzeChanges(localChanges,
-					remoteAndLocalChanges);
-
-			// UI, cancel possible
-			askUserForConflicts(conflicts, handler);
-
+            // with UI callback, cancel possible
+			List<Conflict> conflicts =
+			    analyzeChangesAndAskUser(localChanges, remoteAndLocalChanges);
+			
 			handleConflictsBeforeUpdate(conflicts);
 			// here something goes over the wire
 			// client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
 
-			/*
-			 * // UI, cancel possible handleContentConflicts(); // UI, cancel
-			 * possible String message = askForCommitMessage(); // add all
-			 * unversioned (new) files and folder client.add(localPath, true,
-			 * true); // here something goes over the wire client.commit(new
-			 * String[] { localPath }, message, true);
-			 */
+//			// UI, cancel possible
+//			handleContentConflicts();
+//			// UI, cancel possible
+//			String message = askForCommitMessage();
+			
+//			// here something goes over the wire
+//			client.commit(new String[] { localPath }, message, true);
 
-			// client.revert(localPath, true);
 		} catch (ClientException e) {
 			// TODO think about exception handling
 			e.printStackTrace();
@@ -128,13 +133,34 @@ public class SVNSynchronizer {
 		}
 	}
 
-	public List<Status> getLocalChanges() throws ClientException {
+	/**
+	 * This removes the need for calling svn del and svn add manually. It will
+	 * do this only for items not part of a conflict.
+     */
+    private void deleteMissingAndAddUnversioned() throws ClientException {
+        for (Status s : getLocalChanges()) {
+            if (s.getTextStatus() == StatusKind.missing) {
+                // if the first parameter would be an URL, it would do a commit
+                // (and use the second parameter as commit message) - but we
+                // use a local filesystem path here and thus we only schedule
+                // for a deletion
+                client.remove(new String[] { s.getPath() }, null, true);
+            }
+        }
+        
+        // add all unversioned (new) files and folder recursively
+        client.add(localPath, true, true);
+    }
+
+    public List<Status> getLocalChanges() throws ClientException {
 		log.info("## local changes:");
 
 		Status[] statusArray = client.status(localPath, true, false, false);
 
 		List<Status> statusList = new ArrayList<Status>(); 
 		statusList.addAll(Arrays.asList(statusArray));
+		// sort the list from top-level folder to bottom which is important
+		// for handling multiple conflicts on the parent folder first
 		Collections.sort(statusList, new Comparator<Status>() {
 			public int compare(Status left, Status right) {
 				return left.getPath().compareTo(right.getPath());
@@ -144,6 +170,7 @@ public class SVNSynchronizer {
 		for (Status s : statusList) {
 			log.info(s.getTextStatusDescription() + " " + s.getPath());
 		}
+		
 		return statusList;
 	}
 
@@ -168,16 +195,15 @@ public class SVNSynchronizer {
 		return statusList;
 	}
 
-	private List<Conflict> analyzeChanges(List<Status> localChanges,
-			List<Status> remoteAndLocalChanges) {
-		List<Conflict> conflicts = new ArrayList<Conflict>();
+	private List<Conflict> analyzeChangesAndAskUser(List<Status> localChanges,
+			List<Status> remoteAndLocalChanges) throws CancelException {
+		ConflictList<Conflict> conflicts = new ConflictList<Conflict>(handler);
 
 		// for easy look-up by path
 		Map<String, Status> remoteAndLocalMap = createRemoteStatusMap(remoteAndLocalChanges);
 		
 		// according to common sense and analysis of the svnkit code, the
-		// remoteTextStatus can only have a value of the following StatusKind
-		// subset:
+		// remoteTextStatus can only have one of the following StatusKind values
 		// 1) normal
 		// 2) modified
 		// 3) added
@@ -200,14 +226,14 @@ public class SVNSynchronizer {
 							.getPath());
 					// if the file exists remotely, it will have a URL set
 					if (remoteStatus.getUrl() != null) {
-						conflicts.add(new AddConflict(status));
+						conflicts.addConflict(new AddConflict(status));
 					}
 				}
 				// check for adds in remotely deleted folders (ADD in DELETED)
 				for (Status remoteStatus : remoteAndLocalChanges) {
 					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
 							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
-						conflicts.add(new AddInDeletedConflict(status));
+						conflicts.addConflict(new AddInDeletedConflict(status));
 					}
 				}
 				
@@ -231,7 +257,7 @@ public class SVNSynchronizer {
 
                     // only if there was any modification found, we have a conflict
                     if (remoteModList.size() > 0) {
-                        conflicts.add(new DeleteWithModificationConflict(status, remoteModList));
+                        conflicts.addConflict(new DeleteWithModificationConflict(status, remoteModList));
                     }
 			    } else {
 			        // TODO: check this with a test case
@@ -241,7 +267,7 @@ public class SVNSynchronizer {
 	                    Status remoteStatus = remoteAndLocalMap.get(status.getPath());
 	                    if (remoteStatus.getRepositoryTextStatus() != StatusKind.normal) {
 	                        remoteModList.add(remoteStatus);
-	                        conflicts.add(new DeleteWithModificationConflict(status, remoteModList));
+	                        conflicts.addConflict(new DeleteWithModificationConflict(status, remoteModList));
 	                    }
 	                }
 			    }
@@ -274,14 +300,6 @@ public class SVNSynchronizer {
 			}
 		}
 		return false;
-	}
-
-	private void askUserForConflicts(List<Conflict> conflicts,
-			ConflictHandler handler) throws CancelException {
-		for (Conflict conflict : conflicts) {
-			log.info(">> Asking user for : " + conflict.toString());
-			conflict.accept(handler);
-		}
 	}
 
 	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) {

@@ -123,7 +123,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 
 		extractZip(zipPath, targetPath);
 
-		return new SVNSynchronizer(repoUrl, wcPath, "", "", this);
+		return new SVNSynchronizer(repoUrl, wcPath, "", "", this, this);
 
 	}
 	
@@ -154,7 +154,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 //	public void testAddAddConflict() {
 //		SVNSynchronizer helper = setupTest("add_add_conflict");
 //
-//		helper.synchronize(this);
+//		helper.synchronize();
 //
 //		deleteDir(new File("target/add_add_conflict/"));
 //	}
@@ -163,7 +163,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 //	public void testAddInDeletedConflict() {
 //		SVNSynchronizer helper = setupTest("add_in_deleted_conflict");
 //
-//		helper.synchronize(this);
+//		helper.synchronize();
 //
 //		deleteDir(new File("target/add_in_deleted_conflict/"));
 //	}
@@ -189,6 +189,6 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 					+ Kind.getDescription(s.getRepositoryTextStatus()) + " "
 					+ s.getPath());
 		}
-		conflict.doKeepAdded();
+		conflict.doKeepModified();
 	}
 }
