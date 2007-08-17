@@ -103,7 +103,7 @@ public class DeleteWithModificationConflict extends Conflict {
         this.action = Action.KEEPMODIFIED;
     }
     
-    public void doReverDelete() {
+    public void doRevertDelete() {
         this.action = Action.REVERTDELETE;
     }
     

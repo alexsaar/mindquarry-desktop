@@ -196,16 +196,19 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	}
 
 	public void onNotify(NotifyInformation info) {
-		System.out.println(SVNSynchronizer.notifyToString(info));
+		System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
 	}
 
 	public void handle(AddConflict conflict) throws CancelException {
-		System.out.print("Rename locally added file/folder to: ");
+	    System.out.println("Following options re(N)ame, (R)eplace: ");
+	    //option = readLine();
+		System.out.println("Rename locally added file/folder to: ");
 		// FIXME: check for non-existing file/foldername
 		conflict.doRename("renamed_dir");
 	}
 
 	public void handle(AddInDeletedConflict conflict) throws CancelException {
+        System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
 		conflict.doReAdd();
 	}
 
@@ -216,6 +219,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 					+ Kind.getDescription(s.getRepositoryTextStatus()) + " "
 					+ s.getPath());
 		}
-		conflict.doKeepModified();
+        System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
+        conflict.doKeepModified();
 	}
 }

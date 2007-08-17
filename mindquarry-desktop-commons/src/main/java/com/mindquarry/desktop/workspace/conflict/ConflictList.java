@@ -42,6 +42,7 @@ public class ConflictList<T extends Conflict> extends ArrayList<T> {
     }
 
     public boolean addConflict(T conflict) throws CancelException {
+        log.info("-----------------------------------------------------------");
         log.info("## Found conflict: " + conflict.toString());
         conflict.accept(handler);
         return super.add(conflict);

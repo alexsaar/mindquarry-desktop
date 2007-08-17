@@ -43,7 +43,7 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 	}
 
 	public void onNotify(NotifyInformation info) {
-		System.out.println(SVNSynchronizer.notifyToString(info));
+        System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
 	}
 	
 	public String readLine() {
@@ -58,6 +58,7 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 	}
 
 	public void handle(AddConflict conflict) throws CancelException {
+        System.out.println("Following options re(N)ame, (R)eplace: ");
 		System.out.print("Rename locally added file/folder to: ");
 		// FIXME: check for non-existing file/foldername
 		conflict.doRename(readLine());
@@ -65,6 +66,7 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 
 	public void handle(AddInDeletedConflict conflict)
 			throws CancelException {
+        System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
 		conflict.doReAdd();
 	}
 
@@ -73,6 +75,7 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
         for (Status s : conflict.getRemoteMods()) {
             System.out.println("remote " + Kind.getDescription(s.getRepositoryTextStatus()) + " " + s.getPath());
         }
+        System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
         conflict.doKeepModified();
     }
 }
