@@ -317,6 +317,9 @@ public class SVNSynchronizer {
 		return conflicts;
 	}
 
+	/**
+	 * Calls {@link Conflict.handleBeforeUpdate} on all conflicts in the list.
+	 */
 	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
 			log.info(">> Before Update: " + conflict.toString());
@@ -324,6 +327,9 @@ public class SVNSynchronizer {
 		}
 	}
 
+    /**
+     * Calls {@link Conflict.handleAfterUpdate} on all conflicts in the list.
+     */
 	private void handleConflictsAfterUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
 			log.info(">> After Update: " + conflict.toString());
