@@ -42,6 +42,8 @@ public abstract class SVNHelper implements Notify2 {
     public static final int CONFLICT_RESET_FROM_SERVER = 0;
 
     public static final int CONFLICT_OVERRIDE_FROM_WC = 1;
+    
+    public static final int CONFLICT_RENAME_AND_RETRY = 2;
 
     protected String repositoryURL;
 
