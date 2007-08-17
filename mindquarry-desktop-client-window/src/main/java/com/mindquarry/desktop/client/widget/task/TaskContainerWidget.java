@@ -148,7 +148,7 @@ public class TaskContainerWidget extends WidgetBase {
 							&& (!task.getStatus().equals(statusFacet))) {
 						hide = true;
 					}
-					if (task.getPriority() == null) {
+					if ((task.getPriority() == null) && (!priorityFacet.equals("all"))){
 						hide = true;
 					} else if ((!priorityFacet.equals("all"))
 							&& (!task.getPriority().equals(priorityFacet))) {

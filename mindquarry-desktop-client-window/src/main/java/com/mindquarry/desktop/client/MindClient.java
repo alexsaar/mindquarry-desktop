@@ -29,8 +29,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceManager;
-import org.eclipse.jface.preference.PreferenceNode;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -71,7 +69,6 @@ import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
-import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
@@ -79,8 +76,7 @@ import com.mindquarry.desktop.util.AutostartUtilities;
 /**
  * Main class for the Mindquarry Desktop Client.
  * 
- * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
- *         Saar</a>
+ * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public class MindClient extends ApplicationWindow {
 	// #########################################################################
@@ -150,7 +146,7 @@ public class MindClient extends ApplicationWindow {
 	 */
 	public static void main(String[] args) {
 		// show splash
-		SplashScreen splash = SplashScreen.newInstance(7);
+		SplashScreen splash = SplashScreen.newInstance(6);
 		splash.show();
 
 		// run editor
@@ -160,8 +156,8 @@ public class MindClient extends ApplicationWindow {
 		client.initActions();
 		splash.step();
 
-		client.addMenuBar();
-		splash.step();
+		// client.addMenuBar();
+		// splash.step();
 
 		client.addToolBar(SWT.FLAT | SWT.WRAP);
 		splash.step();
