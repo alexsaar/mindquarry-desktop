@@ -87,7 +87,7 @@ public class MindClient extends ApplicationWindow {
 	// ### CONSTANTS
 	// #########################################################################
 	public static final String APPLICATION_NAME = "Mindquarry Desktop Client";
-	
+
 	public final static boolean thisIsAMac = System.getProperty("mrj.version") != null;
 
 	public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
@@ -119,15 +119,14 @@ public class MindClient extends ApplicationWindow {
 
 	protected MenuManager createMenuManager() {
 		MenuManager taskMenuManager = new MenuManager("&Tasks");
-	    taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
-		
-	    MenuManager manager = super.createMenuManager();
-	    manager.add(taskMenuManager);
-	    
+		taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
+
+		MenuManager manager = super.createMenuManager();
+		manager.add(taskMenuManager);
+
 		return manager;
 	}
 
-	private CategoryWidget categories;
 	private TeamlistWidget teamList;
 
 	private FileTypeMap mimeMap = MimetypesFileTypeMap.getDefaultFileTypeMap();
@@ -160,10 +159,10 @@ public class MindClient extends ApplicationWindow {
 
 		client.initActions();
 		splash.step();
-		
+
 		client.addMenuBar();
 		splash.step();
-		
+
 		client.addToolBar(SWT.FLAT | SWT.WRAP);
 		splash.step();
 
@@ -301,7 +300,7 @@ public class MindClient extends ApplicationWindow {
 	public List getSelectedTeams() {
 		return teamList.getSelectedTeams();
 	}
-	
+
 	public List getTeams() {
 		return teamList.getTeams();
 	}
@@ -346,11 +345,11 @@ public class MindClient extends ApplicationWindow {
 		sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		teamList = new TeamlistWidget(sashForm, SWT.NONE, this);
-		categories = new CategoryWidget(sashForm, SWT.NONE, this);
+		CategoryWidget categories = new CategoryWidget(sashForm, SWT.NONE, this);
 
 		sashForm.setWeights(new int[] { 1, 3 });
 
-		// init window shell
+		// initialize window shell
 		Window.setDefaultImage(JFaceResources.getImage(CLIENT_IMG_KEY));
 		getShell().addShellListener(new IconifyingShellListener());
 		getShell().setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
@@ -458,14 +457,9 @@ public class MindClient extends ApplicationWindow {
 			loadOptions();
 		}
 
-		// request preference values from user
-		PreferenceManager mgr = PreferenceUtilities
-				.getDefaultPreferenceManager();
-		mgr.addToRoot(new PreferenceNode(TaskPage.NAME, new TaskPage()));
-
 		// Create the preferences dialog
 		FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(
-				SWT.ON_TOP), mgr);
+				SWT.ON_TOP), PreferenceUtilities.getDefaultPreferenceManager());
 		dlg.setPreferenceStore(store);
 		if (showProfiles) {
 			dlg.setSelectedNode(ServerProfilesPage.NAME);
