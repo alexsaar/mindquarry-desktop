@@ -68,7 +68,7 @@ public class AddInDeletedConflict extends Conflict {
 	}
 
 	public void accept(ConflictHandler handler) throws CancelException {
-		handler.visit(this);
+		handler.handle(this);
 	}
 
 	public void doReAdd() {

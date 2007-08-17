@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
 import org.tigris.subversion.javahl.NotifyInformation;
@@ -37,6 +38,7 @@ import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -126,7 +128,7 @@ public class SVNSynchronizer {
 	}
 
 	public List<Status> getLocalChanges() throws ClientException {
-		log.info("local changes:");
+		log.info("## local changes:");
 
 		Status[] statusArray = client.status(localPath, true, false, false);
 
@@ -151,7 +153,7 @@ public class SVNSynchronizer {
 	 * contain the remote change of the same path.
 	 */
 	public List<Status> getRemoteAndLocalChanges() throws ClientException {
-		log.info("remote changes:");
+		log.info("## remote changes:");
 
 		List<Status> statusList = Arrays.asList(client.status(localPath, true,
 				true, false));
@@ -170,16 +172,27 @@ public class SVNSynchronizer {
 
 		// for easy look-up by path
 		Map<String, Status> remoteAndLocalMap = createRemoteStatusMap(remoteAndLocalChanges);
+		
+		// according to common sense and analysis of the svnkit code, the
+		// remoteTextStatus can only have a value of the following StatusKind
+		// subset:
+		// 1) normal
+		// 2) modified
+		// 3) added
+		// 4) deleted
+		// 5) unversioned
+		// 7) replaced (remote delete and local add?)
 
 		// go through local changes
 		for (Status status : localChanges) {
-			// local add conflicts with remote (unversioned is the typical case,
+		    
+			// local ADD conflicts with remote (unversioned is the typical case,
 			// since the user has just created a new file/folder and doesn't
 			// use svn add - that's what this client does automatically)
 			if (status.getTextStatus() == StatusKind.added
 					|| status.getTextStatus() == StatusKind.unversioned) {
 
-				// check for existence of a remote version
+				// check for existence of a remote version (ADD vs ADD)
 				if (remoteAndLocalMap.containsKey(status.getPath())) {
 					Status remoteStatus = remoteAndLocalMap.get(status
 							.getPath());
@@ -188,28 +201,68 @@ public class SVNSynchronizer {
 						conflicts.add(new AddConflict(status));
 					}
 				}
-				// check for adds in remotely deleted folders
+				// check for adds in remotely deleted folders (ADD in DELETED)
 				for (Status remoteStatus : remoteAndLocalChanges) {
-					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted)
-							&& (isParent(remoteStatus.getPath(), status
-									.getPath()))) {
+					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
+							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
 						conflicts.add(new AddInDeletedConflict(status));
 					}
 				}
-				// locally deleted conflicts with remote (missing is the typcial
-				// case)
-			} else if (status.getTextStatus() == StatusKind.deleted
-					|| status.getTextStatus() == StatusKind.missing) {
-				// TODO: check for remote adds/mods
-				// TODO: collect *all* remote adds/mods and add them to the
-				// conflict object
-				// conflicts.add(new DeleteWithModificationConflict(status));
+				
+			// locally DELETED conflicts with remote (missing is the typical case)
+			} else if (status.getTextStatus() == StatusKind.deleted ||
+			        status.getTextStatus() == StatusKind.missing) {
+			    // check for remote adds/mods
+			    // collect *all* remote adds/mods and add them to the conflict object
+			    List<Status> remoteModList = new ArrayList<Status>();
+			    if (status.getNodeKind() == NodeKind.dir) {
+			        // FOLDER DELETE vs MODIFIED/ADD inside
+                    List<Status> children = getChildren(status.getPath(), remoteAndLocalChanges);
+                    for (Status childStatus : children) {
+                        // when it's locally gone, it can only be an added or replaced
+                        // (deleted is ok as it matches with our delete)
+                        if (childStatus.getRepositoryTextStatus() == StatusKind.added ||
+                                childStatus.getRepositoryTextStatus() == StatusKind.replaced) {
+                            remoteModList.add(childStatus);
+                        }
+                    }
+
+                    // only if there was any modification found, we have a conflict
+                    if (remoteModList.size() > 0) {
+                        conflicts.add(new DeleteWithModificationConflict(status, remoteModList));
+                    }
+			    } else {
+			        // TODO: check this with a test case
+	                // check for existence of a modified remote version
+			        // DELETE vs MODIFIED
+	                if (remoteAndLocalMap.containsKey(status.getPath())) {
+	                    Status remoteStatus = remoteAndLocalMap.get(status.getPath());
+	                    if (remoteStatus.getRepositoryTextStatus() != StatusKind.normal) {
+	                        remoteModList.add(remoteStatus);
+	                        conflicts.add(new DeleteWithModificationConflict(status, remoteModList));
+	                    }
+	                }
+			    }
 			}
 		}
 		return conflicts;
 	}
 
-	private boolean isParent(String parentPath, String childPath) {
+	/**
+	 * Gets all children and grand-children and so on for the path.
+     */
+    private List<Status> getChildren(String path, List<Status> remoteAndLocalChanges) {
+        List<Status> result = new ArrayList<Status>();
+        // FIXME: not the fastest way (iterate over all + isParent for each)
+        for (Status s : remoteAndLocalChanges) {
+            if (isParent(path, s.getPath())) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
+    private boolean isParent(String parentPath, String childPath) {
 		File parent = new File(parentPath);
 		File child = new File(childPath);
 
@@ -224,21 +277,21 @@ public class SVNSynchronizer {
 	private void askUserForConflicts(List<Conflict> conflicts,
 			ConflictHandler handler) throws CancelException {
 		for (Conflict conflict : conflicts) {
-			log.info("Asking user for : " + conflict.toString());
+			log.info(">> Asking user for : " + conflict.toString());
 			conflict.accept(handler);
 		}
 	}
 
 	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
-			log.info("Before Update: " + conflict.toString());
+			log.info(">> Before Update: " + conflict.toString());
 			conflict.handleBeforeUpdate();
 		}
 	}
 
 	private void handleConflictsAfterUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
-			log.info("After Update: " + conflict.toString());
+			log.info(">> After Update: " + conflict.toString());
 			conflict.handleAfterUpdate();
 		}
 	}

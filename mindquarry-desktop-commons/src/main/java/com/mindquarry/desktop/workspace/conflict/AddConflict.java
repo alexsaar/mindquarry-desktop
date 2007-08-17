@@ -77,7 +77,7 @@ public class AddConflict extends Conflict {
 	}
 
 	public void accept(ConflictHandler handler) throws CancelException {
-		handler.visit(this);
+		handler.handle(this);
 	}
 
 	public void doRename(String newName) {

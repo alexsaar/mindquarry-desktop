@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.util.List;
 
 import org.tigris.subversion.javahl.Status;
 
@@ -34,9 +35,11 @@ public class DeleteWithModificationConflict extends Conflict {
 		UNKNOWN, DELETE, KEEPADDED;
 	}
 	
-	// TODO: add list of remote changes here
-	public DeleteWithModificationConflict(Status localStatus) {
+	private List<Status> remoteMods;
+	
+	public DeleteWithModificationConflict(Status localStatus, List<Status> remoteMods) {
 		super(localStatus);
+		this.remoteMods = remoteMods;
 	}
 
 	public void handleBeforeUpdate() {
@@ -45,7 +48,7 @@ public class DeleteWithModificationConflict extends Conflict {
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			log.error("AddConflict with no action set: " + localStatus.getPath());
+			log.error("DeleteWithModificationConflict with no action set: " + localStatus.getPath());
 			break;
 			
 		case DELETE:
@@ -65,7 +68,7 @@ public class DeleteWithModificationConflict extends Conflict {
 	}
 
 	public void accept(ConflictHandler handler) throws CancelException {
-		handler.visit(this);
+		handler.handle(this);
 	}
 
 	public void doDelete() {
@@ -79,4 +82,8 @@ public class DeleteWithModificationConflict extends Conflict {
 	public String toString() {
 		return "Delete/Modification Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
+
+    public List<Status> getRemoteMods() {
+        return remoteMods;
+    }
 }
