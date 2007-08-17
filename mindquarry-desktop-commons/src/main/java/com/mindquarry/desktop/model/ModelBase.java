@@ -22,6 +22,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 
 import com.mindquarry.desktop.util.HttpUtilities;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * Abstract base class for all model types. Provides base functionality for
@@ -43,7 +44,8 @@ public abstract class ModelBase {
 	}
 
 	public ModelBase(String url, String login, String password,
-			TransformerBase transformer) throws Exception {
+			TransformerBase transformer) throws NotAuthorizedException,
+			Exception {
 		initModel();
 		InputStream content = getContent(url, login, password);
 		parseInput(content, transformer);
@@ -58,7 +60,7 @@ public abstract class ModelBase {
 	}
 
 	private InputStream getContent(String url, String login, String password)
-			throws Exception {
+			throws NotAuthorizedException, Exception {
 		InputStream content = HttpUtilities.getContentAsXML(login, password,
 				url);
 		return content;

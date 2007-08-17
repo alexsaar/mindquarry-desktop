@@ -18,53 +18,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
 public class TaskList extends ModelBase {
-    private List<Task> tasks;
+	private List<Task> tasks;
 
-    public TaskList(InputStream data, String login, String password) {
-        super(data, new TaskListTransformer(login, password));
-    }
+	public TaskList(InputStream data, String login, String password) {
+		super(data, new TaskListTransformer(login, password));
+	}
 
-    public TaskList(String url, String login, String password) throws Exception {
-        super(url, login, password, new TaskListTransformer(login, password));
-    }
+	public TaskList(String url, String login, String password)
+			throws NotAuthorizedException, Exception {
+		super(url, login, password, new TaskListTransformer(login, password));
+	}
 
-    public TaskList() {
-        super();
-    }
+	public TaskList() {
+		super();
+	}
 
-    public TaskList(List<Task> tasks) {
-        super();
-        this.tasks = tasks;
-    }
+	public TaskList(List<Task> tasks) {
+		super();
+		this.tasks = tasks;
+	}
 
-    @Override
-    protected void initModel() {
-        tasks = new ArrayList<Task>();
-    }
+	@Override
+	protected void initModel() {
+		tasks = new ArrayList<Task>();
+	}
 
-    /**
-     * Getter for the list of tasks.
-     * 
-     * @return the list of tasks
-     */
-    public List<Task> getTasks() {
-        return tasks;
-    }
+	/**
+	 * Getter for the list of tasks.
+	 * 
+	 * @return the list of tasks
+	 */
+	public List<Task> getTasks() {
+		return tasks;
+	}
 
-    public void add(String url, String login, String password) {
-        // check if some contant was received
-        try {
-            tasks.add(new Task(url, login, password));
-        } catch (Exception e) {
-            log.error("Error while loading task from "  //$NON-NLS-1$
-                    + url, e);
-            return;
-        }
-    }
+	public void add(String url, String login, String password) {
+		// check if some contant was received
+		try {
+			tasks.add(new Task(url, login, password));
+		} catch (Exception e) {
+			log.error("Error while loading task from " //$NON-NLS-1$
+					+ url, e);
+			return;
+		}
+	}
 }
