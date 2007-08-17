@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -12,7 +13,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
-import org.tigris.subversion.javahl.Info;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
@@ -130,10 +131,20 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 
 		extractZip(zipPath, targetPath);
 		
-		Info info;
 		try {
-			info = client.info(wcPath);
-			client.relocate(info.getRepository(), repoUrl, wcPath, true);
+			String oldRepoUrl = client.info(wcPath).getRepository();
+			
+			List<String> relocatePaths = new ArrayList<String>();
+			Status[] stati = client.status(wcPath, true, false, true);
+			for (Status s : stati) {
+			    // added directories cannot be relocated
+			    if (s.getNodeKind() == NodeKind.dir && s.getTextStatus() != StatusKind.added) {
+			        relocatePaths.add(s.getPath());
+			    }
+			}
+			for (String path : relocatePaths) {
+			    client.relocate(oldRepoUrl, repoUrl, path, false);
+			}
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
