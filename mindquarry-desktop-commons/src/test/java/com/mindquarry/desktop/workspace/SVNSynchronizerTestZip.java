@@ -177,14 +177,14 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 		deleteDir(new File("target/add_add_conflict/"));
 	}
 
-//	@Test
-//	public void testAddAddConflict() {
-//		SVNSynchronizer helper = setupTest("add_add_conflict");
-//
-//		helper.synchronize();
-//
-//		deleteDir(new File("target/add_add_conflict/"));
-//	}
+	@Test
+	public void testAddAddConflict() {
+		SVNSynchronizer helper = setupTest("add_add_conflict");
+
+		helper.synchronize();
+
+		deleteDir(new File("target/add_add_conflict/"));
+	}
 
 	@Test
 	public void testAddInDeletedConflict() {
