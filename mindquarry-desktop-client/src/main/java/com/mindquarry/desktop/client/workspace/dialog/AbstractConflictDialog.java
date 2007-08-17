@@ -16,7 +16,6 @@ package com.mindquarry.desktop.client.workspace.dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -90,7 +89,7 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
         return composite;
     }
     
-    protected void makeRadioButton(Composite composite, String text, final int resolve) {
+    protected Button makeRadioButton(Composite composite, String text, final int resolve) {
         Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (resolve == resolveMethod) {
@@ -102,6 +101,7 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
                 resolveMethod = resolve;
             }
         });
+        return button;
     }
 
     /**
