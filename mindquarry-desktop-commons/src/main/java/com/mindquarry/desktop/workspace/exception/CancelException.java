@@ -1,7 +1,10 @@
 package com.mindquarry.desktop.workspace.exception;
 
 public class CancelException extends Exception {
-	public CancelException() {
+
+    private static final long serialVersionUID = 7208012019092834495L;
+
+    public CancelException() {
 	}
 
 	public CancelException(String message) {
