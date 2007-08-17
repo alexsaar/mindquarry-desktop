@@ -12,11 +12,13 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Info;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
+import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
@@ -25,6 +27,8 @@ import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
+	private SVNClientImpl client = SVNClientImpl.newInstance();
+	
 	private void extractZip(String zipName, String destinationPath) {
 		new File(destinationPath).mkdirs();
 		try {
@@ -118,13 +122,20 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	public SVNSynchronizer setupTest(String name) {
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
-		String repoUrl = "file://" + targetPath + "/repo";
+		String repoUrl = "file://" + new File(targetPath + "/repo").getAbsolutePath();
 		String wcPath = targetPath + "wc";
 
 		extractZip(zipPath, targetPath);
+		
+		Info info;
+		try {
+			info = client.info(wcPath);
+			client.relocate(info.getRepository(), repoUrl, wcPath, true);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
 
 		return new SVNSynchronizer(repoUrl, wcPath, "", "", this, this);
-
 	}
 	
 	@Test
@@ -158,15 +169,15 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 //
 //		deleteDir(new File("target/add_add_conflict/"));
 //	}
-//
-//	@Test
-//	public void testAddInDeletedConflict() {
-//		SVNSynchronizer helper = setupTest("add_in_deleted_conflict");
-//
-//		helper.synchronize();
-//
-//		deleteDir(new File("target/add_in_deleted_conflict/"));
-//	}
+
+	@Test
+	public void testAddInDeletedConflict() {
+		SVNSynchronizer helper = setupTest("add_in_deleted_conflict");
+
+		helper.synchronize();
+
+		deleteDir(new File("target/add_in_deleted_conflict/"));
+	}
 
 	public void onNotify(NotifyInformation info) {
 		System.out.println(SVNSynchronizer.notifyToString(info));
