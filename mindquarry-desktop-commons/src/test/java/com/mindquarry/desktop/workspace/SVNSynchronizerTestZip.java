@@ -30,7 +30,10 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
 	
 	private void extractZip(String zipName, String destinationPath) {
-		new File(destinationPath).mkdirs();
+	    File dest = new File(destinationPath);
+	    // delete if test has failed and extracted dir is still present
+	    deleteDir(dest);
+	    dest.mkdirs();
 		try {
 			byte[] buf = new byte[1024];
 			ZipEntry zipEntry;
@@ -135,7 +138,9 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 			e.printStackTrace();
 		}
 
-		return new SVNSynchronizer(repoUrl, wcPath, "", "", this, this);
+        SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", this);
+        syncer.setNotifyListener(this);
+        return syncer;
 	}
 	
 	@Test
@@ -154,7 +159,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 		
 		TestCase.assertNotNull(addedStatus);
 		
-		helper.removeNestedAdds(addedStatus, localChanges);
+		SVNSynchronizer.removeNestedAdds(addedStatus, localChanges);
 		
 		TestCase.assertEquals(2, localChanges.size());
 		

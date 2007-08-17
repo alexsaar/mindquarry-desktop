@@ -33,8 +33,8 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 
 	@Before
 	public void setUp() throws Exception {
-		helper = new SVNSynchronizer(repositoryURL, localPath, username, password,
-				this, this);
+		helper = new SVNSynchronizer(repositoryURL, localPath, username, password, this);
+		helper.setNotifyListener(this);
 	}
 
 	@Test

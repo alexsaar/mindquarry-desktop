@@ -52,7 +52,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
- * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
+ * @author <a href="mailto:alexander.klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public class SVNSynchronizer {
 	private static final Log log = LogFactory.getLog(SVNSynchronizer.class);
@@ -70,7 +70,8 @@ public class SVNSynchronizer {
 	protected ConflictHandler handler;
 
 	public SVNSynchronizer(String repositoryURL, String localPath,
-			String username, String password, Notify2 notifyListener, ConflictHandler handler) {
+			String username, String password,
+			ConflictHandler handler) {
 		this.repositoryURL = repositoryURL;
 		this.localPath = localPath;
 		this.username = username;
@@ -85,10 +86,13 @@ public class SVNSynchronizer {
 				client.password(password);
 			}
 		}
-		// register for svn notifications on update and commit
-		client.notification2(notifyListener);
 	}
-
+	
+	public void setNotifyListener(Notify2 notifyListener) {
+        // register for svn notifications on update and commit
+        client.notification2(notifyListener);
+	}
+	
 	public void synchronize() {
 		try {
 			client.cleanup(localPath);
@@ -152,13 +156,17 @@ public class SVNSynchronizer {
         client.add(localPath, true, true);
     }
 
+    /**
+     * Retrieves local changes as a list that is sorted with the top-most
+     * folder or file first.
+     */
     public List<Status> getLocalChanges() throws ClientException {
 		log.info("## local changes:");
 
-		Status[] statusArray = client.status(localPath, true, false, false);
-
 		List<Status> statusList = new ArrayList<Status>(); 
-		statusList.addAll(Arrays.asList(statusArray));
+		statusList.addAll(
+		        Arrays.asList(client.status(localPath, true, false, false)));
+		
 		// sort the list from top-level folder to bottom which is important
 		// for handling multiple conflicts on the parent folder first
 		Collections.sort(statusList, new Comparator<Status>() {
@@ -184,8 +192,8 @@ public class SVNSynchronizer {
 	public List<Status> getRemoteAndLocalChanges() throws ClientException {
 		log.info("## remote changes:");
 
-		List<Status> statusList = Arrays.asList(client.status(localPath, true,
-				true, false));
+		List<Status> statusList =
+		    Arrays.asList(client.status(localPath, true, true, false));
 
 		for (Status s : statusList) {
 			log.info(Kind.getDescription(s.getRepositoryTextStatus()) + " "
@@ -195,28 +203,61 @@ public class SVNSynchronizer {
 		return statusList;
 	}
 
+	/**
+	 * Helper method that creates a map that maps file paths to status objects
+	 * for faster lookup.
+	 */
+    private Map<String, Status> createStatusMap(List<Status> stati) {
+        Map<String, Status> map = new HashMap<String, Status>();
+        for (Status s : stati) {
+            map.put(s.getPath(), s);
+        }
+        return map;
+    }
+    
+    /**
+     * Important method that looks out for any structure conflicts before an
+     * update and creates {@link Conflict} objects for those. Upon each conflict
+     * found, the user is asked to resolve it.
+     * 
+     * If the user cancels during the conflict resolving, a CancelException is
+     * thrown.
+     */
 	private List<Conflict> analyzeChangesAndAskUser(List<Status> localChanges,
 			List<Status> remoteAndLocalChanges) throws CancelException {
 		ConflictList<Conflict> conflicts = new ConflictList<Conflict>(handler);
 
 		// for easy look-up by path
-		Map<String, Status> remoteAndLocalMap = createRemoteStatusMap(remoteAndLocalChanges);
+		Map<String, Status> remoteAndLocalMap = createStatusMap(remoteAndLocalChanges);
 		
-		// according to common sense and analysis of the svnkit code, the
-		// remoteTextStatus can only have one of the following StatusKind values
-		// 1) normal
-		// 2) modified
-		// 3) added
-		// 4) deleted
-		// 5) unversioned
-		// 7) replaced (remote delete and local add?)
-
 		// go through local changes
 		for (Status status : localChanges) {
 		    
-			// local ADD conflicts with remote (unversioned is the typical case,
-			// since the user has just created a new file/folder and doesn't
-			// use svn add - that's what this client does automatically)
+		    // LOCAL status can be everything except:
+            //   none/normal          won't be displayed in local changes
+		    //   unversioned/missing  set to added/deleted (handled anyway)
+            //   merged               only happens on update
+		    //   ignored              can be ignored ;-)
+		    
+		    // LOCAL status can be any one of those:
+		    //   modified             the simple ones
+		    //   added
+		    //   deleted
+		    //   replaced
+		    //   conflicted           the hard ones
+		    //   obstructed
+		    //   incomplete (on dir)
+		    //   external (only possible with svn client)
+		    
+		    // REMOTE status can be only the following:
+	        //   normal
+	        //   modified
+	        //   added
+	        //   deleted
+	        //   unversioned
+	        //   replaced (delete and re-add in one step)
+
+		    // local ADD (as we added everything, unversioned shouldn't happen)
 			if (status.getTextStatus() == StatusKind.added
 					|| status.getTextStatus() == StatusKind.unversioned) {
 
@@ -237,12 +278,12 @@ public class SVNSynchronizer {
 					}
 				}
 				
-			// locally DELETED conflicts with remote (missing is the typical case)
+			// locally DELETED (as we deleted all missing, missing shouldn't happen)
 			} else if (status.getTextStatus() == StatusKind.deleted ||
 			        status.getTextStatus() == StatusKind.missing) {
-			    // check for remote adds/mods
 			    // collect *all* remote adds/mods and add them to the conflict object
 			    List<Status> remoteModList = new ArrayList<Status>();
+			    
 			    if (status.getNodeKind() == NodeKind.dir) {
 			        // FOLDER DELETE vs MODIFIED/ADD inside
                     List<Status> children = getChildren(status.getPath(), remoteAndLocalChanges);
@@ -276,32 +317,6 @@ public class SVNSynchronizer {
 		return conflicts;
 	}
 
-	/**
-	 * Gets all children and grand-children and so on for the path.
-     */
-    private List<Status> getChildren(String path, List<Status> remoteAndLocalChanges) {
-        List<Status> result = new ArrayList<Status>();
-        // FIXME: not the fastest way (iterate over all + isParent for each)
-        for (Status s : remoteAndLocalChanges) {
-            if (isParent(path, s.getPath())) {
-                result.add(s);
-            }
-        }
-        return result;
-    }
-
-    private boolean isParent(String parentPath, String childPath) {
-		File parent = new File(parentPath);
-		File child = new File(childPath);
-
-		while ((child = child.getParentFile()) != null) {
-			if (child.equals(parent)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
 			log.info(">> Before Update: " + conflict.toString());
@@ -316,15 +331,40 @@ public class SVNSynchronizer {
 		}
 	}
 
-	public Map<String, Status> createRemoteStatusMap(List<Status> stati) {
-		Map<String, Status> map = new HashMap<String, Status>();
-		for (Status s : stati) {
-			map.put(s.getPath(), s);
-		}
-		return map;
-	}
-	
-	public void removeNestedAdds(Status parent, List<Status> localChanges) {
+    /**
+     * Gets all children and grand-children and so on for the path.
+     */
+    public static List<Status> getChildren(String path, List<Status> remoteAndLocalChanges) {
+        List<Status> result = new ArrayList<Status>();
+        // FIXME: not the fastest way (iterate over all + isParent for each)
+        for (Status s : remoteAndLocalChanges) {
+            if (isParent(path, s.getPath())) {
+                result.add(s);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Checks if the file path 'parentPath' is a filesystem parent of the path
+     * 'childPath'. Uses the java File api to check that correctly.
+     */
+    public static boolean isParent(String parentPath, String childPath) {
+        File parent = new File(parentPath);
+        File child = new File(childPath);
+
+        while ((child = child.getParentFile()) != null) {
+            if (child.equals(parent)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Removes all status objects that are added and lie below the parent path.
+     */
+	public static void removeNestedAdds(Status parent, List<Status> localChanges) {
 		Iterator<Status> iter = localChanges.iterator();
 		while(iter.hasNext()) {
 			if(isParent(parent.getPath(), iter.next().getPath())) {
@@ -333,6 +373,10 @@ public class SVNSynchronizer {
 		}
 	}
 
+	/**
+	 * Helper method that stringifies a notify object from the notify callback
+	 * of svnkit.
+	 */
 	public static String notifyToString(NotifyInformation info) {
 		return NotifyAction.actionNames[info.getAction()] + " "
 				+ info.getPath();
