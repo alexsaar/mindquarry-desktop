@@ -25,6 +25,7 @@ import javax.activation.MimetypesFileTypeMap;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -86,6 +87,8 @@ public class MindClient extends ApplicationWindow {
 	// ### CONSTANTS
 	// #########################################################################
 	public static final String APPLICATION_NAME = "Mindquarry Desktop Client";
+	
+	public final static boolean thisIsAMac = System.getProperty("mrj.version") != null;
 
 	public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
 			+ "/mindclient.settings"; //$NON-NLS-1$
@@ -114,6 +117,16 @@ public class MindClient extends ApplicationWindow {
 	private TrayItem trayItem;
 	private List<ActionBase> actions;
 
+	protected MenuManager createMenuManager() {
+		MenuManager taskMenuManager = new MenuManager("&Tasks");
+	    taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
+		
+	    MenuManager manager = super.createMenuManager();
+	    manager.add(taskMenuManager);
+	    
+		return manager;
+	}
+
 	private CategoryWidget categories;
 	private TeamlistWidget teamList;
 
@@ -138,7 +151,7 @@ public class MindClient extends ApplicationWindow {
 	 */
 	public static void main(String[] args) {
 		// show splash
-		SplashScreen splash = SplashScreen.newInstance(6);
+		SplashScreen splash = SplashScreen.newInstance(7);
 		splash.show();
 
 		// run editor
@@ -147,7 +160,10 @@ public class MindClient extends ApplicationWindow {
 
 		client.initActions();
 		splash.step();
-
+		
+		client.addMenuBar();
+		splash.step();
+		
 		client.addToolBar(SWT.FLAT | SWT.WRAP);
 		splash.step();
 
