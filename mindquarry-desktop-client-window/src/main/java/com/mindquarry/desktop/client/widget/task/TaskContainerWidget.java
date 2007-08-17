@@ -315,7 +315,6 @@ public class TaskContainerWidget extends WidgetBase {
 									tableViewer.getTable().getSize().x);
 						}
 					});
-
 					tableViewer
 							.setContentProvider(new TaskTableContentProvider());
 					tableViewer
