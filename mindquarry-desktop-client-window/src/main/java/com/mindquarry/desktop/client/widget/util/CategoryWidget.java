@@ -17,6 +17,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -26,6 +28,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
@@ -41,132 +44,153 @@ import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
  *         Saar</a>
  */
 public class CategoryWidget extends WidgetBase {
-	private static final String ICON_SIZE = "22x22";//$NON-NLS-1$
+    private static final String ICON_SIZE = "22x22";//$NON-NLS-1$
 
-	private static Image tasksIcon = new Image(
-			Display.getCurrent(),
-			CategoryWidget.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-tasks.png")); //$NON-NLS-1$
+    private static Image tasksIcon = new Image(
+            Display.getCurrent(),
+            CategoryWidget.class
+                    .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-tasks.png")); //$NON-NLS-1$
 
-	private static Image docsIcon = new Image(
-			Display.getCurrent(),
-			CategoryWidget.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
+    private static Image docsIcon = new Image(
+            Display.getCurrent(),
+            CategoryWidget.class
+                    .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
 
-	public CategoryWidget(Composite parent, int style, MindClient client) {
-		super(parent, style, client);
-	}
+    public CategoryWidget(Composite parent, int style, MindClient client) {
+        super(parent, style, client);
+    }
 
-	protected void createContents(Composite parent) {
-		final CTabFolder tabFolder = new CTabFolder(parent, SWT.TOP | SWT.FLAT
-				| SWT.BORDER);
-		tabFolder.setSimple(false);
-		tabFolder.setUnselectedImageVisible(false);
-		tabFolder.setUnselectedCloseVisible(false);
-		tabFolder.setMinimizeVisible(false);
-		tabFolder.setMaximizeVisible(false);
+    protected void createContents(Composite parent) {
+        final CTabFolder tabFolder = new CTabFolder(parent, SWT.TOP | SWT.FLAT
+                | SWT.BORDER);
+        tabFolder.setSimple(false);
+        tabFolder.setUnselectedImageVisible(false);
+        tabFolder.setUnselectedCloseVisible(false);
+        tabFolder.setMinimizeVisible(false);
+        tabFolder.setMaximizeVisible(false);
 
-		tabFolder.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// nothing to do here
-			}
+        tabFolder.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // nothing to do here
+            }
 
-			public void widgetSelected(SelectionEvent e) {
-				if (tabFolder.getSelection().getText().equals("Tasks")) {
-					client.setTasksActive();
-				} else if (tabFolder.getSelection().getText().equals("Files")) {
-					client.setFilesActive();
-				}
-			}
-		});
-		CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-		tabItem.setText("Tasks");
-		tabItem.setImage(tasksIcon);
-		tabFolder.setSelection(tabItem);
+            public void widgetSelected(SelectionEvent e) {
+                if (tabFolder.getSelection().getText().equals("Tasks")) {
+                    client.setTasksActive();
+                } else if (tabFolder.getSelection().getText().equals("Files")) {
+                    client.setFilesActive();
+                }
+            }
+        });
+        CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
+        tabItem.setText("Tasks");
+        tabItem.setImage(tasksIcon);
+        tabFolder.setSelection(tabItem);
 
-		// create tasks tab
-		Composite taskComposite = new Composite(tabFolder, SWT.NONE);
-		taskComposite.setLayout(new GridLayout(4, false));
-		taskComposite.setBackground(getShell().getDisplay().getSystemColor(
-				SWT.COLOR_WHITE));
-		tabItem.setControl(taskComposite);
+        // create tasks tab
+        Composite taskComposite = new Composite(tabFolder, SWT.NONE);
+        taskComposite.setLayout(new GridLayout(6, false));
+        taskComposite.setBackground(getShell().getDisplay().getSystemColor(
+                SWT.COLOR_WHITE));
+        tabItem.setControl(taskComposite);
 
-		Label label = new Label(taskComposite, SWT.LEFT);
-		label.setBackground(Display.getCurrent()
-				.getSystemColor(SWT.COLOR_WHITE));
-		label.setText("Priority");
+        Label label = new Label(taskComposite, SWT.LEFT);
+        label.setBackground(Display.getCurrent()
+                .getSystemColor(SWT.COLOR_WHITE));
+        label.setText("Priority");
 
-		CCombo priority = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
-				| SWT.FLAT);
-		priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		priority.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
-		priority.add("All"); //$NON-NLS-1$
-		priority.add("Low"); //$NON-NLS-1$
-		priority.add("Medium"); //$NON-NLS-1$
-		priority.add("Important"); //$NON-NLS-1$
-		priority.add("Critical"); //$NON-NLS-1$
-		priority.select(0);
+        CCombo priority = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+                | SWT.FLAT);
+        priority.setBackground(Display.getCurrent().getSystemColor(
+                SWT.COLOR_WHITE));
+        priority.add("All"); //$NON-NLS-1$
+        priority.add("Low"); //$NON-NLS-1$
+        priority.add("Medium"); //$NON-NLS-1$
+        priority.add("Important"); //$NON-NLS-1$
+        priority.add("Critical"); //$NON-NLS-1$
+        priority.select(0);
 
-		label = new Label(taskComposite, SWT.LEFT);
-		label.setBackground(Display.getCurrent()
-				.getSystemColor(SWT.COLOR_WHITE));
-		label.setText("Status");
+        label = new Label(taskComposite, SWT.LEFT);
+        label.setBackground(Display.getCurrent()
+                .getSystemColor(SWT.COLOR_WHITE));
+        label.setText("Status");
 
-		CCombo status = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
-				| SWT.FLAT);
-		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		status.setBackground(Display.getCurrent().getSystemColor(
-				SWT.COLOR_WHITE));
-		status.add("All"); //$NON-NLS-1$
-		status.add("New"); //$NON-NLS-1$
-		status.add("Running"); //$NON-NLS-1$
-		status.add("Paused"); //$NON-NLS-1$
-		status.add("Done"); //$NON-NLS-1$
-		status.select(0);
+        CCombo status = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+                | SWT.FLAT);
+        status.setBackground(Display.getCurrent().getSystemColor(
+                SWT.COLOR_WHITE));
+        status.add("All"); //$NON-NLS-1$
+        status.add("New"); //$NON-NLS-1$
+        status.add("Running"); //$NON-NLS-1$
+        status.add("Paused"); //$NON-NLS-1$
+        status.add("Done"); //$NON-NLS-1$
+        status.select(0);
 
-		final TaskContainerWidget taskContainer = new TaskContainerWidget(
-				taskComposite, client);
+        label = new Label(taskComposite, SWT.LEFT);
+        label.setBackground(Display.getCurrent()
+                .getSystemColor(SWT.COLOR_WHITE));
+        label.setText("Search");
 
-		FacetSelectionListener listener = new FacetSelectionListener(
-				taskContainer, status, priority);
-		priority.addSelectionListener(listener);
-		status.addSelectionListener(listener);
+        Text search = new Text(taskComposite, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+        search.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        
+        final TaskContainerWidget taskContainer = new TaskContainerWidget(
+                taskComposite, client);
 
-		// set action fields
-		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
-				.getName())).setTaskContainer(taskContainer);
-		((CreateTaskAction) client.getAction(CreateTaskAction.class.getName()))
-				.setTaskContainer(taskContainer);
+        FacetSelectionListener listener = new FacetSelectionListener(
+                taskContainer, status, priority, search);
+        priority.addSelectionListener(listener);
+        status.addSelectionListener(listener);
+        search.addModifyListener(listener);
 
-		tabItem = new CTabItem(tabFolder, SWT.NULL);
-		tabItem.setText("Files");
-		tabItem.setImage(docsIcon);
+        // set action fields
+        ((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
+                .getName())).setTaskContainer(taskContainer);
+        ((CreateTaskAction) client.getAction(CreateTaskAction.class.getName()))
+                .setTaskContainer(taskContainer);
 
-		WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
-				tabFolder, client);
-		tabItem.setControl(workspaceBrowser);
-	}
+        tabItem = new CTabItem(tabFolder, SWT.NULL);
+        tabItem.setText("Files");
+        tabItem.setImage(docsIcon);
 
-	class FacetSelectionListener extends SelectionAdapter {
-		private TaskContainerWidget taskContainer;
+        WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
+                tabFolder, client);
+        tabItem.setControl(workspaceBrowser);
+    }
 
-		private CCombo status;
-		private CCombo priority;
+    class FacetSelectionListener extends SelectionAdapter implements
+            ModifyListener {
+        private TaskContainerWidget taskContainer;
 
-		public FacetSelectionListener(TaskContainerWidget taskContainer,
-				CCombo status, CCombo priority) {
-			this.taskContainer = taskContainer;
-			this.status = status;
-			this.priority = priority;
-		}
+        private CCombo status;
+        private CCombo priority;
 
-		public void widgetSelected(SelectionEvent e) {
-			String statusString = status.getItem(status.getSelectionIndex())
-					.toLowerCase();
-			String priorityString = priority.getItem(
-					priority.getSelectionIndex()).toLowerCase();
-			taskContainer.applyFacets(statusString, priorityString);
-		}
-	}
+        private Text search;
+
+        public FacetSelectionListener(TaskContainerWidget taskContainer,
+                CCombo status, CCombo priority, Text search) {
+            this.taskContainer = taskContainer;
+            this.status = status;
+            this.priority = priority;
+            this.search = search;
+        }
+
+        public void widgetSelected(SelectionEvent e) {
+            applyFacets();
+        }
+
+        public void modifyText(ModifyEvent e) {
+            applyFacets();
+        }
+
+        private void applyFacets() {
+            String statusString = status.getItem(status.getSelectionIndex())
+                    .toLowerCase();
+            String priorityString = priority.getItem(
+                    priority.getSelectionIndex()).toLowerCase();
+            String searchString = search.getText().toLowerCase();
+            taskContainer.applyFacets(statusString, priorityString,
+                    searchString);
+        }
+    }
 }

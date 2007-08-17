@@ -52,306 +52,321 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Trieloff</a>
  */
 public class TaskContainerWidget extends WidgetBase {
-	private static Log log = LogFactory.getLog(TaskContainerWidget.class);
+    private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
-	private boolean refreshing = false;
-	private boolean initialized = false;
+    private boolean refreshing = false;
+    private boolean initialized = false;
 
-	private TaskList tasks;
+    private TaskList tasks;
 
-	private Table table;
-	private TableViewer tableViewer;
+    private Table table;
+    private TableViewer tableViewer;
 
-	private Composite noTasksWidget;
-	private Composite refreshWidget;
-	private Composite errorWidget;
+    private Composite noTasksWidget;
+    private Composite refreshWidget;
+    private Composite errorWidget;
 
-	public TaskContainerWidget(Composite parent, MindClient client) {
-		super(parent, SWT.BORDER, client);
-	}
+    public TaskContainerWidget(Composite parent, MindClient client) {
+        super(parent, SWT.BORDER, client);
+    }
 
-	// #########################################################################
-	// ### WIDGET METHODS
-	// #########################################################################
-	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 4,
-				1));
+    // #########################################################################
+    // ### WIDGET METHODS
+    // #########################################################################
+    protected void createContents(Composite parent) {
+        setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 6,
+                1));
 
-		setLayout(new GridLayout(1, true));
-		((GridLayout) getLayout()).horizontalSpacing = 0;
-		((GridLayout) getLayout()).verticalSpacing = 0;
-		((GridLayout) getLayout()).marginHeight = 0;
-		((GridLayout) getLayout()).marginWidth = 0;
-	}
+        setLayout(new GridLayout(1, true));
+        ((GridLayout) getLayout()).horizontalSpacing = 0;
+        ((GridLayout) getLayout()).verticalSpacing = 0;
+        ((GridLayout) getLayout()).marginHeight = 0;
+        ((GridLayout) getLayout()).marginWidth = 0;
+    }
 
-	// #########################################################################
-	// ### PUBLIC METHODS
-	// #########################################################################
-	public void addTask(Task task) {
-		if (tableViewer != null) {
-			TaskList content = (TaskList) tableViewer.getInput();
-			content.getTasks().add(task);
-			tableViewer.setInput(content);
-			tableViewer.refresh();
-		}
-	}
+    // #########################################################################
+    // ### PUBLIC METHODS
+    // #########################################################################
+    public void addTask(Task task) {
+        if (tableViewer != null) {
+            TaskList content = (TaskList) tableViewer.getInput();
+            content.getTasks().add(task);
+            tableViewer.setInput(content);
+            tableViewer.refresh();
+        }
+    }
 
-	/**
-	 * Runs task update in a separate thread, so that GUI can continue
-	 * processing. Thus this method returns immediately. While updating tasks
-	 * the Task Manager will show an update widget instead of the task table.
-	 */
-	public void asyncRefresh() {
-		log.info("Starting async task list refresh."); //$NON-NLS-1$
-		if (refreshing) {
-			log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
-			return;
-		}
-		refreshing = true;
-		Thread updateThread = new Thread(new Runnable() {
-			public void run() {
-				client.startAction(Messages.getString(
-						TaskContainerWidget.class, "1"));
-				refresh();
-				client.stopAction(Messages.getString(TaskContainerWidget.class,
-						"1"));
-			}
-		}, "task-update");
-		updateThread.setDaemon(true);
-		updateThread.start();
-	}
-	
-	private String statusFacet = "all";
-	private String priorityFacet = "all";
+    /**
+     * Runs task update in a separate thread, so that GUI can continue
+     * processing. Thus this method returns immediately. While updating tasks
+     * the Task Manager will show an update widget instead of the task table.
+     */
+    public void asyncRefresh() {
+        log.info("Starting async task list refresh."); //$NON-NLS-1$
+        if (refreshing) {
+            log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
+            return;
+        }
+        refreshing = true;
+        Thread updateThread = new Thread(new Runnable() {
+            public void run() {
+                client.startAction(Messages.getString(
+                        TaskContainerWidget.class, "1"));
+                refresh();
+                client.stopAction(Messages.getString(TaskContainerWidget.class,
+                        "1"));
+            }
+        }, "task-update");
+        updateThread.setDaemon(true);
+        updateThread.start();
+    }
 
-	public void applyFacets(String status, String priority) {
-		statusFacet = status;
-		priorityFacet = priority;
-		applyFacets();
-	}
-	
-	private void applyFacets() {
-		if ((tableViewer != null) && (tasks != null)) {
-			if ((statusFacet.equals("all")) && (priorityFacet.equals("all"))) {
-				tableViewer.setInput(tasks);
-				tableViewer.refresh();
-			} else {
-				TaskList content = new TaskList();
-				content.getTasks().addAll(tasks.getTasks());
+    private String statusFacet = "all";
+    private String priorityFacet = "all";
+    private String searchFacet = "";
 
-				Iterator<Task> it = content.getTasks().iterator();
-				while (it.hasNext()) {
-					Task task = it.next();
+    public void applyFacets(String status, String priority, String search) {
+        statusFacet = status;
+        priorityFacet = priority;
+        searchFacet = search;
+        applyFacets();
+    }
 
-					boolean hide = false;
-					if ((!statusFacet.equals("all"))
-							&& (!task.getStatus().equals(statusFacet))) {
-						hide = true;
-					}
-					if ((task.getPriority() == null) && (!priorityFacet.equals("all"))){
-						hide = true;
-					} else if ((!priorityFacet.equals("all"))
-							&& (!task.getPriority().equals(priorityFacet))) {
-						hide = true;
-					}
-					if (hide) {
-						it.remove();
-					}
-				}
-				tableViewer.setInput(content);
-				tableViewer.refresh();
-			}
-		}
-	}
+    private void applyFacets() {
+        if ((tableViewer != null) && (tasks != null)) {
+            TaskList content = new TaskList();
+            content.getTasks().addAll(tasks.getTasks());
 
-	// #########################################################################
-	// ### PRIVATE METHODS
-	// #########################################################################
-	private void refresh() {
-		log.info("Starting task list refresh."); //$NON-NLS-1$
-		refreshing = true;
+            if ((statusFacet.equals("all")) && (priorityFacet.equals("all"))) {
+                tableViewer.setInput(tasks);
+                tableViewer.refresh();
+            } else {
+                Iterator<Task> it = content.getTasks().iterator();
+                while (it.hasNext()) {
+                    Task task = it.next();
+                    boolean hide = false;
 
-		PreferenceStore store = client.getPreferenceStore();
-		Profile profile = Profile.getSelectedProfile(store);
+                    // check status facet
+                    if ((!statusFacet.equals("all"))
+                            && (!task.getStatus().equals(statusFacet))) {
+                        hide = true;
+                    }
+                    // check priority facet
+                    if ((task.getPriority() == null)
+                            && (!priorityFacet.equals("all"))) {
+                        hide = true;
+                    } else if ((!priorityFacet.equals("all"))
+                            && (!task.getPriority().equals(priorityFacet))) {
+                        hide = true;
+                    }
+                    if (hide) {
+                        it.remove();
+                    }
+                }
+            }
+            // check live search constraint
+            Iterator<Task> it = content.getTasks().iterator();
+            while (it.hasNext()) {
+                Task task = it.next();
+                if ((!searchFacet.equals(""))
+                        && (!task.getTitle().toLowerCase().contains(searchFacet))) {
+                    it.remove();
+                }
+            }
+            // update table
+            tableViewer.setInput(content);
+            tableViewer.refresh();
+        }
+    }
 
-		// check profile
-		if (profile == null) {
-			log.debug("No profile selected."); //$NON-NLS-1$
-			refreshing = false;
-			return;
-		}
-		updateTaskWidgetContents(true, null, false);
+    // #########################################################################
+    // ### PRIVATE METHODS
+    // #########################################################################
+    private void refresh() {
+        log.info("Starting task list refresh."); //$NON-NLS-1$
+        refreshing = true;
 
-		log.info("Retrieving list of tasks."); //$NON-NLS-1$
+        PreferenceStore store = client.getPreferenceStore();
+        Profile profile = Profile.getSelectedProfile(store);
 
-		// cleanup current task list
-		if (tasks == null) {
-			tasks = new TaskList();
-		}
-		tasks.getTasks().clear();
+        // check profile
+        if (profile == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            refreshing = false;
+            return;
+        }
+        updateTaskWidgetContents(true, null, false);
 
-		// retrieve tasks for all selected teams
-		final List items = new ArrayList();
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				items.addAll(client.getSelectedTeams());
-			}
-		});
-		for (Object item : items) {
-			Team team = (Team) item;
-			try {
-				tasks.getTasks().addAll(
-						new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
-								+ team.getId() + "/", profile.getLogin(),
-								profile.getPassword()).getTasks());
-			} catch (Exception e) {
-				log.error("Could not update list of tasks for "
-						+ profile.getServerURL(), e); //$NON-NLS-1$
+        log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
-				String errMessage = Messages.getString(
-						TaskContainerWidget.class, "5"); //$NON-NLS-1$
-				errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+        // cleanup current task list
+        if (tasks == null) {
+            tasks = new TaskList();
+        }
+        tasks.getTasks().clear();
 
-				updateTaskWidgetContents(false, errMessage, false);
-				refreshing = false;
-				MessageDialog.openError(getShell(), Messages.getString(
-						"com.mindquarry.desktop.client", "error"), errMessage);
-				return;
-			}
-		}
-		// remove tasks that should not be displayed
-		Iterator tIt = tasks.getTasks().iterator();
-		while (tIt.hasNext()) {
-			Task task = (Task) tIt.next();
+        // retrieve tasks for all selected teams
+        final List items = new ArrayList();
+        Display.getDefault().syncExec(new Runnable() {
+            public void run() {
+                items.addAll(client.getSelectedTeams());
+            }
+        });
+        for (Object item : items) {
+            Team team = (Team) item;
+            try {
+                tasks.getTasks().addAll(
+                        new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
+                                + team.getId() + "/", profile.getLogin(),
+                                profile.getPassword()).getTasks());
+            } catch (Exception e) {
+                log.error("Could not update list of tasks for "
+                        + profile.getServerURL(), e); //$NON-NLS-1$
 
-			boolean listTask = true;
-			if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
-				if ((task.getStatus() != null)
-						&& (task.getStatus().equals(Task.STATUS_DONE))) {
-					listTask = false;
-				}
-			}
-			if (!listTask) {
-				log.info("Removing task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
-				tIt.remove();
-			}
-		}
-		if (tasks.getTasks().isEmpty()) {
-			updateTaskWidgetContents(false, null, true);
-		} else {
-			updateTaskWidgetContents(false, null, false);
+                String errMessage = Messages.getString(
+                        TaskContainerWidget.class, "5"); //$NON-NLS-1$
+                errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
 
-			// update task table
-			log.info("Updating list of tasks."); //$NON-NLS-1$
-			getDisplay().syncExec(new Runnable() {
-				public void run() {
-//					tableViewer.setInput(tasks);
-					applyFacets();
+                updateTaskWidgetContents(false, errMessage, false);
+                refreshing = false;
+                MessageDialog.openError(getShell(), Messages.getString(
+                        "com.mindquarry.desktop.client", "error"), errMessage);
+                return;
+            }
+        }
+        // remove tasks that should not be displayed
+        Iterator tIt = tasks.getTasks().iterator();
+        while (tIt.hasNext()) {
+            Task task = (Task) tIt.next();
 
-					// set background color for every second table item
-					TableItem[] items = tableViewer.getTable().getItems();
-					for (int i = 0; i < items.length; i++) {
-						if (i % 2 == 1) {
-							items[i].setBackground(new Color(Display
-									.getCurrent(), 233, 233, 251));
-						}
-					}
-				}
-			});
-		}
-		refreshing = false;
-		initialized = true;
-	}
+            boolean listTask = true;
+            if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
+                if ((task.getStatus() != null)
+                        && (task.getStatus().equals(Task.STATUS_DONE))) {
+                    listTask = false;
+                }
+            }
+            if (!listTask) {
+                log.info("Removing task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
+                tIt.remove();
+            }
+        }
+        if (tasks.getTasks().isEmpty()) {
+            updateTaskWidgetContents(false, null, true);
+        } else {
+            updateTaskWidgetContents(false, null, false);
 
-	private void updateTaskWidgetContents(final boolean refreshing,
-			final String errMessage, final boolean empty) {
-		final Composite self = this;
-		getDisplay().syncExec(new Runnable() {
-			public void run() {
-				if (refreshing) {
-					destroyContent();
-					refreshWidget = new TaskUpdateWidget(self, Messages
-							.getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
-							+ " ..."); //$NON-NLS-1$
-				} else if (errMessage == null && !empty) {
-					destroyContent();
-					table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
-					table.setLayoutData(new GridData(GridData.FILL_BOTH));
-					table.setHeaderVisible(false);
-					table.setLinesVisible(false);
-					table.setToolTipText(""); //$NON-NLS-1$
-					table.setFont(JFaceResources
-							.getFont(MindClient.TASK_TITLE_FONT_KEY));
+            // update task table
+            log.info("Updating list of tasks."); //$NON-NLS-1$
+            getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    // tableViewer.setInput(tasks);
+                    applyFacets();
 
-					table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-							true));
+                    // set background color for every second table item
+                    TableItem[] items = tableViewer.getTable().getItems();
+                    for (int i = 0; i < items.length; i++) {
+                        if (i % 2 == 1) {
+                            items[i].setBackground(new Color(Display
+                                    .getCurrent(), 233, 233, 251));
+                        }
+                    }
+                }
+            });
+        }
+        refreshing = false;
+        initialized = true;
+    }
 
-					// create table viewer
-					tableViewer = new TableViewer(table);
-					tableViewer.activateCustomTooltips();
+    private void updateTaskWidgetContents(final boolean refreshing,
+            final String errMessage, final boolean empty) {
+        final Composite self = this;
+        getDisplay().syncExec(new Runnable() {
+            public void run() {
+                if (refreshing) {
+                    destroyContent();
+                    refreshWidget = new TaskUpdateWidget(self, Messages
+                            .getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
+                            + " ..."); //$NON-NLS-1$
+                } else if (errMessage == null && !empty) {
+                    destroyContent();
+                    table = new Table(self, SWT.FULL_SELECTION | SWT.SINGLE);
+                    table.setLayoutData(new GridData(GridData.FILL_BOTH));
+                    table.setHeaderVisible(false);
+                    table.setLinesVisible(false);
+                    table.setToolTipText(""); //$NON-NLS-1$
+                    table.setFont(JFaceResources
+                            .getFont(MindClient.TASK_TITLE_FONT_KEY));
 
-					// create columns
-					TableColumn col = new TableColumn(table, SWT.NONE);
-					col.setResizable(false);
-					col.setWidth(200);
-					col.setText(Messages.getString(TaskContainerWidget.class,
-							"3"));//$NON-NLS-1$
+                    table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+                            true));
 
-					TableViewerColumn vCol = new TableViewerColumn(tableViewer,
-							col);
-					vCol.setLabelProvider(new TaskTableLabelProvider());
-					tableViewer.setColumnPart(vCol, 0);
+                    // create table viewer
+                    tableViewer = new TableViewer(table);
+                    tableViewer.activateCustomTooltips();
 
-					// create task list
-					CellEditor[] editors = new CellEditor[table
-							.getColumnCount()];
-					editors[0] = new CheckboxCellEditor(table.getParent());
+                    // create columns
+                    TableColumn col = new TableColumn(table, SWT.NONE);
+                    col.setResizable(false);
+                    col.setWidth(200);
+                    col.setText(Messages.getString(TaskContainerWidget.class,
+                            "3"));//$NON-NLS-1$
 
-					tableViewer.setCellEditors(editors);
-					tableViewer.getTable().getColumn(0).setWidth(getSize().x);
-					getShell().addListener(SWT.Resize, new Listener() {
-						public void handleEvent(Event event) {
-							tableViewer.getTable().getColumn(0).setWidth(
-									tableViewer.getTable().getSize().x);
-						}
-					});
-					tableViewer
-							.setContentProvider(new TaskTableContentProvider());
-					tableViewer
-							.addSelectionChangedListener(new TaskSelectionChangedListener(
-									tableViewer, null));
-					tableViewer
-							.addDoubleClickListener(new TaskTableDoubleClickListener(
-									client, table, tableViewer, tasks));
-				} else if (errMessage == null && empty) {
-					destroyContent();
-					noTasksWidget = new NoTasksWidget(self, Messages.getString(
-							TaskContainerWidget.class, "4")); //$NON-NLS-1$
-				} else {
-					destroyContent();
-					errorWidget = new TaskErrorWidget(self, errMessage);
-				}
-				layout(true);
-			}
+                    TableViewerColumn vCol = new TableViewerColumn(tableViewer,
+                            col);
+                    vCol.setLabelProvider(new TaskTableLabelProvider());
+                    tableViewer.setColumnPart(vCol, 0);
 
-			private void destroyContent() {
-				if (table != null) {
-					table.dispose();
-					table = null;
-				}
-				if (refreshWidget != null) {
-					refreshWidget.dispose();
-					refreshWidget = null;
-				}
-				if (errorWidget != null) {
-					errorWidget.dispose();
-					errorWidget = null;
-				}
-				if (noTasksWidget != null) {
-					noTasksWidget.dispose();
-					noTasksWidget = null;
-				}
-			}
-		});
-	}
+                    // create task list
+                    CellEditor[] editors = new CellEditor[table
+                            .getColumnCount()];
+                    editors[0] = new CheckboxCellEditor(table.getParent());
+
+                    tableViewer.setCellEditors(editors);
+                    tableViewer.getTable().getColumn(0).setWidth(getSize().x);
+                    getShell().addListener(SWT.Resize, new Listener() {
+                        public void handleEvent(Event event) {
+                            tableViewer.getTable().getColumn(0).setWidth(
+                                    tableViewer.getTable().getSize().x);
+                        }
+                    });
+                    tableViewer
+                            .setContentProvider(new TaskTableContentProvider());
+                    tableViewer
+                            .addSelectionChangedListener(new TaskSelectionChangedListener(
+                                    tableViewer, null));
+                    tableViewer
+                            .addDoubleClickListener(new TaskTableDoubleClickListener(
+                                    client, table, tableViewer, tasks));
+                } else if (errMessage == null && empty) {
+                    destroyContent();
+                    noTasksWidget = new NoTasksWidget(self, Messages.getString(
+                            TaskContainerWidget.class, "4")); //$NON-NLS-1$
+                } else {
+                    destroyContent();
+                    errorWidget = new TaskErrorWidget(self, errMessage);
+                }
+                layout(true);
+            }
+
+            private void destroyContent() {
+                if (table != null) {
+                    table.dispose();
+                    table = null;
+                }
+                if (refreshWidget != null) {
+                    refreshWidget.dispose();
+                    refreshWidget = null;
+                }
+                if (errorWidget != null) {
+                    errorWidget.dispose();
+                    errorWidget = null;
+                }
+                if (noTasksWidget != null) {
+                    noTasksWidget.dispose();
+                    noTasksWidget = null;
+                }
+            }
+        });
+    }
 }
