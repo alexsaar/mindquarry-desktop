@@ -235,23 +235,6 @@ public class TaskContainerWidget extends WidgetBase {
                 return;
             }
         }
-        // remove tasks that should not be displayed
-        Iterator tIt = tasks.getTasks().iterator();
-        while (tIt.hasNext()) {
-            Task task = (Task) tIt.next();
-
-            boolean listTask = true;
-            if (!store.getBoolean(TaskPage.LIST_FINISHED_TASKS)) {
-                if ((task.getStatus() != null)
-                        && (task.getStatus().equals(Task.STATUS_DONE))) {
-                    listTask = false;
-                }
-            }
-            if (!listTask) {
-                log.info("Removing task with id '" + task.getId() + "'."); //$NON-NLS-1$//$NON-NLS-2$
-                tIt.remove();
-            }
-        }
         if (tasks.getTasks().isEmpty()) {
             updateTaskWidgetContents(false, null, true);
         } else {
