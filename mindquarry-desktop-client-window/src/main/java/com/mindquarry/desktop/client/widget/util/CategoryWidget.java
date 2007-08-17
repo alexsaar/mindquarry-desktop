@@ -14,13 +14,18 @@
 package com.mindquarry.desktop.client.widget.util;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
@@ -79,16 +84,60 @@ public class CategoryWidget extends WidgetBase {
 		tabItem.setImage(tasksIcon);
 		tabFolder.setSelection(tabItem);
 
-		TaskContainerWidget taskContainer = new TaskContainerWidget(tabFolder,
-				client);
-		
+		// create tasks tab
+		Composite taskComposite = new Composite(tabFolder, SWT.NONE);
+		taskComposite.setLayout(new GridLayout(4, false));
+		taskComposite.setBackground(getShell().getDisplay().getSystemColor(
+				SWT.COLOR_WHITE));
+		tabItem.setControl(taskComposite);
+
+		Label label = new Label(taskComposite, SWT.LEFT);
+		label.setBackground(Display.getCurrent()
+				.getSystemColor(SWT.COLOR_WHITE));
+		label.setText("Priority");
+
+		CCombo priority = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+				| SWT.FLAT);
+		priority.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		priority.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		priority.add("All"); //$NON-NLS-1$
+		priority.add("Low"); //$NON-NLS-1$
+		priority.add("Medium"); //$NON-NLS-1$
+		priority.add("Important"); //$NON-NLS-1$
+		priority.add("Critical"); //$NON-NLS-1$
+		priority.select(0);
+
+		label = new Label(taskComposite, SWT.LEFT);
+		label.setBackground(Display.getCurrent()
+				.getSystemColor(SWT.COLOR_WHITE));
+		label.setText("Status");
+
+		CCombo status = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+				| SWT.FLAT);
+		status.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		status.setBackground(Display.getCurrent().getSystemColor(
+				SWT.COLOR_WHITE));
+		status.add("All"); //$NON-NLS-1$
+		status.add("New"); //$NON-NLS-1$
+		status.add("Running"); //$NON-NLS-1$
+		status.add("Paused"); //$NON-NLS-1$
+		status.add("Done"); //$NON-NLS-1$
+		status.select(0);
+
+		final TaskContainerWidget taskContainer = new TaskContainerWidget(
+				taskComposite, client);
+
+		FacetSelectionListener listener = new FacetSelectionListener(
+				taskContainer, status, priority);
+		priority.addSelectionListener(listener);
+		status.addSelectionListener(listener);
+
 		// set action fields
 		((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
 				.getName())).setTaskContainer(taskContainer);
-		tabItem.setControl(taskContainer);
-		((CreateTaskAction) client.getAction(CreateTaskAction.class
-				.getName())).setTaskContainer(taskContainer);
-		tabItem.setControl(taskContainer);
+		((CreateTaskAction) client.getAction(CreateTaskAction.class.getName()))
+				.setTaskContainer(taskContainer);
 
 		tabItem = new CTabItem(tabFolder, SWT.NULL);
 		tabItem.setText("Files");
@@ -97,5 +146,27 @@ public class CategoryWidget extends WidgetBase {
 		WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
 				tabFolder, client);
 		tabItem.setControl(workspaceBrowser);
+	}
+
+	class FacetSelectionListener extends SelectionAdapter {
+		private TaskContainerWidget taskContainer;
+
+		private CCombo status;
+		private CCombo priority;
+
+		public FacetSelectionListener(TaskContainerWidget taskContainer,
+				CCombo status, CCombo priority) {
+			this.taskContainer = taskContainer;
+			this.status = status;
+			this.priority = priority;
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			String statusString = status.getItem(status.getSelectionIndex())
+					.toLowerCase();
+			String priorityString = priority.getItem(
+					priority.getSelectionIndex()).toLowerCase();
+			taskContainer.applyFacets(statusString, priorityString);
+		}
 	}
 }

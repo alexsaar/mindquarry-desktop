@@ -67,15 +67,15 @@ public class TaskContainerWidget extends WidgetBase {
 	private Composite errorWidget;
 
 	public TaskContainerWidget(Composite parent, MindClient client) {
-		super(parent, SWT.NONE, client);
+		super(parent, SWT.BORDER, client);
 	}
 
 	// #########################################################################
 	// ### WIDGET METHODS
 	// #########################################################################
 	protected void createContents(Composite parent) {
-		setLayoutData(new GridData(GridData.FILL_BOTH));
-		((GridData) getLayoutData()).heightHint = 150;
+		setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 4,
+				1));
 
 		setLayout(new GridLayout(1, true));
 		((GridLayout) getLayout()).horizontalSpacing = 0;
@@ -121,6 +121,40 @@ public class TaskContainerWidget extends WidgetBase {
 		updateThread.start();
 	}
 
+	public void applyFacets(String status, String priority) {
+		if ((tableViewer != null) && (tasks != null)) {
+			if ((status.equals("all")) && (priority.equals("all"))) {
+				tableViewer.setInput(tasks);
+				tableViewer.refresh();
+			} else {
+				TaskList content = new TaskList();
+				content.getTasks().addAll(tasks.getTasks());
+
+				Iterator<Task> it = content.getTasks().iterator();
+				while (it.hasNext()) {
+					Task task = it.next();
+
+					boolean hide = false;
+					if ((!status.equals("all"))
+							&& (!task.getStatus().equals(status))) {
+						hide = true;
+					}
+					if (task.getPriority() == null) {
+						hide = true;
+					} else if ((!priority.equals("all"))
+							&& (!task.getPriority().equals(priority))) {
+						hide = true;
+					}
+					if (hide) {
+						it.remove();
+					}
+				}
+				tableViewer.setInput(content);
+				tableViewer.refresh();
+			}
+		}
+	}
+
 	// #########################################################################
 	// ### PRIVATE METHODS
 	// #########################################################################
@@ -159,8 +193,8 @@ public class TaskContainerWidget extends WidgetBase {
 			try {
 				tasks.getTasks().addAll(
 						new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
-								+ team.getId() + "/", profile.getLogin(), profile
-								.getPassword()).getTasks());
+								+ team.getId() + "/", profile.getLogin(),
+								profile.getPassword()).getTasks());
 			} catch (Exception e) {
 				log.error("Could not update list of tasks for "
 						+ profile.getServerURL(), e); //$NON-NLS-1$
@@ -268,7 +302,7 @@ public class TaskContainerWidget extends WidgetBase {
 					getShell().addListener(SWT.Resize, new Listener() {
 						public void handleEvent(Event event) {
 							tableViewer.getTable().getColumn(0).setWidth(
-									getSize().x);
+									tableViewer.getTable().getSize().x);
 						}
 					});
 
