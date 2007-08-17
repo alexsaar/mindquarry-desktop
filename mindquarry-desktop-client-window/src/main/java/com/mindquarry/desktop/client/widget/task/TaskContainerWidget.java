@@ -43,6 +43,7 @@ import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
+import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
@@ -154,11 +155,11 @@ public class TaskContainerWidget extends WidgetBase {
 			}
 		});
 		for (Object item : items) {
-			String teamID = (String) item;
+			Team team = (Team) item;
 			try {
 				tasks.getTasks().addAll(
 						new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
-								+ teamID + "/", profile.getLogin(), profile
+								+ team.getId() + "/", profile.getLogin(), profile
 								.getPassword()).getTasks());
 			} catch (Exception e) {
 				log.error("Could not update list of tasks for "

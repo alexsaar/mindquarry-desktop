@@ -283,11 +283,11 @@ public class MindClient extends ApplicationWindow {
 	}
 
 	public List getSelectedTeams() {
-		return teamList.getSelectedTeamIDs();
+		return teamList.getSelectedTeams();
 	}
-
+	
 	public List getTeams() {
-		return teamList.getTeamIDs();
+		return teamList.getTeams();
 	}
 
 	public String getMimeType(File file) {

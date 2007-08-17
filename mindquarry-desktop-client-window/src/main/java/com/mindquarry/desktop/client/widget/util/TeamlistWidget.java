@@ -88,35 +88,34 @@ public class TeamlistWidget extends WidgetBase {
 		viewer = new TableViewer(table);
 		viewer.setContentProvider(new TeamlistContentProvider());
 		viewer.setLabelProvider(new TeamlistLabelProvider());
-		
+
 		refresh();
 	}
 
-	public List getSelectedTeamIDs() {
-		return getTeamIDs(true);
+	public List getSelectedTeams() {
+		return getTeams(true);
 	}
 
-	public List getTeamIDs() {
-		return getTeamIDs(false);
+	public List getTeams() {
+		return getTeams(false);
 	}
-	
-	private List getTeamIDs(boolean selectedOnly) {
+
+	private List getTeams(boolean selectedOnly) {
 		List teams = new ArrayList();
-		TableItem[] tis = viewer.getTable().getItems();
-		for (TableItem item : tis) {
-			if(selectedOnly && !item.getChecked()) {
+		for (TableItem item : viewer.getTable().getItems()) {
+			if (selectedOnly && !item.getChecked()) {
 				continue;
 			}
 			Team team = (Team) item.getData();
-			teams.add(team.getId());
+			teams.add(team);
 		}
 		return teams;
 	}
 
 	public void refresh() {
 		client.startAction("Updating list of teams");
-		viewer.setInput(getTeams());
-		
+		viewer.setInput(queryTeams());
+
 		List teams = new ArrayList();
 		TableItem[] tis = viewer.getTable().getItems();
 		for (TableItem item : tis) {
@@ -125,7 +124,7 @@ public class TeamlistWidget extends WidgetBase {
 		client.stopAction("Updating list of teams");
 	}
 
-	private TeamList getTeams() {
+	private TeamList queryTeams() {
 		Profile profile = Profile.getSelectedProfile(client
 				.getPreferenceStore());
 		TeamList teamList;

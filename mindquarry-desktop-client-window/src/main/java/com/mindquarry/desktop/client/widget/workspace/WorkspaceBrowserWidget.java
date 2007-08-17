@@ -14,16 +14,12 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
-import java.io.FilenameFilter;
-
-import javax.activation.FileTypeMap;
-import javax.activation.MimetypesFileTypeMap;
-
-import net.sf.jmimemagic.Magic;
-import net.sf.jmimemagic.MagicMatch;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -36,9 +32,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.tigris.subversion.javahl.ChangePath;
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.WidgetBase;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -71,7 +72,35 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 		TreeViewer viewer = new TreeViewer(tree);
 		viewer.setLabelProvider(new TreeLabelProvider());
 		viewer.setContentProvider(new TreeContentProvider());
-		viewer.setInput(new File("."));
+
+		PreferenceStore store = client.getPreferenceStore();
+		Profile selected = Profile.getSelectedProfile(store);
+		String localPath = selected.getWorkspaceFolder();
+
+		String username = selected.getLogin();
+		String password = selected.getPassword();
+
+		List stati = new ArrayList();
+		for (Object item : client.getSelectedTeams()) {
+			Team team = (Team) item;
+
+			for (File folder : new File(localPath).listFiles()) {
+//				JavaSVNHelper helper = new JavaSVNHelper(
+//						team.getWorkspaceURL(), folder.getAbsolutePath(),
+//						username, password);
+//				for (ChangePath path : helper.getRemoteChanges()) {
+//					stati.add(path);
+//				}
+//				try {
+//					for (Status status : helper.getLocalChanges()) {
+//						stati.add(status);
+//					}
+//				} catch (ClientException e) {
+//					e.printStackTrace();
+//				}
+			}
+		}
+		viewer.setInput(stati);
 	}
 
 	// #########################################################################
@@ -87,30 +116,15 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 	// #########################################################################
 	private final class TreeContentProvider implements ITreeContentProvider {
 		public Object[] getChildren(Object parentElement) {
-			File file = (File) parentElement;
-			if ((file.isDirectory()) && (file.listFiles().length > 0)) {
-				return file.listFiles(new FilenameFilter() {
-					public boolean accept(File dir, String name) {
-						if (name.equals(".svn")) {
-							return false;
-						}
-						return true;
-					}
-				});
-			}
-			return null;
+			List stati = (List) parentElement;
+			return (stati.toArray(new Object[0]));
 		}
 
 		public Object getParent(Object element) {
-			File file = (File) element;
-			return file.getParent();
+			return null;
 		}
 
 		public boolean hasChildren(Object element) {
-			File file = (File) element;
-			if ((file.isDirectory()) && (file.listFiles().length > 0)) {
-				return true;
-			}
 			return false;
 		}
 
@@ -142,44 +156,60 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 								"/org/tango-project/tango-icon-theme/16x16/mimetypes/text-x-generic.png")); //$NON-NLS-1$
 
 		public Image getColumnImage(Object element, int columnIndex) {
-			File file = (File) element;
-
-			Image result = null;
 			switch (columnIndex) {
 			case 0:
-				if (file.isDirectory()) {
-					result = folderImg;
-				} else if (file.isFile()) {
-					result = fileImg;
-				}
-				break;
+				return folderImg;
 			}
-			return result;
+			return null;
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
-			File file = (File) element;
-
 			String result = null;
-			switch (columnIndex) {
-			case 0:
-				result = file.getName();
-				break;
-			case 1:
-				if (file.isFile()) {
-					result = client.getMimeType(file);
-					if (result.equals("application/octet-stream")) {
-						try {
-							MagicMatch match = Magic.getMagicMatch(file, true,
-									true);
-							result = match.getMimeType();
-						} catch (Exception e) {
-//							log.warn("Could not handle mime type.", e);
-						}
-					}
+			if (element instanceof ChangePath) {
+				ChangePath path = (ChangePath) element;
+				switch (columnIndex) {
+				case 0:
+					result = path.getPath();
+					result = result.replace("/trunk/", "");
+					result = result.replace("/tags/", "");
+					result = result.replace("/branches/", "");
+					break;
+				case 1:
+					result = "" + path.getAction();
+					break;
 				}
-				break;
+			} else if (element instanceof Status) {
+				Status status = (Status) element;
+				switch (columnIndex) {
+				case 0:
+					result = status.getPath();
+					break;
+				case 1:
+					result = status.getTextStatusDescription();
+					break;
+				}
 			}
+
+			// switch (columnIndex) {
+			// case 0:
+			// result = status.getPath();
+			// break;
+			// case 1:
+			// result = status.getTextStatusDescription();
+			// // if (file.isFile()) {
+			// // result = client.getMimeType(file);
+			// // if (result.equals("application/octet-stream")) {
+			// // try {
+			// // MagicMatch match = Magic.getMagicMatch(file, true,
+			// // true);
+			// // result = match.getMimeType();
+			// // } catch (Exception e) {
+			// // // log.warn("Could not handle mime type.", e);
+			// // }
+			// // }
+			// // }
+			// break;
+			// }
 			return result;
 		}
 	}
