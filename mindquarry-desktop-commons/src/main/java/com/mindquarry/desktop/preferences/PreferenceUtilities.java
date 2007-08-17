@@ -29,28 +29,29 @@ import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
  *         Saar</a>
  */
 public class PreferenceUtilities {
-    public static final String SETTINGS_FOLDER = System
-            .getProperty("user.home") //$NON-NLS-1$
-            + "/.mindquarry"; //$NON-NLS-1$
+	public static final String SETTINGS_FOLDER = System
+			.getProperty("user.home") //$NON-NLS-1$
+			+ "/.mindquarry"; //$NON-NLS-1$
 
-    public static boolean checkPreferenceFile(File prefFile) {
-        if (!prefFile.exists()) {
-            try {
-                prefFile.getParentFile().mkdirs();
-                prefFile.createNewFile();
-            } catch (IOException e) {
-                return false;
-            }
-        }
-        return true;
-    }
+	public static boolean checkPreferenceFile(File prefFile) {
+		if (!prefFile.exists()) {
+			try {
+				prefFile.getParentFile().mkdirs();
+				prefFile.createNewFile();
+			} catch (IOException e) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    public static PreferenceManager getDefaultPreferenceManager() {
-        PreferenceManager mgr = new PreferenceManager();
-        GeneralSettingsPage general = new GeneralSettingsPage();
-        mgr.addToRoot(new PreferenceNode(GeneralSettingsPage.NAME, general));
-        mgr.addTo(GeneralSettingsPage.NAME, new PreferenceNode(
-                ServerProfilesPage.NAME, new ServerProfilesPage()));
-        return mgr;
-    }
+	public static PreferenceManager getDefaultPreferenceManager() {
+		PreferenceManager mgr = new PreferenceManager();
+		GeneralSettingsPage general = new GeneralSettingsPage();
+		mgr.addToRoot(new PreferenceNode(GeneralSettingsPage.NAME, general));
+
+		ServerProfilesPage profiles = new ServerProfilesPage();
+		mgr.addToRoot(new PreferenceNode(ServerProfilesPage.NAME, profiles));
+		return mgr;
+	}
 }
