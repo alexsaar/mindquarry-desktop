@@ -31,28 +31,6 @@ import com.mindquarry.desktop.model.task.Task;
  */
 public class TaskTableLabelProvider extends ColumnLabelProvider {
 	private static final String ICON_SIZE = "32x32";//$NON-NLS-1$
-	private static final String OVERLAY_ICON_SIZE = "16x16";//$NON-NLS-1$
-
-	// priority images
-	private static Image lowPriority = new Image(
-			Display.getCurrent(),
-			TaskTableLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-low.png")); //$NON-NLS-1$
-	
-	private static Image mediumPriority = new Image(
-			Display.getCurrent(),
-			TaskTableLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-medium.png")); //$NON-NLS-1$
-	
-	private static Image importantPriority = new Image(
-			Display.getCurrent(),
-			TaskTableLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-important.png")); //$NON-NLS-1$
-	
-	private static Image criticalPriority = new Image(
-			Display.getCurrent(),
-			TaskTableLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "/emblems/task-critical.png")); //$NON-NLS-1$
 
 	// status images
 	private static Image newTask = new Image(
@@ -81,37 +59,25 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
 			return null;
 		}
 		if (task.getStatus().equals(Task.STATUS_NEW)) {
-			return createOverlayIcon(task, newTask);
+			return createOverlayIcon(task, newTask, Task.STATUS_NEW);
 		} else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-			return createOverlayIcon(task, runningTask);
+			return createOverlayIcon(task, runningTask, Task.STATUS_RUNNING);
 		} else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-			return createOverlayIcon(task, pausedTask);
+			return createOverlayIcon(task, pausedTask, Task.STATUS_PAUSED);
 		} else if (task.getStatus().equals(Task.STATUS_DONE)) {
-			return createOverlayIcon(task, doneTask);
+			return createOverlayIcon(task, doneTask, Task.STATUS_DONE);
 		}
 		return null;
 	}
 
-	private Image createOverlayIcon(Task task, Image image) {
+	private Image createOverlayIcon(Task task, Image image, String status) {
 		Image overlay = image;
 		if (task.getPriority() != null) {
-			if (task.getPriority().equals(Task.PRIORITY_LOW)) {
-				overlay = new DecorationOverlayIcon(image, ImageDescriptor
-						.createFromImage(lowPriority),
-						IDecoration.BOTTOM_RIGHT).createImage();
-			} else if (task.getPriority().equals(Task.PRIORITY_MEDIUM)) {
-				overlay = new DecorationOverlayIcon(image, ImageDescriptor
-						.createFromImage(mediumPriority),
-						IDecoration.BOTTOM_RIGHT).createImage();
-			} else if (task.getPriority().equals(Task.PRIORITY_IMPORTANT)) {
-				overlay = new DecorationOverlayIcon(image, ImageDescriptor
-						.createFromImage(importantPriority),
-						IDecoration.BOTTOM_RIGHT).createImage();
-			} else if (task.getPriority().equals(Task.PRIORITY_CRITICAL)) {
-				overlay = new DecorationOverlayIcon(image, ImageDescriptor
-						.createFromImage(criticalPriority),
-						IDecoration.BOTTOM_RIGHT).createImage();
-			}
+			overlay = new Image(Display.getCurrent(),
+					TaskTableLabelProvider.class
+							.getResourceAsStream("/com/mindquarry/icons/"
+									+ ICON_SIZE + "/status/task-" + status
+									+ "-" + task.getPriority() + ".png"));
 		}
 		return overlay;
 	}
