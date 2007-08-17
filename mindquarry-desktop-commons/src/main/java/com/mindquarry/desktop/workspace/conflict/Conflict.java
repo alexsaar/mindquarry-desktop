@@ -2,7 +2,9 @@ package com.mindquarry.desktop.workspace.conflict;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
+import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -16,14 +18,20 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 public abstract class Conflict {
 	protected static Log log;
 	
-	protected Status localStatus;
+    protected SVNClientImpl client;
 
+	protected Status localStatus;
+	
 	public Conflict(Status localStatus) {
 		this.localStatus = localStatus;
 		log = LogFactory.getLog(getClass());
 	}
 	
-	public abstract void handleBeforeUpdate();
+	public void setSVNClient(SVNClientImpl client) {
+	    this.client = client;
+	}
+	
+	public abstract void handleBeforeUpdate() throws ClientException;
 	public abstract void handleAfterUpdate();
 	
 	public abstract void accept(ConflictHandler handler) throws CancelException;

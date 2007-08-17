@@ -16,6 +16,7 @@ package com.mindquarry.desktop.workspace.conflict;
 import java.io.File;
 import java.util.List;
 
+import org.tigris.subversion.javahl.SVNClient;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;

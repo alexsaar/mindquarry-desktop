@@ -30,16 +30,15 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
 import org.tigris.subversion.javahl.NotifyInformation;
+import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
-import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
-import com.mindquarry.desktop.workspace.conflict.ConflictList;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -125,16 +124,15 @@ public class SVNSynchronizer {
             // no need to call svn del and add manually for the user
             deleteMissingAndAddUnversioned();
             
-			List<Status> localChanges = getLocalChanges();
 			List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
 
             // with UI callback, cancel possible
 			List<Conflict> conflicts =
-			    analyzeChangesAndAskUser(localChanges, remoteAndLocalChanges);
+			    analyzeChangesAndAskUser(remoteAndLocalChanges);
 			
 			handleConflictsBeforeUpdate(conflicts);
 			// here something goes over the wire
-			// client.update(localPath, Revision.HEAD, true);
+			client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
 
 //			// UI, cancel possible
@@ -148,6 +146,10 @@ public class SVNSynchronizer {
 		} catch (ClientException e) {
 			// TODO think about exception handling
 			e.printStackTrace();
+			if (e.getCause() != null) {
+			    e.getCause().printStackTrace();
+			}
+			throw new RuntimeException("synchronized failed", e);
 		} catch (CancelException e) {
 			log.info("Canceled");
 		} finally {
@@ -185,6 +187,7 @@ public class SVNSynchronizer {
     public List<Status> getLocalChanges() throws ClientException {
 		log.info("## local changes:");
 
+		// we need a modifiable list - Arrays.asList is fixed
 		List<Status> statusList = new ArrayList<Status>(); 
 		statusList.addAll(
 		        Arrays.asList(client.status(localPath, true, false, false)));
@@ -209,14 +212,25 @@ public class SVNSynchronizer {
 	 * easily possible to get only the remote changes, that's why we use this
 	 * combined list throughout the code. The status inside this list will be
 	 * different from the one returned by getLocalChanges() since it might
-	 * contain the remote change of the same path.
+	 * contain the remote change of the same path. The list will be sorted
+	 * from top to down.
 	 */
 	public List<Status> getRemoteAndLocalChanges() throws ClientException {
 		log.info("## remote changes:");
 
-		List<Status> statusList =
-		    Arrays.asList(client.status(localPath, true, true, false));
+        // we need a modifiable list - Arrays.asList is fixed
+        List<Status> statusList = new ArrayList<Status>(); 
+        statusList.addAll(
+		    Arrays.asList(client.status(localPath, true, true, false)));
 
+        // sort the list from top-level folder to bottom which is important
+        // for handling multiple conflicts on the parent folder first
+        Collections.sort(statusList, new Comparator<Status>() {
+            public int compare(Status left, Status right) {
+                return left.getPath().compareTo(right.getPath());
+            }
+        });
+        
 		for (Status s : statusList) {
 			log.info(Kind.getDescription(s.getRepositoryTextStatus()) + " "
 					+ s.getPath());
@@ -237,6 +251,17 @@ public class SVNSynchronizer {
         return map;
     }
     
+    private void presentNewConflict(Conflict conflict, List<Conflict> conflicts) throws CancelException {
+        conflict.setSVNClient(client);
+        
+        log.info("-----------------------------------------------------------");
+        log.info("## Found conflict: " + conflict.toString());
+        // resolve it, ask the user
+        conflict.accept(handler);
+        
+        conflicts.add(conflict);
+    }
+    
     /**
      * Important method that looks out for any structure conflicts before an
      * update and creates {@link Conflict} objects for those. Upon each conflict
@@ -245,60 +270,72 @@ public class SVNSynchronizer {
      * If the user cancels during the conflict resolving, a CancelException is
      * thrown.
      */
-	private List<Conflict> analyzeChangesAndAskUser(List<Status> localChanges,
-			List<Status> remoteAndLocalChanges) throws CancelException {
-		ConflictList<Conflict> conflicts = new ConflictList<Conflict>(handler);
+	private List<Conflict> analyzeChangesAndAskUser(List<Status> remoteAndLocalChanges) throws CancelException {
+		List<Conflict> conflicts = new ArrayList<Conflict>();
 
-		// for easy look-up by path
-		Map<String, Status> remoteAndLocalMap = createStatusMap(remoteAndLocalChanges);
+        // LOCAL status can be everything except:
+        //   none/normal          won't be displayed in local changes
+        //   unversioned/missing  set to added/deleted (handled anyway)
+        //   merged               only happens on update
+        //   ignored              can be ignored ;-)
+        //   incomplete (on dir)  missing files are set to deleted
+        
+        // LOCAL status can be any one of those:
+        // simple ones:
+        //   modified
+        //   added
+        //   deleted
+        //   replaced (only possible with svn client)
+        // hard ones:
+        //   conflicted
+        //   obstructed (eg. deleted file, created dir with same name)
+        //   external (only possible with svn client)
+        
+        // REMOTE status can be only the following:
+        //   normal
+        //   modified
+        //   added
+        //   deleted
+        //   unversioned
+        //   replaced (delete and re-add in one step)
 		
+		
+		conflicts.addAll(findAllAddConflicts(remoteAndLocalChanges));
+		
+		conflicts.addAll(findAllLocalContainerDeleteConflicts(remoteAndLocalChanges));
+		
+        conflicts.addAll(findAllRemoteContainerDeleteConflicts(remoteAndLocalChanges));
+        
+        conflicts.addAll(findAllDeleteModifiedConflicts(remoteAndLocalChanges));
+        
+        conflicts.addAll(findAllModifiedDeleteConflicts(remoteAndLocalChanges));
+        
+		
+        /*
 		// go through local changes
 		for (Status status : localChanges) {
 		    
-		    // LOCAL status can be everything except:
-            //   none/normal          won't be displayed in local changes
-		    //   unversioned/missing  set to added/deleted (handled anyway)
-            //   merged               only happens on update
-		    //   ignored              can be ignored ;-)
-		    
-		    // LOCAL status can be any one of those:
-		    //   modified             the simple ones
-		    //   added
-		    //   deleted
-		    //   replaced
-		    //   conflicted           the hard ones
-		    //   obstructed
-		    //   incomplete (on dir)
-		    //   external (only possible with svn client)
-		    
-		    // REMOTE status can be only the following:
-	        //   normal
-	        //   modified
-	        //   added
-	        //   deleted
-	        //   unversioned
-	        //   replaced (delete and re-add in one step)
 
 		    // local ADD (as we added everything, unversioned shouldn't happen)
 			if (status.getTextStatus() == StatusKind.added
 					|| status.getTextStatus() == StatusKind.unversioned) {
 
-				// check for existence of a remote version (ADD vs ADD)
-				if (remoteAndLocalMap.containsKey(status.getPath())) {
-					Status remoteStatus = remoteAndLocalMap.get(status
-							.getPath());
-					// if the file exists remotely, it will have a URL set
-					if (remoteStatus.getUrl() != null) {
-						conflicts.addConflict(new AddConflict(status));
-					}
-				}
-				// check for adds in remotely deleted folders (ADD in DELETED)
-				for (Status remoteStatus : remoteAndLocalChanges) {
-					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
-							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
-						conflicts.addConflict(new AddInDeletedConflict(status));
-					}
-				}
+//				// check for existence of a remote version (ADD vs ADD)
+//				if (remoteAndLocalMap.containsKey(status.getPath())) {
+//					Status remoteStatus = remoteAndLocalMap.get(status
+//							.getPath());
+//					// if the file exists remotely, it will have a URL set
+//					if (remoteStatus.getUrl() != null) {
+//						conflicts.addConflict(new AddConflict(status));
+//					}
+//				}
+//				// check for adds in remotely deleted folders (ADD in DELETED)
+//				for (Status remoteStatus : remoteAndLocalChanges) {
+//					if ((remoteStatus.getRepositoryTextStatus() == StatusKind.deleted) 
+//							&& (isParent(remoteStatus.getPath(), status.getPath()))) {
+//						conflicts.addConflict(new ModificationInDeletedConflict(status));
+//					}
+//				}
 				
 			// locally DELETED (as we deleted all missing, missing shouldn't happen)
 			} else if (status.getTextStatus() == StatusKind.deleted ||
@@ -320,7 +357,7 @@ public class SVNSynchronizer {
 
                     // only if there was any modification found, we have a conflict
                     if (remoteModList.size() > 0) {
-                        conflicts.addConflict(new DeleteWithModificationConflict(status, remoteModList));
+                        presentNewConflict(new DeleteWithModificationConflict(status, remoteModList), conflicts);
                     }
 			    } else {
 			        // TODO: check this with a test case
@@ -330,19 +367,201 @@ public class SVNSynchronizer {
 	                    Status remoteStatus = remoteAndLocalMap.get(status.getPath());
 	                    if (remoteStatus.getRepositoryTextStatus() != StatusKind.normal) {
 	                        remoteModList.add(remoteStatus);
-	                        conflicts.addConflict(new DeleteWithModificationConflict(status, remoteModList));
+	                        presentNewConflict(new DeleteWithModificationConflict(status, remoteModList), conflicts);
 	                    }
 	                }
 			    }
 			}
 		}
+		*/
+        
 		return conflicts;
 	}
 
 	/**
+	 * Finds all Add/Add conflicts, including file/file, file/dir, dir/file and
+	 * dir/dir conflicts.
+	 */
+    private List<Conflict> findAllAddConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local ADD (as we added everything, unversioned shouldn't happen)
+            if (status.getTextStatus() == StatusKind.added
+                    || status.getTextStatus() == StatusKind.unversioned) {
+
+                // if remote ADD
+                if (status.getRepositoryTextStatus() == StatusKind.added) {
+                    Status conflictParent = status;
+                    // we remove all files/stati connected to this conflict
+                    iter.remove();
+                    
+                    log.info("add/add nodekind: " + status.getNodeKind());
+                    
+                    // if this is a directory, we can throw away the children
+                    // because the resolve decision is made on the directory
+                    if (status.getNodeKind() == NodeKind.dir) {
+                        // local directory
+                        List<Status> localAdded = new ArrayList<Status>();
+                        List<Status> remoteAdded = new ArrayList<Status>();
+                        
+                        // find all children
+                        while (iter.hasNext()) {
+                            status = iter.next();
+                            if (isParent(conflictParent.getPath(), status.getPath())) {
+                                if (status.getTextStatus() == StatusKind.added) {
+                                    localAdded.add(status);
+                                } else if (status.getRepositoryTextStatus() == StatusKind.added) {
+                                    remoteAdded.add(status);
+                                }
+                                iter.remove();
+                            } else {
+                                // no more children found, this conflict is done
+                                // reset global iterator for next conflict search
+                                iter = remoteAndLocalChanges.iterator();
+                                break;
+                            }
+                        }
+                        
+                        presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
+                    } else {
+                        // local file
+                        List<Status> localAdded = new ArrayList<Status>();
+                        List<Status> remoteAdded = new ArrayList<Status>();
+                        
+                        presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
+                    }
+                }
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all conflicts where a local folder delete conflicts with remotely
+     * added or modified files in that directory.
+     */
+    private List<Conflict> findAllLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // DELETED DIRECTORIES (locally)
+            if (status.getNodeKind() == NodeKind.dir &&
+                    status.getTextStatus() == StatusKind.deleted) {
+                
+                // conflict if there is a child that is added or removed remotely
+                
+                Status conflictParent = status;
+                List<Status> remoteModList = new ArrayList<Status>();
+                
+                // find all children
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getRepositoryTextStatus() == StatusKind.added ||
+                                status.getRepositoryTextStatus() == StatusKind.replaced ||
+                                status.getRepositoryTextStatus() == StatusKind.modified) {
+                            remoteModList.add(status);
+                        }
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        break;
+                    }
+                }
+                
+                if (remoteModList.size() > 0) {
+                    // also remove the deleted folder status object
+                    remoteAndLocalChanges.remove(conflictParent);
+                    
+                    presentNewConflict(new DeleteWithModificationConflict(conflictParent, remoteModList), conflicts);
+                }
+                
+                // reset global iterator for next conflict search
+                iter = remoteAndLocalChanges.iterator();
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all conflicts where a remote folder delete conflicts with locally
+     * added or modified files in that directory.
+     */
+    private List<Conflict> findAllRemoteContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // DELETED DIRECTORIES (remotely)
+            if (status.getNodeKind() == NodeKind.dir &&
+                    status.getRepositoryTextStatus() == StatusKind.deleted) {
+                
+                // conflict if there is a child that is added or removed locally
+                
+                Status conflictParent = status;
+                List<Status> localModList = new ArrayList<Status>();
+                
+                // find all children
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getTextStatus() == StatusKind.added ||
+                                status.getTextStatus() == StatusKind.replaced ||
+                                status.getTextStatus() == StatusKind.modified) {
+                            localModList.add(status);
+                        }
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        break;
+                    }
+                }
+                
+                if (localModList.size() > 0) {
+                    // also remove the deleted folder status object
+                    remoteAndLocalChanges.remove(conflictParent);
+                    
+                    presentNewConflict(new DeleteWithModificationConflict(conflictParent, localModList), conflicts);
+                }
+                
+                // reset global iterator for next conflict search
+                iter = remoteAndLocalChanges.iterator();
+            }
+        }
+        
+        return conflicts;
+    }
+
+    private List<Conflict> findAllDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        // TODO Auto-generated method stub
+        return conflicts;
+    }
+
+    private List<Conflict> findAllModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        // TODO Auto-generated method stub
+        return conflicts;
+    }
+
+    /**
 	 * Calls {@link Conflict.handleBeforeUpdate} on all conflicts in the list.
 	 */
-	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) {
+	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException {
 		for (Conflict conflict : conflicts) {
 			log.info(">> Before Update: " + conflict.toString());
 			conflict.handleBeforeUpdate();
@@ -392,14 +611,14 @@ public class SVNSynchronizer {
     /**
      * Removes all status objects that are added and lie below the parent path.
      */
-	public static void removeNestedAdds(Status parent, List<Status> localChanges) {
-		Iterator<Status> iter = localChanges.iterator();
-		while(iter.hasNext()) {
-			if(isParent(parent.getPath(), iter.next().getPath())) {
-				iter.remove();
-			}
-		}
-	}
+//	public static void removeNestedAdds(Status parent, List<Status> localChanges) {
+//		Iterator<Status> iter = localChanges.iterator();
+//		while(iter.hasNext()) {
+//			if(isParent(parent.getPath(), iter.next().getPath())) {
+//				iter.remove();
+//			}
+//		}
+//	}
 
 	/**
 	 * Helper method that stringifies a notify object from the notify callback

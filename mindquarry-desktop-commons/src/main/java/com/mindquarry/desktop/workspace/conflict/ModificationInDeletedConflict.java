@@ -15,6 +15,7 @@ package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
 
+import org.tigris.subversion.javahl.SVNClient;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -26,14 +27,14 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
  * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
-public class AddInDeletedConflict extends Conflict {
+public class ModificationInDeletedConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
 		UNKNOWN, READD, DELETE, MOVE;
 	}
 	
-	public AddInDeletedConflict(Status localStatus) {
+	public ModificationInDeletedConflict(Status localStatus) {
 		super(localStatus);
 	}
 

@@ -22,7 +22,7 @@ import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
-import com.mindquarry.desktop.workspace.conflict.AddInDeletedConflict;
+import com.mindquarry.desktop.workspace.conflict.ModificationInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -155,29 +155,6 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	}
 	
 	@Test
-	public void testRemoveNestedAdds() throws ClientException {
-		SVNSynchronizer helper = setupTest("add_add_conflict");
-		
-		List<Status> localChanges = helper.getLocalChanges();
-		Status addedStatus = null;
-		
-		for(Status s : localChanges) {
-			if(s.getTextStatus() == StatusKind.added) {
-				addedStatus = s;
-				break;
-			}
-		}
-		
-		TestCase.assertNotNull(addedStatus);
-		
-		SVNSynchronizer.removeNestedAdds(addedStatus, localChanges);
-		
-		TestCase.assertEquals(2, localChanges.size());
-		
-		deleteDir(new File("target/add_add_conflict/"));
-	}
-
-	@Test
 	public void testAddAddConflict() {
 		SVNSynchronizer helper = setupTest("add_add_conflict");
 
@@ -199,15 +176,17 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 		System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
 	}
 
+	private static int uniqueCounter = 0;
 	public void handle(AddConflict conflict) throws CancelException {
 	    System.out.println("Following options re(N)ame, (R)eplace: ");
 	    //option = readLine();
 		System.out.println("Rename locally added file/folder to: ");
 		// FIXME: check for non-existing file/foldername
-		conflict.doRename("renamed_dir");
+		conflict.doRename("renamed_" + uniqueCounter);
+		uniqueCounter++;
 	}
 
-	public void handle(AddInDeletedConflict conflict) throws CancelException {
+	public void handle(ModificationInDeletedConflict conflict) throws CancelException {
         System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
 		conflict.doReAdd();
 	}

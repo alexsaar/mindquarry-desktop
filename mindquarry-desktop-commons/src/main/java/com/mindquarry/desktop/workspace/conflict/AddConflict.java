@@ -14,7 +14,10 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.util.List;
 
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.SVNClient;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -34,12 +37,16 @@ public class AddConflict extends Conflict {
 	}
 	
 	private String newName;
+    private List<Status> localAdded;
+    private List<Status> remoteAdded;
 	
-	public AddConflict(Status localStatus) {
+	public AddConflict(Status localStatus, List<Status> localAdded, List<Status> remoteAdded) {
 		super(localStatus);
+		this.localAdded = localAdded;
+		this.remoteAdded = remoteAdded;
 	}
 
-	public void handleBeforeUpdate() {
+	public void handleBeforeUpdate() throws ClientException {
 		File file = new File(localStatus.getPath());
 		
 		switch (action) {
@@ -50,6 +57,9 @@ public class AddConflict extends Conflict {
 			
 		case RENAME:
 			log.info("renaming to " + newName);
+			
+			client.revert(localStatus.getPath(), true);
+			client.cleanup(new File(localStatus.getPath()).getParentFile().getPath());
 			
 			if (!file.renameTo(new File(file.getParentFile(), newName))) {
 				log.error("rename to " + newName + " failed.");
@@ -92,4 +102,16 @@ public class AddConflict extends Conflict {
 	public String toString() {
 		return "Add/Add Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
+
+    public Action getAction() {
+        return action;
+    }
+
+    public List<Status> getLocalAdded() {
+        return localAdded;
+    }
+
+    public List<Status> getRemoteAdded() {
+        return remoteAdded;
+    }
 }
