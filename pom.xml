@@ -141,7 +141,7 @@
 		<profile>
 			<id>macosx</id>
 			<activation>
-				<os><name>mac</name></os>
+				<os><family>mac</family></os>
 			</activation>
 			<dependencies>
 				<dependency>
