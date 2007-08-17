@@ -120,10 +120,19 @@ public class TaskContainerWidget extends WidgetBase {
 		updateThread.setDaemon(true);
 		updateThread.start();
 	}
+	
+	private String statusFacet = "all";
+	private String priorityFacet = "all";
 
 	public void applyFacets(String status, String priority) {
+		statusFacet = status;
+		priorityFacet = priority;
+		applyFacets();
+	}
+	
+	private void applyFacets() {
 		if ((tableViewer != null) && (tasks != null)) {
-			if ((status.equals("all")) && (priority.equals("all"))) {
+			if ((statusFacet.equals("all")) && (priorityFacet.equals("all"))) {
 				tableViewer.setInput(tasks);
 				tableViewer.refresh();
 			} else {
@@ -135,14 +144,14 @@ public class TaskContainerWidget extends WidgetBase {
 					Task task = it.next();
 
 					boolean hide = false;
-					if ((!status.equals("all"))
-							&& (!task.getStatus().equals(status))) {
+					if ((!statusFacet.equals("all"))
+							&& (!task.getStatus().equals(statusFacet))) {
 						hide = true;
 					}
 					if (task.getPriority() == null) {
 						hide = true;
-					} else if ((!priority.equals("all"))
-							&& (!task.getPriority().equals(priority))) {
+					} else if ((!priorityFacet.equals("all"))
+							&& (!task.getPriority().equals(priorityFacet))) {
 						hide = true;
 					}
 					if (hide) {
@@ -236,7 +245,8 @@ public class TaskContainerWidget extends WidgetBase {
 			log.info("Updating list of tasks."); //$NON-NLS-1$
 			getDisplay().syncExec(new Runnable() {
 				public void run() {
-					tableViewer.setInput(tasks);
+//					tableViewer.setInput(tasks);
+					applyFacets();
 
 					// set background color for every second table item
 					TableItem[] items = tableViewer.getTable().getItems();
