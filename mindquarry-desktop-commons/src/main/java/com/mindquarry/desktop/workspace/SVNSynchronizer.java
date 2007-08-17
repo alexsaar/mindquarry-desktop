@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +133,8 @@ public class SVNSynchronizer {
 
 		Status[] statusArray = client.status(localPath, true, false, false);
 
-		List<Status> statusList = Arrays.asList(statusArray);
+		List<Status> statusList = new ArrayList<Status>(); 
+		statusList.addAll(Arrays.asList(statusArray));
 		Collections.sort(statusList, new Comparator<Status>() {
 			public int compare(Status left, Status right) {
 				return left.getPath().compareTo(right.getPath());
@@ -302,6 +304,15 @@ public class SVNSynchronizer {
 			map.put(s.getPath(), s);
 		}
 		return map;
+	}
+	
+	public void removeNestedAdds(Status parent, List<Status> localChanges) {
+		Iterator<Status> iter = localChanges.iterator();
+		while(iter.hasNext()) {
+			if(isParent(parent.getPath(), iter.next().getPath())) {
+				iter.remove();
+			}
+		}
 	}
 
 	public static String notifyToString(NotifyInformation info) {
