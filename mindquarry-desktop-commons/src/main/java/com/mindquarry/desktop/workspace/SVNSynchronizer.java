@@ -31,6 +31,7 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
 import org.tigris.subversion.javahl.NotifyInformation;
+import org.tigris.subversion.javahl.PropertyData;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
@@ -122,28 +123,22 @@ public class SVNSynchronizer {
 	 */
 	public void synchronize() {
 		try {
+		    // a cleanup is good for removing any old working copy locks
 			client.cleanup(localPath);
-			// TODO: enable locking
+			
+			// TODO: enable repo locking (also unlock in finally below)
 			// client.lock(new String[] {localPath}, "locking for
 			// synchronization", false);
 
-            // no need to call svn del and add manually for the user
             deleteMissingAndAddUnversioned();
             
-			List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
-
-            // with UI callback, cancel possible
-			List<Conflict> conflicts =
-			    analyzeChangesAndAskUser(remoteAndLocalChanges);
+			List<Conflict> conflicts = analyzeChangesAndAskUser();
 			
 			handleConflictsBeforeUpdate(conflicts);
-			// here something goes over the wire
 			client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
 
-//			// UI, cancel possible
 //			handleContentConflicts();
-//			// UI, cancel possible
 //			String message = askForCommitMessage();
 			
 //			// here something goes over the wire
@@ -155,7 +150,7 @@ public class SVNSynchronizer {
 			if (e.getCause() != null) {
 			    e.getCause().printStackTrace();
 			}
-			throw new RuntimeException("synchronized failed", e);
+			throw new RuntimeException("synchronize() failed", e);
 		} catch (CancelException e) {
 			log.info("Canceled");
 		} finally {
@@ -166,10 +161,21 @@ public class SVNSynchronizer {
 			// }
 		}
 	}
+	
+	/**
+	 * Standard Operating System hidden / helper files that should get
+	 * ignored by SVN.
+	 */
+	public static final List<String> filesToIgnore = new ArrayList<String>();
+	static {
+	    filesToIgnore.add("Thumbs.db"); // Windows thumbnails
+	    filesToIgnore.add(".DS_Store"); // Mac finder folder info
+	}
 
 	/**
-	 * This removes the need for calling svn del and svn add manually. It will
-	 * do this only for items not part of a conflict.
+	 * This removes the need for calling svn del and svn add manually. It also
+	 * automatically adds standard to-be-ignored files such as Thumbs.db to the
+	 * ignore list.
      */
     private void deleteMissingAndAddUnversioned() throws ClientException {
         for (Status s : getLocalChanges()) {
@@ -179,11 +185,29 @@ public class SVNSynchronizer {
                 // use a local filesystem path here and thus we only schedule
                 // for a deletion
                 client.remove(new String[] { s.getPath() }, null, true);
+                
+            } else if (s.getTextStatus() == StatusKind.unversioned) {
+                // set standard to-be-ignored files
+                File file = new File(s.getPath());
+                if (filesToIgnore.contains(file.getName())) {
+                    // update the svn:ignore property by appending a new line
+                    // with the filename to be ignored (on the parent folder!)
+                    PropertyData ignoreProp = client.propertyGet(file.getParent(), PropertyData.IGNORE);
+                    ignoreProp.setValue(ignoreProp.getValue() + "\n" + file.getName(), false);
+                } else {
+                    // TODO: check for new files that have the same name when
+                    // looking at it case-insensitive (on unix systems) to avoid
+                    // problems when checking out on Windows (eg. 'report' is
+                    // the same as 'REPORT' under windows, but not on unix).
+                    // for this to work we simply check if there is a file with
+                    // the same case-insensitive name in this folder, exclude it
+                    // from the add and give a warning message to the user
+                    
+                    // otherwise we turn all unversioned into added
+                    client.add(s.getPath(), false);
+                }
             }
         }
-        
-        // add all unversioned (new) files and folder recursively
-        client.add(localPath, true, true);
     }
 
     /**
@@ -262,9 +286,11 @@ public class SVNSynchronizer {
         
         log.info("-----------------------------------------------------------");
         log.info("## Found conflict: " + conflict.toString());
+        
         // resolve it, ask the user
         conflict.accept(handler);
         
+        // collect all conflicts
         conflicts.add(conflict);
     }
     
@@ -276,9 +302,20 @@ public class SVNSynchronizer {
      * If the user cancels during the conflict resolving, a CancelException is
      * thrown.
      */
-	private List<Conflict> analyzeChangesAndAskUser(List<Status> remoteAndLocalChanges) throws CancelException {
+	private List<Conflict> analyzeChangesAndAskUser() throws CancelException, ClientException {
+        List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
+
 		List<Conflict> conflicts = new ArrayList<Conflict>();
 
+        for (Status s : remoteAndLocalChanges) {
+            log.debug("analyzing " + Kind.getDescription(s.getTextStatus()) +
+                    " " + nodeKindDesc(s.getNodeKind()) +
+                    " <->" +
+                    " " + Kind.getDescription(s.getRepositoryTextStatus()) +
+                    " " + nodeKindDesc(s.getReposKind()) +
+                    " '" + wcPath(s) + "'");
+        }
+        
         // LOCAL status can be everything except:
         //   none/normal          won't be displayed in local changes
         //   unversioned/missing  set to added/deleted (handled anyway)
@@ -305,31 +342,22 @@ public class SVNSynchronizer {
         //   unversioned
         //   replaced (delete and re-add in one step)
 		
-		for (Status s : remoteAndLocalChanges) {
-		    log.debug("analyzing " + Kind.getDescription(s.getTextStatus()) +
-		            " " + nodeKindDesc(s.getNodeKind()) +
-                    " <->" +
-		            " " + Kind.getDescription(s.getRepositoryTextStatus()) +
-		            " " + nodeKindDesc(s.getReposKind()) +
-		            " '" + wcPath(s) + "'");
-		}
-		
-		conflicts.addAll(findAllAddConflicts(remoteAndLocalChanges));
-		
-		conflicts.addAll(findAllLocalContainerDeleteConflicts(remoteAndLocalChanges));
-		
-        conflicts.addAll(findAllRemoteContainerDeleteConflicts(remoteAndLocalChanges));
-        
-        conflicts.addAll(findAllDeleteModifiedConflicts(remoteAndLocalChanges));
-        
-        conflicts.addAll(findAllModifiedDeleteConflicts(remoteAndLocalChanges));
-        
         // TODO: following conflicts are also imaginable:
         // local          remote                        notes
         // --------------+-----------------------------+---------------------------------------
         // conflict       deleted/modified/replaced     when file conflict was not yet resolved
         // replaced       replaced...
         // ....
+        
+		conflicts.addAll(findAddConflicts(remoteAndLocalChanges));
+		
+		conflicts.addAll(findLocalContainerDeleteConflicts(remoteAndLocalChanges));
+		
+        conflicts.addAll(findRemoteContainerDeleteConflicts(remoteAndLocalChanges));
+        
+        conflicts.addAll(findDeleteModifiedConflicts(remoteAndLocalChanges));
+        
+        conflicts.addAll(findModifiedDeleteConflicts(remoteAndLocalChanges));
         
 		return conflicts;
 	}
@@ -338,7 +366,7 @@ public class SVNSynchronizer {
 	 * Finds all Add/Add conflicts, including file/file, file/dir, dir/file and
 	 * dir/dir conflicts.
 	 */
-    private List<Conflict> findAllAddConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findAddConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -349,7 +377,7 @@ public class SVNSynchronizer {
             // local ADD (as we added everything, unversioned shouldn't happen)
             if (status.getTextStatus() == StatusKind.added
                     || status.getTextStatus() == StatusKind.unversioned) {
-
+                
                 // if remote ADD
                 if (status.getRepositoryTextStatus() == StatusKind.added) {
                     Status conflictParent = status;
@@ -389,7 +417,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a local folder delete conflicts with remotely
      * added or modified files in that directory.
      */
-    private List<Conflict> findAllLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -441,7 +469,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a remote folder delete conflicts with locally
      * added or modified files in that directory.
      */
-    private List<Conflict> findAllRemoteContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findRemoteContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -489,13 +517,13 @@ public class SVNSynchronizer {
         return conflicts;
     }
 
-    private List<Conflict> findAllDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         // TODO Auto-generated method stub
         return conflicts;
     }
 
-    private List<Conflict> findAllModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         // TODO Auto-generated method stub
         return conflicts;

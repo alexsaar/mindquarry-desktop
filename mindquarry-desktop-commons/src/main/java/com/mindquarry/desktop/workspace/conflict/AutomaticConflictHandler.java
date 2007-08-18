@@ -15,6 +15,8 @@ package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
 
+import org.tigris.subversion.javahl.ClientException;
+
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -40,10 +42,19 @@ public class AutomaticConflictHandler implements ConflictHandler {
         
         String oldName = new File(conflict.getStatus().getPath()).getName();
         String newName;
-        do {
-            uniqueCounter++;
-            newName = oldName + "_renamed_" + uniqueCounter;
-        } while (!conflict.isRenamePossible(newName));
+        try {
+            do {
+                uniqueCounter++;
+                if (uniqueCounter == 1) {
+                    newName = "first";
+                } else {
+                    newName = oldName + "_renamed_" + uniqueCounter;
+                }
+            } while (!conflict.isRenamePossible(newName));
+        } catch (ClientException e) {
+            e.printStackTrace();
+            throw new CancelException("canceled due to svn client problem on rename check", e);
+        }
 
         conflict.doRename(newName);
     }

@@ -14,6 +14,9 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.tigris.subversion.javahl.ClientException;
@@ -50,11 +53,24 @@ public class AddConflict extends Conflict {
 	private String newName;
     private List<Status> localAdded;
     private List<Status> remoteAdded;
+    
+    /**
+     * The folder in which the added object (status) lies in. Needed to check
+     * for rename conflicts.
+     */
+    private File folder;
+    /**
+     * All objects that are added remotely in the same folder as the object to
+     * be able to check for rename conflicts.
+     */
+    private List<String> remoteAddedInFolder = null;
 	
-	public AddConflict(Status localStatus, List<Status> localAdded, List<Status> remoteAdded) {
-		super(localStatus);
+	public AddConflict(Status status, List<Status> localAdded, List<Status> remoteAdded) {
+		super(status);
 		this.localAdded = localAdded;
 		this.remoteAdded = remoteAdded;
+		
+		this.folder = new File(status.getPath()).getParentFile();
 	}
 
 	public void handleBeforeUpdate() throws ClientException {
@@ -78,6 +94,11 @@ public class AddConflict extends Conflict {
 			if (!file.renameTo(new File(file.getParentFile(), newName))) {
 				log.error("rename to " + newName + " failed.");
 				// TODO: callback for error handling
+				// NOTE: this could fail if the file with newName already exists
+				// although we do check this previously in isRenamePossible() it
+				// can happen when there are multiple add conflicts and the user
+				// chooses twice the same newName for different add conflicts -
+				// this is very seldom and can simply be given as error messages
 				System.exit(-1);
 			}
 			break;
@@ -108,11 +129,23 @@ public class AddConflict extends Conflict {
 		handler.handle(this);
 	}
 	
-	public boolean isRenamePossible(String newName) {
-	    // TODO: implement this and check for local files/folders with the same
-	    // name but also for remotely added stuff that will come along with the
-	    // next update making the new name a conflict as well
-	    return true;
+	public boolean isRenamePossible(String newName) throws ClientException {
+	    if (remoteAddedInFolder == null) {
+	        // lazily retrieve possible conflicts with other remotely added files
+	        remoteAddedInFolder = new ArrayList<String>();
+	        for (Status s : client.status(folder.getAbsolutePath(), true, true, false)) {
+	            remoteAddedInFolder.add(new File(s.getPath()).getName());
+	        }
+	    }
+	    
+	    // such a file must not exist locally yet and it must not be added
+	    // during the next update (that would be another conflict then)
+	    boolean result = !(new File(folder, newName).exists() || remoteAddedInFolder.contains(newName));
+	    
+	    if (!result) {
+	        System.err.println("Cannot rename to '" + newName + "'");
+	    }
+	    return result;
 	}
 
 	public void doRename(String newName) {

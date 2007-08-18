@@ -114,6 +114,10 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		return dir.delete();
 	}
 
+    public void onNotify(NotifyInformation info) {
+        System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
+    }
+    
 	public SVNSynchronizer setupTest(String name) {
 	    System.out.println("Testing " + name + " =======================");
 		String zipPath = name + ".zip";
@@ -163,8 +167,10 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
 		deleteDir(new File("target/add_in_deleted_conflict/"));
 	}
-
-	public void onNotify(NotifyInformation info) {
-		System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
-	}
+	
+	// TODO: test ignore of Thumbs.db/.DS_Store
+	// - simple test if it gets ignored (no ignored set previously)
+	// - test with an svn:ignore property already set to check correct incremental setting of that property
+	
+	
 }
