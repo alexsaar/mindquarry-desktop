@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.workspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,6 +37,7 @@ import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
+import com.mindquarry.desktop.util.RelativePath;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
@@ -60,6 +62,8 @@ public class SVNSynchronizer {
 
 	protected String localPath;
 
+    protected File localPathFile;
+    
 	protected String username;
 
 	protected String password;
@@ -86,6 +90,8 @@ public class SVNSynchronizer {
 		this.username = username;
 		this.password = password;
 		this.handler = handler;
+		
+		this.localPathFile = new File(localPath);
 		
 		if (handler == null) {
 		    throw new NullPointerException("Constructor parameter ConflictHandler handler cannot be null");
@@ -299,6 +305,14 @@ public class SVNSynchronizer {
         //   unversioned
         //   replaced (delete and re-add in one step)
 		
+		for (Status s : remoteAndLocalChanges) {
+		    log.debug("analyzing " + Kind.getDescription(s.getTextStatus()) +
+		            " " + nodeKindDesc(s.getNodeKind()) +
+                    " <->" +
+		            " " + Kind.getDescription(s.getRepositoryTextStatus()) +
+		            " " + nodeKindDesc(s.getReposKind()) +
+		            " '" + wcPath(s) + "'");
+		}
 		
 		conflicts.addAll(findAllAddConflicts(remoteAndLocalChanges));
 		
@@ -309,6 +323,13 @@ public class SVNSynchronizer {
         conflicts.addAll(findAllDeleteModifiedConflicts(remoteAndLocalChanges));
         
         conflicts.addAll(findAllModifiedDeleteConflicts(remoteAndLocalChanges));
+        
+        // TODO: following conflicts are also imaginable:
+        // local          remote                        notes
+        // --------------+-----------------------------+---------------------------------------
+        // conflict       deleted/modified/replaced     when file conflict was not yet resolved
+        // replaced       replaced...
+        // ....
         
 		return conflicts;
 	}
@@ -335,41 +356,28 @@ public class SVNSynchronizer {
                     // we remove all files/stati connected to this conflict
                     iter.remove();
                     
-                    log.info("add/add nodekind: " + status.getNodeKind());
+                    List<Status> localAdded = new ArrayList<Status>();
+                    List<Status> remoteAdded = new ArrayList<Status>();
                     
-                    // if this is a directory, we can throw away the children
-                    // because the resolve decision is made on the directory
-                    if (status.getNodeKind() == NodeKind.dir) {
-                        // local directory
-                        List<Status> localAdded = new ArrayList<Status>();
-                        List<Status> remoteAdded = new ArrayList<Status>();
-                        
-                        // find all children
-                        while (iter.hasNext()) {
-                            status = iter.next();
-                            if (isParent(conflictParent.getPath(), status.getPath())) {
-                                if (status.getTextStatus() == StatusKind.added) {
-                                    localAdded.add(status);
-                                } else if (status.getRepositoryTextStatus() == StatusKind.added) {
-                                    remoteAdded.add(status);
-                                }
-                                iter.remove();
-                            } else {
-                                // no more children found, this conflict is done
-                                // reset global iterator for next conflict search
-                                iter = remoteAndLocalChanges.iterator();
-                                break;
+                    // find all children (locally and remotely)
+                    while (iter.hasNext()) {
+                        status = iter.next();
+                        if (isParent(conflictParent.getPath(), status.getPath())) {
+                            if (status.getTextStatus() == StatusKind.added) {
+                                localAdded.add(status);
+                            } else if (status.getRepositoryTextStatus() == StatusKind.added) {
+                                remoteAdded.add(status);
                             }
+                            iter.remove();
+                        } else {
+                            // no more children found, this conflict is done
+                            // reset global iterator for next conflict search
+                            iter = remoteAndLocalChanges.iterator();
+                            break;
                         }
-                        
-                        presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
-                    } else {
-                        // local file
-                        List<Status> localAdded = new ArrayList<Status>();
-                        List<Status> remoteAdded = new ArrayList<Status>();
-                        
-                        presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
                     }
+                    
+                    presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
                 }
             }
         }
@@ -513,6 +521,14 @@ public class SVNSynchronizer {
 		}
 	}
 
+	/**
+	 * Returns the relative path in the working copy of the status object (for
+	 * shorter strings in log output).
+	 */
+    private String wcPath(Status status) {
+        return RelativePath.getRelativePath(localPathFile, new File(status.getPath()));
+    }
+
     /**
      * Gets all children and grand-children and so on for the path.
      */
@@ -563,4 +579,21 @@ public class SVNSynchronizer {
 		return NotifyAction.actionNames[info.getAction()] + " "
 				+ info.getPath();
 	}
+
+	/**
+	 * Returns the given nodekind int value as a human-readable string (eg.
+	 * "file" or "dir").
+	 */
+    public static String nodeKindDesc(int nodeKind) {
+        if (nodeKind == NodeKind.file) {
+            return "file";
+        } else if (nodeKind == NodeKind.dir) {
+            return "dir";
+        } else if (nodeKind == NodeKind.none) {
+            return "none";
+        } else {
+            return "unknown";
+        }
+    }
+
 }

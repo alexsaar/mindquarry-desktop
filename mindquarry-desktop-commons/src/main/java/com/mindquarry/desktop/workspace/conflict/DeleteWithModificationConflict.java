@@ -22,7 +22,8 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Local delete (of folder or file) conflicts with remote modification of
- * file or contents of the folder.
+ * file or contents of the folder - or a remote delete conflicts with local
+ * modification of a file or contents of a folder.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
@@ -32,7 +33,22 @@ public class DeleteWithModificationConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
-		UNKNOWN, DELETE, KEEPMODIFIED, REVERTDELETE;
+	    /**
+	     * Indicating no conflict solution action was chosen yet.
+	     */
+		UNKNOWN,
+		/**
+		 * Really delete, throwing away the modifications or adds.
+		 */
+		DELETE,
+		/**
+		 * Keep the modified files, only deleting the untouched stuff.
+		 */
+		ONLYKEEPMODIFIED,
+		/**
+		 * Completely reverting the delete to the local (or remote) state.
+		 */
+		REVERTDELETE;
 	}
 	
 	private List<Status> otherMods;
@@ -64,13 +80,13 @@ public class DeleteWithModificationConflict extends Conflict {
         switch (action) {
         case UNKNOWN:
             // client did not set a conflict resolution
-            log.error("DeleteWithModificationConflict with no action set: " + localStatus.getPath());
+            log.error("DeleteWithModificationConflict with no action set: " + status.getPath());
             break;
             
         case DELETE:
-            log.info("now deleting again " + localStatus.getPath());
+            log.info("now deleting again " + status.getPath());
             
-            File file = new File(localStatus.getPath());
+            File file = new File(status.getPath());
             if (!file.delete()) {
                 log.error("deleting failed.");
                 // TODO: callback for error handling
@@ -79,13 +95,13 @@ public class DeleteWithModificationConflict extends Conflict {
             
             break;
             
-        case KEEPMODIFIED:
-            log.info("keeping added/modified from remote: " + localStatus.getPath());
+        case ONLYKEEPMODIFIED:
+            log.info("keeping added/modified from remote: " + status.getPath());
             
             break;
             
         case REVERTDELETE:
-            log.info("reverting delete: " + localStatus.getPath());
+            log.info("reverting delete: " + status.getPath());
             
             // TODO: revert deleted status
             
@@ -101,8 +117,8 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.action = Action.DELETE;
 	}
 	
-    public void doKeepModified() {
-        this.action = Action.KEEPMODIFIED;
+    public void doOnlyKeepModified() {
+        this.action = Action.ONLYKEEPMODIFIED;
     }
     
     public void doRevertDelete() {
@@ -110,7 +126,7 @@ public class DeleteWithModificationConflict extends Conflict {
     }
     
 	public String toString() {
-		return "Delete/Modification Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+		return "Delete/Modification Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
 
     public List<Status> getOtherMods() {
@@ -119,10 +135,17 @@ public class DeleteWithModificationConflict extends Conflict {
 
     /**
      * True if status refers to a local delete and getOtherMods() to remote
-     * modifications or false if it is a remote delete and getOtherMods()
-     * contains local modifications.
+     * modifications.
      */
     public boolean isLocalDelete() {
         return localDelete;
+    }
+
+    /**
+     * True if status refers to a remote delete and getOtherMods() to local
+     * modifications.
+     */
+    public boolean isRemoteDelete() {
+        return !localDelete;
     }
 }

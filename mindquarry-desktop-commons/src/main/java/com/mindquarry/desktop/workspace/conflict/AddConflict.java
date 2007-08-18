@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -32,7 +33,18 @@ public class AddConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
-		UNKNOWN, RENAME, REPLACE;
+        /**
+         * Indicating no conflict solution action was chosen yet.
+         */
+		UNKNOWN,
+		/**
+		 * Rename locally to a different file/folder name to avoid the conflict.
+		 */
+		RENAME,
+		/**
+		 * Replace the local file with the remotely added one, overwriting the local data.
+		 */
+		REPLACE;
 	}
 	
 	private String newName;
@@ -46,32 +58,39 @@ public class AddConflict extends Conflict {
 	}
 
 	public void handleBeforeUpdate() throws ClientException {
-		File file = new File(localStatus.getPath());
+		File file = new File(status.getPath());
 		
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			log.error("AddConflict with no action set: " + localStatus.getPath());
+			log.error("AddConflict with no action set: " + status.getPath());
 			break;
 			
 		case RENAME:
 			log.info("renaming to " + newName);
-			
-			client.revert(localStatus.getPath(), true);
-			client.cleanup(new File(localStatus.getPath()).getParentFile().getPath());
+
+			if (status.getTextStatus() != StatusKind.unversioned) {
+    			// the file is added, but in order to rename it without breaking
+    			// the svn status we have to revert it to 'unversioned'
+    			client.revert(status.getPath(), true);
+			}
 			
 			if (!file.renameTo(new File(file.getParentFile(), newName))) {
 				log.error("rename to " + newName + " failed.");
 				// TODO: callback for error handling
 				System.exit(-1);
 			}
-			// FIXME: if status.getTextStatus() == StatusKind.added we have to
-			// revert before the rename (only when user uses svn client with svn add)
 			break;
 			
 		case REPLACE:
-			log.info("replacing with new file/folder from server: " + localStatus.getPath());
+			log.info("replacing with new file/folder from server: " + status.getPath());
 			
+            if (status.getTextStatus() != StatusKind.unversioned) {
+                // the file is added, but in order to delete it without breaking
+                // the svn status we have to revert it to 'unversioned'
+                client.revert(status.getPath(), true);
+            }
+            
 			if (!file.delete()) {
 				log.error("deleting failed.");
 				// TODO: callback for error handling
@@ -88,23 +107,26 @@ public class AddConflict extends Conflict {
 	public void accept(ConflictHandler handler) throws CancelException {
 		handler.handle(this);
 	}
+	
+	public boolean isRenamePossible(String newName) {
+	    // TODO: implement this and check for local files/folders with the same
+	    // name but also for remotely added stuff that will come along with the
+	    // next update making the new name a conflict as well
+	    return true;
+	}
 
 	public void doRename(String newName) {
 		this.action = Action.RENAME;
 		this.newName = newName;
 	}
 	
-//	public void doReplace() {
-//		this.action = Action.REPLACE;
-//	}
+	public void doReplace() {
+		this.action = Action.REPLACE;
+	}
 	
 	public String toString() {
-		return "Add/Add Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+		return "Add/Add Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
-
-    public Action getAction() {
-        return action;
-    }
 
     public List<Status> getLocalAdded() {
         return localAdded;

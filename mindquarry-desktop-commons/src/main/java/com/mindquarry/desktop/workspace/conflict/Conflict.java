@@ -20,10 +20,10 @@ public abstract class Conflict {
 	
     protected SVNClientImpl client;
 
-	protected Status localStatus;
+	protected Status status;
 	
-	public Conflict(Status localStatus) {
-		this.localStatus = localStatus;
+	public Conflict(Status status) {
+		this.status = status;
 		log = LogFactory.getLog(getClass());
 	}
 	
@@ -36,7 +36,7 @@ public abstract class Conflict {
 	
 	public abstract void accept(ConflictHandler handler) throws CancelException;
 
-	public Status getLocalStatus() {
-		return localStatus;
+	public Status getStatus() {
+		return status;
 	}
 }

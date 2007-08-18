@@ -82,6 +82,6 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
             System.out.println("remote " + Kind.getDescription(s.getRepositoryTextStatus()) + " " + s.getPath());
         }
         System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
-        conflict.doKeepModified();
+        conflict.doOnlyKeepModified();
     }
 }

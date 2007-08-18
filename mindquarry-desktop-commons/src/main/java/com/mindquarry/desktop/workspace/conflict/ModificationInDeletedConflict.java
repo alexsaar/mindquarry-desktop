@@ -38,21 +38,21 @@ public class ModificationInDeletedConflict extends Conflict {
 	}
 
 	public void handleBeforeUpdate() {
-		File file = new File(localStatus.getPath());
+		File file = new File(status.getPath());
 		
 		switch (action) {
 		case UNKNOWN:
 			// client did not set a conflict resolution
-			System.err.println("AddInDeletedConflict with no action set: " + localStatus.getPath());
+			System.err.println("AddInDeletedConflict with no action set: " + status.getPath());
 			break;
 			
 		case READD:
-			log.info("readding to " + localStatus.getPath());
+			log.info("readding to " + status.getPath());
 			// nothing to do here, got this for free
 			break;
 			
 		case DELETE:
-			log.info("deleting file/folder: " + localStatus.getPath());
+			log.info("deleting file/folder: " + status.getPath());
 			
 			if (!file.delete()) {
 				log.error("deleting failed.");
@@ -87,6 +87,6 @@ public class ModificationInDeletedConflict extends Conflict {
 //	}
 	
 	public String toString() {
-		return "Add/InDeleted Conflict: " + localStatus.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+		return "Add/InDeleted Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
 }

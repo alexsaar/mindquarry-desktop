@@ -18,16 +18,11 @@ import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
-import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
-import com.mindquarry.desktop.workspace.conflict.AddConflict;
-import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
-import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
-import com.mindquarry.desktop.workspace.conflict.ModificationInDeletedConflict;
-import com.mindquarry.desktop.workspace.exception.CancelException;
+import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
 
-public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
+public class SVNSynchronizerTestZip implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
 	
 	private void extractZip(String zipName, String destinationPath) {
@@ -120,6 +115,7 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 	}
 
 	public SVNSynchronizer setupTest(String name) {
+	    System.out.println("Testing " + name + " =======================");
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
 		String repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
@@ -142,10 +138,10 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 			    client.relocate(oldRepoUrl, repoUrl, path, false);
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+            throw new RuntimeException("could not setup test " + name, e);
 		}
 
-        SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", this);
+        SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", new AutomaticConflictHandler(wcPath));
         syncer.setNotifyListener(this);
         return syncer;
 	}
@@ -170,31 +166,5 @@ public class SVNSynchronizerTestZip implements Notify2, ConflictHandler {
 
 	public void onNotify(NotifyInformation info) {
 		System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
-	}
-
-	private static int uniqueCounter = 0;
-	public void handle(AddConflict conflict) throws CancelException {
-	    System.out.println("Following options re(N)ame, (R)eplace: ");
-	    //option = readLine();
-		System.out.println("Rename locally added file/folder to: ");
-		// FIXME: check for non-existing file/foldername
-		conflict.doRename("renamed_" + uniqueCounter);
-		uniqueCounter++;
-	}
-
-	public void handle(ModificationInDeletedConflict conflict) throws CancelException {
-        System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
-		conflict.doReAdd();
-	}
-
-	public void handle(DeleteWithModificationConflict conflict)
-			throws CancelException {
-		for (Status s : conflict.getOtherMods()) {
-			System.out.println("remote "
-					+ Kind.getDescription(s.getRepositoryTextStatus()) + " "
-					+ s.getPath());
-		}
-        System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
-        conflict.doKeepModified();
 	}
 }
