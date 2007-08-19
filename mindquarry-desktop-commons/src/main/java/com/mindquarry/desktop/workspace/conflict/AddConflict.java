@@ -14,9 +14,7 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.tigris.subversion.javahl.ClientException;
@@ -73,7 +71,7 @@ public class AddConflict extends Conflict {
 		this.folder = new File(status.getPath()).getParentFile();
 	}
 
-	public void handleBeforeUpdate() throws ClientException {
+	public void beforeUpdate() throws ClientException {
 		File file = new File(status.getPath());
 		
 		switch (action) {
@@ -121,7 +119,7 @@ public class AddConflict extends Conflict {
 		}
 	}
 
-	public void handleAfterUpdate() {
+	public void afterUpdate() {
 		// nothing to do here
 	}
 
@@ -129,6 +127,18 @@ public class AddConflict extends Conflict {
 		handler.handle(this);
 	}
 	
+	/**
+	 * Call this during conflict resolving before a call to doRename() to check
+	 * if the given name is possible without another conflict. Not possible when
+	 * another file or folder exists in the same directory or when a file or
+	 * folder with that name will be added during the next update.
+	 * 
+	 * @param newName the new name for the conflicted file/folder to check for
+	 * @return true if the name can be used, false if not
+	 * @throws ClientException this method must check the svn client for info
+	 * about newly added files in the next update; simply catch that exception
+	 * and throw a CancelException in the handle method
+	 */
 	public boolean isRenamePossible(String newName) throws ClientException {
 	    if (remoteAddedInFolder == null) {
 	        // lazily retrieve possible conflicts with other remotely added files
@@ -149,6 +159,10 @@ public class AddConflict extends Conflict {
 	}
 
 	public void doRename(String newName) {
+	    // TODO: double check here? what if it fails? throw exception? return false?
+//	    if (!isRenamePossible(newName)) {
+//	        
+//	    }
 		this.action = Action.RENAME;
 		this.newName = newName;
 	}

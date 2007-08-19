@@ -37,7 +37,7 @@ public class ModificationInDeletedConflict extends Conflict {
 		super(localStatus);
 	}
 
-	public void handleBeforeUpdate() {
+	public void beforeUpdate() {
 		File file = new File(status.getPath());
 		
 		switch (action) {
@@ -66,7 +66,7 @@ public class ModificationInDeletedConflict extends Conflict {
 		}
 	}
 
-	public void handleAfterUpdate() {
+	public void afterUpdate() {
 		// nothing to do here
 	}
 

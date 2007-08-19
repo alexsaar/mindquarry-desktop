@@ -30,13 +30,18 @@ public abstract class Conflict {
 	public void setSVNClient(SVNClientImpl client) {
 	    this.client = client;
 	}
+
+    public Status getStatus() {
+        return status;
+    }
 	
-	public abstract void handleBeforeUpdate() throws ClientException;
-	public abstract void handleAfterUpdate();
+	/**
+	 * Called before the svn update. Here any conflict that would break the
+	 * update must be resolved.
+	 * @throws ClientException
+	 */
+    public abstract void beforeUpdate() throws ClientException;
+	public abstract void afterUpdate();
 	
 	public abstract void accept(ConflictHandler handler) throws CancelException;
-
-	public Status getStatus() {
-		return status;
-	}
 }

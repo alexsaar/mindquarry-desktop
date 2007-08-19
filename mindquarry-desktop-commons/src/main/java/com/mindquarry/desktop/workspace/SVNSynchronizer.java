@@ -535,7 +535,7 @@ public class SVNSynchronizer {
 	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException {
 		for (Conflict conflict : conflicts) {
 			log.info(">> Before Update: " + conflict.toString());
-			conflict.handleBeforeUpdate();
+			conflict.beforeUpdate();
 		}
 	}
 
@@ -545,7 +545,7 @@ public class SVNSynchronizer {
 	private void handleConflictsAfterUpdate(List<Conflict> conflicts) {
 		for (Conflict conflict : conflicts) {
 			log.info(">> After Update: " + conflict.toString());
-			conflict.handleAfterUpdate();
+			conflict.afterUpdate();
 		}
 	}
 

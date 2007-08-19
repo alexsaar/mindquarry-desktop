@@ -60,7 +60,7 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.otherMods = otherMods;
 	}
 
-	public void handleBeforeUpdate() {
+	public void beforeUpdate() {
         // NOTE: here we could implement a fast-path avoiding the download
         // of the new files by simply deleting the folder on the server
         // before we run the update
@@ -76,7 +76,7 @@ public class DeleteWithModificationConflict extends Conflict {
 	    }
 	}
 
-	public void handleAfterUpdate() {
+	public void afterUpdate() {
         switch (action) {
         case UNKNOWN:
             // client did not set a conflict resolution
