@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 
@@ -33,7 +34,8 @@ public class CloseAction extends ActionBase {
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
 			CloseAction.class
-					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/process-stop.png")); //$NON-NLS-1$
+					.getResourceAsStream("/org/tango-project/tango-icon-theme/" +  //$NON-NLS-1$ 
+					        ICON_SIZE + "/actions/process-stop.png")); //$NON-NLS-1$
 
 	public CloseAction(MindClient client) {
 		super(client);
@@ -41,8 +43,8 @@ public class CloseAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT);
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("Exit"));//$NON-NLS-1$
+		setToolTipText(Messages.getString("Exit the desktop client application."));//$NON-NLS-1$
 		setAccelerator(SWT.CTRL + 'Q');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

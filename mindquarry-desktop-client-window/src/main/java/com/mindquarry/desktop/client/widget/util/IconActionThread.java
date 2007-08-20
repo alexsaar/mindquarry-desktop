@@ -132,7 +132,7 @@ public class IconActionThread extends Thread {
 				tooltip += "- " + action; //$NON-NLS-1$
 			}
 		} else {
-			tooltip += Messages.getString(IconActionThread.class, "0"); //$NON-NLS-1$
+			tooltip += Messages.getString("Currently no action is running."); //$NON-NLS-1$
 		}
 		final String util = tooltip;
 		shell.getDisplay().syncExec(new Runnable() {

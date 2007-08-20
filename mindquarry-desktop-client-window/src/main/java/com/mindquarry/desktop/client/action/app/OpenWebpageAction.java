@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -44,8 +45,8 @@ public class OpenWebpageAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT + " ...");//$NON-NLS-1$
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("Go to webpage"));//$NON-NLS-1$
+		setToolTipText(Messages.getString("Open the web interface of the current profiles server."));//$NON-NLS-1$
 		setAccelerator(SWT.CTRL + SWT.SHIFT + 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

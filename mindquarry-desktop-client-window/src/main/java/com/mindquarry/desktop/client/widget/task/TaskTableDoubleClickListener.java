@@ -33,7 +33,6 @@ import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.HttpUtilities;
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 /**
  * Add summary documentation here.
@@ -95,9 +94,9 @@ public class TaskTableDoubleClickListener implements IDoubleClickListener {
 					MessageDialog
 							.openError(
 									new Shell(SWT.ON_TOP),
-									Messages.getString(
-											TaskContainerWidget.class, "6"), Messages.getString(TaskContainerWidget.class, "7")//$NON-NLS-1$
-											+ ": " + e.toString());
+									Messages.getString("Network error"),//$NON-NLS-1$
+									Messages.getString("Could not update the task")//$NON-NLS-1$
+									+ ": " + e.toString());
 					log.error("Could not update task with id " //$NON-NLS-1$
 							+ task.getId(), e);
 				}

@@ -13,15 +13,11 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.DecorationOverlayIcon;
-import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.Messages;
-import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.team.Team;
 
 /**
@@ -59,7 +55,7 @@ public class TeamlistLabelProvider extends ColumnLabelProvider {
 		} else {
 			name = "-"; //$NON-NLS-1$
 		}
-		text += Messages.getString(TeamlistLabelProvider.class, "0") //$NON-NLS-1$
+		text += Messages.getString("Name") //$NON-NLS-1$
 				+ ": " + name; //$NON-NLS-1$ 
 		return text;
 	}

@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
@@ -44,8 +45,8 @@ public class SynchronizeTasksAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT);
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("Refresh task list"));
+		setToolTipText(Messages.getString("Refresh the list of tasks."));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

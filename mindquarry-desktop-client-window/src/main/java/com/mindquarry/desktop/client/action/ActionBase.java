@@ -17,7 +17,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.Action;
 
-import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 
 /**
@@ -29,9 +28,6 @@ import com.mindquarry.desktop.client.MindClient;
 public abstract class ActionBase extends Action {
 	protected static final String ICON_SIZE = "32x32";
 
-	protected final String TEXT = Messages.getString(getClass(), "text"); //$NON-NLS-1$
-	protected final String TOOLTIP = Messages.getString(getClass(), "tooltip"); //$NON-NLS-1$
-	
 	protected Log log = LogFactory.getLog(getClass());
 	
 	protected MindClient client;

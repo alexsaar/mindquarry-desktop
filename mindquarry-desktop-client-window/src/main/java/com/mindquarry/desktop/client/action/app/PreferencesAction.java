@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 
@@ -41,8 +42,8 @@ public class PreferencesAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT + " ...");//$NON-NLS-1$
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("Options"));//$NON-NLS-1$
+		setToolTipText(Messages.getString("Open settings dialog of the desktop client."));//$NON-NLS-1$
 		setAccelerator(SWT.CTRL + 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

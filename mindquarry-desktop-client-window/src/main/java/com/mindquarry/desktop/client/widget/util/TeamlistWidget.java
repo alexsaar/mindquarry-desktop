@@ -158,9 +158,9 @@ public class TeamlistWidget extends WidgetBase {
         Profile selected = Profile.getSelectedProfile(client
                 .getPreferenceStore());
         if (selected == null) {
-            MessageDialog.openError(getShell(), Messages.getString(
-                    "com.mindquarry.desktop.client", "error"), Messages
-                    .getString(getClass(), "1"));
+            System.err.println("####"+Messages.getString("Error")+"#");
+            MessageDialog.openError(getShell(), Messages.getString("Error"),
+                    Messages.getString("Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile."));
             return null;
         }
         // retrieve list of teams
@@ -170,9 +170,8 @@ public class TeamlistWidget extends WidgetBase {
                     selected.getLogin(), selected.getPassword());
             return teamList;
         } catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.getString(
-                    "com.mindquarry.desktop.client", "error"), Messages //$NON-NLS-1$
-                    .getString(getClass(), "0")); //$NON-NLS-1$
+            MessageDialog.openError(getShell(), Messages.getString("Error"),
+                    Messages.getString("Could not update team list.")); //$NON-NLS-1$
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
             return null;

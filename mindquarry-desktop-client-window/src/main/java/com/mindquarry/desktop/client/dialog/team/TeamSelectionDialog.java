@@ -56,11 +56,11 @@ public class TeamSelectionDialog extends DialogBase {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString(TeamSelectionDialog.class, "0")); //$NON-NLS-1$
-        setMessage(Messages.getString(TeamSelectionDialog.class, "1"), //$NON-NLS-1$
+        setTitle(Messages.getString("Select a Team")); //$NON-NLS-1$
+        setMessage(Messages.getString("Please select one of your teams."), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
 
-        getShell().setText(Messages.getString(TeamSelectionDialog.class, "0")); //$NON-NLS-1$
+        getShell().setText(Messages.getString("Select a Team")); //$NON-NLS-1$
         return contents;
     }
 
@@ -69,7 +69,7 @@ public class TeamSelectionDialog extends DialogBase {
         composite.setLayout(new GridLayout(1, true));
 
         Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString(TeamSelectionDialog.class, "0") //$NON-NLS-1$
+        label.setText(Messages.getString("Select a Team") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         teamWidget = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY

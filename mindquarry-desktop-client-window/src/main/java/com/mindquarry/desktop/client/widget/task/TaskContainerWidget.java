@@ -44,7 +44,6 @@ import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.model.team.Team;
-import com.mindquarry.desktop.preferences.pages.TaskPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
@@ -110,11 +109,9 @@ public class TaskContainerWidget extends WidgetBase {
         refreshing = true;
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
-                client.startAction(Messages.getString(
-                        TaskContainerWidget.class, "1"));
+                client.startAction(Messages.getString("Synchronizing tasks"));
                 refresh();
-                client.stopAction(Messages.getString(TaskContainerWidget.class,
-                        "1"));
+                client.stopAction(Messages.getString("Synchronizing tasks"));
             }
         }, "task-update");
         updateThread.setDaemon(true);
@@ -224,14 +221,12 @@ public class TaskContainerWidget extends WidgetBase {
                 log.error("Could not update list of tasks for "
                         + profile.getServerURL(), e); //$NON-NLS-1$
 
-                String errMessage = Messages.getString(
-                        TaskContainerWidget.class, "5"); //$NON-NLS-1$
+                String errMessage = Messages.getString("List of tasks could not be updated"); //$NON-NLS-1$
                 errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
 
                 updateTaskWidgetContents(false, errMessage, false);
                 refreshing = false;
-                MessageDialog.openError(getShell(), Messages.getString(
-                        "com.mindquarry.desktop.client", "error"), errMessage);
+                MessageDialog.openError(getShell(), Messages.getString("Error"), errMessage);
                 return;
             }
         }
@@ -272,7 +267,7 @@ public class TaskContainerWidget extends WidgetBase {
                 if (refreshing) {
                     destroyContent();
                     refreshWidget = new TaskUpdateWidget(self, Messages
-                            .getString(TaskContainerWidget.class, "2") //$NON-NLS-1$
+                            .getString("Updating task list") //$NON-NLS-1$
                             + " ..."); //$NON-NLS-1$
                 } else if (errMessage == null && !empty) {
                     destroyContent();
@@ -295,8 +290,7 @@ public class TaskContainerWidget extends WidgetBase {
                     TableColumn col = new TableColumn(table, SWT.NONE);
                     col.setResizable(false);
                     col.setWidth(200);
-                    col.setText(Messages.getString(TaskContainerWidget.class,
-                            "3"));//$NON-NLS-1$
+                    col.setText(Messages.getString("Description"));//$NON-NLS-1$
 
                     TableViewerColumn vCol = new TableViewerColumn(tableViewer,
                             col);
@@ -327,7 +321,7 @@ public class TaskContainerWidget extends WidgetBase {
                 } else if (errMessage == null && empty) {
                     destroyContent();
                     noTasksWidget = new NoTasksWidget(self, Messages.getString(
-                            TaskContainerWidget.class, "4")); //$NON-NLS-1$
+                            "Currently no tasks are active.")); //$NON-NLS-1$
                 } else {
                     destroyContent();
                     errorWidget = new TaskErrorWidget(self, errMessage);

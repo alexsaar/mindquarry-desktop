@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 
@@ -41,8 +42,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT);
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("Synchronize workspaces"));
+		setToolTipText(Messages.getString("Synchronize workspaces with your desktop."));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

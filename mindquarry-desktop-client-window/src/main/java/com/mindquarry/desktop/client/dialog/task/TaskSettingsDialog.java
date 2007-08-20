@@ -84,10 +84,10 @@ public class TaskSettingsDialog extends DialogBase {
 	protected Control createContents(Composite parent) {
 		Control contents = super.createContents(parent);
 
-		setTitle(Messages.getString(TaskSettingsDialog.class, "0")); //$NON-NLS-1$
-		setMessage(Messages.getString(TaskSettingsDialog.class, "1"), //$NON-NLS-1$
+		setTitle(Messages.getString("Edit the contents of a task")); //$NON-NLS-1$
+		setMessage(Messages.getString("Please enter the tasks data and press OK for adding/changing the task."), //$NON-NLS-1$
 				IMessageProvider.INFORMATION);
-		getShell().setText(Messages.getString(TaskSettingsDialog.class, "2") //$NON-NLS-1$
+		getShell().setText(Messages.getString("Edit Task") //$NON-NLS-1$
 				+ ": " //$NON-NLS-1$
 				+ task.getTitle());
 
@@ -112,14 +112,14 @@ public class TaskSettingsDialog extends DialogBase {
 
 	private void createTaskDataSection(Composite composite) {
 		Label label = new Label(composite, SWT.LEFT);
-		label.setText(Messages.getString(TaskSettingsDialog.class, "3") //$NON-NLS-1$
+		label.setText(Messages.getString("Title") //$NON-NLS-1$
 				+ ":"); //$NON-NLS-1$
 
 		title = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		label = new Label(composite, SWT.LEFT);
-		label.setText(Messages.getString(TaskSettingsDialog.class, "4") //$NON-NLS-1$
+		label.setText(Messages.getString("Status") //$NON-NLS-1$
 				+ ":"); //$NON-NLS-1$
 
 		status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
@@ -138,7 +138,7 @@ public class TaskSettingsDialog extends DialogBase {
 		status.select(0);
 
 		label = new Label(composite, SWT.LEFT);
-		label.setText(Messages.getString(TaskSettingsDialog.class, "5") //$NON-NLS-1$
+		label.setText(Messages.getString("Priority") //$NON-NLS-1$
 				+ ":"); //$NON-NLS-1$
 
 		priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
@@ -153,7 +153,7 @@ public class TaskSettingsDialog extends DialogBase {
 		priority.select(0);
 
 		label = new Label(composite, SWT.LEFT);
-		label.setText(Messages.getString(TaskSettingsDialog.class, "6") //$NON-NLS-1$
+		label.setText(Messages.getString("Summary") //$NON-NLS-1$
 				+ ":"); //$NON-NLS-1$
 
 		summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
@@ -164,7 +164,7 @@ public class TaskSettingsDialog extends DialogBase {
 				// without
 				// manually deleting the default text:
 				String defaultText = Messages.getString(
-						TaskSettingsDialog.class, "0");//$NON-NLS-1$
+						"Edit the contents of a task");//$NON-NLS-1$
 				if (summary.getText().equals(defaultText)) {
 					summary.selectAll();
 				}
@@ -195,8 +195,7 @@ public class TaskSettingsDialog extends DialogBase {
 		((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
 		dueDateCheckbox = new Button(composite, SWT.CHECK);
-		dueDateCheckbox.setText(Messages.getString(TaskSettingsDialog.class,
-				"7") //$NON-NLS-1$
+		dueDateCheckbox.setText(Messages.getString("Due Date") //$NON-NLS-1$
 				+ ":"); //$NON-NLS-1$
 		dueDateCheckbox.addSelectionListener(new DueDateCheckboxListener());
 

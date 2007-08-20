@@ -56,6 +56,7 @@ import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
@@ -178,9 +179,8 @@ public class MindClient extends ApplicationWindow {
         try {
             store.save();
         } catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.getString(
-                    "com.mindquarry.desktop.client", "error"), Messages
-                    .getString(MindClient.class, "7")
+            MessageDialog.openError(getShell(), Messages.getString("Error"), Messages
+                    .getString("Could not save MindClient settings")
                     + ": " + e.toString());
         }
         AutostartUtilities.setAutostart(store
@@ -332,7 +332,7 @@ public class MindClient extends ApplicationWindow {
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
             addNewProfile(
-                    Messages.getString(MindClient.class, "0"), "http://your.mindquarry.server", //$NON-NLS-1$//$NON-NLS-2$
+                    Messages.getString("Your Mindquarry Server Profile"), "http://your.mindquarry.server", //$NON-NLS-1$//$NON-NLS-2$
                     "LoginID"); //$NON-NLS-1$
             showPreferenceDialog(true);
         } else {
@@ -398,9 +398,8 @@ public class MindClient extends ApplicationWindow {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.getString(
-                    "com.mindquarry.desktop.client", "error"), Messages
-                    .getString(MindClient.class, "6")
+            MessageDialog.openError(getShell(), Messages.getString("Error"), Messages
+                    .getString("Could not load MindClient settings")
                     + ": " + e.toString());
         }
     }
@@ -452,7 +451,7 @@ public class MindClient extends ApplicationWindow {
         });
         // profiles sub menu
         MenuItem menuItem = new MenuItem(trayMenu, SWT.CASCADE);
-        menuItem.setText(Messages.getString(MindClient.class, "1")); //$NON-NLS-1$
+        menuItem.setText(Messages.getString("Server Profiles")); //$NON-NLS-1$
 
         profilesMenu = new Menu(shell, SWT.DROP_DOWN);
         profilesMenu.addListener(SWT.Show, new Listener() {

@@ -57,8 +57,8 @@ public class CreateTaskAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(TEXT);
-		setToolTipText(TOOLTIP);
+		setText(Messages.getString("New Task"));
+		setToolTipText(Messages.getString("Creates a new task."));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'A');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
@@ -71,15 +71,15 @@ public class CreateTaskAction extends ActionBase {
 		Task task = new Task();
 		task.setStatus("new"); //$NON-NLS-1$
 		task.setPriority("low"); //$NON-NLS-1$
-		task.setTitle(Messages.getString(getClass(), "3")); //$NON-NLS-1$
-		task.setSummary(Messages.getString(getClass(), "4")); //$NON-NLS-1$
+		task.setTitle(Messages.getString("new task")); //$NON-NLS-1$
+		task.setSummary(Messages.getString("summary of the task")); //$NON-NLS-1$
 		task.setDate(null); // no due date by default
 
 		List teams = client.getSelectedTeams();
 		if (teams.size() == 0) {
 			MessageDialog.openWarning(new Shell(SWT.ON_TOP), Messages
-					.getString(CreateTaskAction.class, "1"), Messages
-					.getString(CreateTaskAction.class, "2"));
+					.getString("Authorization Error"), Messages
+					.getString("You are not a member of a team or no team is selected. Thus you can not create new tasks."));
 			return;
 		}
 
@@ -119,9 +119,10 @@ public class CreateTaskAction extends ActionBase {
 			task.setId(taskID);
 		} catch (Exception e) {
 			published = false;
-			MessageDialog.openError(new Shell(SWT.ON_TOP), Messages.getString(
-					getClass(), "5"), Messages.getString(getClass(), "6"));
-			log.error(Messages.getString(getClass(), "6"), e); //$NON-NLS-1$
+			MessageDialog.openError(new Shell(SWT.ON_TOP), 
+			        Messages.getString("Network error"),
+			        Messages.getString("Could not create the task."));
+			log.error(Messages.getString("Could not create the task."), e); //$NON-NLS-1$
 		}
 		return published;
 	}

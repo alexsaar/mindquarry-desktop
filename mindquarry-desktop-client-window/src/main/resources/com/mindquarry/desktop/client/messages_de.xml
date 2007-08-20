@@ -1,0 +1,177 @@
+<!DOCTYPE TS><TS>
+<context>
+    <name>java</name>
+    <message>
+        <source>Currently no action is running.</source>
+        <translation>Zur Zeit wird keine Aktion ausgeführt.</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <source>Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile.</source>
+        <translation>Es wurde kein Profil ausgewählt. Bitte wählen sie das Profil des Servers, mit dem sie arbeiten wollen oder legen sie ein neues Profil an.</translation>
+    </message>
+    <message>
+        <source>Could not update team list.</source>
+        <translation>Liste der Teams konnte nicht aktualisiert werden.</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation>Titel</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>Summary</source>
+        <translation>Zusammenfassung</translation>
+    </message>
+    <message>
+        <source>Network error</source>
+        <translation>Netzwerkfehler</translation>
+    </message>
+    <message>
+        <source>Could not update the task</source>
+        <translation>Aufgabe konnte nicht aktualisiert werden</translation>
+    </message>
+    <message>
+        <source>Synchronizing tasks</source>
+        <translation>Synchronisiere Aufgaben</translation>
+    </message>
+    <message>
+        <source>List of tasks could not be updated</source>
+        <translation>Aufgabenliste konnte nicht aktualisiert werden</translation>
+    </message>
+    <message>
+        <source>Updating task list</source>
+        <translation>Aktualisiere Aufgabenliste</translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
+    </message>
+    <message>
+        <source>Currently no tasks are active.</source>
+        <translation>Zur Zeit sind keine Aufgaben verfügbar.</translation>
+    </message>
+    <message>
+        <source>Could not save MindClient settings</source>
+        <translation>MindClient-Einstellungen konnten nicht gespeichert werden</translation>
+    </message>
+    <message>
+        <source>Your Mindquarry Server Profile</source>
+        <translation>Ihr Mindquarry Server-Profil</translation>
+    </message>
+    <message>
+        <source>Could not load MindClient settings</source>
+        <translation>MindClient-Einstellungen konnten nicht geladen werden</translation>
+    </message>
+    <message>
+        <source>Server Profiles</source>
+        <translation>Server-Profile</translation>
+    </message>
+    <message>
+        <source>Select a Team</source>
+        <translation>Wählen Sie ein Team</translation>
+    </message>
+    <message>
+        <source>Please select one of your teams.</source>
+        <translation>Bitte wählen Sie eines Ihrer Teams aus.</translation>
+    </message>
+    <message>
+        <source>Edit the contents of a task</source>
+        <translation>Editieren Sie eine Aufgabe</translation>
+    </message>
+    <message>
+        <source>Please enter the tasks data and press OK for adding/changing the task.</source>
+        <translation>Bitte gegeben Sie die Daten der Aufgabe ein und drücken Sie OK zum Ändern/Anlegen der Aufgabe.</translation>
+    </message>
+    <message>
+        <source>Edit Task</source>
+        <translation>Aufgabe bearbeiten</translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation>Priorität</translation>
+    </message>
+    <message>
+        <source>Due Date</source>
+        <translation>Fälligkeitsdatum</translation>
+    </message>
+    <message>
+        <source>Synchronize workspaces</source>
+        <translation>Arbeitsplätze synchronisieren</translation>
+    </message>
+    <message>
+        <source>Synchronize workspaces with your desktop.</source>
+        <translation>Synchronisierung der Arbeitplätze mit dem Desktop.</translation>
+    </message>
+    <message>
+        <source>New Task</source>
+        <translation>Neue Aufgabe</translation>
+    </message>
+    <message>
+        <source>Creates a new task.</source>
+        <translation>Legt eine neue Aufgabe an.</translation>
+    </message>
+    <message>
+        <source>new task</source>
+        <translation>Neue Aufgabe</translation>
+    </message>
+    <message>
+        <source>summary of the task</source>
+        <translation>Zusammenfassung der Aufgabe</translation>
+    </message>
+    <message>
+        <source>Authorization Error</source>
+        <translation>Autorisierungsfehler</translation>
+    </message>
+    <message>
+        <source>You are not a member of a team or no team is selected. Thus you can not create new tasks.</source>
+        <translation>Sie sind in keinen Team Mitglied oder es wurde kein Team ausgewählt. Sie können keine Aufgabe anlegen.</translation>
+    </message>
+    <message>
+        <source>Could not create the task.</source>
+        <translation>Aufgabe konnte nicht angelegt werden.</translation>
+    </message>
+    <message>
+        <source>Refresh task list</source>
+        <translation>Aufgabenliste aktualisieren</translation>
+    </message>
+    <message>
+        <source>Refresh the list of tasks.</source>
+        <translation>Aktualisieren der Aufgabenliste.</translation>
+    </message>
+    <message>
+        <source>Go to webpage</source>
+        <translation>Öffne Webseite</translation>
+    </message>
+    <message>
+        <source>Open the web interface of the current profiles server.</source>
+        <translation>Öffne die Webseite des ausgewählten Servers.</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>Exit the desktop client application.</source>
+        <translation>Beendet die Desktop-Client Anwendung.</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Optionen</translation>
+    </message>
+    <message>
+        <source>Open settings dialog of the desktop client.</source>
+        <translation>Öffne den Dialog zum Verändern der Desktop-Client Einstellungen.</translation>
+    </message>
+</context>
+</TS>
