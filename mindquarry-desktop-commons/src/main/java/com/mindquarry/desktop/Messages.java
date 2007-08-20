@@ -37,49 +37,48 @@ import com.mindquarry.desktop.util.TranslationMessageParser;
  */
 public class Messages {
 
-    protected static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/messages_"; //$NON-NLS-1$
-    protected static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
+    private static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/messages_"; //$NON-NLS-1$
+    private static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
 
-    protected static Map<String, String> translationMap = null;
+    private static Map<String, String> translationMap = null;
 
     public static String getString(String key) {
-        return getString(key, (String[])null);
+        return getString(key, null);
     }
     
     private static String getString(String key, String[] args) {
-        try {
-            if (translationMap == null) {
-                initTranslationMap();
-            }
-            String translation = translationMap.get(key);
-            if (translation == null) {
-                return key;
-            }
-            return translation;
-        } catch (Exception e) {
-            throw new RuntimeException("No translation found for '" +key+ "': " 
-                    + e.toString(), e);
+        if (translationMap == null) {
+            initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
+        String translation = translationMap.get(key);
+        if (translation == null) {
+            return key;
+        }
+        return translation;
     }
     
-    private static void initTranslationMap() throws IOException, SAXException, ParserConfigurationException {
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setValidating(false);
-        SAXParser parser = parserFactory.newSAXParser();
-        XMLReader reader = parser.getXMLReader();
-        TranslationMessageParser translationParser = new TranslationMessageParser();
-        reader.setContentHandler(translationParser);
-        reader.setErrorHandler(translationParser);
-        // TODO: use "xx_YY" if available, use "xx" otherwise:
-        String transFile = BUNDLE_FILE_BASE + Locale.getDefault().getLanguage() + BUNDLE_FILE_SUFFIX;
-        InputStream is = Messages.class.getResourceAsStream(transFile);
-        if (is == null) {
-            // no translation available for this language
-            translationMap = new HashMap<String, String>();
-            return;
+    protected static void initTranslationMap(String fileBase, String fileSuffix) {
+        try {
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            parserFactory.setValidating(false);
+            SAXParser parser = parserFactory.newSAXParser();
+            XMLReader reader = parser.getXMLReader();
+            TranslationMessageParser translationParser = new TranslationMessageParser();
+            reader.setContentHandler(translationParser);
+            reader.setErrorHandler(translationParser);
+            // TODO: use "xx_YY" if available, use "xx" otherwise:
+            String transFile = fileBase + Locale.getDefault().getLanguage() + fileSuffix;
+            InputStream is = Messages.class.getResourceAsStream(transFile);
+            if (is == null) {
+                // no translation available for this language
+                translationMap = new HashMap<String, String>();
+                return;
+            }
+            reader.parse(new InputSource(is));
+            translationMap = translationParser.getMap();
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString(), e);
         }
-        reader.parse(new InputSource(is));
-        translationMap = translationParser.getMap();
     }
         
 }
