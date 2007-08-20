@@ -520,7 +520,6 @@ public class MindClient extends ApplicationWindow {
             }
         }
         Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
-        boolean hasSelection = false;
         profilesInMenu = new ArrayList();
         int i = 0;
         while (pIt.hasNext()) {
@@ -543,13 +542,8 @@ public class MindClient extends ApplicationWindow {
                     && (profile.getName().equals(Profile.getSelectedProfile(
                             getPreferenceStore()).getName()))) {
                 menuItem.setSelection(true);
-                hasSelection = true;
             }
             profilesInMenu.add(menuItem);
-        }
-        if (!hasSelection && profilesInMenu.size() > 0) {
-            MenuItem mi = (MenuItem) profilesInMenu.get(0);
-            mi.setSelection(true);
         }
     }
 
