@@ -98,7 +98,8 @@ public class Profile {
     /**
      * Setter for name.
      * 
-     * @param name the name to set
+     * @param name
+     *            the name to set
      */
     public void setName(String name) {
         this.name = name;
@@ -116,7 +117,8 @@ public class Profile {
     /**
      * Setter for serverURL.
      * 
-     * @param url the serverURL to set
+     * @param url
+     *            the serverURL to set
      */
     public void setServerURL(String serverURL) {
         this.serverURL = serverURL;
@@ -134,7 +136,8 @@ public class Profile {
     /**
      * Setter for location.
      * 
-     * @param folder the location to set
+     * @param folder
+     *            the location to set
      */
     public void setWorkspaceFolder(String workspaceFolder) {
         this.workspaceFolder = workspaceFolder;
@@ -152,7 +155,8 @@ public class Profile {
     /**
      * Setter for login.
      * 
-     * @param login the login to set
+     * @param login
+     *            the login to set
      */
     public void setLogin(String login) {
         this.login = login;
@@ -170,7 +174,8 @@ public class Profile {
     /**
      * Setter for password.
      * 
-     * @param password the password to set
+     * @param password
+     *            the password to set
      */
     public void setPassword(String password) {
         this.password = password;
@@ -185,8 +190,10 @@ public class Profile {
             if (pref.startsWith(PROFILE_KEY_BASE)) {
                 String val = store.getString(pref);
                 if (val.trim().equals(EMPTY)) {
-                    // ignore empty values as PreferenceStore cannot properly delete
-                    // entries, so we just set deleted entries to the empty string
+                    // ignore empty values as PreferenceStore cannot properly
+                    // delete
+                    // entries, so we just set deleted entries to the empty
+                    // string
                     continue;
                 }
                 // analyze preference
@@ -220,25 +227,30 @@ public class Profile {
             List<Profile> profiles) {
         // set properties from profiles
         int pos = 0;
-        
+
         if (store == null)
             return;
-        
+
         // PreferenceStore cannot properly delete entries, so we first "delete"
-        // all entries by setting them to the empty string and then set all entries
-        // that are left in the following loop (on reading the config, we ignore
-        // empty entries):
+        // all entries by setting them to the empty string and then set all
+        // entries that are left in the following loop (on reading the config,
+        // we ignore empty entries):
         for (String storeKey : store.preferenceNames()) {
             if (storeKey.startsWith(Profile.PROFILE_KEY_BASE)) {
-                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_NAME, EMPTY);
-                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_LOGIN, EMPTY);
-                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_SERVER_URL, EMPTY);
-                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_WORKSPACES, EMPTY);
-                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM + Profile.PREF_PASSWORD, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                        + Profile.PREF_NAME, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                        + Profile.PREF_LOGIN, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                        + Profile.PREF_SERVER_URL, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                        + Profile.PREF_WORKSPACES, EMPTY);
+                store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                        + Profile.PREF_PASSWORD, EMPTY);
                 pos++;
             }
         }
-        
+
         pos = 0;
         for (Profile profile : profiles) {
             store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
@@ -272,48 +284,55 @@ public class Profile {
     }
 
     public static void selectProfile(PreferenceStore store, String name) {
-        String[] prefs = store.preferenceNames();
-        for (String pref : prefs) {
-            if (pref.startsWith(PROFILE_KEY_BASE)) {
-                // analyze preference
-                int number = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
-                        .length(), PROFILE_KEY_BASE.length() + 1));
-                String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
-                        pref.length());
-
-                // check if we found the select profile
-                if ((prefName.equals(PREF_NAME))
-                        && (store.getString(pref).equals(name))) {
-                    store.putValue(PROFILE_SELECTED, String.valueOf(number));
-                    return;
-                }
-            }
-        }
+        store.putValue(PROFILE_SELECTED, name);
     }
 
     public static Profile getSelectedProfile(PreferenceStore store) {
-        return getSelectedProfile(store, store.getInt(PROFILE_SELECTED));
+        Profile selected = getSelectedProfile(store, store
+                .getString(PROFILE_SELECTED));
+        return selected;
     }
 
-    private static Profile getSelectedProfile(PreferenceStore store, int id) {
+    private static Profile getSelectedProfile(PreferenceStore store,
+            String namePrefId) {
         Profile profile = null;
+        int profileID = -1;
 
         String[] prefs = store.preferenceNames();
+
+        // try to find ID of the given
         for (String pref : prefs) {
             if (pref.startsWith(PROFILE_KEY_BASE)) {
                 // analyze preference
-                int nbr = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
+                int id = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
                         .length(), PROFILE_KEY_BASE.length() + 1));
                 String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
                         pref.length());
 
-                // init profile if not done already
+                if ((prefName.equals(PREF_NAME))
+                        && (store.getString(pref).equals(namePrefId))) {
+                    profileID = id;
+                }
+            }
+        }
+        if (profileID == -1) {
+            return profile;
+        }
+        for (String pref : prefs) {
+            if (pref.startsWith(PROFILE_KEY_BASE)) {
+                // analyze preference
+                int id = Integer.valueOf(pref.substring(PROFILE_KEY_BASE
+                        .length(), PROFILE_KEY_BASE.length() + 1));
+                String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
+                        pref.length());
+
+                // initialize profile if not done already
                 if (profile == null) {
                     profile = new Profile(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY);
                 }
 
                 // set profile values
-                if (nbr == id) {
+                if (id == profileID) {
                     setProfileAttribute(store, profile, pref, prefName);
                 }
             }

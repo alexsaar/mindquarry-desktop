@@ -269,8 +269,6 @@ public class ServerProfilesPage extends PreferencePage {
 			url.setText(profile.getServerURL());
 			folder.setText(profile.getWorkspaceFolder());
 
-			Profile.selectProfile((PreferenceStore) getPreferenceStore(),
-					profile.getName());
 			delButton.setEnabled(true);
 		}
 	}
