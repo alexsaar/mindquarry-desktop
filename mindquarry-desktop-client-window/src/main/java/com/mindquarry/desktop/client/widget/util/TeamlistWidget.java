@@ -159,9 +159,13 @@ public class TeamlistWidget extends WidgetBase {
         Profile selected = Profile.getSelectedProfile(client
                 .getPreferenceStore());
         if (selected == null) {
-            System.err.println("####"+Messages.getString("Error")+"#");
-            MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile."));
+            System.err.println("####" + Messages.getString("Error") + "#");
+            MessageDialog
+                    .openError(
+                            getShell(),
+                            Messages.getString("Error"),
+                            Messages
+                                    .getString("Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile."));
             return null;
         }
         // retrieve list of teams
@@ -171,8 +175,7 @@ public class TeamlistWidget extends WidgetBase {
                     selected.getLogin(), selected.getPassword());
             return teamList;
         } catch (NotAuthorizedException e) {
-            MessageDialog.openError(getShell(), Messages.getString(
-                    "com.mindquarry.desktop.client", "error"), //$NON-NLS-1$
+            MessageDialog.openError(getShell(), Messages.getString("Error"), //$NON-NLS-1$
                     e.getLocalizedMessage());
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);

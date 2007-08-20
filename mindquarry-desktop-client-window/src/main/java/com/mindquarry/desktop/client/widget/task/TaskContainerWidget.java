@@ -226,7 +226,7 @@ public class TaskContainerWidget extends WidgetBase {
                 getDisplay().syncExec(new Runnable() {
                     public void run() {
                         MessageDialog.openError(getShell(), Messages.getString(
-                                "com.mindquarry.desktop.client", "error"), //$NON-NLS-1$
+                                "Error"), //$NON-NLS-1$
                                 e.getLocalizedMessage());
                     }
                 });
