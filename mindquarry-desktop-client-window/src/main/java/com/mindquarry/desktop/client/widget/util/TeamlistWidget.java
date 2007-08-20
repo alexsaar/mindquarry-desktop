@@ -159,7 +159,6 @@ public class TeamlistWidget extends WidgetBase {
         Profile selected = Profile.getSelectedProfile(client
                 .getPreferenceStore());
         if (selected == null) {
-            System.err.println("####" + Messages.getString("Error") + "#");
             MessageDialog
                     .openError(
                             getShell(),
