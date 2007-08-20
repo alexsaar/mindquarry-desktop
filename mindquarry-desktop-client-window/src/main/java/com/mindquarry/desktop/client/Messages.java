@@ -13,49 +13,71 @@
  */
 package com.mindquarry.desktop.client;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
-import org.apache.commons.i18n.MessageManager;
-import org.apache.commons.i18n.MessageNotFoundException;
-import org.apache.commons.i18n.XMLMessageProvider;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
- * Message provider that uses Jakarta Commons i18n for translation of
- * internationalized messages.
+ * Loads the translation for the current default locale from an XML
+ * file in the classpath, falls back to English if there's no translation.
  * 
- * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
- *         Saar</a>
+ * @author dnaber
  */
 public class Messages {
-    private static final String BUNDLE_FILE = "/com/mindquarry/desktop/client/messages.xml"; //$NON-NLS-1$
 
-    private static final String BUNDLE_NAME = "com.mindquarry.desktop.client.messages"; //$NON-NLS-1$
+    protected static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/client/messages_"; //$NON-NLS-1$
+    protected static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
 
-    static {
-        InputStream is = Messages.class.getResourceAsStream(BUNDLE_FILE);
-        XMLMessageProvider.install(BUNDLE_NAME, is);
+    protected static Map<String, String> translationMap = null;
+
+    public static String getString(String key) {
+        return getString(key, (String[])null);
     }
-
-    public static String getString(Class caller, String key) {
-        return getString(caller.getName(), key);
-    }
-
-    public static String getString(String id, String key) {
-        return getString(id, key, new Object[0]);
-    }
-
-    public static String getString(Class caller, String key, Object[] args) {
-        return getString(caller.getName(), key, args);
-    }
-
-    public static String getString(String id, String key, Object[] args) {
-        String result = null;
+    
+    private static String getString(String key, String[] args) {
         try {
-            result = MessageManager.getText(id, key, args, Locale.getDefault());
-        } catch (MessageNotFoundException e) {
-            result = MessageManager.getText(id, key, args, Locale.ENGLISH);
+            if (translationMap == null) {
+                initTranslationMap();
+            }
+            String translation = translationMap.get(key);
+            if (translation == null) {
+                return key;
+            }
+            return translation;
+        } catch (Exception e) {
+            throw new RuntimeException("No translation found for '" +key+ "': " 
+                    + e.toString(), e);
         }
-        return result;
     }
+    
+    private static void initTranslationMap() throws IOException, SAXException, ParserConfigurationException {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setValidating(false);
+        SAXParser parser = parserFactory.newSAXParser();
+        XMLReader reader = parser.getXMLReader();
+        TranslationParser translationParser = new TranslationParser();
+        reader.setContentHandler(translationParser);
+        reader.setErrorHandler(translationParser);
+        // TODO: use "xx_YY" if available, use "xx" otherwise:
+        String transFile = BUNDLE_FILE_BASE + Locale.getDefault().getLanguage() + BUNDLE_FILE_SUFFIX;
+        InputStream is = CopyOfMessages.class.getResourceAsStream(transFile);
+        if (is == null) {
+            // no translation available for this language
+            translationMap = new HashMap<String, String>();
+            return;
+        }
+        reader.parse(new InputSource(is));
+        translationMap = translationParser.getMap();
+    }
+        
 }
