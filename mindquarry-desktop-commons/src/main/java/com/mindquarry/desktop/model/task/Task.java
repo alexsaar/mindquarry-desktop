@@ -22,6 +22,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -47,7 +48,7 @@ public class Task extends ModelBase implements Cloneable {
     private String url;
     private String login;
     private String password;
-    
+
     private String id;
 
     private String title;
@@ -61,7 +62,7 @@ public class Task extends ModelBase implements Cloneable {
     private String description;
 
     private String date;
-    
+
     private String targetTime;
 
     private String actualTime;
@@ -95,7 +96,7 @@ public class Task extends ModelBase implements Cloneable {
         dependency.role = role;
         dependencies.add(dependency);
     }
-    
+
     @Override
     protected void initModel() {
         people = new ArrayList<Person>();
@@ -109,8 +110,9 @@ public class Task extends ModelBase implements Cloneable {
     public Task() {
         super();
     }
-    
-    public Task(String url, String login, String password) throws Exception {
+
+    public Task(String url, String login, String password)
+            throws NotAuthorizedException, Exception {
         super(url, login, password, new TaskTransformer());
         this.url = url;
         this.login = login;
@@ -273,24 +275,24 @@ public class Task extends ModelBase implements Cloneable {
         newTask.targetTime = targetTime;
         return newTask;
     }
-    
+
     public String toString() {
         return id + "/" + title;
     }
-    
+
     public String getTargetTime() {
-    	return targetTime;
-	}
+        return targetTime;
+    }
 
     public void setTargetTime(String targetTime) {
-    	this.targetTime = targetTime;
+        this.targetTime = targetTime;
     }
 
     public String getActualTime() {
-    	return actualTime;
+        return actualTime;
     }
 
     public void setActualTime(String actualTime) {
-    	this.actualTime = actualTime;
+        this.actualTime = actualTime;
     }
 }

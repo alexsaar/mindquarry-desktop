@@ -16,6 +16,7 @@ package com.mindquarry.desktop.model.team;
 import java.io.InputStream;
 
 import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -23,7 +24,7 @@ import com.mindquarry.desktop.model.ModelBase;
  */
 public class Team extends ModelBase {
     private String id;
-    
+
     private String name;
 
     private String workspaceURL;
@@ -36,13 +37,14 @@ public class Team extends ModelBase {
         super();
     }
 
-    public Team(String url, String login, String password) throws Exception {
+    public Team(String url, String login, String password)
+            throws NotAuthorizedException, Exception {
         super(url, login, password, new TeamTransformer());
     }
 
     /**
      * Getter for id.
-     *
+     * 
      * @return the id
      */
     public String getId() {
@@ -51,8 +53,9 @@ public class Team extends ModelBase {
 
     /**
      * Setter for id.
-     *
-     * @param id the id to set
+     * 
+     * @param id
+     *            the id to set
      */
     public void setId(String id) {
         this.id = id;
@@ -60,7 +63,7 @@ public class Team extends ModelBase {
 
     /**
      * Getter for workspaceURL.
-     *
+     * 
      * @return the workspaceURL
      */
     public String getWorkspaceURL() {
@@ -69,8 +72,9 @@ public class Team extends ModelBase {
 
     /**
      * Setter for workspaceURL.
-     *
-     * @param workspaceURL the workspaceURL to set
+     * 
+     * @param workspaceURL
+     *            the workspaceURL to set
      */
     public void setWorkspaceURL(String workspaceURL) {
         this.workspaceURL = workspaceURL;
@@ -78,7 +82,7 @@ public class Team extends ModelBase {
 
     /**
      * Getter for name.
-     *
+     * 
      * @return the name
      */
     public String getName() {
@@ -87,13 +91,14 @@ public class Team extends ModelBase {
 
     /**
      * Setter for name.
-     *
-     * @param name the name to set
+     * 
+     * @param name
+     *            the name to set
      */
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String toString() {
         return id;
     }

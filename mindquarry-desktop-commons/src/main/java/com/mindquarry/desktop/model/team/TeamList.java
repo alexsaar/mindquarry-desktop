@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -26,12 +27,15 @@ import com.mindquarry.desktop.model.ModelBase;
 public class TeamList extends ModelBase {
     private List<Team> teams;
 
-    public TeamList(InputStream data, String url, String login, String password) {
+    public TeamList(InputStream data, String url, String login, String password)
+            throws NotAuthorizedException {
         super(data, new TeamListTransformer(url, login, password));
     }
 
-    public TeamList(String url, String login, String password) throws Exception {
-        super(url, login, password, new TeamListTransformer(url, login, password));
+    public TeamList(String url, String login, String password)
+            throws NotAuthorizedException, Exception {
+        super(url, login, password, new TeamListTransformer(url, login,
+                password));
     }
 
     public TeamList() {
@@ -61,7 +65,7 @@ public class TeamList extends ModelBase {
         try {
             teams.add(new Team(url, login, password));
         } catch (Exception e) {
-            log.error("Error while loading team from "  //$NON-NLS-1$
+            log.error("Error while loading team from " //$NON-NLS-1$
                     + url, e);
             return;
         }

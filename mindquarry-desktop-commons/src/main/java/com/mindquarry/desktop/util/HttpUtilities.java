@@ -36,50 +36,50 @@ import com.mindquarry.desktop.Messages;
  *         Saar</a>
  */
 public class HttpUtilities {
-	private static Log log = LogFactory.getLog(HttpUtilities.class);
+    private static Log log = LogFactory.getLog(HttpUtilities.class);
 
-	
-    private static final String AUTH_REFUSED = 
-        Messages.getString("Authorization has been refused. Please check your login name and password.");
-    private static final String CONNECTION_ERROR = 
-        Messages.getString("Unknown connection error. Status code ");
-	        
-	public static InputStream getContentAsXML(String login, String pwd,
-			String address) throws NotAuthorizedException, Exception {
-		HttpClient client = createHttpClient(login, pwd, address);
-		GetMethod get = createAndExecuteGetMethod(address, client);
+    private static final String AUTH_REFUSED = Messages
+            .getString("Authorization has been refused. Please check your login name and password.");
+    private static final String CONNECTION_ERROR = Messages
+            .getString("Unknown connection error. Status code ");
 
-		InputStream result = null;
-		if (get.getStatusCode() == 200) {
-			result = get.getResponseBodyAsStream();
-		} else if (get.getStatusCode() == 401) {
-			throw new NotAuthorizedException(Messages.getString(
-					"Authorization has been refused. Please check your login name and password.")); //$NON-NLS-1$
-		} else {
-			throw new HttpException(Messages
-					.getString("Unknown connection error. Status code ") //$NON-NLS-1$
-					+ get.getStatusCode());
-		}
-		return result;
-	}
+    public static InputStream getContentAsXML(String login, String pwd,
+            String address) throws NotAuthorizedException, Exception {
+        HttpClient client = createHttpClient(login, pwd, address);
+        GetMethod get = createAndExecuteGetMethod(address, client);
 
-	public static String getContentAsString(String login, String pwd,
-			String address) throws NotAuthorizedException, Exception {
-		HttpClient client = createHttpClient(login, pwd, address);
-		GetMethod get = createAndExecuteGetMethod(address, client);
+        InputStream result = null;
+        if (get.getStatusCode() == 200) {
+            result = get.getResponseBodyAsStream();
+        } else if (get.getStatusCode() == 401) {
+            throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
+                    address, login, pwd);
+        } else {
+            throw new HttpException(Messages
+                    .getString("Unknown connection error. Status code ") //$NON-NLS-1$
+                    + get.getStatusCode());
+        }
+        return result;
+    }
 
-		String result = null;
-		if (get.getStatusCode() == 200) {
-			result = get.getResponseBodyAsString();
-		} else if (get.getStatusCode() == 401) {
-			throw new NotAuthorizedException(AUTH_REFUSED);
-		} else {
-			throw new Exception(CONNECTION_ERROR + get.getStatusCode());
-		}
-		return result;
-	}
+    public static String getContentAsString(String login, String pwd,
+            String address) throws NotAuthorizedException, Exception {
+        HttpClient client = createHttpClient(login, pwd, address);
+        GetMethod get = createAndExecuteGetMethod(address, client);
 
-	public static String putAsXML(String login, String pwd, String address,
+        String result = null;
+        if (get.getStatusCode() == 200) {
+            result = get.getResponseBodyAsString();
+        } else if (get.getStatusCode() == 401) {
+            throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
+                    address, login, pwd);
+        } else {
+            throw new Exception(CONNECTION_ERROR + get.getStatusCode());
+        }
+        return result;
+    }
+
+    public static String putAsXML(String login, String pwd, String address,
 			byte[] content) throws NotAuthorizedException, Exception {
 		HttpClient client = createHttpClient(login, pwd, address);
 
@@ -96,7 +96,8 @@ public class HttpUtilities {
 
 		String id = null;
 		if (put.getStatusCode() == 401) {
-			throw new NotAuthorizedException(AUTH_REFUSED);
+		    throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
+                    address, login, pwd);
 		} else if (put.getStatusCode() == 302) {
 			Header locationHeader = put.getResponseHeader("location");
 			if (locationHeader != null) {
@@ -115,30 +116,30 @@ public class HttpUtilities {
 		return id;
 	}
 
-	private static HttpClient createHttpClient(String login, String pwd,
-			String address) throws MalformedURLException {
-		URL url = new URL(address);
+    private static HttpClient createHttpClient(String login, String pwd,
+            String address) throws MalformedURLException {
+        URL url = new URL(address);
 
-		HttpClient client = new HttpClient();
-		client.getParams().setAuthenticationPreemptive(true);
-		client.getState()
-				.setCredentials(
-						new AuthScope(url.getHost(), url.getPort(),
-								AuthScope.ANY_REALM),
-						new UsernamePasswordCredentials(login, pwd));
-		return client;
-	}
+        HttpClient client = new HttpClient();
+        client.getParams().setAuthenticationPreemptive(true);
+        client.getState()
+                .setCredentials(
+                        new AuthScope(url.getHost(), url.getPort(),
+                                AuthScope.ANY_REALM),
+                        new UsernamePasswordCredentials(login, pwd));
+        return client;
+    }
 
-	private static GetMethod createAndExecuteGetMethod(String address,
-			HttpClient client) throws IOException, HttpException {
-		GetMethod get = new GetMethod(address);
-		get.setDoAuthentication(true);
-		get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
+    private static GetMethod createAndExecuteGetMethod(String address,
+            HttpClient client) throws IOException, HttpException {
+        GetMethod get = new GetMethod(address);
+        get.setDoAuthentication(true);
+        get.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		log.info("Executing HTTP GET on " + address); //$NON-NLS-1$
-		client.executeMethod(get);
-		log.info("Finished HTTP GET with status code: "//$NON-NLS-1$
-				+ get.getStatusCode());
-		return get;
-	}
+        log.info("Executing HTTP GET on " + address); //$NON-NLS-1$
+        client.executeMethod(get);
+        log.info("Finished HTTP GET with status code: "//$NON-NLS-1$
+                + get.getStatusCode());
+        return get;
+    }
 }

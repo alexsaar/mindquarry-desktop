@@ -15,11 +15,33 @@ package com.mindquarry.desktop.util;
 
 /**
  * Thrown if HTTP status code 401 is received.
- *
+ * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
 public class NotAuthorizedException extends Exception {
-	public NotAuthorizedException(String message) {
-		super(message);
-	}
+    private static final long serialVersionUID = -5440354352483542235L;
+
+    private String url;
+    private String login;
+    private String password;
+
+    public NotAuthorizedException(String message, String url, String login,
+            String password) {
+        super(message);
+        this.url = url;
+        this.login = login;
+        this.password = password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }
