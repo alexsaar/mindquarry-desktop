@@ -34,7 +34,7 @@ public class Messages extends com.mindquarry.desktop.Messages {
     
     private static String getString(String key, String[] args) {
         if (translationMap == null) {
-            initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
+            translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
         String translation = translationMap.get(key);
         if (translation == null) {

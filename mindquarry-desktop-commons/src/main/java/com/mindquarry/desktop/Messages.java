@@ -48,7 +48,7 @@ public class Messages {
     
     private static String getString(String key, String[] args) {
         if (translationMap == null) {
-            initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
+            translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
         String translation = translationMap.get(key);
         if (translation == null) {
@@ -57,7 +57,7 @@ public class Messages {
         return translation;
     }
     
-    protected static void initTranslationMap(String fileBase, String fileSuffix) {
+    protected static Map<String, String> initTranslationMap(String fileBase, String fileSuffix) {
         try {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             parserFactory.setValidating(false);
@@ -71,11 +71,10 @@ public class Messages {
             InputStream is = Messages.class.getResourceAsStream(transFile);
             if (is == null) {
                 // no translation available for this language
-                translationMap = new HashMap<String, String>();
-                return;
+                return new HashMap<String, String>();
             }
             reader.parse(new InputSource(is));
-            translationMap = translationParser.getMap();
+            return translationParser.getMap();
         } catch (Exception e) {
             throw new RuntimeException(e.toString(), e);
         }
