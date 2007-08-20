@@ -27,6 +27,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import com.mindquarry.desktop.util.TranslationMessageParser;
+
 /**
  * Loads the translation for the current default locale from an XML
  * file in the classpath, falls back to English if there's no translation.
@@ -65,12 +67,12 @@ public class Messages {
         parserFactory.setValidating(false);
         SAXParser parser = parserFactory.newSAXParser();
         XMLReader reader = parser.getXMLReader();
-        TranslationParser translationParser = new TranslationParser();
+        TranslationMessageParser translationParser = new TranslationMessageParser();
         reader.setContentHandler(translationParser);
         reader.setErrorHandler(translationParser);
         // TODO: use "xx_YY" if available, use "xx" otherwise:
         String transFile = BUNDLE_FILE_BASE + Locale.getDefault().getLanguage() + BUNDLE_FILE_SUFFIX;
-        InputStream is = CopyOfMessages.class.getResourceAsStream(transFile);
+        InputStream is = Messages.class.getResourceAsStream(transFile);
         if (is == null) {
             // no translation available for this language
             translationMap = new HashMap<String, String>();
