@@ -155,6 +155,12 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		SVNSynchronizer helper = setupTest("add_add_conflict");
 
 		helper.synchronize();
+		
+		// TODO: we need to test the conflict objects: extend AutomaticConflictHandler
+		// class with methods testing the fields of the conflict object
+		
+		// TODO: here we have to test if the remote/localAdded fields contain
+		// all files/folders of the test zip case
 
 		deleteDir(new File("target/add_add_conflict/"));
 	}

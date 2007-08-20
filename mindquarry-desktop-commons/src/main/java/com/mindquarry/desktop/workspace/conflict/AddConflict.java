@@ -144,16 +144,24 @@ public class AddConflict extends Conflict {
 	        // lazily retrieve possible conflicts with other remotely added files
 	        remoteAddedInFolder = new ArrayList<String>();
 	        for (Status s : client.status(folder.getAbsolutePath(), true, true, false)) {
+	            // simply add all files that are either locally or remotely in
+	            // a non-normal state - this will include delete cases, but
+	            // those files exist locally anyway until the update is done
 	            remoteAddedInFolder.add(new File(s.getPath()).getName());
 	        }
 	    }
+	    
+	    // TODO: remember all choosen newNames for a certain directory in a
+	    // static list and check against them (see above when renameTo fails)
+	    
+	    // TODO: check for relative path names (eg. ../../newfile) and return false
 	    
 	    // such a file must not exist locally yet and it must not be added
 	    // during the next update (that would be another conflict then)
 	    boolean result = !(new File(folder, newName).exists() || remoteAddedInFolder.contains(newName));
 	    
 	    if (!result) {
-	        System.err.println("Cannot rename to '" + newName + "'");
+	        System.out.println("Cannot rename to '" + newName + "'");
 	    }
 	    return result;
 	}

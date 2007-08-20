@@ -130,7 +130,7 @@ public class SVNSynchronizer {
 			// client.lock(new String[] {localPath}, "locking for
 			// synchronization", false);
 
-            deleteMissingAndAddUnversioned();
+            deleteMissingAndAddUnversioned(localPath);
             
 			List<Conflict> conflicts = analyzeChangesAndAskUser();
 			
@@ -177,8 +177,15 @@ public class SVNSynchronizer {
 	 * automatically adds standard to-be-ignored files such as Thumbs.db to the
 	 * ignore list.
      */
-    private void deleteMissingAndAddUnversioned() throws ClientException {
-        for (Status s : getLocalChanges()) {
+    private void deleteMissingAndAddUnversioned(String path) throws ClientException {
+        for (Status s : getLocalChanges(path)) {
+            log.debug("deleting/adding/ignoring " + Kind.getDescription(s.getTextStatus()) +
+                    " " + nodeKindDesc(s.getNodeKind()) +
+                    " <->" +
+                    " " + Kind.getDescription(s.getRepositoryTextStatus()) +
+                    " " + nodeKindDesc(s.getReposKind()) +
+                    " '" + wcPath(s) + "'");
+            
             if (s.getTextStatus() == StatusKind.missing) {
                 // if the first parameter would be an URL, it would do a commit
                 // (and use the second parameter as commit message) - but we
@@ -204,23 +211,45 @@ public class SVNSynchronizer {
                     // from the add and give a warning message to the user
                     
                     // otherwise we turn all unversioned into added
+                    // Do not recurse, we do that ourselve below; we need to
+                    // look at each file individually because we want to ignore
+                    // some - setting the recurse flag here would add all files
+                    // and folders inside the directory
                     client.add(s.getPath(), false);
+                    
+                    // For directories, we recurse into it: the reason is that
+                    // we need to re-retrieve the stati for that directory after
+                    // it has been added, because all the unversioned children
+                    // are not part of the initial stati list (when the dir is
+                    // unversioned). Note: we cannot use isNodeKind() == 'dir'
+                    // because svn sees it as 'none' at this point
+                    if (new File(s.getPath()).isDirectory()) {
+                        deleteMissingAndAddUnversioned(s.getPath());
+                    }
                 }
             }
         }
     }
 
     /**
-     * Retrieves local changes as a list that is sorted with the top-most
-     * folder or file first.
+     * Retrieves local changes for the wc root as a list that is sorted with the
+     * top-most folder or file first.
      */
     public List<Status> getLocalChanges() throws ClientException {
-		log.info("## local changes:");
+        return getLocalChanges(localPath);
+    }
+    
+    /**
+     * Retrieves local changes for a wc path as a list that is sorted with the
+     * top-most folder or file first.
+     */
+    public List<Status> getLocalChanges(String path) throws ClientException {
+		log.info("## local changes for '" + path + "':");
 
 		// we need a modifiable list - Arrays.asList is fixed
 		List<Status> statusList = new ArrayList<Status>(); 
 		statusList.addAll(
-		        Arrays.asList(client.status(localPath, true, false, false)));
+		        Arrays.asList(client.status(path, true, false, false)));
 		
 		// sort the list from top-level folder to bottom which is important
 		// for handling multiple conflicts on the parent folder first
