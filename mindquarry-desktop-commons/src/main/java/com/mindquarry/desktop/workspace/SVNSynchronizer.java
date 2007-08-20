@@ -371,13 +371,6 @@ public class SVNSynchronizer {
         //   unversioned
         //   replaced (delete and re-add in one step)
 		
-        // TODO: following conflicts are also imaginable:
-        // local          remote                        notes
-        // --------------+-----------------------------+---------------------------------------
-        // conflict       deleted/modified/replaced     when file conflict was not yet resolved
-        // replaced       replaced...
-        // ....
-        
 		conflicts.addAll(findAddConflicts(remoteAndLocalChanges));
 		
 		conflicts.addAll(findLocalContainerDeleteConflicts(remoteAndLocalChanges));
