@@ -81,7 +81,19 @@
         </locale>
     </message>
     
-    <message id="com.mindquarry.desktop.client.widget.util.TeamlistLabelProvider.java">
+    <message id="com.mindquarry.desktop.client.widget.util.TeamlistWidget">
+        <locale language="en">
+            <entry key="0">Could not update team list.</entry>
+            <entry key="1">Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile.</entry>
+        </locale>
+        
+        <locale language="de">
+            <entry key="0">Liste der Teams konnte nicht aktualisiert werden.</entry>
+            <entry key="1">Es wurde kein Profil ausgewählt. Bitte wählen sie das Profil des Servers, mit dem sie arbeiten wollen oder legen sie ein neues Profil an.</entry>
+        </locale>
+    </message>
+    
+    <message id="com.mindquarry.desktop.client.widget.util.TeamlistLabelProvider">
         <locale language="en">
             <entry key="0">Name</entry>
         </locale>
@@ -209,7 +221,6 @@
             <entry key="text">New Task</entry>
             <entry key="tooltip">Creates a new task.</entry>
             
-            <entry key="0">Could not update team list.</entry>
             <entry key="1">Authorization Error</entry>
             <entry key="2">You are not a member of a team or no team is selected. Thus you can not create new tasks.</entry>
             <entry key="3">new task</entry>
@@ -222,7 +233,6 @@
             <entry key="text">Neue Aufgabe</entry>
             <entry key="tooltip">Legt eine neue Aufgabe an.</entry>
             
-            <entry key="0">Liste der Teams konnte nicht aktualisiert werden.</entry>
             <entry key="1">Autorisierungsfehler</entry>
             <entry key="2">Sie sind in keinen Team Mitglied oder es wurde kein Team ausgewählt. Sie können keine Aufgabe anlegen.</entry>
             <entry key="3">Neue Aufgabe</entry>
