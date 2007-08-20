@@ -38,6 +38,12 @@ import com.mindquarry.desktop.Messages;
 public class HttpUtilities {
 	private static Log log = LogFactory.getLog(HttpUtilities.class);
 
+	
+    private static final String AUTH_REFUSED = 
+        Messages.getString("Authorization has been refused. Please check your login name and password.");
+    private static final String CONNECTION_ERROR = 
+        Messages.getString("Unknown connection error. Status code ");
+	        
 	public static InputStream getContentAsXML(String login, String pwd,
 			String address) throws NotAuthorizedException, Exception {
 		HttpClient client = createHttpClient(login, pwd, address);
@@ -48,10 +54,10 @@ public class HttpUtilities {
 			result = get.getResponseBodyAsStream();
 		} else if (get.getStatusCode() == 401) {
 			throw new NotAuthorizedException(Messages.getString(
-					HttpUtilities.class, "0")); //$NON-NLS-1$
+					"Authorization has been refused. Please check your login name and password.")); //$NON-NLS-1$
 		} else {
 			throw new HttpException(Messages
-					.getString(HttpUtilities.class, "1") //$NON-NLS-1$
+					.getString("Unknown connection error. Status code ") //$NON-NLS-1$
 					+ get.getStatusCode());
 		}
 		return result;
@@ -66,11 +72,9 @@ public class HttpUtilities {
 		if (get.getStatusCode() == 200) {
 			result = get.getResponseBodyAsString();
 		} else if (get.getStatusCode() == 401) {
-			throw new NotAuthorizedException(Messages.getString(
-					HttpUtilities.class, "0")); //$NON-NLS-1$
+			throw new NotAuthorizedException(AUTH_REFUSED);
 		} else {
-			throw new Exception(Messages.getString(HttpUtilities.class, "1") //$NON-NLS-1$
-					+ get.getStatusCode());
+			throw new Exception(CONNECTION_ERROR + get.getStatusCode());
 		}
 		return result;
 	}
@@ -92,8 +96,7 @@ public class HttpUtilities {
 
 		String id = null;
 		if (put.getStatusCode() == 401) {
-			throw new NotAuthorizedException(Messages.getString(
-					HttpUtilities.class, "0")); //$NON-NLS-1$
+			throw new NotAuthorizedException(AUTH_REFUSED);
 		} else if (put.getStatusCode() == 302) {
 			Header locationHeader = put.getResponseHeader("location");
 			if (locationHeader != null) {
@@ -101,12 +104,11 @@ public class HttpUtilities {
 				// everything seems right and we just use the new ID:
 				id = locationHeader.getValue();
 			} else {
-				throw new Exception(Messages
-						.getString(HttpUtilities.class, "1") //$NON-NLS-1$
+				throw new Exception(CONNECTION_ERROR
 						+ put.getStatusCode());
 			}
 		} else {
-			throw new Exception(Messages.getString(HttpUtilities.class, "1") //$NON-NLS-1$
+			throw new Exception(CONNECTION_ERROR
 					+ put.getStatusCode());
 		}
 		put.releaseConnection();

@@ -44,9 +44,9 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
      * ShortcutsPage default constructor
      */
     public GeneralSettingsPage() {
-        super(Messages.getString(GeneralSettingsPage.class, "0"), //$NON-NLS-1$
+        super(Messages.getString("Common Settings"), //$NON-NLS-1$
                 FieldEditorPreferencePage.GRID);
-        setDescription(Messages.getString(GeneralSettingsPage.class, "1")); //$NON-NLS-1$
+        setDescription(Messages.getString("Manage common settings of the application.")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -61,13 +61,13 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
         store.setDefault(NOTIFY_DELAY, DEFAULT_NOTIFY_DELAY);
 
         BooleanFieldEditor autostartFlag = new BooleanFieldEditor(AUTOSTART,
-                Messages.getString(GeneralSettingsPage.class, "3"), //$NON-NLS-1$
+                Messages.getString("Run at system startup (Windows only)"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(autostartFlag);
 
         IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
                 NOTIFY_DELAY, Messages
-                        .getString(GeneralSettingsPage.class, "2") //$NON-NLS-1$
+                        .getString("Notification Message Delay (in seconds)") //$NON-NLS-1$
                         + ":", //$NON-NLS-1$
                 getFieldEditorParent());
         addField(notifyDisplayDelay);

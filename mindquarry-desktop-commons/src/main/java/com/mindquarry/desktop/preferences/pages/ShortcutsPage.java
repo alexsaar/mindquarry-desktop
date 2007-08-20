@@ -66,8 +66,8 @@ public class ShortcutsPage extends PreferencePage {
      * ShortcutsPage default constructor
      */
     public ShortcutsPage() {
-        super(Messages.getString(ShortcutsPage.class, "0")); //$NON-NLS-1$
-        setDescription(Messages.getString(ShortcutsPage.class, "1")); //$NON-NLS-1$
+        super(Messages.getString("Shortcuts")); //$NON-NLS-1$
+        setDescription(Messages.getString("Manage shortcuts of the application.")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -92,13 +92,13 @@ public class ShortcutsPage extends PreferencePage {
         table.setLinesVisible(true);
 
         TableColumn col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString(ShortcutsPage.class, "2")); //$NON-NLS-1$
+        col.setText(Messages.getString("Category")); //$NON-NLS-1$
         col.setWidth(100);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString(ShortcutsPage.class, "3")); //$NON-NLS-1$
+        col.setText(Messages.getString("Action")); //$NON-NLS-1$
         col.setWidth(200);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString(ShortcutsPage.class, "4")); //$NON-NLS-1$
+        col.setText(Messages.getString("Shortcut")); //$NON-NLS-1$
         col.setWidth(100);
 
         CellEditor[] editors = new CellEditor[table.getColumnCount()];

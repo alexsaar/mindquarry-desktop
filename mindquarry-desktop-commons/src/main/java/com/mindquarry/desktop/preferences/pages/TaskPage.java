@@ -38,10 +38,10 @@ public class TaskPage extends FieldEditorPreferencePage {
      * ProfilesPage default constructor
      */
     public TaskPage() {
-        super(Messages.getString(TaskPage.class, "0"), SWT.FLAT); //$NON-NLS-1$
+        super(Messages.getString("Task Settings"), SWT.FLAT); //$NON-NLS-1$
 
         // inital preference page
-        setDescription(Messages.getString(TaskPage.class, "1")); //$NON-NLS-1$
+        setDescription(Messages.getString("Manage your task settings.")); //$NON-NLS-1$
         Image img = new Image(
                 Display.getCurrent(),
                 getClass()
@@ -63,7 +63,7 @@ public class TaskPage extends FieldEditorPreferencePage {
 
         BooleanFieldEditor showFinishedTasks = new BooleanFieldEditor(
                 LIST_FINISHED_TASKS, "&" //$NON-NLS-1$
-                        + Messages.getString(TaskPage.class, "2"), //$NON-NLS-1$
+                        + Messages.getString("List finished tasks"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(showFinishedTasks);
     }
