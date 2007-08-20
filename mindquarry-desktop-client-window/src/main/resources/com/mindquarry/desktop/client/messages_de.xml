@@ -11,7 +11,7 @@
     </message>
     <message>
         <source>Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile.</source>
-        <translation>Es wurde kein Profil ausgewählt. Bitte wählen sie das Profil des Servers, mit dem sie arbeiten wollen oder legen sie ein neues Profil an.</translation>
+        <translation>Es wurde kein Profil ausgewählt. Bitte wählen Sie das Profil des Servers, mit dem Sie arbeiten wollen oder legen Sie ein neues Profil an.</translation>
     </message>
     <message>
         <source>Could not update team list.</source>
