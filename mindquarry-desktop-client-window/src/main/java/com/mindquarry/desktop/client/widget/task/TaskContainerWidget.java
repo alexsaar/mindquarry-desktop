@@ -45,6 +45,7 @@ import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -166,7 +167,8 @@ public class TaskContainerWidget extends WidgetBase {
             while (it.hasNext()) {
                 Task task = it.next();
                 if ((!searchFacet.equals(""))
-                        && (!task.getTitle().toLowerCase().contains(searchFacet))) {
+                        && (!task.getTitle().toLowerCase()
+                                .contains(searchFacet))) {
                     it.remove();
                 }
             }
@@ -217,6 +219,20 @@ public class TaskContainerWidget extends WidgetBase {
                         new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
                                 + team.getId() + "/", profile.getLogin(),
                                 profile.getPassword()).getTasks());
+            } catch (final NotAuthorizedException e) {
+                log.error("Could not update list of tasks for "
+                        + profile.getServerURL(), e); //$NON-NLS-1$
+
+                getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        MessageDialog.openError(getShell(), Messages.getString(
+                                "com.mindquarry.desktop.client", "error"), //$NON-NLS-1$
+                                e.getLocalizedMessage());
+                    }
+                });
+                updateTaskWidgetContents(false, e.getLocalizedMessage(), false);
+                refreshing = false;
+                return;
             } catch (Exception e) {
                 log.error("Could not update list of tasks for "
                         + profile.getServerURL(), e); //$NON-NLS-1$
@@ -224,9 +240,11 @@ public class TaskContainerWidget extends WidgetBase {
                 String errMessage = Messages.getString("List of tasks could not be updated"); //$NON-NLS-1$
                 errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
 
+                MessageDialog.openError(getShell(), Messages.getString(
+                        "Error"), errMessage);
+                
                 updateTaskWidgetContents(false, errMessage, false);
                 refreshing = false;
-                MessageDialog.openError(getShell(), Messages.getString("Error"), errMessage);
                 return;
             }
         }
@@ -247,14 +265,14 @@ public class TaskContainerWidget extends WidgetBase {
         refreshing = false;
         initialized = true;
     }
-    
+
     private void markColumns() {
         // set background color for every second table item
         TableItem[] items = tableViewer.getTable().getItems();
         for (int i = 0; i < items.length; i++) {
             if (i % 2 == 1) {
-                items[i].setBackground(new Color(Display
-                        .getCurrent(), 233, 233, 251));
+                items[i].setBackground(new Color(Display.getCurrent(), 233,
+                        233, 251));
             }
         }
     }

@@ -38,6 +38,7 @@ import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * Simple table listing the teams with checkboxes.
@@ -169,6 +170,13 @@ public class TeamlistWidget extends WidgetBase {
             teamList = new TeamList(selected.getServerURL() + "/teams", //$NON-NLS-1$
                     selected.getLogin(), selected.getPassword());
             return teamList;
+        } catch (NotAuthorizedException e) {
+            MessageDialog.openError(getShell(), Messages.getString(
+                    "com.mindquarry.desktop.client", "error"), //$NON-NLS-1$
+                    e.getLocalizedMessage());
+            log.error("Error while updating team list at " //$NON-NLS-1$
+                    + selected.getServerURL(), e);
+            return null;
         } catch (Exception e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"),
                     Messages.getString("Could not update team list.")); //$NON-NLS-1$
