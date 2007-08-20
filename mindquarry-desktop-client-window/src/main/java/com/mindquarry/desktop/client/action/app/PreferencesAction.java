@@ -51,4 +51,12 @@ public class PreferencesAction extends ActionBase {
 	public void run() {
 		client.showPreferenceDialog(false);
 	}
+	
+	public String getGroup() {
+        return ActionBase.MANAGEMENT_ACTION_GROUP;
+    }
+	
+	public boolean isToolbarAction() {
+        return true;
+    }
 }

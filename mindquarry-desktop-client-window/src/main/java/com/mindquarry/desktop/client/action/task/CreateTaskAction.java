@@ -130,4 +130,12 @@ public class CreateTaskAction extends ActionBase {
 	public void setTaskContainer(TaskContainerWidget taskContainer) {
 		this.taskContainer = taskContainer;
 	}
+	
+	public String getGroup() {
+        return ActionBase.TASK_ACTION_GROUP;
+    }
+	
+	public boolean isToolbarAction() {
+        return true;
+    }
 }

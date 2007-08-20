@@ -57,4 +57,12 @@ public class OpenWebpageAction extends ActionBase {
 			Program.launch(Profile.getSelectedProfile(store).getServerURL());
 		}
 	}
+	
+	public String getGroup() {
+        return ActionBase.MANAGEMENT_ACTION_GROUP;
+    }
+	
+	public boolean isToolbarAction() {
+        return false;
+    }
 }

@@ -52,4 +52,12 @@ public class CloseAction extends ActionBase {
 	public void run() {
 		System.exit(1);
 	}
+	
+	public String getGroup() {
+        return ActionBase.MANAGEMENT_ACTION_GROUP;
+    }
+
+    public boolean isToolbarAction() {
+        return false;
+    }
 }

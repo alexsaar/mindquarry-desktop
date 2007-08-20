@@ -98,9 +98,12 @@ public class MindClient extends ApplicationWindow {
     public static final String TASK_TITLE_FONT_KEY = "task-title";
     public static final String TEAM_NAME_FONT_KEY = "team-name";
 
-    public static final String WORKSPACE_ACTION_GROUP = "workspace-actions";
-    public static final String TASK_ACTION_GROUP = "task-actions";
-    public static final String MANAGEMENT_ACTION_GROUP = "management-actions";
+    public static final List<String> INITIAL_TOOLBAR_GROUPS = new ArrayList<String>();
+    
+    static {
+        INITIAL_TOOLBAR_GROUPS.add(ActionBase.TASK_ACTION_GROUP);
+        INITIAL_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
+    }
 
     private static BeanFactory factory;
 
@@ -179,9 +182,9 @@ public class MindClient extends ApplicationWindow {
         try {
             store.save();
         } catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.getString("Error"), Messages
-                    .getString("Could not save MindClient settings")
-                    + ": " + e.toString());
+            MessageDialog.openError(getShell(), Messages.getString("Error"),
+                    Messages.getString("Could not save MindClient settings")
+                            + ": " + e.toString());
         }
         AutostartUtilities.setAutostart(store
                 .getBoolean(GeneralSettingsPage.AUTOSTART),
@@ -222,15 +225,15 @@ public class MindClient extends ApplicationWindow {
         getToolBarManager().remove(
                 getAction(SynchronizeWorkspacesAction.class.getName()).getId());
 
-        getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
+        getToolBarManager().appendToGroup(ActionBase.TASK_ACTION_GROUP,
                 getAction(SynchronizeTasksAction.class.getName()));
-        getToolBarManager().appendToGroup(TASK_ACTION_GROUP,
+        getToolBarManager().appendToGroup(ActionBase.TASK_ACTION_GROUP,
                 getAction(CreateTaskAction.class.getName()));
         getToolBarManager().update(true);
     }
 
     public void setFilesActive() {
-        getToolBarManager().appendToGroup(WORKSPACE_ACTION_GROUP,
+        getToolBarManager().appendToGroup(ActionBase.WORKSPACE_ACTION_GROUP,
                 getAction(SynchronizeWorkspacesAction.class.getName()));
 
         getToolBarManager().remove(
@@ -268,25 +271,18 @@ public class MindClient extends ApplicationWindow {
         ToolBarManager manager = super.createToolBarManager(style);
 
         // create toolbar groups
-        manager.add(new GroupMarker(WORKSPACE_ACTION_GROUP));
-        manager.add(new GroupMarker(TASK_ACTION_GROUP));
-        manager.add(new GroupMarker(MANAGEMENT_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.WORKSPACE_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.TASK_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.MANAGEMENT_ACTION_GROUP));
+        manager.appendToGroup(ActionBase.MANAGEMENT_ACTION_GROUP,
+                new Separator());
 
-        // fill workspace group
-        // manager.appendToGroup(WORKSPACE_ACTION_GROUP,
-        // getAction(SynchronizeWorkspacesAction.class.getName()));
-
-        // fill tasks group
-        manager.appendToGroup(TASK_ACTION_GROUP,
-                getAction(SynchronizeTasksAction.class.getName()));
-        manager.appendToGroup(TASK_ACTION_GROUP,
-                getAction(CreateTaskAction.class.getName()));
-
-        // fill management group
-        manager.appendToGroup(MANAGEMENT_ACTION_GROUP, new Separator());
-        manager.appendToGroup(MANAGEMENT_ACTION_GROUP,
-                getAction(PreferencesAction.class.getName()));
-
+        for (ActionBase action : actions) {
+            if ((action.isToolbarAction())
+                    && (INITIAL_TOOLBAR_GROUPS.contains(action.getGroup()))) {
+                manager.appendToGroup(action.getGroup(), action);
+            }
+        }
         return manager;
     }
 
@@ -398,9 +394,9 @@ public class MindClient extends ApplicationWindow {
             PreferenceUtilities.checkPreferenceFile(prefFile);
             store.load();
         } catch (Exception e) {
-            MessageDialog.openError(getShell(), Messages.getString("Error"), Messages
-                    .getString("Could not load MindClient settings")
-                    + ": " + e.toString());
+            MessageDialog.openError(getShell(), Messages.getString("Error"),
+                    Messages.getString("Could not load MindClient settings")
+                            + ": " + e.toString());
         }
     }
 

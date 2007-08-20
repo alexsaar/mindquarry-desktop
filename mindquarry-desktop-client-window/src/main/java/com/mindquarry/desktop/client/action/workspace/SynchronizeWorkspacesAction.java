@@ -51,4 +51,12 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	public void run() {
 		
 	}
+	
+	public String getGroup() {
+        return ActionBase.WORKSPACE_ACTION_GROUP;
+    }
+	
+	public boolean isToolbarAction() {
+        return true;
+    }
 }
