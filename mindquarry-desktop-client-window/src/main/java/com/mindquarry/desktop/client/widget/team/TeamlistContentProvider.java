@@ -12,7 +12,7 @@
  * under the License.
  */
 
-package com.mindquarry.desktop.client.widget.util;
+package com.mindquarry.desktop.client.widget.team;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

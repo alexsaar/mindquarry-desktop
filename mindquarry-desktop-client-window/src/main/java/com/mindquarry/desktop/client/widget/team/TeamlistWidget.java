@@ -11,13 +11,14 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.widget.util;
+package com.mindquarry.desktop.client.widget.team;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
@@ -29,11 +30,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.team.RefreshTeamlistAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
@@ -50,6 +53,8 @@ public class TeamlistWidget extends WidgetBase {
     private static Log log = LogFactory.getLog(TeamlistWidget.class);
 
     private TableViewer viewer;
+    
+    private Table table;
 
     /**
      * {@inheritDoc}
@@ -81,11 +86,22 @@ public class TeamlistWidget extends WidgetBase {
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         // create team list table
-        final Table table = new Table(parent, SWT.SINGLE | SWT.CHECK
+        table = new Table(parent, SWT.SINGLE | SWT.CHECK
                 | SWT.FULL_SELECTION | SWT.BORDER);
         table.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
                 true, 2, 1));
         table.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+
+        Menu menu = new Menu(table);
+        table.setMenu(menu);
+
+        RefreshTeamlistAction action = (RefreshTeamlistAction)client
+                .getAction(RefreshTeamlistAction.class.getName());
+        action.setTeamList(this);
+        
+        ActionContributionItem refreshTeamsAction = new ActionContributionItem(
+                action);
+        refreshTeamsAction.fill(menu, menu.getItemCount());
 
         viewer = new TableViewer(table);
         viewer.setContentProvider(new TeamlistContentProvider());

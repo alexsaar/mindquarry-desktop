@@ -21,6 +21,10 @@
         <constructor-arg ref="MindClient"/>
     </bean>
 
+    <!-- team actions -->
+    <bean id="RefreshTeamlistAction" parent="ActionBase"
+        class="com.mindquarry.desktop.client.action.team.RefreshTeamlistAction"/>
+    
     <!-- workspace actions -->
     <bean id="SynchronizeWorkspacesAction" parent="ActionBase"
         class="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction"/>

@@ -20,6 +20,7 @@
     <bean id="MindClient" class="com.mindquarry.desktop.client.MindClient">
         <property name="actions">
             <list>
+                <ref bean="RefreshTeamlistAction"/>
                 <ref bean="SynchronizeWorkspacesAction"/>
                 <ref bean="SynchronizeTasksAction"/>
                 <ref bean="CreateTaskAction"/>

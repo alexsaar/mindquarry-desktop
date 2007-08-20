@@ -28,8 +28,9 @@ import com.mindquarry.desktop.client.MindClient;
 public abstract class ActionBase extends Action {
 	protected static final String ICON_SIZE = "32x32";
 	
+	public static final String TEAM_ACTION_GROUP = "team-actions";
+	public static final String TASK_ACTION_GROUP = "task-actions";
 	public static final String WORKSPACE_ACTION_GROUP = "workspace-actions";
-    public static final String TASK_ACTION_GROUP = "task-actions";
     public static final String MANAGEMENT_ACTION_GROUP = "management-actions";
 
 	protected Log log = LogFactory.getLog(getClass());
