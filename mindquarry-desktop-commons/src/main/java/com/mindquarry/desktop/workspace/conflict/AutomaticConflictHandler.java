@@ -59,13 +59,6 @@ public class AutomaticConflictHandler implements ConflictHandler {
         conflict.doRename(newName);
     }
     
-    public void handle(ModificationInDeletedConflict conflict)
-            throws CancelException {
-        printer.printConflict(conflict);
-        
-        conflict.doReAdd();
-    }
-
     public void handle(DeleteWithModificationConflict conflict)
             throws CancelException {
         printer.printConflict(conflict);

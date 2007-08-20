@@ -548,13 +548,50 @@ public class SVNSynchronizer {
 
     private List<Conflict> findDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
-        // TODO Auto-generated method stub
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local DELETE (as we deleted everything, missing shouldn't happen)
+            if (status.getNodeKind() == NodeKind.file &&
+                    (status.getTextStatus() == StatusKind.deleted ||
+                            status.getTextStatus() == StatusKind.missing)) {
+                
+                // if remote MOD
+                if (status.getRepositoryTextStatus() == StatusKind.modified) {
+                    iter.remove();
+                    
+                    presentNewConflict(new DeleteWithModificationConflict(true, status, null), conflicts);
+                }
+            }
+        }
+        
         return conflicts;
     }
 
     private List<Conflict> findModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
-        // TODO Auto-generated method stub
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // remote DELETE
+            if (status.getNodeKind() == NodeKind.file &&
+                    status.getRepositoryTextStatus() == StatusKind.deleted) {
+                
+                // if local MOD
+                if (status.getTextStatus() == StatusKind.modified) {
+                    iter.remove();
+                    
+                    presentNewConflict(new DeleteWithModificationConflict(false, status, null), conflicts);
+                }
+            }
+        }
+        
         return conflicts;
     }
 

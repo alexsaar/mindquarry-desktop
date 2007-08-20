@@ -60,10 +60,6 @@ public class ConflictPrinter {
         }
     }
 
-    public void printConflict(ModificationInDeletedConflict conflict) {
-        
-    }
-
     public void printConflict(DeleteWithModificationConflict conflict) {
         for (Status s : conflict.getOtherMods()) {
             System.out.println("remote "

@@ -12,7 +12,6 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.Status.Kind;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
-import com.mindquarry.desktop.workspace.conflict.ModificationInDeletedConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -68,12 +67,6 @@ public class SVNSynchronizerTest implements Notify2, ConflictHandler {
 		System.out.print("Rename locally added file/folder to: ");
 		// FIXME: check for non-existing file/foldername
 		conflict.doRename(readLine());
-	}
-
-	public void handle(ModificationInDeletedConflict conflict)
-			throws CancelException {
-        System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
-		conflict.doReAdd();
 	}
 
     public void handle(DeleteWithModificationConflict conflict)

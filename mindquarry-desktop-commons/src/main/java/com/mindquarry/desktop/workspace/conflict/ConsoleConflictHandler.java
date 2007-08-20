@@ -36,14 +36,6 @@ public class ConsoleConflictHandler implements ConflictHandler {
         System.out.println("Rename locally added file/folder to: ");
     }
 
-    public void handle(ModificationInDeletedConflict conflict)
-            throws CancelException {
-        printer.printConflict(conflict);
-
-        System.out.println("Following options (R)eadd, (D)elete, [(M)ove]: ");
-        
-    }
-
     public void handle(DeleteWithModificationConflict conflict)
             throws CancelException {
         printer.printConflict(conflict);
