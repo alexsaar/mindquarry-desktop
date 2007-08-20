@@ -28,7 +28,7 @@ import com.mindquarry.desktop.client.action.ActionBase;
  *         Saar</a>
  */
 public class SynchronizeWorkspacesAction extends ActionBase {
-	public static final String ID = "sync-workspaces";
+    public static final String ID = SynchronizeWorkspacesAction.class.getSimpleName();
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),

@@ -31,7 +31,7 @@ import com.mindquarry.desktop.preferences.profile.Profile;
  *         Saar</a>
  */
 public class OpenWebpageAction extends ActionBase {
-	public static final String ID = "client-close";//$NON-NLS-1$
+    public static final String ID = OpenWebpageAction.class.getSimpleName();
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),

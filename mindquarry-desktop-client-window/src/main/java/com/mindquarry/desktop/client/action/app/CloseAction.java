@@ -28,7 +28,7 @@ import com.mindquarry.desktop.client.action.ActionBase;
  *         Saar</a>
  */
 public class CloseAction extends ActionBase {
-	public static final String ID = "client-close";//$NON-NLS-1$
+    public static final String ID = CloseAction.class.getSimpleName();
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),

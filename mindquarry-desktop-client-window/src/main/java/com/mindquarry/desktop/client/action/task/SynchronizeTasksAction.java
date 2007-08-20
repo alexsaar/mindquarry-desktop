@@ -29,7 +29,7 @@ import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
  *         Saar</a>
  */
 public class SynchronizeTasksAction extends ActionBase {
-	public static final String ID = "sync-tasks";
+    public static final String ID = SynchronizeTasksAction.class.getSimpleName();
 
 	private TaskContainerWidget taskContainer;
 

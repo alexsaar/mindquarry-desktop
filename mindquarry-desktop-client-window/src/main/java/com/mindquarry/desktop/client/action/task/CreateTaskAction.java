@@ -42,7 +42,7 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public class CreateTaskAction extends ActionBase {
-	public static final String ID = "add-task";
+    public static final String ID = CreateTaskAction.class.getSimpleName();
 
 	private TaskContainerWidget taskContainer;
 

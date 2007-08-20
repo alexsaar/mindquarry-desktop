@@ -28,7 +28,7 @@ import com.mindquarry.desktop.client.action.ActionBase;
  *         Saar</a>
  */
 public class PreferencesAction extends ActionBase {
-	public static final String ID = "client-preferences";
+    public static final String ID = PreferencesAction.class.getSimpleName();
 
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),

@@ -25,7 +25,6 @@ import javax.activation.MimetypesFileTypeMap;
 
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -54,6 +53,8 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
@@ -65,6 +66,7 @@ import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesActio
 import com.mindquarry.desktop.client.widget.util.CategoryWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
 import com.mindquarry.desktop.client.widget.util.TeamlistWidget;
+import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
@@ -80,11 +82,12 @@ import com.mindquarry.desktop.util.AutostartUtilities;
  */
 public class MindClient extends ApplicationWindow {
     // #########################################################################
-    // ### CONSTANTS
+    // ### CONSTANTS & STATIC MEMBERS
     // #########################################################################
+    public static final String ID = MindClient.class.getSimpleName();
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client";
-
-    public final static boolean thisIsAMac = System.getProperty("mrj.version") != null;
+    public static final String CONTEXT_FILE = "/com/mindquarry/desktop/client/client-context.xml";
+    public static final String ACTIONS_CONTEXT_FILE = "/com/mindquarry/desktop/client/client-actions-context.xml";
 
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
@@ -98,6 +101,8 @@ public class MindClient extends ApplicationWindow {
     public static final String TASK_ACTION_GROUP = "task-actions";
     public static final String MANAGEMENT_ACTION_GROUP = "management-actions";
 
+    private static BeanFactory factory;
+
     // #########################################################################
     // ### MEMBERS
     // #########################################################################
@@ -106,12 +111,12 @@ public class MindClient extends ApplicationWindow {
 
     private Menu trayMenu;
     private Menu profilesMenu;
-    private List profilesInMenu = new ArrayList();
+    private List<MenuItem> profilesInMenu = new ArrayList<MenuItem>();
 
     private static IconActionThread iconAction;
 
     private TrayItem trayItem;
-    private List<ActionBase> actions;
+    private List<ActionBase> actions = new ArrayList<ActionBase>();
 
     private TeamlistWidget teamList;
 
@@ -136,18 +141,16 @@ public class MindClient extends ApplicationWindow {
      */
     public static void main(String[] args) {
         // show splash
-        SplashScreen splash = SplashScreen.newInstance(6);
+        SplashScreen splash = SplashScreen.newInstance(5);
         splash.show();
 
+        // initialize application context
+        factory = new ClassPathXmlApplicationContext(new String[] {
+                CONTEXT_FILE, ACTIONS_CONTEXT_FILE });
+
         // run editor
-        MindClient client = new MindClient();
+        MindClient client = (MindClient) factory.getBean(MindClient.ID);
         splash.step();
-
-        client.initActions();
-        splash.step();
-
-        // client.addMenuBar();
-        // splash.step();
 
         client.addToolBar(SWT.FLAT | SWT.WRAP);
         splash.step();
@@ -236,7 +239,7 @@ public class MindClient extends ApplicationWindow {
                 getAction(CreateTaskAction.class.getName()).getId());
         getToolBarManager().update(true);
     }
-    
+
     public ActionBase getAction(String id) {
         for (ActionBase action : actions) {
             if (action.getId().equals(id)) {
@@ -246,11 +249,11 @@ public class MindClient extends ApplicationWindow {
         return null;
     }
 
-    public List getSelectedTeams() {
+    public List<Team> getSelectedTeams() {
         return teamList.getSelectedTeams();
     }
 
-    public List getTeams() {
+    public List<Team> getTeams() {
         return teamList.getTeams();
     }
 
@@ -310,36 +313,10 @@ public class MindClient extends ApplicationWindow {
         createTrayIconAndMenu(Display.getDefault());
         return parent;
     }
-    
-    protected MenuManager createMenuManager() {
-        MenuManager taskMenuManager = new MenuManager("&Tasks");
-        taskMenuManager.add(getAction(SynchronizeTasksAction.class.getName()));
-
-        MenuManager manager = super.createMenuManager();
-        manager.add(taskMenuManager);
-
-        return manager;
-    }
 
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
-    private void initActions() {
-        actions = new ArrayList<ActionBase>();
-
-        // create workspace actions
-        actions.add(new SynchronizeWorkspacesAction(this));
-
-        // create task actions
-        actions.add(new SynchronizeTasksAction(this));
-        actions.add(new CreateTaskAction(this));
-
-        // create management actions
-        actions.add(new PreferencesAction(this));
-        actions.add(new OpenWebpageAction(this));
-        actions.add(new CloseAction(this));
-    }
-
     private void checkArguments(String[] args) {
         if (args.length == 3 && prefFile.exists()) {
             loadOptions();
@@ -506,7 +483,7 @@ public class MindClient extends ApplicationWindow {
         iconAction.setDaemon(true);
         iconAction.start();
     }
-    
+
     private void updateProfileSelector() {
         if ((trayMenu == null) || (profilesMenu == null)) {
             return; // happens at very first start
@@ -519,11 +496,13 @@ public class MindClient extends ApplicationWindow {
                 menuItems[i].dispose();
             }
         }
-        Iterator pIt = Profile.loadProfiles(getPreferenceStore()).iterator();
-        profilesInMenu = new ArrayList();
+        Iterator<Profile> pIt = Profile.loadProfiles(getPreferenceStore())
+                .iterator();
+        profilesInMenu = new ArrayList<MenuItem>();
+
         int i = 0;
         while (pIt.hasNext()) {
-            Profile profile = (Profile) pIt.next();
+            Profile profile = pIt.next();
             final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
             i++;
             menuItem.setText(profile.getName());
@@ -581,5 +560,9 @@ public class MindClient extends ApplicationWindow {
         public void shellIconified(ShellEvent e) {
             hideMainWindow();
         }
+    }
+
+    public void setActions(List<ActionBase> actions) {
+        this.actions = actions;
     }
 }

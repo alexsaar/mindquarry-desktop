@@ -100,7 +100,6 @@ public class TeamlistWidget extends WidgetBase {
                 selectAll();
             }
         });
-
         button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         button.setText("Deselect All");
@@ -112,16 +111,16 @@ public class TeamlistWidget extends WidgetBase {
         });
     }
 
-    public List getSelectedTeams() {
+    public List<Team> getSelectedTeams() {
         return getTeams(true);
     }
 
-    public List getTeams() {
+    public List<Team> getTeams() {
         return getTeams(false);
     }
 
-    private List getTeams(boolean selectedOnly) {
-        List teams = new ArrayList();
+    private List<Team> getTeams(boolean selectedOnly) {
+        List<Team> teams = new ArrayList<Team>();
         for (TableItem item : viewer.getTable().getItems()) {
             if (selectedOnly && !item.getChecked()) {
                 continue;
@@ -136,9 +135,7 @@ public class TeamlistWidget extends WidgetBase {
         client.startAction("Updating list of teams");
         viewer.setInput(queryTeams());
 
-        List teams = new ArrayList();
         selectAll();
-
         client.stopAction("Updating list of teams");
     }
 
