@@ -108,15 +108,20 @@ public class ServerProfilesPage extends PreferencePage {
 			profileList.add(profile.getName());
 		}
 		if (profileList.getItemCount() > 0) {
-			String selectedProfileName = Profile.getSelectedProfile(
-					(PreferenceStore) getPreferenceStore()).getName();
-			for (String item : profileList.getItems()) {
-				if (item.equals(selectedProfileName)) {
-					profileList
-							.select(profileList.indexOf(selectedProfileName));
-				}
-			}
-			activateProfileSelection();
+            Profile selectedProfile = Profile.getSelectedProfile(
+                    (PreferenceStore) getPreferenceStore());
+            if (selectedProfile != null) {      // might be null on very first start
+                String selectedProfileName = selectedProfile.getName();
+                for (String item : profileList.getItems()) {
+                    if (item.equals(selectedProfileName)) {
+                        profileList
+                                .select(profileList.indexOf(selectedProfileName));
+                    }
+                }
+            } else {
+                profileList.select(0);
+            }
+            activateProfileSelection();
 		}
 		performValidation();
 		return composite;
