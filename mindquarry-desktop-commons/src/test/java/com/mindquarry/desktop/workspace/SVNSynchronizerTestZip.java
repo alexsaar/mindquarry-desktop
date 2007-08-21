@@ -202,6 +202,25 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
 		helper.synchronize();
 
+		// Test correct working copy contents
+		assertFileExists (localPath, "/1 One/");
+		assertFileExists (localPath, "/1 One/Added.txt");
+		assertFileExists (localPath, "/1 One/Existing.txt");
+		assertFileExists (localPath, "/1 One/Modified.txt");
+		assertFileExists (localPath, "/2 Two/");
+		assertFileExists (localPath, "/2 Two/Added.txt");
+		assertFileExists (localPath, "/2 Two/Existing.txt");
+		assertFileExists (localPath, "/2 Two/Modified.txt");
+		assertFileExists (localPath, "/3 Three.txt");
+		assertFileExists (localPath, "/4 Four.txt");
+		assertFileExists (localPath, "/Existing.txt");
+
+		// Test correct file contents
+		assertFileContains(localPath, "/1 One/Modified.txt", "Modified\r\nModified");
+		assertFileContains(localPath, "/2 Two/Modified.txt", "Modified\r\nModified");
+		assertFileContains(localPath, "/3 Three.txt", "Modified");
+		assertFileContains(localPath, "/4 Four.txt",  "Modified");
+
 		FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
 	}
 

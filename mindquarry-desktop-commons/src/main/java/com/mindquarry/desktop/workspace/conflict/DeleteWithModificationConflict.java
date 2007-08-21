@@ -14,7 +14,9 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -74,16 +76,60 @@ public class DeleteWithModificationConflict extends Conflict {
 	    // }
 
     	// TODO: check correctness
-	    if (action == Action.REVERTDELETE) {
-	        // TODO: revert delete before update
-	    	
-	    	// revert local delete
-	    	if (localDelete) {
+	    if (action == Action.REVERTDELETE) {	 
+	    	if (localDelete) {   	
+		    	// revert local delete
 	    		client.revert(status.getPath(), true);
+	    	} else {
+	    		// copy A => B (TODO: unique name)
+	    		File source      = new File(status.getPath());
+	    		File destination = new File(source.getParent()+"/__"+source.getName());
+	    		
+	    		try {
+					FileUtils.copyDirectory(source, destination);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				// TODO: remove .svn directories from copy
+				removeDotSVNDirectories(destination.getPath());
+	    		
+	    		// svn revert A
+				client.revert(status.getPath(), true);
+	    		
+	    		// rm -rf A
+				try {
+					FileUtils.deleteDirectory(source);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 	    	}
 	        
 	        // status probably missing (not svn deleted yet) because it's a conflict
 	    }
+	}
+
+	private void removeDotSVNDirectories(String path) {
+		File[] allDirs = new File(path).listFiles(new FileFilter() {
+			public boolean accept(File arg0) {
+				return arg0.isDirectory();
+			}});
+		for(File dir : allDirs) {
+			if(dir.getName().compareTo(".svn") == 0) {
+				// delete .svn directories
+				try {
+					FileUtils.deleteDirectory(dir);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				// recurse
+				removeDotSVNDirectories(dir.getPath());
+			}
+		}
 	}
 
 	public void afterUpdate() throws ClientException {
@@ -168,12 +214,15 @@ public class DeleteWithModificationConflict extends Conflict {
 //	    	}
  
 	    	if (localDelete == false) {
-	    		// Remote deletion of locally modified file: update removes file
-	    		// from versioning, so re-add it here
-	    		if (status.getNodeKind() == NodeKind.file)
-	    			client.add(status.getPath(), false);
+//	    		// Remote deletion of locally modified file: update removes file
+//	    		// from versioning, so re-add it here
+//	    		if (status.getNodeKind() == NodeKind.file)
+//	    			client.add(status.getPath(), false);
+	    		
 
-	    		// TODO: remote container delete case
+	    		// TODO: svn copy --old-version A
+	    		// TODO: copy -R B A
+	    		// TODO: svn add A
 	    	}
             
             break;
