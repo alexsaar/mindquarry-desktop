@@ -455,6 +455,8 @@ public class MindClient extends ApplicationWindow {
                 updateProfileSelector();
             }
         });
+        updateProfileSelector();
+        
         menuItem.setMenu(profilesMenu);
 
         // open web page action
@@ -496,9 +498,14 @@ public class MindClient extends ApplicationWindow {
         profilesInMenu = new ArrayList<MenuItem>();
 
         int i = 0;
+        boolean hasSelection = false;
+        MenuItem firstMenuItem = null;
         while (pIt.hasNext()) {
             Profile profile = pIt.next();
             final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
+            if (i == 0) {
+                firstMenuItem = menuItem;
+            }
             i++;
             menuItem.setText(profile.getName());
             menuItem.addListener(SWT.Selection, new Listener() {
@@ -516,8 +523,13 @@ public class MindClient extends ApplicationWindow {
                     && (profile.getName().equals(Profile.getSelectedProfile(
                             getPreferenceStore()).getName()))) {
                 menuItem.setSelection(true);
+                hasSelection = true;
             }
             profilesInMenu.add(menuItem);
+        }
+        if (!hasSelection && firstMenuItem != null) {
+            Profile.selectProfile(getPreferenceStore(), firstMenuItem
+                    .getText());
         }
     }
 
