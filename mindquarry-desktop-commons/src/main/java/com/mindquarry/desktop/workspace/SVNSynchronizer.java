@@ -713,6 +713,8 @@ public class SVNSynchronizer {
                 List<Status> localChildren = new ArrayList<Status>();
                 List<Status> remoteChildren = new ArrayList<Status>();
                 
+                // TODO: second_dir problem: get local changes for conflictParent
+                
                 // find all children
                 while (iter.hasNext()) {
                     status = iter.next();

@@ -23,6 +23,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
+import org.tigris.subversion.javahl.Status.Kind;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -86,17 +87,27 @@ public class ReplaceConflict extends Conflict {
 		case RENAME:
 			log.info("renaming to " + newName);
 			
-			client.copy(file.getPath(), new File(folder, newName).getPath(), null, Revision.WORKING);
-			client.revert(file.getPath(), true);
-
-            try {
-                FileUtils.forceDelete(file);
-            } catch (IOException e) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
+            for (Status s : getLocalChildren()) {
+                log.debug("****** " + Kind.getDescription(s.getTextStatus())  + " " + s.getPath());
             }
             
+			client.copy(file.getPath(), new File(folder, newName).getPath(), null, Revision.WORKING);
+			client.remove(new String[] { file.getPath() }, null, true);
+			
+			//client.revert(file.getPath(), true);
+
+//			if (status.getRepositoryTextStatus() == StatusKind.replaced) {
+//	            try {
+//	                log.info("************ deleting " + file.getPath());
+//	                FileUtils.forceDelete(file);
+//	            } catch (IOException e) {
+//	                log.error("deleting failed.");
+//	                // TODO: callback for error handling
+//	                System.exit(-1);
+//	            }
+//			}
+            
+            //client.revert(file.getPath(), true);
 			break;
 			
 		case REPLACE:
@@ -104,12 +115,14 @@ public class ReplaceConflict extends Conflict {
 			
             client.revert(file.getPath(), true);
             
-            try {
-                FileUtils.forceDelete(file);
-            } catch (IOException e) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
+            if (status.getRepositoryTextStatus() == StatusKind.replaced) {
+                try {
+                    FileUtils.forceDelete(file);
+                } catch (IOException e) {
+                    log.error("deleting failed.");
+                    // TODO: callback for error handling
+                    System.exit(-1);
+                }
             }
             
 			break;
