@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
+import java.util.List;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -21,9 +23,12 @@ import org.eclipse.swt.widgets.Display;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.workspace.SVNSynchronizer;
 
 /**
- * Add summary documentation here.
+ * Trigger workspace synchronization, i.e. SVN update + commit.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
@@ -49,7 +54,24 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	}
 
 	public void run() {
-		
+	    try {
+	        // FIXME: redraw GUI:
+	        setEnabled(false);
+	        List<Team> teams = client.getSelectedTeams();
+	        System.err.println("teamList "+ teams);
+	        Profile selectedProfile = Profile.getSelectedProfile(client
+	                .getPreferenceStore());
+	        // TODO: error on null
+	        for (Team team : teams) {
+	            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
+	                    selectedProfile.getWorkspaceFolder(),
+	                    selectedProfile.getLogin(), selectedProfile.getPassword(),
+	                    new InteractiveConflictHandler(client.getShell()));
+	            sc.synchronizeOrCheckout();
+	        }
+        } finally {
+            setEnabled(true);
+        }
 	}
 	
 	public String getGroup() {
