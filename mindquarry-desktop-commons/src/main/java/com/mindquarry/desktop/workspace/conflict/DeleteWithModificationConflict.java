@@ -139,6 +139,19 @@ public class DeleteWithModificationConflict extends Conflict {
         case ONLYKEEPMODIFIED:
             log.info("keeping added/modified from remote: " + status.getPath());
             
+            if (localDelete) {
+            	// revert deletion status for local deletions
+            	client.revert(status.getPath(), true);
+            } else {
+            	// only re-add files/directories that were added/modified
+        		client.add(status.getPath(), false);
+            	if (otherMods != null) {
+            		for (Status s : otherMods) {
+	            		client.add(s.getPath(), false);
+            		}
+            	}
+            }
+            
             break;
             
         case REVERTDELETE:
