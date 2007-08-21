@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
@@ -46,6 +47,11 @@ import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
  */
 public class CategoryWidget extends WidgetBase {
     private static final String ICON_SIZE = "22x22";//$NON-NLS-1$
+
+    // add spaces to make the tab a bit wider for better usability
+    // (TODO: find a cleaner way):
+    private static final String TAB_TASKS_TEXT = Messages.getString("Tasks") + "      ";
+    private static final String TAB_FILES_TEXT = Messages.getString("Files") + "      ";
 
     private static Image tasksIcon = new Image(
             Display.getCurrent(),
@@ -76,15 +82,15 @@ public class CategoryWidget extends WidgetBase {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                if (tabFolder.getSelection().getText().equals("Tasks")) {
+                if (tabFolder.getSelection().getText().equals(TAB_TASKS_TEXT)) {
                     client.setTasksActive();
-                } else if (tabFolder.getSelection().getText().equals("Files")) {
+                } else if (tabFolder.getSelection().getText().equals(TAB_FILES_TEXT)) {
                     client.setFilesActive();
                 }
             }
         });
         CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-        tabItem.setText("Tasks");
+        tabItem.setText(TAB_TASKS_TEXT);
         tabItem.setImage(tasksIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         tabFolder.setSelection(tabItem);
@@ -99,7 +105,7 @@ public class CategoryWidget extends WidgetBase {
         Label label = new Label(taskComposite, SWT.LEFT);
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
-        label.setText("Priority");
+        label.setText(Messages.getString("Priority"));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         CCombo priority = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
@@ -118,7 +124,7 @@ public class CategoryWidget extends WidgetBase {
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-        label.setText("Status");
+        label.setText(Messages.getString("Status"));
 
         CCombo status = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
@@ -135,7 +141,7 @@ public class CategoryWidget extends WidgetBase {
         label = new Label(taskComposite, SWT.LEFT);
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
-        label.setText("Search");
+        label.setText(Messages.getString("Search"));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         Text search = new Text(taskComposite, SWT.SINGLE | SWT.LEFT
@@ -159,7 +165,7 @@ public class CategoryWidget extends WidgetBase {
                 .setTaskContainer(taskContainer);
 
         tabItem = new CTabItem(tabFolder, SWT.NULL);
-        tabItem.setText("Files");
+        tabItem.setText(TAB_FILES_TEXT);
         tabItem.setImage(docsIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
