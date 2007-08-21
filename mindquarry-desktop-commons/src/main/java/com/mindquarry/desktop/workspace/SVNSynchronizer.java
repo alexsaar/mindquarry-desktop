@@ -168,7 +168,7 @@ public class SVNSynchronizer {
 	/**
 	 * Central method: will do a full synchronization, including update and
 	 * commit. During that the ConflictHandler will be asked.
-	 * Will fail if there's no checkout yet, see
+	 * Will fail if there's no checkout yet, see synchronizeOrCheckout().
 	 */
 	public void synchronize() {
 		try {
