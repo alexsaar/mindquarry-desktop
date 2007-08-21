@@ -135,7 +135,7 @@ public class TaskContainerWidget extends WidgetBase {
             TaskList content = new TaskList();
             content.getTasks().addAll(tasks.getTasks());
 
-            if ((statusFacet.equals("all")) && (priorityFacet.equals("all"))) {
+            if ((statusFacet.equals("all")) && (priorityFacet.equals("all")) && searchFacet.equals("")) {
                 tableViewer.setInput(tasks);
                 tableViewer.refresh();
             } else {
