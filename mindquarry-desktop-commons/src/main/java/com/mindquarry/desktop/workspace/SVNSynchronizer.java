@@ -539,6 +539,10 @@ public class SVNSynchronizer {
         return conflicts;
     }
 
+    /**
+     * Finds all conflicts where a locally deleted file conflicts with a remote
+     * file modification.
+     */
     private List<Conflict> findDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
@@ -564,6 +568,10 @@ public class SVNSynchronizer {
         return conflicts;
     }
 
+    /**
+     * Finds all conflicts where a locally modified file conflicts with a remote
+     * file deletion.
+     */
     private List<Conflict> findModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
@@ -601,7 +609,7 @@ public class SVNSynchronizer {
     /**
      * Calls {@link Conflict.handleAfterUpdate} on all conflicts in the list.
      */
-	private void handleConflictsAfterUpdate(List<Conflict> conflicts) {
+	private void handleConflictsAfterUpdate(List<Conflict> conflicts) throws ClientException {
 		for (Conflict conflict : conflicts) {
 			log.info(">> After Update: " + conflict.toString());
 			conflict.afterUpdate();
@@ -682,5 +690,13 @@ public class SVNSynchronizer {
             return "unknown";
         }
     }
+
+	public String getLocalPath() {
+		return localPath;
+	}
+
+	public String getRepositoryURL() {
+		return repositoryURL;
+	}
 
 }

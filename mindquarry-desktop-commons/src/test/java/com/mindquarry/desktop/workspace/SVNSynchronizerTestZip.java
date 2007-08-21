@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
@@ -25,10 +26,10 @@ import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
 public class SVNSynchronizerTestZip implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
 	
-	private void extractZip(String zipName, String destinationPath) {
+	private void extractZip(String zipName, String destinationPath) throws IOException {
 	    File dest = new File(destinationPath);
 	    // delete if test has failed and extracted dir is still present
-	    deleteDir(dest);
+	    FileUtils.deleteDirectory(dest);
 	    dest.mkdirs();
 		try {
 			byte[] buffer = new byte[1024];
@@ -67,58 +68,11 @@ public class SVNSynchronizerTestZip implements Notify2 {
             out.write(buffer, 0, nRead);
     }
 
-	private boolean deleteDir(File dir) {
-		// to see if this directory is actually a symbolic link to a directory,
-		// we want to get its canonical path - that is, we follow the link to
-		// the file it's actually linked to
-		File candir;
-		try {
-			candir = dir.getCanonicalFile();
-		} catch (IOException e) {
-			return false;
-		}
-
-		// a symbolic link has a different canonical path than its actual path,
-		// unless it's a link to itself
-		if (!candir.equals(dir.getAbsoluteFile())) {
-			// this file is a symbolic link, and there's no reason for us to
-			// follow it, because then we might be deleting something outside of
-			// the directory we were told to delete
-			return false;
-		}
-
-		// now we go through all of the files and subdirectories in the
-		// directory and delete them one by one
-		File[] files = candir.listFiles();
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				File file = files[i];
-
-				// in case this directory is actually a symbolic link, or it's
-				// empty, we want to try to delete the link before we try
-				// anything
-				boolean deleted = file.delete();
-				if (!deleted) {
-					// deleting the file failed, so maybe it's a non-empty
-					// directory
-					if (file.isDirectory())
-						deleteDir(file);
-
-					// otherwise, there's nothing else we can do
-				}
-			}
-		}
-
-		// now that we tried to clear the directory out, we can try to delete it
-		// again
-		return dir.delete();
-	}
-
-    public void onNotify(NotifyInformation info) {
+	public void onNotify(NotifyInformation info) {
         System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
     }
     
-	public SVNSynchronizer setupTest(String name) {
+	public SVNSynchronizer setupTest(String name) throws IOException {
 	    System.out.println("Testing " + name + " =======================");
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
@@ -139,7 +93,11 @@ public class SVNSynchronizerTestZip implements Notify2 {
 			    }
 			}
 			for (String path : relocatePaths) {
-			    client.relocate(oldRepoUrl, repoUrl, path, false);
+				try {
+					client.relocate(oldRepoUrl, repoUrl, path, false);
+				} catch (ClientException e) {
+		            throw new RuntimeException("cannot relocate " + path, e);
+				}
 			}
 		} catch (ClientException e) {
             throw new RuntimeException("could not setup test " + name, e);
@@ -151,7 +109,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
 	}
 	
 	@Test
-	public void testAddAddConflict() {
+	public void testAddAddConflict() throws IOException {
 		SVNSynchronizer helper = setupTest("add_add_conflict");
 
 		helper.synchronize();
@@ -162,16 +120,18 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		// TODO: here we have to test if the remote/localAdded fields contain
 		// all files/folders of the test zip case
 
-		deleteDir(new File("target/add_add_conflict/"));
+		FileUtils.deleteDirectory(new File("target/add_add_conflict/"));
 	}
 
 	@Test
-	public void testAddInDeletedConflict() {
-		SVNSynchronizer helper = setupTest("add_in_deleted_conflict");
+	public void testDeletedModifiedConflict() throws IOException, ClientException  {
+		SVNSynchronizer helper = setupTest("deleted_modified_conflict");
+		
+		client.add(helper.getLocalPath() + "/2 Two/Added.txt", false);
 
 		helper.synchronize();
 
-		deleteDir(new File("target/add_in_deleted_conflict/"));
+		FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
 	}
 	
 	// TODO: test ignore of Thumbs.db/.DS_Store

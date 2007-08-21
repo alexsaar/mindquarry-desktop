@@ -63,20 +63,24 @@ public class ConflictPrinter {
     public void printConflict(DeleteWithModificationConflict conflict) {
         Status status = conflict.getStatus();
         if (conflict.isLocalDelete()) {
-            System.out.print("local deletion of '" + wcPath(status) + "' conflicts with ");
+            System.out.print("local deletion of " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "' conflicts with ");
             System.out.println("remote modification of " + SVNSynchronizer.nodeKindDesc(status.getReposKind()) + " '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
-            for (Status s : conflict.getOtherMods()) {
-                System.out.println("remote "
-                        + Kind.getDescription(s.getRepositoryTextStatus()) + " "
-                        + s.getPath());
+            if (conflict.getOtherMods() != null) {
+	            for (Status s : conflict.getOtherMods()) {
+	                System.out.println("remote "
+	                        + Kind.getDescription(s.getRepositoryTextStatus()) + " "
+	                        + s.getPath());
+	            }
             }
         } else {
             System.out.print("local modification of " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "' conflicts with ");
-            System.out.println("remote deletion of '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
-            for (Status s : conflict.getOtherMods()) {
-                System.out.println("local "
-                        + Kind.getDescription(s.getRepositoryTextStatus()) + " "
-                        + s.getPath());
+            System.out.println("remote deletion of " + SVNSynchronizer.nodeKindDesc(status.getReposKind()) + " '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
+            if (conflict.getOtherMods() != null) {
+	            for (Status s : conflict.getOtherMods()) {
+	                System.out.println("local "
+	                        + Kind.getDescription(s.getTextStatus()) + " "
+	                        + s.getPath());
+	            }
             }
         }
     }

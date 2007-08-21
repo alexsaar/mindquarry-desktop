@@ -74,5 +74,5 @@ public abstract class Conflict {
      * to be executed once the remote modifications are applied to the working
      * copy.
      */
-	public abstract void afterUpdate();
+	public abstract void afterUpdate() throws ClientException;
 }

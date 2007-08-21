@@ -14,8 +14,12 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -60,7 +64,7 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.otherMods = otherMods;
 	}
 
-	public void beforeUpdate() {
+	public void beforeUpdate() throws ClientException {
         // NOTE: here we could implement a fast-path avoiding the download
         // of the new files by simply deleting the folder on the server
         // before we run the update
@@ -69,14 +73,20 @@ public class DeleteWithModificationConflict extends Conflict {
         // the folder again (svn will recreate it due to the remote mods)
 	    // }
 
+    	// TODO: check correctness
 	    if (action == Action.REVERTDELETE) {
 	        // TODO: revert delete before update
+	    	
+	    	// revert local delete
+	    	if (localDelete) {
+	    		client.revert(status.getPath(), true);
+	    	}
 	        
 	        // status probably missing (not svn deleted yet) because it's a conflict
 	    }
 	}
 
-	public void afterUpdate() {
+	public void afterUpdate() throws ClientException {
         switch (action) {
         case UNKNOWN:
             // client did not set a conflict resolution
@@ -85,13 +95,44 @@ public class DeleteWithModificationConflict extends Conflict {
             
         case DELETE:
             log.info("now deleting again " + status.getPath());
-            
-            File file = new File(status.getPath());
-            if (!file.delete()) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+
+            // Delete file or directory -- works in all cases:
+            // 1. Local container delete with remote updates:
+            //    Update operation makes sure that the remote updates are
+            //    adopted locally, re-creating the affected files if necessary.
+            //    So they need to be deleted again. Commit deletes remote
+            //    directory.
+            //
+            // 2. Remote container delete with local updates:
+            //    Update operation deletes everything in the remotely deleted
+            //    directory apart from files affected by local changes, which
+            //    are left unversioned and need to be deleted locally.
+            //
+            // 3. Remotely modified file deleted locally:
+            //    Update operation makes sure that the remote update is adopted
+            //    locally, re-creating the affected file if necessary. Hence
+            //    need to delete the local file again.
+            //
+            // 4. Locally modified file deleted remotely:
+            //    Update operation leaves the affected file as unversioned which
+            //    is therefore deleted.
+			File file = new File(status.getPath());
+			if (file.isDirectory()) {
+				try {
+    				FileUtils.deleteDirectory(file);
+				} catch (IOException e) {
+	    			log.error("deleting directory failed.");
+	    			// TODO: callback for error handling
+	    			System.exit(-1);
+				}
+			}
+			else {
+				if (!file.delete()) {
+					log.error("deleting file failed.");
+					// TODO: callback for error handling
+					System.exit(-1);
+				}
+			}
             
             break;
             
@@ -102,8 +143,25 @@ public class DeleteWithModificationConflict extends Conflict {
             
         case REVERTDELETE:
             log.info("reverting delete: " + status.getPath());
-            
+
             // TODO: revert deleted status
+            // the following doesn't restore the already deleted files
+//	    	// remote deletion => re-add files 
+//	    	if (localDelete == false) {
+//	    		client.add(status.getPath(), false);
+//	    		for(Status mod : otherMods) {
+//	    			client.add(mod.getPath(), false);
+//	    		}
+//	    	}
+ 
+	    	if (localDelete == false) {
+	    		// Remote deletion of locally modified file: update removes file
+	    		// from versioning, so re-add it here
+	    		if (status.getNodeKind() == NodeKind.file)
+	    			client.add(status.getPath(), false);
+
+	    		// TODO: remote container delete case
+	    	}
             
             break;
         }
