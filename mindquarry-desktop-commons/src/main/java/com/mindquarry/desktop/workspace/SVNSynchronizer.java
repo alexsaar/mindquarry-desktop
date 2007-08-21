@@ -14,7 +14,6 @@
 package com.mindquarry.desktop.workspace;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -116,10 +115,60 @@ public class SVNSynchronizer {
         // register for svn notifications on update and commit
         client.notification2(notifyListener);
 	}
+
+	/**
+	 * Like synchronize(), but does a checkout if <tt>localPath</tt>
+	 * isn't a checkout. Also, creates the path if it doesn't exist.
+	 */
+	public void synchronizeOrCheckout() {
+        File localDir = new File(localPath);
+        
+        // is directory doesn't exist, create it:
+        if (!localDir.exists()) {
+            boolean createdDir = localDir.mkdirs();
+            if (!createdDir) {
+                throw new RuntimeException("Could not create directory: " +
+                        localDir.getAbsolutePath());
+            }
+        }
+        if (localDir.isFile()) {
+            throw new IllegalArgumentException("File where directory " +
+                    "was expected: " + localDir.getAbsolutePath());
+        }
+
+        boolean isCheckout = isCheckout(localPath);
+        if (isCheckout) {
+            synchronize();
+        } else {
+            // TODO: check if the directories are empty,
+            // othwise we'd try to check out into a directory
+            // that contains local files already whoch causes
+            // confusion.
+            try {
+                client.checkout(repositoryURL, localPath, Revision.HEAD, true);
+            } catch (ClientException e) {
+                throw new RuntimeException("Checkout of " +repositoryURL +
+                        " to " +localPath+ " failed", e);
+            }
+        }
+	}
+
+	private boolean isCheckout(String path) {
+        try {
+            // throws exception if no .svnref or .svn exists
+            client.info(path);
+        } catch (ClientException e) {
+            // probably not a checkout directory:
+            log.info("Got exception on " + localPath + ": " + e);
+            return false;
+        }	    
+        return true;
+	}
 	
 	/**
 	 * Central method: will do a full synchronization, including update and
-	 * commit. During that the ConflictHandler will be asked
+	 * commit. During that the ConflictHandler will be asked.
+	 * Will fail if there's no checkout yet, see
 	 */
 	public void synchronize() {
 		try {
