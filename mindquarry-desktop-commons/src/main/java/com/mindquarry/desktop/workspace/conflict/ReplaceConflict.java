@@ -20,19 +20,20 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
- * Local add conflicts with remote add of object with the same name.
+ * Represents the following conflicts replaced/modified, modified/replaced and
+ * replaced/replaced.
  * 
- * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
  * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
-public class AddConflict extends Conflict {
+public class ReplaceConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
 	
 	public enum Action {
@@ -51,8 +52,8 @@ public class AddConflict extends Conflict {
 	}
 	
 	private String newName;
-    private List<Status> localAdded;
-    private List<Status> remoteAdded;
+    private List<Status> localChildren;
+    private List<Status> remoteChildren;
     
     /**
      * The folder in which the added object (status) lies in. Needed to check
@@ -65,10 +66,10 @@ public class AddConflict extends Conflict {
      */
     private List<String> remoteAddedInFolder = null;
 	
-	public AddConflict(Status status, List<Status> localAdded, List<Status> remoteAdded) {
+	public ReplaceConflict(Status status, List<Status> localChildren, List<Status> remoteChildren) {
 		super(status);
-		this.localAdded = localAdded;
-		this.remoteAdded = remoteAdded;
+		this.localChildren = localChildren;
+		this.remoteChildren = remoteChildren;
 		
 		this.folder = new File(status.getPath()).getParentFile();
 	}
@@ -84,34 +85,25 @@ public class AddConflict extends Conflict {
 			
 		case RENAME:
 			log.info("renaming to " + newName);
-
-			if (status.getTextStatus() != StatusKind.unversioned) {
-    			// the file is added, but in order to rename it without breaking
-    			// the svn status we have to revert it to 'unversioned'
-    			client.revert(status.getPath(), true);
-			}
 			
-			if (!file.renameTo(new File(file.getParentFile(), newName))) {
-				log.error("rename to " + newName + " failed.");
-				// TODO: callback for error handling
-				// NOTE: this could fail if the file with newName already exists
-				// although we do check this previously in isRenamePossible() it
-				// can happen when there are multiple add conflicts and the user
-				// chooses twice the same newName for different add conflicts -
-				// this is very seldom and can simply be given as error messages
-				System.exit(-1);
-			}
+			client.copy(file.getPath(), new File(folder, newName).getPath(), null, Revision.WORKING);
+			client.revert(file.getPath(), true);
+
+            try {
+                FileUtils.forceDelete(file);
+            } catch (IOException e) {
+                log.error("deleting failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            
 			break;
 			
 		case REPLACE:
 			log.info("replacing with new file/folder from server: " + status.getPath());
 			
-            if (status.getTextStatus() != StatusKind.unversioned) {
-                // the file is added, but in order to delete it without breaking
-                // the svn status we have to revert it to 'unversioned'
-                client.revert(status.getPath(), true);
-            }
-
+            client.revert(file.getPath(), true);
+            
             try {
                 FileUtils.forceDelete(file);
             } catch (IOException e) {
@@ -185,14 +177,14 @@ public class AddConflict extends Conflict {
 	}
 	
 	public String toString() {
-		return "Add/Add Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+		return "Replaced/Modified/Replaced Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
 	}
 
-    public List<Status> getLocalAdded() {
-        return localAdded;
+    public List<Status> getLocalChildren() {
+        return localChildren;
     }
 
-    public List<Status> getRemoteAdded() {
-        return remoteAdded;
+    public List<Status> getRemoteChildren() {
+        return remoteChildren;
     }
 }

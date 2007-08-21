@@ -1,5 +1,9 @@
 package com.mindquarry.desktop.workspace;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,7 +17,6 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
@@ -24,7 +27,9 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ConflictPrinter;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 
 public class SVNSynchronizerTestZip implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
@@ -80,7 +85,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
     }
     
 	public void setupTest(String name) throws IOException {
-	    System.out.println("Testing " + name + " =======================");
+	    System.out.println("Testing " + name + " ============================================================");
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
 		this.repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
@@ -156,7 +161,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
 			fail();
 		}
 	}
-	
+
 	@Test
 	public void testAddConflictDoRename() throws IOException {
 		setupTest("add_add_conflict");
@@ -287,7 +292,98 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
         FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
     }
+
+	private void touch(String relativePath) throws IOException {
+        FileUtils.touch(new File(wcPath + "/" + relativePath));
+    }
 	
+	private void modify(String relativePath) throws IOException {
+        FileUtils.writeStringToFile(new File(wcPath + "/" + relativePath), "time " + System.currentTimeMillis());
+	}
+    
+    private void replace(String relativePath, boolean isFile) throws ClientException, IOException {
+        String path = wcPath + "/" + relativePath;
+        client.remove(new String[] { path }, null, false);
+        if (isFile) {
+            touch(relativePath);
+        }
+        client.add(path, false);
+    }
+    
+    private void add(String relativePath) throws ClientException {
+        String path = wcPath + "/" + relativePath;
+        client.add(path, false);
+    }
+    
+    private void del(String relativePath) throws ClientException {
+        String path = wcPath + "/" + relativePath;
+        client.remove(new String[] { path }, null, false);
+    }
+    
+    private void prepareReplaceConflict() throws ClientException, IOException {
+        // (things are already deleted, but not added)
+        
+        // files:
+        
+        // svn del first_file
+        // svn add first_file
+        replace("first_file", true);
+        
+        // vim second_file
+        modify("second_file");
+        
+        // svn del third_file
+        // svn add third_file
+        replace("third_file", true);
+        
+        // dirs:
+        
+        // svn del first_dir
+        // svn add first_dir
+        replace("first_dir", false);
+        // touch first_dir/neu
+        touch("first_dir/neu");
+        // svn add first_dir/neu
+        add("first_dir/neu");
+        
+        // touch second_dir/neu.txt
+        touch("second_dir/neu.txt");
+        // svn add second_dir/neu.txt
+        add("second_dir/neu.txt");
+        // vim second_dir/file.txt
+        modify("second_dir/file.txt");
+        // svn del second_dir/subdir
+        del("second_dir/subdir");
+        
+        // svn del third_dir
+        // svn add third_dir
+        replace("third_dir", false);
+        // touch third_dir/neu
+        touch("third_dir/neu");
+        // svn add third_dir/neu
+        add("third_dir/neu");
+    }
+    
+    @Test
+    public void testReplacedConflictsDoRename() throws IOException, ClientException {
+        setupTest("replaced_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new ReplaceConflictHandlerMock(wcPath, ReplaceConflict.Action.RENAME));
+        
+        prepareReplaceConflict();
+        
+        helper.synchronize();
+    }
+
+    @Test
+    public void testReplacedConflictsDoReplace() throws IOException, ClientException {
+        setupTest("replaced_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new ReplaceConflictHandlerMock(wcPath, ReplaceConflict.Action.REPLACE));
+        
+        prepareReplaceConflict();
+        
+        helper.synchronize();
+    }
+    
 	// TODO: test ignore of Thumbs.db/.DS_Store
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
@@ -304,6 +400,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
         }
         
         public void handle(AddConflict conflict) {
+            printer.printConflict(conflict);
             switch(action) {
             case RENAME: conflict.doRename(new File(conflict.getStatus().getPath()).getName() + "_renamed_" + uniqueCounter++); break;
             case REPLACE: conflict.doReplace(); break;
@@ -312,6 +409,10 @@ public class SVNSynchronizerTestZip implements Notify2 {
         
         public void handle(DeleteWithModificationConflict conflict) {
             throw new UnsupportedOperationException("not intended to be used with DeleteWithModificationConflict");
+        }
+        
+        public void handle(ReplaceConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with ReplaceConflict");
         }
     }
     
@@ -329,11 +430,45 @@ public class SVNSynchronizerTestZip implements Notify2 {
         }
         
         public void handle(DeleteWithModificationConflict conflict) {
+            printer.printConflict(conflict);
             switch(action) {
             case DELETE: conflict.doDelete(); break;
             case ONLYKEEPMODIFIED: conflict.doOnlyKeepModified(); break;
             case REVERTDELETE: conflict.doRevertDelete(); break;
             }
+        }
+        
+        public void handle(ReplaceConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with ReplaceConflict");
+        }
+    }
+
+    private class ReplaceConflictHandlerMock extends AutomaticConflictHandler {
+        private ReplaceConflict.Action action;
+        
+        private int uniqueCounter = 0;
+
+        public ReplaceConflictHandlerMock(String wcPath, ReplaceConflict.Action action) {
+            super(wcPath);
+            
+            this.action = action;
+        }
+        
+        public void handle(AddConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with AddConflict");
+        }
+        
+        public void handle(ReplaceConflict conflict) {
+            printer.printConflict(conflict);
+            
+            switch(action) {
+            case RENAME: conflict.doRename(new File(conflict.getStatus().getPath()).getName() + "_renamed_" + uniqueCounter++); break;
+            case REPLACE: conflict.doReplace(); break;
+            }
+        }
+        
+        public void handle(DeleteWithModificationConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with ReplaceConflict");
         }
     }
 }

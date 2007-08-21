@@ -27,8 +27,13 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public interface ConflictHandler {
-	public void handle(AddConflict conflict) throws CancelException;
+    
+	public void handle(AddConflict conflict)
+	        throws CancelException;
 
 	public void handle(DeleteWithModificationConflict conflict)
 			throws CancelException;
+
+    public void handle(ReplaceConflict conflict)
+            throws CancelException;
 }

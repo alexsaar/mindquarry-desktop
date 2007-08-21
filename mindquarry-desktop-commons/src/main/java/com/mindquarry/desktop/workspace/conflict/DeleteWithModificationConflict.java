@@ -100,7 +100,7 @@ public class DeleteWithModificationConflict extends Conflict {
 	    		
 	    		// rm -rf A
 				try {
-					FileUtils.deleteDirectory(source);
+					FileUtils.forceDelete(source);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -116,19 +116,22 @@ public class DeleteWithModificationConflict extends Conflict {
 			public boolean accept(File arg0) {
 				return arg0.isDirectory();
 			}});
-		for(File dir : allDirs) {
-			if(dir.getName().compareTo(".svn") == 0) {
-				// delete .svn directories
-				try {
-					FileUtils.deleteDirectory(dir);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else {
-				// recurse
-				removeDotSVNDirectories(dir.getPath());
-			}
+		
+		if (allDirs != null) {
+    		for(File dir : allDirs) {
+    			if(dir.getName().compareTo(".svn") == 0) {
+    				// delete .svn directories
+    				try {
+                        FileUtils.forceDelete(dir);
+    				} catch (IOException e) {
+    					// TODO Auto-generated catch block
+    					e.printStackTrace();
+    				}
+    			} else {
+    				// recurse
+    				removeDotSVNDirectories(dir.getPath());
+    			}
+    		}
 		}
 	}
 
@@ -163,21 +166,12 @@ public class DeleteWithModificationConflict extends Conflict {
             //    Update operation leaves the affected file as unversioned which
             //    is therefore deleted.
 			File file = new File(status.getPath());
-			if (file.isDirectory()) {
-				try {
-    				FileUtils.deleteDirectory(file);
-				} catch (IOException e) {
-	    			log.error("deleting directory failed.");
-	    			// TODO: callback for error handling
-	    			System.exit(-1);
-				}
-			}
-			else {
-				if (!file.delete()) {
-					log.error("deleting file failed.");
-					// TODO: callback for error handling
-					System.exit(-1);
-				}
+			try {
+                FileUtils.forceDelete(file);
+			} catch (IOException e) {
+    			log.error("deleting directory failed.");
+    			// TODO: callback for error handling
+    			System.exit(-1);
 			}
             
             break;

@@ -16,12 +16,11 @@ package com.mindquarry.desktop.workspace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +41,7 @@ import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -212,19 +212,9 @@ public class SVNSynchronizer {
 	}
 	
 	/**
-	 * Standard Operating System hidden / helper files that should get
-	 * ignored by SVN.
-	 */
-	public static final List<String> filesToIgnore = new ArrayList<String>();
-	static {
-	    filesToIgnore.add("Thumbs.db"); // Windows thumbnails
-	    filesToIgnore.add(".DS_Store"); // Mac finder folder info
-	}
-
-	/**
 	 * This removes the need for calling svn del and svn add manually. It also
-	 * automatically adds standard to-be-ignored files such as Thumbs.db to the
-	 * ignore list.
+	 * automatically adds hidden files (such as Thumbs.db on Windows or
+	 * .something) to the ignore list.
      */
     private void deleteMissingAndAddUnversioned(String path) throws ClientException {
         for (Status s : getLocalChanges(path)) {
@@ -245,7 +235,7 @@ public class SVNSynchronizer {
             } else if (s.getTextStatus() == StatusKind.unversioned) {
                 // set standard to-be-ignored files
                 File file = new File(s.getPath());
-                if (filesToIgnore.contains(file.getName())) {
+                if (file.isHidden()) {
                     // update the svn:ignore property by appending a new line
                     // with the filename to be ignored (on the parent folder!)
                     PropertyData ignoreProp = client.propertyGet(file.getParent(), PropertyData.IGNORE);
@@ -258,6 +248,8 @@ public class SVNSynchronizer {
                     // for this to work we simply check if there is a file with
                     // the same case-insensitive name in this folder, exclude it
                     // from the add and give a warning message to the user
+                    // TODO: check for special filename chars (eg. ";" ":" "*")
+                    // that are not cross-platform
                     
                     // otherwise we turn all unversioned into added
                     // Do not recurse, we do that ourselve below; we need to
@@ -347,18 +339,6 @@ public class SVNSynchronizer {
 		return statusList;
 	}
 
-	/**
-	 * Helper method that creates a map that maps file paths to status objects
-	 * for faster lookup.
-	 */
-    private Map<String, Status> createStatusMap(List<Status> stati) {
-        Map<String, Status> map = new HashMap<String, Status>();
-        for (Status s : stati) {
-            map.put(s.getPath(), s);
-        }
-        return map;
-    }
-    
     private void presentNewConflict(Conflict conflict, List<Conflict> conflicts) throws CancelException {
         conflict.setSVNClient(client);
         
@@ -413,27 +393,31 @@ public class SVNSynchronizer {
         //   external (only possible with svn client)
         
         // REMOTE status can be only the following:
+        //   none
         //   normal
         //   modified
         //   added
         //   deleted
-        //   unversioned
         //   replaced (delete and re-add in one step)
-		
+
+        // replace conflicts
+        conflicts.addAll(findLocalContainerReplacedConflicts(remoteAndLocalChanges));
+        conflicts.addAll(findRemoteContainerReplacedConflicts(remoteAndLocalChanges));
+        conflicts.addAll(findReplacedModifiedConflicts(remoteAndLocalChanges));
+      
+        // add conflicts
 		conflicts.addAll(findAddConflicts(remoteAndLocalChanges));
 		
+		// delete/modified conflicts
 		conflicts.addAll(findLocalContainerDeleteConflicts(remoteAndLocalChanges));
-		
         conflicts.addAll(findRemoteContainerDeleteConflicts(remoteAndLocalChanges));
-        
         conflicts.addAll(findDeleteModifiedConflicts(remoteAndLocalChanges));
-        
         conflicts.addAll(findModifiedDeleteConflicts(remoteAndLocalChanges));
         
 		return conflicts;
 	}
 
-	/**
+    /**
 	 * Finds all Add/Add conflicts, including file/file, file/dir, dir/file and
 	 * dir/dir conflicts.
 	 */
@@ -445,39 +429,44 @@ public class SVNSynchronizer {
         while (iter.hasNext()) {
             Status status = iter.next();
             
-            // local ADD (as we added everything, unversioned shouldn't happen)
-            if (status.getTextStatus() == StatusKind.added
-                    || status.getTextStatus() == StatusKind.unversioned) {
+            // local ADD / UNVERSIONED / IGNORED /EXTERNAL
+            // (as we added everything, unversioned shouldn't happen)
+            // and remote ADD
+            if ((status.getTextStatus() == StatusKind.added
+                || status.getTextStatus() == StatusKind.unversioned
+                || status.getTextStatus() == StatusKind.ignored
+                || status.getTextStatus() == StatusKind.external)
+                    && status.getRepositoryTextStatus() == StatusKind.added) {
                 
-                // if remote ADD
-                if (status.getRepositoryTextStatus() == StatusKind.added) {
-                    Status conflictParent = status;
-                    // we remove all files/stati connected to this conflict
-                    iter.remove();
-                    
-                    List<Status> localAdded = new ArrayList<Status>();
-                    List<Status> remoteAdded = new ArrayList<Status>();
-                    
-                    // find all children (locally and remotely)
-                    while (iter.hasNext()) {
-                        status = iter.next();
-                        if (isParent(conflictParent.getPath(), status.getPath())) {
-                            if (status.getTextStatus() == StatusKind.added) {
-                                localAdded.add(status);
-                            } else if (status.getRepositoryTextStatus() == StatusKind.added) {
-                                remoteAdded.add(status);
-                            }
-                            iter.remove();
-                        } else {
-                            // no more children found, this conflict is done
-                            // reset global iterator for next conflict search
-                            iter = remoteAndLocalChanges.iterator();
-                            break;
+                Status conflictParent = status;
+                // we remove all files/stati connected to this conflict
+                iter.remove();
+                
+                List<Status> localAdded = new ArrayList<Status>();
+                List<Status> remoteAdded = new ArrayList<Status>();
+                
+                // find all children (locally and remotely)
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getTextStatus() == StatusKind.added
+                                || status.getTextStatus() == StatusKind.unversioned
+                                || status.getTextStatus() == StatusKind.ignored
+                                || status.getTextStatus() == StatusKind.external) {
+                            localAdded.add(status);
+                        } else if (status.getRepositoryTextStatus() == StatusKind.added) {
+                            remoteAdded.add(status);
                         }
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        // reset global iterator for next conflict search
+                        iter = remoteAndLocalChanges.iterator();
+                        break;
                     }
-                    
-                    presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
                 }
+                
+                presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
             }
         }
         
@@ -639,6 +628,171 @@ public class SVNSynchronizer {
                     
                     presentNewConflict(new DeleteWithModificationConflict(false, status, null), conflicts);
                 }
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all conflicts where a locally replaced folder conflicts with a
+     * remote modification of (in) that folder.
+     */
+    private List<Conflict> findLocalContainerReplacedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // REPLACED DIRECTORIES (locally)
+            if (status.getNodeKind() == NodeKind.dir &&
+                    status.getTextStatus() == StatusKind.replaced) {
+                
+                // conflict if there is a modification inside the directory remotely
+                
+                Status conflictParent = status;
+                List<Status> localChildren = new ArrayList<Status>();
+                List<Status> remoteChildren = new ArrayList<Status>();
+                
+                // find all children
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getRepositoryTextStatus() == StatusKind.added ||
+                                status.getRepositoryTextStatus() == StatusKind.replaced ||
+                                status.getRepositoryTextStatus() == StatusKind.modified ||
+                                status.getRepositoryTextStatus() == StatusKind.deleted) {
+                            remoteChildren.add(status);
+                        } else {
+                            localChildren.add(status);
+                        }
+                        // TODO: some might have to be added to both local and remote
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        break;
+                    }
+                }
+                
+                if (remoteChildren.size() > 0) {
+                    // also remove the deleted folder status object
+                    remoteAndLocalChanges.remove(conflictParent);
+                    
+                    presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
+                }
+                
+                // reset global iterator for next conflict search
+                iter = remoteAndLocalChanges.iterator();
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all conflicts where a remotely replaced folder conflicts with a
+     * local modification of (in) that folder.
+     */
+    private List<Conflict> findRemoteContainerReplacedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // REPLACED DIRECTORIES (remotely)
+            if (status.getReposKind() == NodeKind.dir &&
+                    status.getRepositoryTextStatus() == StatusKind.replaced) {
+                
+                // conflict if there is a modification inside the directory locally
+                
+                Status conflictParent = status;
+                List<Status> localChildren = new ArrayList<Status>();
+                List<Status> remoteChildren = new ArrayList<Status>();
+                
+                // find all children
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getTextStatus() != StatusKind.none &&
+                                status.getTextStatus() != StatusKind.normal) {
+                            localChildren.add(status);
+                        } else {
+                            remoteChildren.add(status);
+                        }
+                        // TODO: some might have to be added to both local and remote
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        break;
+                    }
+                }
+                
+                if (localChildren.size() > 0) {
+                    // also remove the deleted folder status object
+                    remoteAndLocalChanges.remove(conflictParent);
+                    
+                    presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
+                }
+                
+                // reset global iterator for next conflict search
+                iter = remoteAndLocalChanges.iterator();
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all Replaced/Modified, Modified/Replaced and Replaced/Replaced conflicts.
+     */
+    private List<Conflict> findReplacedModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local REPLACE remote MOD, local MOD remote REPLACE
+            // or locale REPLACE remote REPLACE
+            if ((status.getTextStatus() == StatusKind.replaced &&
+                    status.getRepositoryTextStatus() == StatusKind.modified)
+                || (status.getTextStatus() == StatusKind.modified &&
+                        status.getRepositoryTextStatus() == StatusKind.replaced)
+                || (status.getTextStatus() == StatusKind.replaced &&
+                        status.getRepositoryTextStatus() == StatusKind.replaced)) {
+                    
+                Status conflictParent = status;
+                // we remove all files/stati connected to this conflict
+                iter.remove();
+                
+                List<Status> localChildren = new ArrayList<Status>();
+                List<Status> remoteChildren = new ArrayList<Status>();
+                
+                // find all children (locally and remotely)
+                while (iter.hasNext()) {
+                    status = iter.next();
+                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                        if (status.getTextStatus() != StatusKind.normal) {
+                            localChildren.add(status);
+                        }
+                        if (status.getRepositoryTextStatus() != StatusKind.normal) {
+                            remoteChildren.add(status);
+                        }
+                        iter.remove();
+                    } else {
+                        // no more children found, this conflict is done
+                        // reset global iterator for next conflict search
+                        iter = remoteAndLocalChanges.iterator();
+                        break;
+                    }
+                }
+                
+                presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
             }
         }
         

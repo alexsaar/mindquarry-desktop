@@ -29,7 +29,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  */
 public class AutomaticConflictHandler implements ConflictHandler {
     
-    private ConflictPrinter printer;
+    protected ConflictPrinter printer;
 
     public AutomaticConflictHandler(String workingCopyPath) {
         this.printer = new ConflictPrinter(workingCopyPath);
@@ -64,6 +64,28 @@ public class AutomaticConflictHandler implements ConflictHandler {
         printer.printConflict(conflict);
 
         conflict.doOnlyKeepModified();
+    }
+
+    public void handle(ReplaceConflict conflict) throws CancelException {
+        printer.printConflict(conflict);
+        
+        String oldName = new File(conflict.getStatus().getPath()).getName();
+        String newName;
+        try {
+            do {
+                uniqueCounter++;
+                if (uniqueCounter == 1) {
+                    newName = "first";
+                } else {
+                    newName = oldName + "_renamed_" + uniqueCounter;
+                }
+            } while (!conflict.isRenamePossible(newName));
+        } catch (ClientException e) {
+            e.printStackTrace();
+            throw new CancelException("canceled due to svn client problem on rename check", e);
+        }
+
+        conflict.doRename(newName);
     }
 
 }

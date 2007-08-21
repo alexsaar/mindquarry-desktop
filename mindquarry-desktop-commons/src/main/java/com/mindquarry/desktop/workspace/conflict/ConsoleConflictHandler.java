@@ -43,5 +43,10 @@ public class ConsoleConflictHandler implements ConflictHandler {
         System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
     }
 
+    public void handle(ReplaceConflict conflict) throws CancelException {
+        printer.printConflict(conflict);
+        
+    }
+
 
 }
