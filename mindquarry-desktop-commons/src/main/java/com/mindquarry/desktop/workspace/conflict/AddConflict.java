@@ -14,9 +14,11 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
@@ -109,12 +111,23 @@ public class AddConflict extends Conflict {
                 // the svn status we have to revert it to 'unversioned'
                 client.revert(status.getPath(), true);
             }
+
+            if(file.isDirectory()) {
+                try {
+                    FileUtils.deleteDirectory(file);
+                } catch (IOException e) {
+                    log.error("deleting failed.");
+                    // TODO: callback for error handling
+                    System.exit(-1);
+                }
+            } else {
+    			if (!file.delete()) {
+    				log.error("deleting failed.");
+    				// TODO: callback for error handling
+    				System.exit(-1);
+    			}
+            }
             
-			if (!file.delete()) {
-				log.error("deleting failed.");
-				// TODO: callback for error handling
-				System.exit(-1);
-			}
 			break;
 		}
 	}

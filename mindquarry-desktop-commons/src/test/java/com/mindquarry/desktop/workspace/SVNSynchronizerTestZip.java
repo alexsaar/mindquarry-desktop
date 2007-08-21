@@ -21,10 +21,16 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
+import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 
 public class SVNSynchronizerTestZip implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
+    
+    private String wcPath;
+    
+    private String repoUrl;
 	
 	private void extractZip(String zipName, String destinationPath) throws IOException {
 	    File dest = new File(destinationPath);
@@ -72,12 +78,12 @@ public class SVNSynchronizerTestZip implements Notify2 {
         System.out.println("SVNKIT " + SVNSynchronizer.notifyToString(info));
     }
     
-	public SVNSynchronizer setupTest(String name) throws IOException {
+	public void setupTest(String name) throws IOException {
 	    System.out.println("Testing " + name + " =======================");
 		String zipPath = name + ".zip";
 		String targetPath = "target/" + name + "/";
-		String repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
-		String wcPath = targetPath + "wc";
+		this.repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
+		this.wcPath = targetPath + "wc";
 
 		extractZip(zipPath, targetPath);
 		
@@ -102,17 +108,21 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		} catch (ClientException e) {
             throw new RuntimeException("could not setup test " + name, e);
 		}
-
-        SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", new AutomaticConflictHandler(wcPath));
-        syncer.setNotifyListener(this);
-        return syncer;
 	}
+    
+    public SVNSynchronizer setupSynchronizer(AutomaticConflictHandler conflictHandler) {
+        SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", conflictHandler);
+        syncer.setNotifyListener(this);
+        
+        return syncer;
+    }
 	
 	@Test
-	public void testAddAddConflict() throws IOException {
-		SVNSynchronizer helper = setupTest("add_add_conflict");
+	public void testAddConflictDoRename() throws IOException {
+		setupTest("add_add_conflict");
+		SVNSynchronizer helper = setupSynchronizer(new AddConflictHandlerMock(wcPath, AddConflict.Action.RENAME));
 
-		helper.synchronize();
+        helper.synchronize();
 		
 		// TODO: we need to test the conflict objects: extend AutomaticConflictHandler
 		// class with methods testing the fields of the conflict object
@@ -122,10 +132,27 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
 		FileUtils.deleteDirectory(new File("target/add_add_conflict/"));
 	}
+    
+    @Test
+    public void testAddConflictDoReplace() throws IOException {
+        setupTest("add_add_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new AddConflictHandlerMock(wcPath, AddConflict.Action.REPLACE));
+
+        helper.synchronize();
+        
+        // TODO: we need to test the conflict objects: extend AutomaticConflictHandler
+        // class with methods testing the fields of the conflict object
+        
+        // TODO: here we have to test if the remote/localAdded fields contain
+        // all files/folders of the test zip case
+
+        FileUtils.deleteDirectory(new File("target/add_add_conflict/"));
+    }
 
 	@Test
-	public void testDeletedModifiedConflict() throws IOException, ClientException  {
-		SVNSynchronizer helper = setupTest("deleted_modified_conflict");
+	public void testDeletedModifiedConflictDoRevertDelete() throws IOException, ClientException  {
+		setupTest("deleted_modified_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.REVERTDELETE));
 		
 		client.add(helper.getLocalPath() + "/2 Two/Added.txt", false);
 
@@ -133,10 +160,77 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
 		FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
 	}
+
+    @Test
+    public void testDeletedModifiedConflictDoOnlyKeepModified() throws IOException, ClientException  {
+        setupTest("deleted_modified_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED));
+        
+        client.add(helper.getLocalPath() + "/2 Two/Added.txt", false);
+
+        helper.synchronize();
+
+        FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
+    }
+
+    @Test
+    public void testDeletedModifiedConflictDoDelete() throws IOException, ClientException  {
+        setupTest("deleted_modified_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.DELETE));
+        
+        client.add(helper.getLocalPath() + "/2 Two/Added.txt", false);
+
+        helper.synchronize();
+
+        FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
+    }
 	
 	// TODO: test ignore of Thumbs.db/.DS_Store
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
 	
-	
+	private class AddConflictHandlerMock extends AutomaticConflictHandler {
+        private AddConflict.Action action;
+        
+        private int uniqueCounter = 0;
+        
+	    public AddConflictHandlerMock(String wcPath, AddConflict.Action action) {
+            super(wcPath);
+            
+            this.action = action;
+        }
+        
+        public void handle(AddConflict conflict) {
+            switch(action) {
+            case RENAME: conflict.doRename(new File(conflict.getStatus().getPath()).getName() + "_renamed_" + uniqueCounter++); break;
+            case REPLACE: conflict.doReplace(); break;
+            }
+        }
+        
+        public void handle(DeleteWithModificationConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with DeleteWithModificationConflict");
+        }
+    }
+    
+    private class DeleteWithModificationConflictHandlerMock extends AutomaticConflictHandler {
+        private DeleteWithModificationConflict.Action action;
+        
+        public DeleteWithModificationConflictHandlerMock(String wcPath, DeleteWithModificationConflict.Action action) {
+            super(wcPath);
+            
+            this.action = action;
+        }
+        
+        public void handle(AddConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with AddConflict");
+        }
+        
+        public void handle(DeleteWithModificationConflict conflict) {
+            switch(action) {
+            case DELETE: conflict.doDelete(); break;
+            case ONLYKEEPMODIFIED: conflict.doOnlyKeepModified(); break;
+            case REVERTDELETE: conflict.doRevertDelete(); break;
+            }
+        }
+    }
 }
