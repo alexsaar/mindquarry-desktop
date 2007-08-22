@@ -225,6 +225,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		assertFileContains(localPath, "/2 Two/Modified.txt", "Modified\r\nModified");
 		assertFileContains(localPath, "/3 Three.txt", "Modified");
 		assertFileContains(localPath, "/4 Four.txt",  "Modified");
+		
+		// TODO: check correct SVN state of all files
 
 		FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
 	}
@@ -261,6 +263,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		assertFileContains(localPath, "/3 Three.txt", "Modified");
 		assertFileContains(localPath, "/4 Four.txt",  "Modified");
 
+		// TODO: check correct SVN state of all files
+
         FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
     }
 
@@ -289,6 +293,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		assertFileMissing(localPath, "/3 Three.txt");
 		assertFileMissing(localPath, "/4 Four.txt");
 		assertFileExists (localPath, "/Existing.txt");
+
+		// TODO: check correct SVN state of all files
 
         FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
     }
