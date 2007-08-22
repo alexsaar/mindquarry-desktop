@@ -66,6 +66,7 @@ public class DeleteWithModificationConflict extends Conflict {
     private boolean localDelete;
     private String localPath;
     private String repositoryURL;
+	private File tempCopy;
 	
 	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods, String localPath, String repositoryURL) {
 		super(status);
@@ -73,6 +74,45 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.otherMods = otherMods;
 		this.localPath = localPath;
 		this.repositoryURL = repositoryURL;
+	}
+	
+	/**
+	 * Creates a temporary directory similarly to to the way
+	 * File.createTempFile(String,String,File) works. Creates an empty directory
+	 * in the specified directory, using the given prefix and suffix strings to
+	 * generate its name.
+	 * 
+	 * @param prefix
+	 *            The prefix string to be used in generating the directory's
+	 *            name; must be at least three characters long.
+	 * @param suffix
+	 *            The suffix string to be used in generating the directory's
+	 *            name; may be null, in which case the suffix ".tmp" will be
+	 *            used.
+	 * @param directory
+	 *            The directory in which the directory is to be created, or null
+	 *            if the default temporary directory is to be used.
+	 * @return
+	 * @throws IOException
+	 *            If creation of the temporary directory fails.
+	 */
+	public static File createTempDir(String prefix, String suffix, File directory)
+	throws IOException {
+		// create and immediately delete temporary file using library function
+		File file = File.createTempFile(prefix, suffix, directory);
+		if (!file.delete()) {
+			log.error("Failed to delete temp file " + file.getPath());
+			// TODO: throw IOException on all boolean-returning file methods in false case
+			System.exit(-1);
+		}
+		
+		// create directory with the same unique name
+		if (!file.mkdir()) {
+			log.error("Failed to mkdir " + file.getPath());
+			// TODO: throw IOException on all boolean-returning file methods in false case
+			System.exit(-1);
+		}
+		return file;
 	}
 
 	public void beforeUpdate() throws ClientException {
@@ -92,13 +132,16 @@ public class DeleteWithModificationConflict extends Conflict {
 	    	} else {
 	    		// make a local copy of the file/dir
 	    		File source      = new File(status.getPath());
-	    		File destination = new File(source.getParent()+"/__"+source.getName());
-	    		
 	    		try {
+//	    		File destination = File.createTempFile(source.getName(), null, source.getParentFile());
+//	    		File destination = new File(source.getParentFile(), "__"+source.getName());
+	    		
 					if (source.isFile()) {
-						FileUtils.copyFile(source, destination);
+		    			tempCopy = File.createTempFile(source.getName(), null, source.getParentFile());
+						FileUtils.copyFile(source, tempCopy);
 					} else {
-						FileUtils.copyDirectory(source, destination);
+		    			tempCopy = createTempDir(source.getName(), null, source.getParentFile());
+						FileUtils.copyDirectory(source, tempCopy);
 					}
 				} catch (IOException e) {
 					log.error("Failed to copy file/dir.");
@@ -108,7 +151,7 @@ public class DeleteWithModificationConflict extends Conflict {
 				// remove .svn directories from copy
 				// TODO: not required for new client which stores .svn stuff in
 				// a different directory
-				removeDotSVNDirectories(destination.getPath());
+				removeDotSVNDirectories(tempCopy.getPath());
 	    		
 	    		// revert all local changes to file/dir
 				client.revert(status.getPath(), true);
@@ -231,15 +274,13 @@ public class DeleteWithModificationConflict extends Conflict {
 
 	    		// 2. Redo changes by replacing with local files (move B => A)
 	    		File destination = new File(status.getPath());
-	    		File source      = new File(destination.getParent()+"/__"+destination.getName());
-	    		// TODO: use move (overwrite existing files) instead of copy & delete
 	    		try {
-	    			if (source.isFile()) {
-	    				FileUtils.copyFile(source, destination);
-	    				source.delete();
+	    			if (tempCopy.isFile()) {
+	    				FileUtils.copyFile(tempCopy, destination);
+	    				tempCopy.delete();
 	    			} else {
-	    				FileUtils.copyDirectory(source, destination);
-	    				FileUtils.deleteDirectory(source);
+	    				FileUtils.copyDirectory(tempCopy, destination);
+	    				FileUtils.deleteDirectory(tempCopy);
 	    			}
 	    		} catch (IOException e) {
 	    			log.error("Failed to move.");
