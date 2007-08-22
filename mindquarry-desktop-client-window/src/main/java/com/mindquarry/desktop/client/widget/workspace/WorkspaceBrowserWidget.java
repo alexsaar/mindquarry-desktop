@@ -22,19 +22,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeColumn;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.WidgetBase;
@@ -42,8 +41,7 @@ import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 
 /**
- * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
- *         Trieloff</a>
+ * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public class WorkspaceBrowserWidget extends WidgetBase {
     private static Log log = LogFactory.getLog(WorkspaceBrowserWidget.class);
@@ -52,30 +50,24 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
+
+        // initialize layout
+        setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2,
+                1));
+        setLayout(new GridLayout(1, true));
+        ((GridLayout) getLayout()).horizontalSpacing = 0;
+        ((GridLayout) getLayout()).verticalSpacing = 0;
+        ((GridLayout) getLayout()).marginHeight = 0;
+        ((GridLayout) getLayout()).marginWidth = 0;
     }
 
     // #########################################################################
     // ### WIDGET METHODS
     // #########################################################################
     protected void createContents(Composite parent) {
-        Tree tree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-        tree.setLayoutData(new GridData(GridData.FILL_BOTH));
-        tree.setHeaderVisible(true);
-        tree.setLinesVisible(true);
-        tree.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-
-        TreeColumn col1 = new TreeColumn(tree, SWT.LEFT);
-        col1.setText("Name");
-        col1.setWidth(500);
-        
-        TreeColumn col2 = new TreeColumn(tree, SWT.CENTER);
-        col2.setResizable(false);
-        col2.setWidth(32);
-
-        viewer = new TreeViewer(tree);
-        viewer.setLabelProvider(new TreeLabelProvider());
+        viewer = new TreeViewer(parent, SWT.BORDER | SWT.H_SCROLL
+                | SWT.V_SCROLL | SWT.FULL_SELECTION);
         viewer.setContentProvider(new TreeContentProvider());
-
         viewer.setSorter(new ViewerSorter() {
             public int category(Object element) {
                 File file = (File) element;
@@ -85,6 +77,72 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                 } else {
                     return 2;
                 }
+            }
+        });
+        viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+        viewer.getTree().setHeaderVisible(true);
+        viewer.getTree().setLinesVisible(true);
+        viewer.getTree().setFont(
+                JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+
+        TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.LEFT);
+        col.getColumn().setText("Name");
+        col.getColumn().setWidth(500);
+        col.setLabelProvider(new ColumnLabelProvider() {
+            public Image getImage(Object element) {
+                File file = (File) element;
+                if (file.isDirectory()) {
+                    return new Image(
+                            Display.getCurrent(),
+                            getClass()
+                                    .getResourceAsStream(
+                                            "/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
+                } else if (file.isFile()) {
+                    return new Image(
+                            Display.getCurrent(),
+                            getClass()
+                                    .getResourceAsStream(
+                                            "/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+                }
+                return null;
+            }
+
+            public String getText(Object element) {
+                return ((File) element).getName();
+            }
+        });
+        col = new TreeViewerColumn(viewer, SWT.CENTER);
+        col.getColumn().setResizable(false);
+        col.getColumn().setWidth(32);
+        col.setLabelProvider(new ColumnLabelProvider() {
+            public String getText(Object element) {
+                return "";
+            }
+        });
+        col = new TreeViewerColumn(viewer, SWT.CENTER);
+        col.getColumn().setResizable(false);
+        col.getColumn().setWidth(32);
+        col.setLabelProvider(new ColumnLabelProvider() {
+            public Image getImage(Object element) {
+                File file = (File) element;
+                if (file.isDirectory()) {
+                    return new Image(
+                            Display.getCurrent(),
+                            getClass()
+                                    .getResourceAsStream(
+                                            "/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
+                } else if (file.isFile()) {
+                    return new Image(
+                            Display.getCurrent(),
+                            getClass()
+                                    .getResourceAsStream(
+                                            "/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+                }
+                return null;
+            }
+
+            public String getText(Object element) {
+                return "";
             }
         });
         refresh();
@@ -157,68 +215,6 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             // nothing to do here
-        }
-    }
-
-    private class TreeLabelProvider extends LabelProvider implements
-            ITableLabelProvider {
-        private Image folderImg = new Image(
-                Display.getCurrent(),
-                getClass()
-                        .getResourceAsStream(
-                                "/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
-
-        private Image fileImg = new Image(
-                Display.getCurrent(),
-                getClass()
-                        .getResourceAsStream(
-                                "/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
-
-        private Image downloadImg = new Image(
-                Display.getCurrent(),
-                getClass()
-                        .getResourceAsStream(
-                                "/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
-        
-        private Image uploadImg = new Image(
-                Display.getCurrent(),
-                getClass()
-                        .getResourceAsStream(
-                                "/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
-
-        public Image getColumnImage(Object element, int columnIndex) {
-            File file = (File) element;
-
-            Image result = null;
-            switch (columnIndex) {
-            case 0:
-                if (file.isDirectory()) {
-                    result = folderImg;
-                } else if (file.isFile()) {
-                    result = fileImg;
-                }
-                break;
-            case 1:
-                if (file.isDirectory()) {
-                    result = downloadImg;
-                } else if (file.isFile()) {
-                    result = uploadImg;
-                }
-                break;
-            }
-            return result;
-        }
-
-        public String getColumnText(Object element, int columnIndex) {
-            File file = (File) element;
-
-            String result = null;
-            switch (columnIndex) {
-            case 0:
-                result = file.getName();
-                break;
-            }
-            return result;
         }
     }
 }
