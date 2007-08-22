@@ -22,9 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.Messages;
@@ -36,8 +34,6 @@ import com.mindquarry.desktop.client.Messages;
  */
 public abstract class AbstractConflictDialog extends TitleAreaDialog {
 
-    protected int resolveMethod;    
-    
     protected Button okButton;
     protected Button cancelButton;
 
@@ -51,20 +47,10 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
 
     // public methods
     
-    public AbstractConflictDialog(Shell shell, int defaultResolve) {
+    public AbstractConflictDialog(Shell shell) {
         super(shell);
         setBlockOnOpen(true);
-        resolveMethod = defaultResolve;
         setShellStyle(SWT.RESIZE);
-    }
-
-    /**
-     * Getter for resolveMethod.
-     * 
-     * @return the resolveMethod
-     */
-    public int getResolveMethod() {
-        return resolveMethod;
     }
 
     // other methods
@@ -90,6 +76,7 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // Show affected file information:
+        showFileInformation(composite);
 
         Label barSeparator = new Label(composite, SWT.HORIZONTAL
                 | SWT.SEPARATOR);
@@ -103,22 +90,7 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
 
         return composite;
     }
-    
-    protected Button makeRadioButton(Composite composite, String text, final int resolve) {
-        Button button = new Button(composite, SWT.RADIO);
-        button.setText(text);
-        if (resolve == resolveMethod) {
-            button.setSelection(true);
-        }
-        button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-        button.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                resolveMethod = resolve;
-            }
-        });
-        return button;
-    }
-    
+        
     protected void createButtonsForButtonBar(Composite parent) {  
         okButton = createButton(parent, IDialogConstants.OK_ID,
                 Messages.getString("OK"), true);  
@@ -126,4 +98,9 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
             Messages.getString("Cancel Synchronization"), false);  
     }
     
+    protected void makeLabel(Composite composite, String text) {
+        Label name = new Label(composite, SWT.READ_ONLY);
+        name.setText(text);
+    }
+
 }

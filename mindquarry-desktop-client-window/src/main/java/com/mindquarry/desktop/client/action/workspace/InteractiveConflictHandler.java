@@ -18,7 +18,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.dialog.conflict.AddConflictDialog;
-import com.mindquarry.desktop.workspace.SVNHelper;
+import com.mindquarry.desktop.client.dialog.conflict.DeleteWithModificationConflictDialog;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
@@ -42,9 +42,9 @@ public class InteractiveConflictHandler implements ConflictHandler {
         AddConflictDialog dlg = new AddConflictDialog(conflict, shell);
         int resolution = dlg.open();
         if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == SVNHelper.CONFLICT_RENAME_AND_RETRY) {
+            if (dlg.getResolveMethod() == AddConflict.Action.RENAME) {
                 conflict.doRename(dlg.getNewName());
-            } else if (dlg.getResolveMethod() == SVNHelper.CONFLICT_OVERRIDE_FROM_WC) {
+            } else if (dlg.getResolveMethod() == AddConflict.Action.REPLACE) {
                 conflict.doReplace();
             } else {
                 throw new IllegalArgumentException("Unexpected dialog resolution: " + 
@@ -57,8 +57,23 @@ public class InteractiveConflictHandler implements ConflictHandler {
 
     public void handle(DeleteWithModificationConflict conflict)
             throws CancelException {
-        // TODO Auto-generated method stub
-        System.err.println("FIXME: implement");
+        DeleteWithModificationConflictDialog dlg = 
+            new DeleteWithModificationConflictDialog(conflict, shell);
+        int resolution = dlg.open();
+        if (resolution == IDialogConstants.OK_ID) {
+            if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.REVERTDELETE) {
+                conflict.doRevertDelete();
+            } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.DELETE) {
+                conflict.doDelete();
+            } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED) {
+                conflict.doOnlyKeepModified();
+            } else {
+                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                        dlg.getResolveMethod());
+            }
+        } else {
+            throw new CancelException();
+        }
     }
 
     public void handle(ReplaceConflict conflict) throws CancelException {

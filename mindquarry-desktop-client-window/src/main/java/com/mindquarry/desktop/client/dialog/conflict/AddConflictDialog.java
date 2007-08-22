@@ -19,6 +19,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -30,11 +31,11 @@ import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.ClientException;
 
 import com.mindquarry.desktop.client.Messages;
-import com.mindquarry.desktop.workspace.SVNHelper;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
+import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
 
 /**
- * Dialog for resolving "add" conflicts.
+ * Dialog for resolving add/modification conflicts.
  * 
  * @author dnaber
  */
@@ -43,17 +44,27 @@ public class AddConflictDialog extends AbstractConflictDialog {
     private String newName;
     private Text newNameField;
     private AddConflict conflict;
+    private Action resolveMethod;
+
+    private static final Action DEFAULT_RESOLUTION = Action.RENAME;
     
     public AddConflictDialog(AddConflict conflict, Shell shell) {
-        super(shell, SVNHelper.CONFLICT_RENAME_AND_RETRY);
+        super(shell);
         this.conflict = conflict;
+        resolveMethod = DEFAULT_RESOLUTION;
     }
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Local Filename(s)") + ": " + conflict.getLocalAdded());
-        Label name2 = new Label(composite, SWT.READ_ONLY);
-        name2.setText(Messages.getString("Remote Filename(s)") + ": " + conflict.getRemoteAdded());
+        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+    }
+
+    @Override
+    protected String getMessage() {
+        return Messages.getString("One of the local files you want to upload " +
+                "already exists on the server. This case can occur if " +
+                "you created a file or renamed an existing file and someone else created " +
+                "the file in between (by creating it or renaming an existing file).");
     }
 
     @Override
@@ -62,7 +73,7 @@ public class AddConflictDialog extends AbstractConflictDialog {
         subComposite.setLayout(new GridLayout(2, false));
         Button button1 = makeRadioButton(subComposite,
                 Messages.getString("Rename file and upload it under the new name"),  //$NON-NLS-1$
-                SVNHelper.CONFLICT_RENAME_AND_RETRY);
+                Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 newNameField.setEnabled(true);
@@ -90,15 +101,20 @@ public class AddConflictDialog extends AbstractConflictDialog {
                 newNameChanged(newNameField.getText());
             }
         });
-        Button button2 = makeRadioButton(subComposite,
-                Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
-                SVNHelper.CONFLICT_OVERRIDE_FROM_WC);
+        newNameField.setFocus();
+        /*Button button2 = makeRadioButton(subComposite,
+                // FIXME: passt nicht zusammen, sollen wir wirklich replace anbieten?!?!
+                // das würde lokale Änderungen überschreiben
+                //Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
+                //Action.REPLACE);
+                Messages.getString("Overwrite your local file with the one from the server"),  //$NON-NLS-1$
+                Action.REPLACE);
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 newNameField.setEnabled(false);
                 okButton.setEnabled(true);
             }
-        });
+        });*/
     }
 
     private void newNameChanged(String name) {
@@ -123,6 +139,7 @@ public class AddConflictDialog extends AbstractConflictDialog {
     
     private String getNameSuggestion(String existingName) {
         int pos = existingName.lastIndexOf('.');
+        // TODO: avoid suggesting a name that exists
         if (pos == -1) {
             return existingName + "_1";
         } else {
@@ -134,12 +151,23 @@ public class AddConflictDialog extends AbstractConflictDialog {
         return newName;
     }
     
-    @Override
-    protected String getMessage() {
-        return Messages.getString("One of the local files you want to upload to " +
-        		"the server already exists on the server. This case can occur if " +
-        		"you created a file or renamed an existing file and someone created " +
-        		"the file in between (by creating it or renaming an existing file).");
+    protected Button makeRadioButton(Composite composite, String text, final Action action) {
+        Button button = new Button(composite, SWT.RADIO);
+        button.setText(text);
+        if (action == DEFAULT_RESOLUTION) {
+            button.setSelection(true);
+        }
+        button.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
+        button.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                resolveMethod = action;
+            }
+        });
+        return button;
+    }
+
+    public Action getResolveMethod() {
+        return resolveMethod;
     }
 
 }
