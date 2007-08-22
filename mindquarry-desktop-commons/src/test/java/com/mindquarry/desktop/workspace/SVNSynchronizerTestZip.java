@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import junit.framework.TestCase;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
@@ -30,6 +32,7 @@ import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
+import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 
 public class SVNSynchronizerTestZip implements Notify2 {
@@ -433,11 +436,43 @@ public class SVNSynchronizerTestZip implements Notify2 {
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
     @Test
-    public void testPropertyConflict() throws IOException {
+    public void testPropertyConflictDoUseLocalValue() throws IOException, ClientException {
         setupTest("property_conflict");
-        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+        SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_LOCAL_VALUE));
 
         helper.synchronize();
+        
+        TestCase.assertEquals("first_local_value", client.propertyGet(wcPath, "mq:first").getValue());
+        TestCase.assertEquals("second_local_value", client.propertyGet(wcPath, "mq:second").getValue());
+        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
+        
+        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+    }
+    
+    @Test
+    public void testPropertyConflictDoUseRemoteValue() throws IOException, ClientException {
+        setupTest("property_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_REMOTE_VALUE));
+
+        helper.synchronize();
+        
+        TestCase.assertEquals("first_remote_value", client.propertyGet(wcPath, "mq:first").getValue());
+        TestCase.assertEquals("second_remote_value", client.propertyGet(wcPath, "mq:second").getValue());
+        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
+        
+        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+    }
+    
+    @Test
+    public void testPropertyConflictDoUseNewValue() throws IOException, ClientException {
+        setupTest("property_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_NEW_VALUE));
+
+        helper.synchronize();
+        
+        TestCase.assertTrue(client.propertyGet(wcPath, "mq:first").getValue().startsWith("shiny new value "));
+        TestCase.assertTrue(client.propertyGet(wcPath, "mq:second").getValue().startsWith("shiny new value "));
+        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
         
         FileUtils.deleteDirectory(new File("target/property_conflict/"));
     }
@@ -522,7 +557,42 @@ public class SVNSynchronizerTestZip implements Notify2 {
         }
         
         public void handle(DeleteWithModificationConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with DeleteWithModificationConflict");
+        }
+    }
+
+    private class PropertyConflictHandlerMock extends AutomaticConflictHandler {
+        private PropertyConflict.Action action;
+        
+        private int uniqueCounter = 0;
+
+        public PropertyConflictHandlerMock(String wcPath, PropertyConflict.Action action) {
+            super(wcPath);
+            
+            this.action = action;
+        }
+        
+        public void handle(AddConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with AddConflict");
+        }
+        
+        public void handle(ReplaceConflict conflict) {
             throw new UnsupportedOperationException("not intended to be used with ReplaceConflict");
+        }
+        
+        public void handle(PropertyConflict conflict) {
+//            printer.printConflict(conflict);
+            
+            switch(action) {
+            case RESOLVE_AUTOMATICALLY: throw new UnsupportedOperationException("method should not be called");
+            case USE_LOCAL_VALUE: conflict.doUseLocalValue(); break;
+            case USE_REMOTE_VALUE: conflict.doUseRemoteValue(); break;
+            case USE_NEW_VALUE: conflict.doUseNewValue("shiny new value " + uniqueCounter++);
+            }
+        }
+        
+        public void handle(DeleteWithModificationConflict conflict) {
+            throw new UnsupportedOperationException("not intended to be used with DeleteWithModificationConflict");
         }
     }
 

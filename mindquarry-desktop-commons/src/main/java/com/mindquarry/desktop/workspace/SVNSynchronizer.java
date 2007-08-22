@@ -891,9 +891,10 @@ public class SVNSynchronizer {
     }
     
     /**
+     * @throws CancelException 
      * 
      */
-    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) {
+    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -926,10 +927,11 @@ public class SVNSynchronizer {
                                 // TODO add further mergeable properties (e.g. mq:tags for Tagging)
                                 if(localProp.getName().equals(PropertyData.IGNORE) || 
                                         localProp.getName().equals(PropertyData.EXTERNALS)) {
-                                    conflicts.add(new PropertyConflict(status, localProp, remoteProp, true));
+                                    presentNewConflict(new PropertyConflict(status, localProp, remoteProp, true), conflicts);
                                 } else {
-                                    conflicts.add(new PropertyConflict(status, localProp, remoteProp, false));
+                                    presentNewConflict(new PropertyConflict(status, localProp, remoteProp, false), conflicts);
                                 }
+                                break;
                             }
                         }
                     }

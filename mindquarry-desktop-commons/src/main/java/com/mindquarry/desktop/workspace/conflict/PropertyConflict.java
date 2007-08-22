@@ -20,15 +20,14 @@ import java.util.List;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.PropertyData;
 import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
- * Local add conflicts with remote add of object with the same name.
+ * Conflicting changes to a property of an versioned object.
  * 
- * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
- * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
+ * @author <a href="mailto:victor(dot)saar(at)mindquarry(dot)com">Victor Saar</a>
  */
 public class PropertyConflict extends Conflict {
 	private Action action = Action.UNKNOWN;
@@ -49,10 +48,14 @@ public class PropertyConflict extends Conflict {
         /**
          * Use the remotely defined property value.
          */
-        USE_REMOTE_VALUE;
+        USE_REMOTE_VALUE,
+        /**
+         * Use a completely new value.
+         */
+        USE_NEW_VALUE;
 	}
 	
-	private String value;
+	private String value = new String("");
     
     private PropertyData localProp;
     private PropertyData remoteProp;
@@ -66,30 +69,6 @@ public class PropertyConflict extends Conflict {
         if(resolveAutomatically) {
             this.action = Action.RESOLVE_AUTOMATICALLY;
             this.value = mergeMultiLineProperties(localProp, remoteProp);
-        }
-	}
-
-    public void beforeUpdate() throws ClientException {
-		switch (action) {
-		case UNKNOWN:
-			// client did not set a conflict resolution
-			log.error("AddConflict with no action set: " + status.getPath());
-			break;
-			
-		case RESOLVE_AUTOMATICALLY:
-            log.info("property conflict resolved automatically for " + status.getPath());
-            // already resolved in constructor
-			break;
-			
-		case USE_LOCAL_VALUE:
-            log.info("using local value for property \"" + localProp.getName() + "\" of " + status.getPath());
-            value = localProp.getValue();
-			break;
-        
-        case USE_REMOTE_VALUE:
-            log.info("using remote value for property \"" + remoteProp.getName() + "\" of " + status.getPath());
-            value = remoteProp.getValue();
-            break;
         }
 	}
 
@@ -119,7 +98,41 @@ public class PropertyConflict extends Conflict {
     }
 
 	public void afterUpdate() {
-		// nothing to do here
+        switch (action) {
+        case UNKNOWN:
+            // client did not set a conflict resolution
+            log.error("PropertyConflict with no action set: " + status.getPath());
+            break;
+            
+        case RESOLVE_AUTOMATICALLY:
+            log.info("property conflict resolved automatically for " + status.getPath());
+            break;
+            
+        case USE_LOCAL_VALUE:
+            log.info("using local value for property \"" + localProp.getName() + "\" of " + status.getPath());
+            value = localProp.getValue();
+            break;
+        
+        case USE_REMOTE_VALUE:
+            log.info("using remote value for property \"" + remoteProp.getName() + "\" of " + status.getPath());
+            value = remoteProp.getValue();
+            break;
+            
+        case USE_NEW_VALUE:
+            log.info("using new value \"" + value + "\" for property \"" + remoteProp.getName() + "\" of " + status.getPath());
+            break;
+        }
+
+        try {
+            client.propertySet(status.getPath(), localProp.getName(), value, false);
+            
+            if(status.getTextStatus() != StatusKind.conflicted) {
+                client.resolved(status.getPath(), false);
+            }
+        } catch (ClientException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 	}
 
 	public void accept(ConflictHandler handler) throws CancelException {
@@ -129,14 +142,17 @@ public class PropertyConflict extends Conflict {
 	
 	public void doUseLocalValue() {
 		this.action = Action.USE_LOCAL_VALUE;
-        
         this.value = localProp.getValue();
 	}
 	
     public void doUseRemoteValue() {
         this.action = Action.USE_REMOTE_VALUE;
-        
         this.value = remoteProp.getValue();
+    }
+    
+    public void doUseNewValue(String value) {
+        this.action = Action.USE_NEW_VALUE;
+        this.value = value;
     }
     
 	public String toString() {
