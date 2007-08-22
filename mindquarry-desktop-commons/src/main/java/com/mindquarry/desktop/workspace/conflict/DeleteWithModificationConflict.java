@@ -16,15 +16,21 @@ package com.mindquarry.desktop.workspace.conflict;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
-import org.tigris.subversion.javahl.NodeKind;
+import org.tigris.subversion.javahl.LogMessage;
+import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
+import org.tigris.subversion.javahl.Revision.Number;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
+import com.sun.corba.se.spi.activation.Repository;
 
 /**
  * Local delete (of folder or file) conflicts with remote modification of
@@ -59,11 +65,16 @@ public class DeleteWithModificationConflict extends Conflict {
 	
 	private List<Status> otherMods;
     private boolean localDelete;
+    private String localPath;
+    private String repositoryURL;
 	
-	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods) {
+	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods, String localPath, String repositoryURL) {
 		super(status);
 		this.localDelete = localDelete;
 		this.otherMods = otherMods;
+		this.localPath = localPath;
+		this.repositoryURL = repositoryURL;
+		
 	}
 
 	public void beforeUpdate() throws ClientException {
@@ -81,18 +92,24 @@ public class DeleteWithModificationConflict extends Conflict {
 		    	// revert local delete
 	    		client.revert(status.getPath(), true);
 	    	} else {
-	    		// copy A => B (TODO: unique name)
+	    		// copy A => B (TODO: unique destination name)
 	    		File source      = new File(status.getPath());
 	    		File destination = new File(source.getParent()+"/__"+source.getName());
 	    		
 	    		try {
-					FileUtils.copyDirectory(source, destination);
+					if (source.isFile()) {
+						FileUtils.copyFile(source, destination);
+					} else {
+						FileUtils.copyDirectory(source, destination);
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 				
-				// TODO: remove .svn directories from copy
+				// remove .svn directories from copy
+				// TODO: not required for new client which stores .svn stuff in a different directory 
 				removeDotSVNDirectories(destination.getPath());
 	    		
 	    		// svn revert A
@@ -118,13 +135,13 @@ public class DeleteWithModificationConflict extends Conflict {
 			}});
 		
 		if (allDirs != null) {
-    		for(File dir : allDirs) {
-    			if(dir.getName().compareTo(".svn") == 0) {
+    		for (File dir : allDirs) {
+    			if (dir.getName().compareTo(".svn") == 0) {
     				// delete .svn directories
     				try {
                         FileUtils.forceDelete(dir);
     				} catch (IOException e) {
-    					// TODO Auto-generated catch block
+    					// Auto-generated catch block
     					e.printStackTrace();
     				}
     			} else {
@@ -195,28 +212,76 @@ public class DeleteWithModificationConflict extends Conflict {
             break;
             
         case REVERTDELETE:
-            log.info("reverting delete: " + status.getPath());
-
-            // TODO: revert deleted status
-            // the following doesn't restore the already deleted files
-//	    	// remote deletion => re-add files 
-//	    	if (localDelete == false) {
-//	    		client.add(status.getPath(), false);
-//	    		for(Status mod : otherMods) {
-//	    			client.add(mod.getPath(), false);
-//	    		}
-//	    	}
- 
 	    	if (localDelete == false) {
-//	    		// Remote deletion of locally modified file: update removes file
-//	    		// from versioning, so re-add it here
-//	    		if (status.getNodeKind() == NodeKind.file)
-//	    			client.add(status.getPath(), false);
+	            log.info("reverting remote delete: " + status.getPath());
+	    		// Revert remote deletes in three steps:
+	    		// 1. Restore last revision before deletion (incl. history)
+	    		// 2. Redo changes by replacing with local files
+	    		// 3. Re-add locally added files
 	    		
+	    		// 1. Restore last revision before deletion (incl. history)
+				File targetFile = new File(status.getPath());
+	    		String parent = targetFile.getParent();
+				Number restoreRev = null;
+				String delFile = null;
 
-	    		// TODO: svn copy --old-version A
-	    		// TODO: copy -R B A
-	    		// TODO: svn add A
+				// get all log messages since last update
+				LogMessage[] logMessages = client.logMessages(parent,
+						Revision.BASE, Revision.HEAD, false, true);
+
+				// Look for revision in which the file/dir was (last) deleted
+				for (LogMessage logMessage : logMessages) {
+					for (ChangePath changePath : logMessage.getChangedPaths()) {
+						// check for deletion of expected file name
+						File thisFile = new File(localPath + changePath.getPath()).getAbsoluteFile();
+						if (targetFile.compareTo(thisFile) == 0
+								&& changePath.getAction() == 'D') {							
+							// want to restore last revision before deletion
+							restoreRev = new Number(logMessage.getRevision().getNumber()-1);
+							delFile    = changePath.getPath();
+							log.debug("found revision of deletion: '"
+									+ changePath.getPath()
+									+ "' was deleted in revision "
+									+ logMessage.getRevision().toString());
+						}
+					}
+				}
+				
+				// restore deleted version with version history
+				if(restoreRev != null) {
+					client.copy(repositoryURL+delFile, status.getPath(), null, restoreRev);
+				} else {
+					log.error("Failed to restore deleted verion.");
+				}
+
+	    		// 2. Redo changes by replacing with local files (move B => A)
+	    		File destination = new File(status.getPath());
+	    		File source      = new File(destination.getParent()+"/__"+destination.getName());
+	    		// TODO: use move (overwrite existing files) instead of copy & delete
+	    		try {
+	    			if (source.isFile()) {
+	    				FileUtils.copyFile(source, destination);
+	    				source.delete();
+	    			} else {
+	    				FileUtils.copyDirectory(source, destination);
+	    				FileUtils.deleteDirectory(source);
+	    			}
+	    		} catch (IOException e) {
+	    			log.error("Failed to move.");
+	    			e.printStackTrace();
+	    		}
+
+	    		// 3. Re-add locally added files
+	    		// Cannot just add directories recursively since the copy
+				// operation above automatically adds them and adding them twice
+				// results in an error. So just add files that were added
+				// locally.
+	    		if(otherMods != null) {
+	    			for(Status s : otherMods) {
+	    				if(s.getTextStatus() == StatusKind.added)
+	    					client.add(s.getPath(), false);
+	    			}
+	    		}
 	    	}
             
             break;
