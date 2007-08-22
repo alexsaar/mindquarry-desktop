@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -57,22 +58,24 @@ public class WorkspaceBrowserWidget extends WidgetBase {
     // ### WIDGET METHODS
     // #########################################################################
     protected void createContents(Composite parent) {
-        Tree tree = new Tree(parent, SWT.CHECK | SWT.BORDER | SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        Tree tree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setLayoutData(new GridData(GridData.FILL_BOTH));
         tree.setHeaderVisible(true);
         tree.setLinesVisible(true);
+        tree.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         TreeColumn col1 = new TreeColumn(tree, SWT.LEFT);
         col1.setText("Name");
-        col1.setWidth(200);
-        TreeColumn col2 = new TreeColumn(tree, SWT.LEFT);
-        col2.setText("Status");
+        col1.setWidth(500);
+        
+        TreeColumn col2 = new TreeColumn(tree, SWT.CENTER);
+        col2.setResizable(false);
         col2.setWidth(32);
 
         viewer = new TreeViewer(tree);
         viewer.setLabelProvider(new TreeLabelProvider());
         viewer.setContentProvider(new TreeContentProvider());
+
         viewer.setSorter(new ViewerSorter() {
             public int category(Object element) {
                 File file = (File) element;
@@ -84,7 +87,6 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                 }
             }
         });
-
         refresh();
     }
 
@@ -98,6 +100,7 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             return;
         }
         viewer.setInput(new File(selected.getWorkspaceFolder()));
+        viewer.expandAll();
     }
 
     // #########################################################################
@@ -119,22 +122,16 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                     selectedTeams.addAll(client.getSelectedTeams());
                 }
             });
-
             File workspaceRoot = (File) parentElement;
-            return workspaceRoot.listFiles(new FilenameFilter() {
+            File[] children = workspaceRoot.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     if (name.equals(".svn") || name.equals(".svnref")) {
                         return false;
-                    } else {
-                        for (Team team : selectedTeams) {
-                            if (team.getName().equals(name)) {
-                                return true;
-                            }
-                        }
                     }
                     return true;
                 }
             });
+            return children;
         }
 
         public Object getParent(Object element) {
@@ -177,6 +174,18 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                         .getResourceAsStream(
                                 "/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
 
+        private Image downloadImg = new Image(
+                Display.getCurrent(),
+                getClass()
+                        .getResourceAsStream(
+                                "/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
+        
+        private Image uploadImg = new Image(
+                Display.getCurrent(),
+                getClass()
+                        .getResourceAsStream(
+                                "/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+
         public Image getColumnImage(Object element, int columnIndex) {
             File file = (File) element;
 
@@ -189,11 +198,13 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                     result = fileImg;
                 }
                 break;
-            // TOOD: show images
-            /*
-             * case 1: if (file.isDirectory()) { result = folderImg; } else if
-             * (file.isFile()) { result = fileImg; } break;
-             */
+            case 1:
+                if (file.isDirectory()) {
+                    result = downloadImg;
+                } else if (file.isFile()) {
+                    result = uploadImg;
+                }
+                break;
             }
             return result;
         }
@@ -205,10 +216,6 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             switch (columnIndex) {
             case 0:
                 result = file.getName();
-                break;
-            case 1:
-                // FIXME:
-                result = "-";
                 break;
             }
             return result;
