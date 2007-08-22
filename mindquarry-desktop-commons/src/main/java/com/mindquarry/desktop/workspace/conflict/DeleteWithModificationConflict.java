@@ -74,7 +74,6 @@ public class DeleteWithModificationConflict extends Conflict {
 		this.otherMods = otherMods;
 		this.localPath = localPath;
 		this.repositoryURL = repositoryURL;
-		
 	}
 
 	public void beforeUpdate() throws ClientException {
@@ -92,7 +91,7 @@ public class DeleteWithModificationConflict extends Conflict {
 		    	// revert local delete
 	    		client.revert(status.getPath(), true);
 	    	} else {
-	    		// copy A => B (TODO: unique destination name)
+	    		// make a local copy of the file/dir
 	    		File source      = new File(status.getPath());
 	    		File destination = new File(source.getParent()+"/__"+source.getName());
 	    		
@@ -103,28 +102,30 @@ public class DeleteWithModificationConflict extends Conflict {
 						FileUtils.copyDirectory(source, destination);
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					log.error("Failed to copy file/dir.");
 					e.printStackTrace();
 				}
-
 				
 				// remove .svn directories from copy
-				// TODO: not required for new client which stores .svn stuff in a different directory 
+				// TODO: not required for new client which stores .svn stuff in
+				// a different directory
 				removeDotSVNDirectories(destination.getPath());
 	    		
-	    		// svn revert A
+	    		// revert all local changes to file/dir
 				client.revert(status.getPath(), true);
 	    		
-	    		// rm -rf A
+	    		// Delete complete file/dir as the update operation will leave
+				// unversioned copies of files that were locally modified.
 				try {
 					FileUtils.forceDelete(source);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
+					log.error("Failed to delete file/dir.");
 					e.printStackTrace();
 				}
 	    	}
 	        
-	        // status probably missing (not svn deleted yet) because it's a conflict
+	        // TODO: What does this mean?
+	    	// > status probably missing (not svn deleted yet) because it's a conflict
 	    }
 	}
 
@@ -225,7 +226,7 @@ public class DeleteWithModificationConflict extends Conflict {
 				Number restoreRev = null;
 				String delFile = null;
 
-				// get all log messages since last update
+				// Get all log messages since last update
 				LogMessage[] logMessages = client.logMessages(parent,
 						Revision.BASE, Revision.HEAD, false, true);
 
@@ -234,8 +235,7 @@ public class DeleteWithModificationConflict extends Conflict {
 					for (ChangePath changePath : logMessage.getChangedPaths()) {
 						// check for deletion of expected file name
 						File thisFile = new File(localPath + changePath.getPath()).getAbsoluteFile();
-						if (targetFile.compareTo(thisFile) == 0
-								&& changePath.getAction() == 'D') {							
+						if (targetFile.compareTo(thisFile) == 0	&& changePath.getAction() == 'D') {							
 							// want to restore last revision before deletion
 							restoreRev = new Number(logMessage.getRevision().getNumber()-1);
 							delFile    = changePath.getPath();
@@ -247,7 +247,7 @@ public class DeleteWithModificationConflict extends Conflict {
 					}
 				}
 				
-				// restore deleted version with version history
+				// Restore deleted version with version history
 				if(restoreRev != null) {
 					client.copy(repositoryURL+delFile, status.getPath(), null, restoreRev);
 				} else {
