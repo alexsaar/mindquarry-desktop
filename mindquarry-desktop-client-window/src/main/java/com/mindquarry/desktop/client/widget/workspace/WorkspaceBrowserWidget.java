@@ -26,6 +26,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -72,6 +73,17 @@ public class WorkspaceBrowserWidget extends WidgetBase {
         viewer = new TreeViewer(tree);
         viewer.setLabelProvider(new TreeLabelProvider());
         viewer.setContentProvider(new TreeContentProvider());
+        viewer.setSorter(new ViewerSorter() {
+            public int category(Object element) {
+                File file = (File) element;
+                // sort directories first, rest is sorted naturally
+                if (file.isDirectory()) {
+                    return 1;
+                } else {
+                    return 2;
+                }
+            }
+        });
 
         refresh();
     }
