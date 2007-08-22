@@ -13,7 +13,7 @@
  */
 package com.mindquarry.desktop.client.workspace.dialog;
 
-import com.mindquarry.desktop.workspace.SVNHelper;
+import com.mindquarry.desktop.workspace.deprecated.SVNHelper;
 
 
 

@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.Messages;
-import com.mindquarry.desktop.workspace.SVNHelper;
+import com.mindquarry.desktop.workspace.deprecated.SVNHelper;
 
 /**
  * Dialog for resolving working copy conflicts.

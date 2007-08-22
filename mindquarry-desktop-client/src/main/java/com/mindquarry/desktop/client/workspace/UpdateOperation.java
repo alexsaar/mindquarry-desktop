@@ -23,7 +23,7 @@ import org.tigris.subversion.javahl.ClientException;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.preferences.profile.Profile;
-import com.mindquarry.desktop.workspace.SVNHelper;
+import com.mindquarry.desktop.workspace.deprecated.SVNHelper;
 
 /**
  * Updates the local working copy of the workspaces.

@@ -28,7 +28,7 @@ import org.tigris.subversion.javahl.Status;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.workspace.dialog.ConflictDialog;
-import com.mindquarry.desktop.workspace.SVNHelper;
+import com.mindquarry.desktop.workspace.deprecated.SVNHelper;
 
 /**
  * Specilization of the {@link SVNHelper} for Java clients.
