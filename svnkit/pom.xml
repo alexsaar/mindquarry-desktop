@@ -42,4 +42,20 @@
       <url>scpexe://www.mindquarry.org/home/maven/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.tmatesoft.svn.cli.SVN</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
