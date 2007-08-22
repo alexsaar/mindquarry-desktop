@@ -14,13 +14,13 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
-import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
@@ -91,23 +91,25 @@ public class ReplaceConflict extends Conflict {
                 log.debug("****** " + Kind.getDescription(s.getTextStatus())  + " " + s.getPath());
             }
             
-			client.copy(file.getPath(), new File(folder, newName).getPath(), null, Revision.WORKING);
-			client.remove(new String[] { file.getPath() }, null, true);
-			
-			//client.revert(file.getPath(), true);
-
-//			if (status.getRepositoryTextStatus() == StatusKind.replaced) {
-//	            try {
-//	                log.info("************ deleting " + file.getPath());
-//	                FileUtils.forceDelete(file);
-//	            } catch (IOException e) {
-//	                log.error("deleting failed.");
-//	                // TODO: callback for error handling
-//	                System.exit(-1);
-//	            }
-//			}
+            File source      = new File(status.getPath());
+            File destination = new File(source.getParent() + "/" + newName);
             
-            //client.revert(file.getPath(), true);
+            try {
+                if(source.isDirectory()) {
+                    FileUtils.copyDirectory(source, destination);
+
+                    removeDotSVNDirectories(destination.getPath());
+                } else {
+                    FileUtils.copyFile(source, destination);
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            client.add(destination.getPath(), true, true);
+            client.remove(new String[] { file.getPath() }, null, true);
+			
 			break;
 			
 		case REPLACE:
@@ -128,6 +130,30 @@ public class ReplaceConflict extends Conflict {
 			break;
 		}
 	}
+
+    private void removeDotSVNDirectories(String path) {
+        File[] allDirs = new File(path).listFiles(new FileFilter() {
+            public boolean accept(File arg0) {
+                return arg0.isDirectory();
+            }});
+        
+        if (allDirs != null) {
+            for(File dir : allDirs) {
+                if(dir.getName().compareTo(".svn") == 0) {
+                    // delete .svn directories
+                    try {
+                        FileUtils.forceDelete(dir);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                } else {
+                    // recurse
+                    removeDotSVNDirectories(dir.getPath());
+                }
+            }
+        }
+    }
 
 	public void afterUpdate() {
 		// nothing to do here
