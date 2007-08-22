@@ -379,6 +379,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
         // TODO: can be removed when commit is implemented in synchronize()
         client.commit(new String[] { wcPath }, "test commit", true);
+
+        FileUtils.deleteDirectory(new File("target/replaced_conflict/"));
     }
 
     @Test
@@ -392,6 +394,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
         // TODO: can be removed when commit is implemented in synchronize()
         client.commit(new String[] { wcPath }, "test commit", true);
+        
+        FileUtils.deleteDirectory(new File("target/replaced_conflict/"));
     }
     
     private void prepareObstructedAndConflicted() throws IOException {
@@ -409,6 +413,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
         prepareObstructedAndConflicted();
         
         helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
     }
 
     @Test
@@ -419,6 +425,8 @@ public class SVNSynchronizerTestZip implements Notify2 {
         prepareObstructedAndConflicted();
         
         helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
     }
 
 	// TODO: test ignore of Thumbs.db/.DS_Store
