@@ -136,7 +136,8 @@ public class AddConflict extends Conflict {
 	 * Call this during conflict resolving before a call to doRename() to check
 	 * if the given name is possible without another conflict. Not possible when
 	 * another file or folder exists in the same directory or when a file or
-	 * folder with that name will be added during the next update.
+	 * folder with that name will be added during the next update or when the
+	 * filename is null or whitespace only.
 	 * 
 	 * @param newName the new name for the conflicted file/folder to check for
 	 * @return true if the name can be used, false if not
@@ -145,7 +146,14 @@ public class AddConflict extends Conflict {
 	 * and throw a CancelException in the handle method
 	 */
 	public boolean isRenamePossible(String newName) throws ClientException {
-	    if (remoteAddedInFolder == null) {
+        if (newName == null) {
+            return false;
+        }
+        if (newName.trim().equals("")) {
+            return false;
+        }
+
+        if (remoteAddedInFolder == null) {
 	        // lazily retrieve possible conflicts with other remotely added files
 	        remoteAddedInFolder = new ArrayList<String>();
 	        for (Status s : client.status(folder.getAbsolutePath(), true, true, false)) {
@@ -161,8 +169,8 @@ public class AddConflict extends Conflict {
 	    
 	    // TODO: check for relative path names (eg. ../../newfile) and return false
 	    
-	    // such a file must not exist locally yet and it must not be added
-	    // during the next update (that would be another conflict then)
+        // such a file must not exist locally yet and it must not be added
+        // during the next update (that would be another conflict then)
 	    boolean result = !(new File(folder, newName).exists() || remoteAddedInFolder.contains(newName));
 	    
 	    if (!result) {
