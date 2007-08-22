@@ -514,7 +514,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(true, conflictParent, remoteModList), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(true, conflictParent, remoteModList, localPath, repositoryURL), conflicts);
                 }
                 
                 // reset global iterator for next conflict search
@@ -566,7 +566,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(false, conflictParent, localModList), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(false, conflictParent, localModList, localPath, repositoryURL), conflicts);
                 }
                 
                 // reset global iterator for next conflict search
@@ -598,7 +598,7 @@ public class SVNSynchronizer {
                 if (status.getRepositoryTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    presentNewConflict(new DeleteWithModificationConflict(true, status, null), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(true, status, null, localPath, repositoryURL), conflicts);
                 }
             }
         }
@@ -626,7 +626,7 @@ public class SVNSynchronizer {
                 if (status.getTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    presentNewConflict(new DeleteWithModificationConflict(false, status, null), conflicts);
+                    presentNewConflict(new DeleteWithModificationConflict(false, status, null, localPath, repositoryURL), conflicts);
                 }
             }
         }
