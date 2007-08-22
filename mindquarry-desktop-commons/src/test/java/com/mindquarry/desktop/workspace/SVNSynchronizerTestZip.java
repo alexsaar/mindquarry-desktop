@@ -27,6 +27,7 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictPrinter;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
