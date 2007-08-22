@@ -100,4 +100,9 @@ public class InteractiveConflictHandler implements ConflictHandler {
         System.err.println("FIXME: implement");
     }
 
+    public String getCommitMessage(String repoURL) throws CancelException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

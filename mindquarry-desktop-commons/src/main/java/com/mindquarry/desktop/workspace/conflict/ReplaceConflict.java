@@ -22,7 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
-import org.tigris.subversion.javahl.Status.Kind;
 
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
 import com.mindquarry.desktop.workspace.exception.CancelException;

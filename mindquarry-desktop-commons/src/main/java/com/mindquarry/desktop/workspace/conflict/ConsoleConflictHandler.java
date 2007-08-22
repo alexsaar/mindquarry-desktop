@@ -62,4 +62,9 @@ public class ConsoleConflictHandler implements ConflictHandler {
         // TODO Auto-generated method stub
         
     }
+
+    public String getCommitMessage(String repoURL) throws CancelException {
+        // TODO Auto-generated method stub
+        return "from console handler";
+    }
 }

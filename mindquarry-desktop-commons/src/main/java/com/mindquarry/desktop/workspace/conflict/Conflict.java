@@ -95,6 +95,16 @@ public abstract class Conflict {
 	    
 	}
 
+    /**
+     * Called before the commit is executed. Here any conflict that would break
+     * the commit must be resolved.
+     * @throws ClientException an implementation might need to access the svn
+     * client to do it's work and that can cause this exception to be thrown
+     */
+    public void beforeCommit() throws ClientException {
+        
+    }
+    
 	protected void removeDotSVNDirectories(String path) {
 		File[] allDirs = new File(path).listFiles(new FileFilter() {
 			public boolean accept(File arg0) {

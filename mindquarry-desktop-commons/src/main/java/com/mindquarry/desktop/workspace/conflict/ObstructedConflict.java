@@ -20,9 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
-import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**

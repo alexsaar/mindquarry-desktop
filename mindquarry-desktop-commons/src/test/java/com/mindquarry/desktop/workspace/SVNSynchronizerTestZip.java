@@ -409,9 +409,9 @@ public class SVNSynchronizerTestZip implements Notify2 {
     }
     
     @Test
-    public void testObstructedAndConflictedDoRenameAndNothing() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRenameAndUseLocal() throws IOException, ClientException {
         setupTest("obstructed_and_conflicted");
-        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedConflictHandlerMock(wcPath, ObstructedConflict.Action.RENAME));
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.RENAME, ContentConflict.Action.USE_LOCAL));
         
         prepareObstructedAndConflicted();
         
@@ -421,9 +421,9 @@ public class SVNSynchronizerTestZip implements Notify2 {
     }
 
     @Test
-    public void testObstructedAndConflictedDoRevertAndNothing() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRenameAndUseRemote() throws IOException, ClientException {
         setupTest("obstructed_and_conflicted");
-        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedConflictHandlerMock(wcPath, ObstructedConflict.Action.REVERT));
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.RENAME, ContentConflict.Action.USE_REMOTE));
         
         prepareObstructedAndConflicted();
         
@@ -431,6 +431,58 @@ public class SVNSynchronizerTestZip implements Notify2 {
         
         FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
     }
+
+    /*
+    @Test
+    public void testObstructedAndConflictedDoRenameAndMerge() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.RENAME, ContentConflict.Action.MERGE));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+    }
+    */
+
+    @Test
+    public void testObstructedAndConflictedDoRevertAndUseLocal() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.REVERT, ContentConflict.Action.USE_LOCAL));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+    }
+
+    @Test
+    public void testObstructedAndConflictedDoRevertAndUseRemote() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.REVERT, ContentConflict.Action.USE_REMOTE));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+    }
+
+    /*
+    @Test
+    public void testObstructedAndConflictedDoRevertAndMerge() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.REVERT, ContentConflict.Action.MERGE));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+    }
+    */
 
 	// TODO: test ignore of Thumbs.db/.DS_Store
 	// - simple test if it gets ignored (no ignored set previously)
@@ -596,20 +648,27 @@ public class SVNSynchronizerTestZip implements Notify2 {
         }
     }
 
-    private class ObstructedConflictedConflictHandlerMock extends AutomaticConflictHandler {
-        //private ContentConflict.Action conflAction;
+    private class ObstructedConflictedHandlerMock extends AutomaticConflictHandler {
+        private ContentConflict.Action conflictAction;
         private ObstructedConflict.Action obAction;
         
         private int uniqueCounter = 0;
 
-        public ObstructedConflictedConflictHandlerMock(String wcPath, ObstructedConflict.Action obAction) {
+        public ObstructedConflictedHandlerMock(String wcPath, ObstructedConflict.Action obAction, ContentConflict.Action conflictAction) {
             super(wcPath);
             
+            this.conflictAction = conflictAction;
             this.obAction = obAction;
         }
         
         public void handle(ContentConflict conflict) {
             printer.printConflict(conflict);
+            
+            switch(conflictAction) {
+            case USE_LOCAL: conflict.doUseLocal(); break;
+            case USE_REMOTE: conflict.doUseRemote(); break;
+            case MERGE: conflict.doMerge(); break;
+            }
         }
         
         public void handle(ObstructedConflict conflict) {

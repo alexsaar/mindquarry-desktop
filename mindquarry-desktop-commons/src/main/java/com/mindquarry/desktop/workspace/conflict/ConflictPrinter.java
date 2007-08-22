@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.tigris.subversion.javahl.Status;
-import org.tigris.subversion.javahl.Status.Kind;
 
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
 

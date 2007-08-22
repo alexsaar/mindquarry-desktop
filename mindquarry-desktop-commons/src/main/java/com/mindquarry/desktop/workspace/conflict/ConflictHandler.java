@@ -45,4 +45,7 @@ public interface ConflictHandler {
 
     public void handle(ObstructedConflict obstructedConflict)
             throws CancelException;
+    
+    public String getCommitMessage(String repoURL)
+            throws CancelException;
 }

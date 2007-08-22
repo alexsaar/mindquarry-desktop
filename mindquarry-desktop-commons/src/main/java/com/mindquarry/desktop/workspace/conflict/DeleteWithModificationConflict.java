@@ -15,11 +15,9 @@ package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.IOFileFilter;
 import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.LogMessage;
@@ -29,7 +27,6 @@ import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Revision.Number;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
-import com.sun.corba.se.spi.activation.Repository;
 
 /**
  * Local delete (of folder or file) conflicts with remote modification of

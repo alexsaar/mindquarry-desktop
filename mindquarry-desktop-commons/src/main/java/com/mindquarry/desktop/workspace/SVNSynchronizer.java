@@ -181,28 +181,27 @@ public class SVNSynchronizer {
 			
 			// TODO: local checks only: conflicted and obstructed
 			List<Conflict> localConflicts = analyzeConflictedAndObstructed();
-			
 			handleConflictsBeforeRemoteStatus(localConflicts);
 			
 			// TODO: implement selective update (for skipping) => later feature
 			
+            deleteMissingAndAddUnversioned(localPath);
+            
 			// TODO: enable repo locking (also unlock in finally below)
 			// client.lock(new String[] {localPath}, "locking for
 			// synchronization", false);
 
-            deleteMissingAndAddUnversioned(localPath);
-            
 			List<Conflict> conflicts = analyzeChangesAndAskUser();
 			
 			handleConflictsBeforeUpdate(conflicts);
 			client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
-
-//			handleContentConflicts();
-//			String message = askForCommitMessage();
 			
-//			// here something goes over the wire
-//			client.commit(new String[] { localPath }, message, true);
+			localConflicts = analyzeConflicted();
+			handleConflictsBeforeCommit(localConflicts);
+			
+			String message = handler.getCommitMessage(repositoryURL);
+			client.commit(new String[] { localPath }, message, true);
 
 		} catch (ClientException e) {
 			// TODO think about exception handling
@@ -222,16 +221,6 @@ public class SVNSynchronizer {
 		}
 	}
 	
-    /**
-     * Handles conflicts that need to be resolved before calling remote status.
-     */
-    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException {
-        for (Conflict conflict : localConflicts) {
-            log.info(">> Before Remote Status: " + conflict.toString());
-            conflict.beforeRemoteStatus();
-        }
-    }
-
     /**
 	 * This removes the need for calling svn del and svn add manually. It also
 	 * automatically adds hidden files (such as Thumbs.db on Windows or
@@ -387,29 +376,27 @@ public class SVNSynchronizer {
                     " '" + wcPath(s) + "'");
         }
         
-        conflicts.addAll(findLocalConflicted(localChanges));
         conflicts.addAll(findLocalObstructed(localChanges));
+        conflicts.addAll(findLocalConflicted(localChanges));
         
         return conflicts;
     }
 
     /**
-     * Finds all local files that are marked as (content-) conflicted.
+     * Looks for local conflicted files. This only does a local status call as
+     * it happens after the update.
      */
-    private List<Conflict> findLocalConflicted(List<Status> localChanges) throws CancelException {
+    private List<Conflict> analyzeConflicted() throws ClientException, CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
-        Iterator<Status> iter = localChanges.iterator();
-        
-        while (iter.hasNext()) {
-            Status status = iter.next();
-            
-            // local CONFLICTED
-            if (status.getTextStatus() == StatusKind.conflicted) {
-                iter.remove();
-                
-                presentNewConflict(new ContentConflict(status), conflicts);
-            }
+
+        List<Status> localChanges = getLocalChanges();
+        for (Status s : localChanges) {
+            log.debug("locally analyzing " + textStatusDesc(s.getTextStatus()) +
+                    " " + nodeKindDesc(s.getNodeKind()) +
+                    " '" + wcPath(s) + "'");
         }
+        
+        conflicts.addAll(findLocalConflicted(localChanges));
         
         return conflicts;
     }
@@ -434,6 +421,47 @@ public class SVNSynchronizer {
         }
         
         return conflicts;
+    }
+
+    /**
+     * Finds all local files that are marked as (content-) conflicted.
+     */
+    private List<Conflict> findLocalConflicted(List<Status> localChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        Iterator<Status> iter = localChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local CONFLICTED, remote MODIFIED
+            if (status.getTextStatus() == StatusKind.conflicted) {
+                iter.remove();
+                
+                presentNewConflict(new ContentConflict(status), conflicts);
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Handles conflicts that need to be resolved before calling remote status.
+     */
+    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException {
+        for (Conflict conflict : localConflicts) {
+            log.info(">> Before Remote Status: " + conflict.toString());
+            conflict.beforeRemoteStatus();
+        }
+    }
+
+    /**
+     * Handles conflicts that need to be resolved before committing.
+     */
+    private void handleConflictsBeforeCommit(List<Conflict> localConflicts) throws ClientException {
+        for (Conflict conflict : localConflicts) {
+            log.info(">> Before Commit: " + conflict.toString());
+            conflict.beforeCommit();
+        }
     }
 
     /**
@@ -1009,8 +1037,15 @@ public class SVNSynchronizer {
 	 * of svnkit.
 	 */
 	public static String notifyToString(NotifyInformation info) {
-		return NotifyAction.actionNames[info.getAction()] + " "
-				+ info.getPath();
+	    if (info.getAction() == -11) {
+	        // see org.tigris.subversion.javahl.JavaHLObjectFactory: "undocumented thing"
+	        return "commit completed";
+	    } else if (info.getAction() < 0 || info.getAction() >= NotifyAction.actionNames.length) {
+	        return info.getAction() + " " + info.getPath() + " " + info.getErrMsg();
+	    } else {
+	        return NotifyAction.actionNames[info.getAction()] + " "
+	                + info.getPath();
+	    }
 	}
 
 	/**

@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.workspace.conflict;
 
+import java.io.File;
+
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
@@ -27,6 +29,30 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  */
 public class ContentConflict extends Conflict {
 
+    private Action action = Action.UNKNOWN;
+    
+    public enum Action {
+        /**
+         * Indicating no conflict solution action was chosen yet.
+         */
+        UNKNOWN,
+        /**
+         * Use the local version (mine) of the file (loosing the server's
+         * modifications).
+         */
+        USE_LOCAL,
+        /**
+         * Use the server version of the file (loosing the local modifications).
+         */
+        USE_REMOTE,
+        /**
+         * Call a merge program (ie. Word in merge-mode) to let the user handle
+         * the conflicts.
+         */
+        MERGE;
+    }
+    
+    
     public ContentConflict(Status status) {
         super(status);
     }
@@ -36,20 +62,84 @@ public class ContentConflict extends Conflict {
         handler.handle(this);
     }
 
-    @Override
-    public void afterUpdate() throws ClientException {
-        // TODO Auto-generated method stub
+    private void resolveConflict() throws ClientException {
+        // check for conflict resolve method
+        switch (action) {
+        case UNKNOWN:
+            // client did not set a conflict resolution
+            log.error("ContentConflict with no action set: " + status.getPath());
+            return;
+            
+        case USE_REMOTE:
+            // copy latest revision from repository to main file
+            File parent = new File(status.getPath()).getParentFile();
+            File remoteFile = new File(parent, status.getConflictNew());
+            
+            File conflictFile = new File(status.getPath());
+            if (!conflictFile.delete()) {
+                log.error("deleting failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            
+            if (!remoteFile.renameTo(conflictFile)) {
+                log.error("renaming failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            break;
+            
+        case USE_LOCAL:
+            // copy local changes to main file
+            parent = new File(status.getPath()).getParentFile();
+            File localFile = new File(parent, status.getConflictWorking());
+            
+            conflictFile = new File(status.getPath());
+            if (!conflictFile.delete()) {
+                log.error("deleting failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            
+            if (!localFile.renameTo(conflictFile)) {
+                log.error("renaming failed.");
+                // TODO: callback for error handling
+                System.exit(-1);
+            }
+            break;
+            
+        case MERGE:
+            // TODO: GUI callback ??
+            log.error("content conflict merge not implemented yet");
+            return;
+        }
         
+        client.resolved(status.getPath(), false);
     }
 
     @Override
-    public void beforeUpdate() throws ClientException {
-        // TODO Auto-generated method stub
-        
+    public void beforeCommit() throws ClientException {
+        resolveConflict();
+    }
+
+    @Override
+    public void beforeRemoteStatus() throws ClientException {
+        resolveConflict();
     }
 
     public String toString() {
-        return "Content Conflict: " + status.getPath();
-        //return "Content Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+        return "Content Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
+    }
+    
+    public void doUseLocal() {
+        this.action = Action.USE_LOCAL;
+    }
+
+    public void doUseRemote() {
+        this.action = Action.USE_REMOTE;
+    }
+
+    public void doMerge() {
+        this.action = Action.MERGE;
     }
 }
