@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.tigris.subversion</groupId>
+  <artifactId>javahl</artifactId>
+  <version>1.0-Mindquarry_1</version>
+  <name>JavaHL interface</name>
+
+  <url>http://subversion.tigris.org/</url>
+  <licenses>
+    <license>
+      <url>http://subversion.tigris.org/license-1.html</url>        
+    </license>
+  </licenses>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.1</version>
+    </dependency>
+  </dependencies>
+
+  <distributionManagement>
+    <repository>
+      <id>mindquarry.releases</id>
+      <name>Mindquarry Repository</name>
+      <url>scpexe://www.mindquarry.org/home/maven/releases</url>
+    </repository>
+    
+    <snapshotRepository>
+      <id>mindquarry.snapshots</id>
+      <name>Mindquarry Snapshots Repository</name>
+      <url>scpexe://www.mindquarry.org/home/maven/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+  
+</project>
