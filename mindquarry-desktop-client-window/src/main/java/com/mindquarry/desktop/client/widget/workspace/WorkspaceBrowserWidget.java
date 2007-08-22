@@ -46,6 +46,26 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 public class WorkspaceBrowserWidget extends WidgetBase {
     private static Log log = LogFactory.getLog(WorkspaceBrowserWidget.class);
 
+    private static final Image folderImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
+
+    private static final Image fileImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+
+    private static final Image downloadImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
+
+    private static final Image uploadImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+
     private TreeViewer viewer;
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
@@ -92,17 +112,9 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             public Image getImage(Object element) {
                 File file = (File) element;
                 if (file.isDirectory()) {
-                    return new Image(
-                            Display.getCurrent(),
-                            getClass()
-                                    .getResourceAsStream(
-                                            "/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
+                    return folderImage;
                 } else if (file.isFile()) {
-                    return new Image(
-                            Display.getCurrent(),
-                            getClass()
-                                    .getResourceAsStream(
-                                            "/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+                    return fileImage;
                 }
                 return null;
             }
@@ -126,17 +138,9 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             public Image getImage(Object element) {
                 File file = (File) element;
                 if (file.isDirectory()) {
-                    return new Image(
-                            Display.getCurrent(),
-                            getClass()
-                                    .getResourceAsStream(
-                                            "/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
+                    return downloadImage;
                 } else if (file.isFile()) {
-                    return new Image(
-                            Display.getCurrent(),
-                            getClass()
-                                    .getResourceAsStream(
-                                            "/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+                    return uploadImage;
                 }
                 return null;
             }
