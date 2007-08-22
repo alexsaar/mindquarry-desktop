@@ -40,6 +40,9 @@ public interface ConflictHandler {
     public void handle(ReplaceConflict conflict)
             throws CancelException;
 
+    public void handle(PropertyConflict conflict)
+            throws CancelException;
+
     public void handle(ObstructedConflict obstructedConflict)
             throws CancelException;
 }

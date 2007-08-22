@@ -28,8 +28,6 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
-import com.mindquarry.desktop.workspace.conflict.Conflict;
-import com.mindquarry.desktop.workspace.conflict.ConflictPrinter;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
@@ -426,7 +424,16 @@ public class SVNSynchronizerTestZip implements Notify2 {
 	// TODO: test ignore of Thumbs.db/.DS_Store
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
-	
+    @Test
+    public void testPropertyConflict() throws IOException {
+        setupTest("property_conflict");
+        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+
+        helper.synchronize();
+        
+        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+    }
+    
 	private class AddConflictHandlerMock extends AutomaticConflictHandler {
         private AddConflict.Action action;
         

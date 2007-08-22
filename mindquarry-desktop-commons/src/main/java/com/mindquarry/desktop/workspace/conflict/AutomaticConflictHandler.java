@@ -87,6 +87,12 @@ public class AutomaticConflictHandler implements ConflictHandler {
 
         conflict.doRename(newName);
     }
+    
+    public void handle(PropertyConflict conflict) {
+//        printer.printConflict(conflict);
+
+        conflict.doUseRemoteValue();
+    }
 
     public void handle(ContentConflict conflict) throws CancelException {
         printer.printConflict(conflict);
@@ -98,5 +104,4 @@ public class AutomaticConflictHandler implements ConflictHandler {
         printer.printConflict(conflict);
         
     }
-
 }

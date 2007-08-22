@@ -48,6 +48,10 @@ public class ConsoleConflictHandler implements ConflictHandler {
         
     }
 
+    public void handle(PropertyConflict conflict) {
+//        printer.printConflict(conflict);
+    }
+
     public void handle(ContentConflict contentConflict) throws CancelException {
         // TODO Auto-generated method stub
         

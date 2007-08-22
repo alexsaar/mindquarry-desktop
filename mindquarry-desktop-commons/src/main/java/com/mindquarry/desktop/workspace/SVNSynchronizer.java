@@ -41,6 +41,7 @@ import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -497,6 +498,11 @@ public class SVNSynchronizer {
         conflicts.addAll(findDeleteModifiedConflicts(remoteAndLocalChanges));
         conflicts.addAll(findModifiedDeleteConflicts(remoteAndLocalChanges));
         
+        // property conflicts
+        // get up-to-date remote and local changes to get property conflicts of
+        // previously removed stati
+        conflicts.addAll(findPropertyConflicts(getRemoteAndLocalChanges()));
+        
 		return conflicts;
 	}
 
@@ -883,6 +889,60 @@ public class SVNSynchronizer {
         
         return conflicts;
     }
+    
+    /**
+     * 
+     */
+    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // LOCAL property status can be any one of those:
+            //   none
+            //   normal
+            //   modified
+            //   conflicted
+            
+            // REMOTE property status can be only the following:
+            //   none
+            //   normal
+            //   modified
+            if(status.getRepositoryPropStatus() == StatusKind.modified &&
+                    status.getPropStatus() == StatusKind.modified) {
+                try {
+                    PropertyData[] remoteProps = client.properties(status.getUrl());
+                    PropertyData[] localProps = client.properties(status.getPath());
+                    
+                    for(PropertyData localProp : localProps) {
+                        for(PropertyData remoteProp : remoteProps) {
+                            if(localProp.getName().equals(remoteProp.getName()) &&
+                                    !localProp.getValue().equals(remoteProp.getValue())) {
+                                log.info("found conflicting property " + localProp.getName());
+
+                                // TODO add further mergeable properties (e.g. mq:tags for Tagging)
+                                if(localProp.getName().equals(PropertyData.IGNORE) || 
+                                        localProp.getName().equals(PropertyData.EXTERNALS)) {
+                                    conflicts.add(new PropertyConflict(status, localProp, remoteProp, true));
+                                } else {
+                                    conflicts.add(new PropertyConflict(status, localProp, remoteProp, false));
+                                }
+                            }
+                        }
+                    }
+                } catch (ClientException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+            
+
+        return conflicts;
+    }
 
     /**
 	 * Calls {@link Conflict.handleBeforeUpdate} on all conflicts in the list.
@@ -941,18 +1001,6 @@ public class SVNSynchronizer {
         }
         return false;
     }
-
-    /**
-     * Removes all status objects that are added and lie below the parent path.
-     */
-//	public static void removeNestedAdds(Status parent, List<Status> localChanges) {
-//		Iterator<Status> iter = localChanges.iterator();
-//		while(iter.hasNext()) {
-//			if(isParent(parent.getPath(), iter.next().getPath())) {
-//				iter.remove();
-//			}
-//		}
-//	}
 
 	/**
 	 * Helper method that stringifies a notify object from the notify callback
