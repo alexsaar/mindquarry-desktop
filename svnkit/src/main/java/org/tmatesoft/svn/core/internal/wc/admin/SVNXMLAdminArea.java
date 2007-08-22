@@ -37,6 +37,7 @@ import org.tmatesoft.svn.core.SVNProperty;
 import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
 import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
 import org.tmatesoft.svn.core.internal.wc.SVNFileType;
@@ -693,8 +694,9 @@ public class SVNXMLAdminArea extends SVNAdminArea {
     public SVNAdminArea createVersionedDirectory(File dir, String url, String rootURL, String uuid, long revNumber, boolean createMyself) throws SVNException {
         dir = createMyself ? getRoot() : dir;
         dir.mkdirs();
-        File adminDir = createMyself ? getAdminDirectory() : new File(dir, SVNFileUtil.getAdminDirectoryName());
-        adminDir.mkdir();
+        
+        File adminDir = createMyself ? getAdminDirectory() : SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
+        
         SVNFileUtil.setHidden(adminDir, true);
         // lock dir.
         File lockFile = createMyself ? myLockFile : new File(adminDir, "lock");

@@ -20,8 +20,8 @@ import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 
 /**
@@ -189,8 +189,8 @@ public abstract class SVNAdminAreaFactory implements Comparable {
     }
         
     private static boolean checkAdminAreaExists(File dir, String url, long revision) throws SVNException {
-        File adminDir = new File(dir, SVNFileUtil.getAdminDirectoryName());
-        if (adminDir.exists() && !adminDir.isDirectory()) {
+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(dir, true);
+        if (adminDir == null || (adminDir.exists() && !adminDir.isDirectory())) {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_OBSTRUCTED_UPDATE, "''{0}'' is not a directory", dir);
             SVNErrorManager.error(err);
         } else if (!adminDir.exists()) {

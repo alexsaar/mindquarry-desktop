@@ -23,9 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.RandomAccessFile;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
@@ -70,7 +70,6 @@ public class SVNFileUtil {
     private static String ourGroupID;
     private static String ourUserID;
     private static File ourAppDataPath;
-    private static String ourAdminDirectoryName;
     private static final String BINARY_MIME_TYPE = "application/octet-stream";
 
     static {
@@ -106,25 +105,7 @@ public class SVNFileUtil {
     }
 
     public static String getBasePath(File file) {
-        File base = file.getParentFile();
-        while (base != null) {
-            if (base.isDirectory()) {
-                File adminDir = new File(base, getAdminDirectoryName());
-                if (adminDir.exists() && adminDir.isDirectory()) {
-                    break;
-                }
-            }
-            base = base.getParentFile();
-        }
-        String path = file.getAbsolutePath();
-        if (base != null) {
-            path = path.substring(base.getAbsolutePath().length());
-        }
-        path = path.replace(File.separatorChar, '/');
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-        return path;
+        return SVNAdminDirectoryLocator.getRelativePathToClosestVersionedDir(file);
     }
     
     public static boolean createEmptyFile(File file) throws SVNException {
@@ -811,7 +792,7 @@ public class SVNFileUtil {
             if (cancel != null) {
                 cancel.checkCancelled();
             }
-            if (!copyAdminDir && file.getName().equals(getAdminDirectoryName())) {
+            if (!copyAdminDir && SVNAdminDirectoryLocator.isAdminResource(file)) {
                 continue;
             }
             SVNFileType fileType = SVNFileType.getType(file);
@@ -825,7 +806,7 @@ public class SVNFileUtil {
                 }
             } else if (fileType == SVNFileType.DIRECTORY) {
                 copyDirectory(file, dst, copyAdminDir, cancel);
-                if (file.isHidden() || getAdminDirectoryName().equals(file.getName())) {
+                if (file.isHidden() || SVNAdminDirectoryLocator.isAdminResource(file)) {
                     setHidden(dst, true);
                 }
             } else if (fileType == SVNFileType.SYMLINK) {
@@ -1073,24 +1054,6 @@ public class SVNFileUtil {
                 //
             }
         }
-    }
-    
-    public static String getAdminDirectoryName() {
-        if (ourAdminDirectoryName == null) {
-            String defaultAdminDir = ".svn";
-            if (getEnvironmentVariable("SVN_ASP_DOT_NET_HACK") != null){
-                defaultAdminDir = "_svn";
-            }
-            ourAdminDirectoryName = System.getProperty("svnkit.admindir", System.getProperty("javasvn.admindir", defaultAdminDir));
-            if (ourAdminDirectoryName == null || "".equals(ourAdminDirectoryName.trim())) {
-                ourAdminDirectoryName = defaultAdminDir;
-            }
-        }
-        return ourAdminDirectoryName;
-    }
-    
-    public static void setAdminDirectoryName(String name) {
-        ourAdminDirectoryName = name;
     }
     
     public static File getApplicationDataPath() {

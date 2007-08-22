@@ -75,7 +75,7 @@ public class SVNFileType {
         if (file == null) {
             return SVNFileType.UNKNOWN;
         }
-        if (detectSymlinks && !SVNFileUtil.isWindows && !isAdminFile(file)) {
+        if (detectSymlinks && !SVNFileUtil.isWindows && !SVNAdminDirectoryLocator.isAdminFile(file)) {
             if (canonPathCacheUsed && !fastSymlinkResoution && SVNFileUtil.isSymlink(file)) {
                 return SVNFileType.SYMLINK;
             } else if (!canonPathCacheUsed || fastSymlinkResoution) {            
@@ -127,12 +127,6 @@ public class SVNFileType {
         return false;
     }
     
-    private static boolean isAdminFile(File file) {
-        String path = file.getAbsolutePath().replace(File.separatorChar, '/');
-        String adminDir = "/" + SVNFileUtil.getAdminDirectoryName();
-        return path.lastIndexOf(adminDir + "/") > 0 || path.endsWith(adminDir);
-    }
-
     public int getID() {
         return myType;
     }

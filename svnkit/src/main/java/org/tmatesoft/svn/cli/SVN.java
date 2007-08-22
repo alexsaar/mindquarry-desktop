@@ -154,6 +154,7 @@ public class SVN {
                 System.exit(1);
             }
         } catch (Throwable th) {
+            System.err.println(th.getMessage());
             SVNDebugLog.getDefaultLog().info(th);
             System.exit(-1);
         }   

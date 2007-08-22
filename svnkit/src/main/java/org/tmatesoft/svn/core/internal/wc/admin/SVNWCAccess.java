@@ -29,10 +29,10 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
 import org.tmatesoft.svn.core.internal.wc.SVNExternalInfo;
 import org.tmatesoft.svn.core.internal.wc.SVNFileType;
-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 import org.tmatesoft.svn.core.wc.ISVNEventHandler;
 import org.tmatesoft.svn.core.wc.ISVNOptions;
 import org.tmatesoft.svn.core.wc.SVNEvent;
@@ -391,7 +391,7 @@ public class SVNWCAccess implements ISVNEventHandler {
     }
 
     public boolean isLocked(File path) throws SVNException {
-        File lockFile = new File(path, SVNFileUtil.getAdminDirectoryName());
+        File lockFile = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
         lockFile = new File(lockFile, "lock");
         if (SVNFileType.getType(lockFile) == SVNFileType.FILE) {
             return true;
@@ -506,7 +506,7 @@ public class SVNWCAccess implements ISVNEventHandler {
                     SVNErrorManager.error(err);
                 }
             }
-            File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
+            File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
             SVNFileType wcType = SVNFileType.getType(adminDir);
             
             if (type == SVNFileType.NONE) {

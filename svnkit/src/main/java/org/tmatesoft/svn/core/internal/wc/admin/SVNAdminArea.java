@@ -37,6 +37,7 @@ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
 import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNMerger;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
 import org.tmatesoft.svn.core.internal.wc.SVNFileType;
@@ -56,7 +57,7 @@ public abstract class SVNAdminArea {
 
     private File myDirectory;
     private SVNWCAccess myWCAccess;
-    private File myAdminRoot;
+    //private File myAdminRoot;
     protected Map myBaseProperties;
     protected Map myProperties;
     protected Map myWCProperties;
@@ -1059,7 +1060,7 @@ public abstract class SVNAdminArea {
     }
 
     public File getAdminDirectory() {
-        return myAdminRoot;
+        return SVNAdminDirectoryLocator.getAdminDirectory(myDirectory, false);
     }
 
     public File getAdminFile(String name) {
@@ -1070,6 +1071,13 @@ public abstract class SVNAdminArea {
         if (name == null) {
             return null;
         }
+        // some calls request the files inside the admin directory
+        // which might reside in a different location
+        final String adminDirName = SVNAdminDirectoryLocator.getAdminDirectoryName();
+        if (name.startsWith(adminDirName)) {
+            return getAdminFile(name.substring(adminDirName.length()));
+        }
+        
         return new File(getRoot(), name);
     }
 
@@ -1108,7 +1116,7 @@ public abstract class SVNAdminArea {
 
     protected SVNAdminArea(File dir){
         myDirectory = dir;
-        myAdminRoot = new File(dir, SVNFileUtil.getAdminDirectoryName());
+        //myAdminRoot = SVNFileUtil.getAdminDir(dir);
     }
 
     protected File getBasePropertiesFile(String name, boolean tmp) {

@@ -413,7 +413,7 @@ public class SVNWCManager {
             }
             File[] children = path.listFiles();
             for(int i = 0; children != null && i < children.length; i++) {
-                if (SVNFileUtil.getAdminDirectoryName().equals(children[i].getName())) {
+                if (SVNAdminDirectoryLocator.isAdminResource(children[i])) {
                     continue;
                 }
                 if (versioned.contains(children[i].getName())) {

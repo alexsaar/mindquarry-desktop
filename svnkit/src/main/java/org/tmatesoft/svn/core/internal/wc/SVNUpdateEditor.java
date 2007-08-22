@@ -191,7 +191,7 @@ public class SVNUpdateEditor implements ISVNEditor {
         if (kind != SVNFileType.NONE) {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_OBSTRUCTED_UPDATE, "Failed to add directory ''{0}'': object of the same name already exists", path);
             SVNErrorManager.error(err);
-        } else if (SVNFileUtil.getAdminDirectoryName().equals(name)) {
+        } else if (SVNAdminDirectoryLocator.isAdminResource(name)) {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_OBSTRUCTED_UPDATE, "Failed to add directory ''{0}'':  object of the same name as the administrative directory", path);
             SVNErrorManager.error(err);
         }
@@ -224,7 +224,7 @@ public class SVNUpdateEditor implements ISVNEditor {
         }
         if (SVNWCManager.ensureAdmiAreaExists(childDir, myCurrentDirectory.URL, rootURL, null, myTargetRevision)) {
             // hack : remove created lock file.
-            SVNFileUtil.deleteFile(new File(childDir, SVNFileUtil.getAdminDirectoryName() + "/lock"));
+            SVNFileUtil.deleteFile(new File(SVNAdminDirectoryLocator.getAdminDirectory(childDir, false), "/lock"));
         }
         myWCAccess.open(childDir, true, 0);
         myWCAccess.handleEvent(SVNEventFactory.createUpdateAddEvent(myAdminInfo, parentArea, SVNNodeKind.DIR, entry));
@@ -464,7 +464,7 @@ public class SVNUpdateEditor implements ISVNEditor {
         }
         
         //merge contents.
-        String adminDir = SVNFileUtil.getAdminDirectoryName();
+        String adminDir = SVNAdminDirectoryLocator.getAdminDirectoryName();
         File textTmpBase = adminArea.getBaseFile(name, true);
         if (isReplaced) {
             textTmpBase = adminArea.getFile(SVNAdminUtil.getTextRevertPath(name, true));

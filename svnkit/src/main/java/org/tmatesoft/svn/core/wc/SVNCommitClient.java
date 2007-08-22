@@ -35,6 +35,7 @@ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
 import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
 import org.tmatesoft.svn.core.internal.wc.ISVNCommitPathHandler;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNCommitMediator;
 import org.tmatesoft.svn.core.internal.wc.SVNCommitUtil;
 import org.tmatesoft.svn.core.internal.wc.SVNCommitter;
@@ -455,8 +456,8 @@ public class SVNCommitClient extends SVNBasicClient {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.ENTRY_EXISTS, "Path ''{0}'' already exists", dstURL);            
             SVNErrorManager.error(err);
         }
-        if (newPaths.contains(SVNFileUtil.getAdminDirectoryName())) {
-            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNFileUtil.getAdminDirectoryName());            
+        if (newPaths.contains(SVNAdminDirectoryLocator.getAdminDirectoryName())) {
+            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.CL_ADM_DIR_RESERVED, "''{0}'' is a reserved name and cannot be imported", SVNAdminDirectoryLocator.getAdminDirectoryName());            
             SVNErrorManager.error(err);
         }
         SVNCommitItem[] items = new SVNCommitItem[1];
@@ -982,7 +983,7 @@ public class SVNCommitClient extends SVNBasicClient {
         boolean changed = false;
         for (int i = 0; children != null && i < children.length; i++) {
             File file = children[i];
-            if (SVNFileUtil.getAdminDirectoryName().equals(file.getName())) {
+            if (SVNAdminDirectoryLocator.isAdminResource(file)) {
                 SVNEvent skippedEvent = SVNEventFactory.createSkipEvent(
                         rootFile, file, SVNEventAction.SKIP, SVNEventAction.COMMIT_ADDED, SVNNodeKind.NONE);
                 handleEvent(skippedEvent, ISVNEventHandler.UNKNOWN);

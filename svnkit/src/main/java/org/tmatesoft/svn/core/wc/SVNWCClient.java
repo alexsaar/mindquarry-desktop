@@ -38,6 +38,7 @@ import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
 import org.tmatesoft.svn.core.internal.util.SVNTimeUtil;
 import org.tmatesoft.svn.core.internal.util.SVNURLUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminUtil;
 import org.tmatesoft.svn.core.internal.wc.SVNCancellableOutputStream;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
@@ -1032,7 +1033,7 @@ public class SVNWCClient extends SVNBasicClient {
         File[] children = dir.getRoot().listFiles();
         for(int i = 0; children != null && i < children.length; i++) {
             checkCancelled();
-            if (SVNFileUtil.getAdminDirectoryName().equals(children[i].getName())) {
+            if (SVNAdminDirectoryLocator.isAdminResource(children[i])) {
                 continue;
             }
             if (!noIgnore && SVNStatusEditor.isIgnored(ignores, children[i].getName())) {

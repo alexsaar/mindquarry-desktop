@@ -86,7 +86,7 @@ public class SVNAdminUtil {
     
     public static String getTextBasePath(String name, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);
@@ -101,7 +101,7 @@ public class SVNAdminUtil {
 
     public static String getTextRevertPath(String name, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);
@@ -116,7 +116,7 @@ public class SVNAdminUtil {
 
     public static String getPropPath(String name, SVNNodeKind kind, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);
@@ -135,7 +135,7 @@ public class SVNAdminUtil {
 
     public static String getPropBasePath(String name, SVNNodeKind kind, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);
@@ -154,7 +154,7 @@ public class SVNAdminUtil {
     
     public static String getPropRevertPath(String name, SVNNodeKind kind, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);
@@ -173,7 +173,7 @@ public class SVNAdminUtil {
 
     public static String getWCPropPath(String name, SVNNodeKind kind, boolean tmp) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append(SVNFileUtil.getAdminDirectoryName());
+        buffer.append(SVNAdminDirectoryLocator.getAdminDirectoryName());
         buffer.append('/');
         if (tmp) {
             buffer.append(TMP_DIR_NAME);

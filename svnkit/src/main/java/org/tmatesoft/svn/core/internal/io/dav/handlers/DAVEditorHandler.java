@@ -174,6 +174,13 @@ public class DAVEditorHandler extends BasicDAVDeltaHandler {
 	}
 	
 	protected void startElement(DAVElement parent, DAVElement element, Attributes attrs) throws SVNException {
+//        System.out.print("** " + element.getName());
+//        if (parent != null) {
+//            System.out.println(" (" + parent.getName() + ")");
+//        } else {
+//            System.out.println();
+//        }
+        
         if (element == UPDATE_REPORT) {
             String receiveAll = attrs.getValue(SEND_ALL_ATTR);
             if (receiveAll == null || !Boolean.valueOf(receiveAll).booleanValue()) {

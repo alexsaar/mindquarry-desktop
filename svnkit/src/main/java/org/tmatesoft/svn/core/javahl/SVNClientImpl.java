@@ -58,6 +58,7 @@ import org.tmatesoft.svn.core.internal.io.svn.ISVNConnectorFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNGanymedSession;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
 import org.tmatesoft.svn.core.internal.wc.SVNFileType;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
@@ -1251,13 +1252,13 @@ public class SVNClientImpl implements SVNClientInterface {
     }
 
     public String getAdminDirectoryName() {
-        return SVNFileUtil.getAdminDirectoryName();
+        return SVNAdminDirectoryLocator.getAdminDirectoryName();
     }
 
     public boolean isAdminDirectory(String name) {
         return name != null && (SVNFileUtil.isWindows) ?
-                name.equalsIgnoreCase(SVNFileUtil.getAdminDirectoryName()) :
-                name.equals(SVNFileUtil.getAdminDirectoryName());
+                name.equalsIgnoreCase(SVNAdminDirectoryLocator.getAdminDirectoryName()) :
+                name.equals(SVNAdminDirectoryLocator.getAdminDirectoryName());
     }
 
     public org.tigris.subversion.javahl.Version getVersion() {        

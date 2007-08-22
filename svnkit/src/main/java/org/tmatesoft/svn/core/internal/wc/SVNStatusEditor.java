@@ -178,7 +178,7 @@ public class SVNStatusEditor {
         childrenFiles = new TreeMap(childrenFiles);
         for (Iterator files = childrenFiles.keySet().iterator(); files.hasNext();) {
             String fileName = (String) files.next();
-            if (dir.getEntry(fileName, false) != null || SVNFileUtil.getAdminDirectoryName().equals(fileName)) {
+            if (dir.getEntry(fileName, false) != null || SVNAdminDirectoryLocator.isAdminResource(fileName)) {
                 continue;
             }
             if (ignorePatterns == null) {

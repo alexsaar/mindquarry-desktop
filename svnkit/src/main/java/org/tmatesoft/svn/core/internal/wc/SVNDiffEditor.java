@@ -463,7 +463,7 @@ public class SVNDiffEditor implements ISVNEditor {
         File[] allFiles = root.listFiles();
         for (int i = 0; allFiles != null && i < allFiles.length; i++) {
             File file = allFiles[i];
-            if (SVNFileUtil.getAdminDirectoryName().equals(file.getName())) {
+            if (SVNAdminDirectoryLocator.isAdminResource(file)) {
                 continue;
             }
             if (processedFiles != null && processedFiles.contains(file.getName())) {

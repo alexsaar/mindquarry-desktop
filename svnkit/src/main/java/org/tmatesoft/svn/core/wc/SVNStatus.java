@@ -18,7 +18,7 @@ import java.util.Map;
 import org.tmatesoft.svn.core.SVNLock;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
-import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.admin.SVNEntry;
 
 /**
@@ -534,10 +534,10 @@ public class SVNStatus {
         if (myLocalPropertiesDate == null) {
             File propFile = null;
             if (getFile() != null && getKind() == SVNNodeKind.DIR) {
-                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
+                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
                 propFile = new File(propFile, "dir-props");
             } else if (getFile() != null && getKind() == SVNNodeKind.FILE) {
-                propFile = new File(getFile().getAbsoluteFile().getParentFile(), SVNFileUtil.getAdminDirectoryName());
+                propFile = SVNAdminDirectoryLocator.getAdminDirectory(getFile().getAbsoluteFile().getParentFile(), false);
                 propFile = new File(propFile, "props/" + getFile().getName() + ".svn-work");
             }
             myLocalContentsDate = propFile != null ? new Date(propFile.lastModified()) : new Date(0);

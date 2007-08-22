@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
 import org.tmatesoft.svn.core.internal.wc.SVNFileType;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
@@ -52,7 +53,7 @@ class SVNXMLAdminAreaFactory extends SVNAdminAreaFactory {
     }
 
     protected int doCheckWC(File path) throws SVNException {
-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
         File formatFile = new File(adminDir, "format");
         int formatVersion = -1;
 
@@ -93,7 +94,7 @@ class SVNXMLAdminAreaFactory extends SVNAdminAreaFactory {
     }
 
     protected int getVersion(File path) throws SVNException {
-        File adminDir = new File(path, SVNFileUtil.getAdminDirectoryName());
+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(path, false);
         File formatFile = new File(adminDir, "format");
         BufferedReader reader = null;
         String line = null;
