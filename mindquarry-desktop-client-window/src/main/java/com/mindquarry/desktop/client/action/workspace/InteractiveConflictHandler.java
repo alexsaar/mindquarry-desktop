@@ -37,7 +37,7 @@ public class InteractiveConflictHandler implements ConflictHandler {
 
     private Shell shell;
     
-    InteractiveConflictHandler(Shell shell) {
+    public InteractiveConflictHandler(Shell shell) {
         this.shell = shell;
     }
     
