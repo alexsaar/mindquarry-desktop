@@ -21,7 +21,9 @@ import com.mindquarry.desktop.client.dialog.conflict.AddConflictDialog;
 import com.mindquarry.desktop.client.dialog.conflict.DeleteWithModificationConflictDialog;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -77,6 +79,17 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(ReplaceConflict conflict) throws CancelException {
+        // TODO Auto-generated method stub
+        System.err.println("FIXME: implement");
+    }
+
+    public void handle(ContentConflict contentConflict) throws CancelException {
+        // TODO Auto-generated method stub
+        System.err.println("FIXME: implement");
+    }
+
+    public void handle(ObstructedConflict obstructedConflict)
+            throws CancelException {
         // TODO Auto-generated method stub
         System.err.println("FIXME: implement");
     }

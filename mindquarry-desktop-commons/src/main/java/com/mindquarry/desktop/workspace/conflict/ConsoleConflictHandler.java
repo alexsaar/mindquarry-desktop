@@ -48,5 +48,14 @@ public class ConsoleConflictHandler implements ConflictHandler {
         
     }
 
+    public void handle(ContentConflict contentConflict) throws CancelException {
+        // TODO Auto-generated method stub
+        
+    }
 
+    public void handle(ObstructedConflict obstructedConflict)
+            throws CancelException {
+        // TODO Auto-generated method stub
+        
+    }
 }

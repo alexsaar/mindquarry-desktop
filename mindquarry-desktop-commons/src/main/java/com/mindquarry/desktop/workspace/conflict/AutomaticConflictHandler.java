@@ -88,4 +88,15 @@ public class AutomaticConflictHandler implements ConflictHandler {
         conflict.doRename(newName);
     }
 
+    public void handle(ContentConflict conflict) throws CancelException {
+        printer.printConflict(conflict);
+        
+    }
+
+    public void handle(ObstructedConflict conflict)
+            throws CancelException {
+        printer.printConflict(conflict);
+        
+    }
+
 }

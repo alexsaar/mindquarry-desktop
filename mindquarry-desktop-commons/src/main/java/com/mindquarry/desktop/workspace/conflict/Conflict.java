@@ -65,13 +65,25 @@ public abstract class Conflict {
      */
     public abstract void accept(ConflictHandler handler) throws CancelException;
 	
+    /**
+     * Called before the remote status is called. Here any conflict that would
+     * break that must be resolved.
+     * @throws ClientException an implementation might need to access the svn
+     * client to do it's work and that can cause this exception to be thrown
+     */
+    public void beforeRemoteStatus() throws ClientException {
+        
+    }
+    
 	/**
 	 * Called before the svn update. Here any conflict that would break the
 	 * update must be resolved.
 	 * @throws ClientException an implementation might need to access the svn
 	 * client to do it's work and that can cause this exception to be thrown
 	 */
-    public abstract void beforeUpdate() throws ClientException;
+    public void beforeUpdate() throws ClientException {
+        
+    }
     
     /**
      * Called after the svn update. Here any post-work can be done, eg. undoing
@@ -79,7 +91,9 @@ public abstract class Conflict {
      * to be executed once the remote modifications are applied to the working
      * copy.
      */
-	public abstract void afterUpdate() throws ClientException;
+	public void afterUpdate() throws ClientException {
+	    
+	}
 
 	protected void removeDotSVNDirectories(String path) {
 		File[] allDirs = new File(path).listFiles(new FileFilter() {

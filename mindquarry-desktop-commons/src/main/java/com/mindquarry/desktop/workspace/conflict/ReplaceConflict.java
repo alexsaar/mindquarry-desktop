@@ -24,6 +24,7 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
 
+import com.mindquarry.desktop.workspace.SVNSynchronizer;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -87,7 +88,7 @@ public class ReplaceConflict extends Conflict {
 			log.info("renaming to " + newName);
 			
             for (Status s : getLocalChildren()) {
-                log.debug("****** " + Kind.getDescription(s.getTextStatus())  + " " + s.getPath());
+                log.debug("****** " + SVNSynchronizer.textStatusDesc(s.getTextStatus())  + " " + s.getPath());
             }
             
             File source      = new File(status.getPath());

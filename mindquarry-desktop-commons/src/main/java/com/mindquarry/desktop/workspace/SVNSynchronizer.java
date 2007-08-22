@@ -16,7 +16,6 @@ package com.mindquarry.desktop.workspace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -40,7 +39,9 @@ import com.mindquarry.desktop.util.RelativePath;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -123,7 +124,7 @@ public class SVNSynchronizer {
 	public void synchronizeOrCheckout() {
         File localDir = new File(localPath);
         
-        // is directory doesn't exist, create it:
+        // if directory doesn't exist, create it:
         if (!localDir.exists()) {
             boolean createdDir = localDir.mkdirs();
             if (!createdDir) {
@@ -142,7 +143,7 @@ public class SVNSynchronizer {
         } else {
             // TODO: check if the directories are empty,
             // othwise we'd try to check out into a directory
-            // that contains local files already whoch causes
+            // that contains local files already which causes
             // confusion.
             try {
                 client.checkout(repositoryURL, localPath, Revision.HEAD, true);
@@ -173,7 +174,16 @@ public class SVNSynchronizer {
 	public void synchronize() {
 		try {
 		    // a cleanup is good for removing any old working copy locks
+		    // (throws only exception if the path does not exist or is not part
+		    // of a working copy - that has to be checked outside this method)
 			client.cleanup(localPath);
+			
+			// TODO: local checks only: conflicted and obstructed
+			List<Conflict> localConflicts = analyzeConflictedAndObstructed();
+			
+			handleConflictsBeforeRemoteStatus(localConflicts);
+			
+			// TODO: implement selective update (for skipping) => later feature
 			
 			// TODO: enable repo locking (also unlock in finally below)
 			// client.lock(new String[] {localPath}, "locking for
@@ -211,17 +221,27 @@ public class SVNSynchronizer {
 		}
 	}
 	
-	/**
+    /**
+     * Handles conflicts that need to be resolved before calling remote status.
+     */
+    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException {
+        for (Conflict conflict : localConflicts) {
+            log.info(">> Before Remote Status: " + conflict.toString());
+            conflict.beforeRemoteStatus();
+        }
+    }
+
+    /**
 	 * This removes the need for calling svn del and svn add manually. It also
 	 * automatically adds hidden files (such as Thumbs.db on Windows or
 	 * .something) to the ignore list.
      */
     private void deleteMissingAndAddUnversioned(String path) throws ClientException {
         for (Status s : getLocalChanges(path)) {
-            log.debug("deleting/adding/ignoring " + Kind.getDescription(s.getTextStatus()) +
+            log.debug("deleting/adding/ignoring " + SVNSynchronizer.textStatusDesc(s.getTextStatus()) +
                     " " + nodeKindDesc(s.getNodeKind()) +
                     " <->" +
-                    " " + Kind.getDescription(s.getRepositoryTextStatus()) +
+                    " " + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) +
                     " " + nodeKindDesc(s.getReposKind()) +
                     " '" + wcPath(s) + "'");
             
@@ -301,7 +321,7 @@ public class SVNSynchronizer {
 		});
 
 		for (Status s : statusList) {
-			log.info(s.getTextStatusDescription() + " " + s.getPath());
+			log.info(textStatusDesc(s.getTextStatus()) + " " + s.getPath());
 		}
 		
 		return statusList;
@@ -332,7 +352,7 @@ public class SVNSynchronizer {
         });
         
 		for (Status s : statusList) {
-			log.info(Kind.getDescription(s.getRepositoryTextStatus()) + " "
+			log.info(SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) + " "
 					+ s.getPath());
 		}
 
@@ -353,6 +373,69 @@ public class SVNSynchronizer {
     }
     
     /**
+     * Looks for local conflicted files and obstructed files. This only does a
+     * local status call, because obstructed files can break a remote status.
+     */
+    private List<Conflict> analyzeConflictedAndObstructed() throws ClientException, CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+
+        List<Status> localChanges = getLocalChanges();
+        for (Status s : localChanges) {
+            log.debug("locally analyzing " + textStatusDesc(s.getTextStatus()) +
+                    " " + nodeKindDesc(s.getNodeKind()) +
+                    " '" + wcPath(s) + "'");
+        }
+        
+        conflicts.addAll(findLocalConflicted(localChanges));
+        conflicts.addAll(findLocalObstructed(localChanges));
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all local files that are marked as (content-) conflicted.
+     */
+    private List<Conflict> findLocalConflicted(List<Status> localChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        Iterator<Status> iter = localChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local CONFLICTED
+            if (status.getTextStatus() == StatusKind.conflicted) {
+                iter.remove();
+                
+                presentNewConflict(new ContentConflict(status), conflicts);
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
+     * Finds all local files that are obstructed (ie. file changed into a folder
+     * or vice-versa).
+     */
+    private List<Conflict> findLocalObstructed(List<Status> localChanges) throws CancelException {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        Iterator<Status> iter = localChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local OBSTRUCTED
+            if (status.getTextStatus() == StatusKind.obstructed) {
+                iter.remove();
+                
+                presentNewConflict(new ObstructedConflict(status), conflicts);
+            }
+        }
+        
+        return conflicts;
+    }
+
+    /**
      * Important method that looks out for any structure conflicts before an
      * update and creates {@link Conflict} objects for those. Upon each conflict
      * found, the user is asked to resolve it.
@@ -366,10 +449,10 @@ public class SVNSynchronizer {
 		List<Conflict> conflicts = new ArrayList<Conflict>();
 
         for (Status s : remoteAndLocalChanges) {
-            log.debug("analyzing " + Kind.getDescription(s.getTextStatus()) +
+            log.debug("analyzing " + SVNSynchronizer.textStatusDesc(s.getTextStatus()) +
                     " " + nodeKindDesc(s.getNodeKind()) +
                     " <->" +
-                    " " + Kind.getDescription(s.getRepositoryTextStatus()) +
+                    " " + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) +
                     " " + nodeKindDesc(s.getReposKind()) +
                     " '" + wcPath(s) + "'");
         }
@@ -895,8 +978,22 @@ public class SVNSynchronizer {
             return "unknown";
         }
     }
+    
+    /**
+     * Returns a human-readable string for the text status - fixes the missing
+     * 'obstructed' case in Kind.getDescription(int).
+     */
+    public static String textStatusDesc(int kind) {
+        switch (kind) {
+        case StatusKind.obstructed:
+            return "obstructed";
 
-	public String getLocalPath() {
+        default:
+            return Kind.getDescription(kind);
+        }
+    }
+
+    public String getLocalPath() {
 		return localPath;
 	}
 

@@ -27,9 +27,11 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictPrinter;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 
 public class SVNSynchronizerTestZip implements Notify2 {
@@ -44,34 +46,31 @@ public class SVNSynchronizerTestZip implements Notify2 {
 	    // delete if test has failed and extracted dir is still present
 	    FileUtils.deleteDirectory(dest);
 	    dest.mkdirs();
-		try {
-			byte[] buffer = new byte[1024];
-			ZipEntry zipEntry;
-			ZipInputStream zipInputStream = new ZipInputStream(
-					new FileInputStream(
-							"src/test/resources/com/mindquarry/desktop/workspace/"
-									+ zipName));
 
-	        while (null != (zipEntry = zipInputStream.getNextEntry())) {
+		byte[] buffer = new byte[1024];
+		ZipEntry zipEntry;
+		ZipInputStream zipInputStream = new ZipInputStream(
+				new FileInputStream(
+						"src/test/resources/com/mindquarry/desktop/workspace/"
+								+ zipName));
 
-	            File zippedFile = new File(destinationPath + zipEntry.getName());
+        while (null != (zipEntry = zipInputStream.getNextEntry())) {
 
-	            if (zipEntry.isDirectory()) {
-	                zippedFile.mkdirs();
-	            } else {
-	                // ensure the parent directory exists
-                    zippedFile.getParentFile().mkdirs();
-                    
-	                OutputStream fileOutStream = new FileOutputStream(zippedFile);
-	                transferBytes(zipInputStream, fileOutStream, buffer);
-	                fileOutStream.close();
-	            }
-	        }
+            File zippedFile = new File(destinationPath + zipEntry.getName());
 
-			zipInputStream.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            if (zipEntry.isDirectory()) {
+                zippedFile.mkdirs();
+            } else {
+                // ensure the parent directory exists
+                zippedFile.getParentFile().mkdirs();
+                
+                OutputStream fileOutStream = new FileOutputStream(zippedFile);
+                transferBytes(zipInputStream, fileOutStream, buffer);
+                fileOutStream.close();
+            }
+        }
+
+		zipInputStream.close();
 	}
 
     private void transferBytes(InputStream in, OutputStream out, byte[] buffer)
@@ -299,7 +298,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
         FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
     }
-
+	
 	private void touch(String relativePath) throws IOException {
         FileUtils.touch(new File(wcPath + "/" + relativePath));
     }
@@ -370,7 +369,7 @@ public class SVNSynchronizerTestZip implements Notify2 {
         // svn add third_dir/neu
         add("third_dir/neu");
     }
-    
+
     @Test
     public void testReplacedConflictsDoRename() throws IOException, ClientException {
         setupTest("replaced_conflict");
@@ -379,6 +378,9 @@ public class SVNSynchronizerTestZip implements Notify2 {
         prepareReplaceConflict();
         
         helper.synchronize();
+
+        // TODO: can be removed when commit is implemented in synchronize()
+        client.commit(new String[] { wcPath }, "test commit", true);
     }
 
     @Test
@@ -389,8 +391,38 @@ public class SVNSynchronizerTestZip implements Notify2 {
         prepareReplaceConflict();
         
         helper.synchronize();
+
+        // TODO: can be removed when commit is implemented in synchronize()
+        client.commit(new String[] { wcPath }, "test commit", true);
     }
     
+    private void prepareObstructedAndConflicted() throws IOException {
+        // rmdir obstructed_dir
+        // touch obstructed_dir
+        FileUtils.deleteDirectory(new File(wcPath + "/obstructed_dir"));
+        touch("obstructed_dir");
+    }
+    
+    @Test
+    public void testObstructedAndConflictedDoRenameAndNothing() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedConflictHandlerMock(wcPath, ObstructedConflict.Action.RENAME));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+    }
+
+    @Test
+    public void testObstructedAndConflictedDoRevertAndNothing() throws IOException, ClientException {
+        setupTest("obstructed_and_conflicted");
+        SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedConflictHandlerMock(wcPath, ObstructedConflict.Action.REVERT));
+        
+        prepareObstructedAndConflicted();
+        
+        helper.synchronize();
+    }
+
 	// TODO: test ignore of Thumbs.db/.DS_Store
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
@@ -476,6 +508,32 @@ public class SVNSynchronizerTestZip implements Notify2 {
         
         public void handle(DeleteWithModificationConflict conflict) {
             throw new UnsupportedOperationException("not intended to be used with ReplaceConflict");
+        }
+    }
+
+    private class ObstructedConflictedConflictHandlerMock extends AutomaticConflictHandler {
+        //private ContentConflict.Action conflAction;
+        private ObstructedConflict.Action obAction;
+        
+        private int uniqueCounter = 0;
+
+        public ObstructedConflictedConflictHandlerMock(String wcPath, ObstructedConflict.Action obAction) {
+            super(wcPath);
+            
+            this.obAction = obAction;
+        }
+        
+        public void handle(ContentConflict conflict) {
+            printer.printConflict(conflict);
+        }
+        
+        public void handle(ObstructedConflict conflict) {
+            printer.printConflict(conflict);
+            
+            switch(obAction) {
+            case RENAME: conflict.doRename(new File(conflict.getStatus().getPath()).getName() + "_renamed_" + uniqueCounter++); break;
+            case REVERT: conflict.doRevert(); break;
+            }
         }
     }
 }

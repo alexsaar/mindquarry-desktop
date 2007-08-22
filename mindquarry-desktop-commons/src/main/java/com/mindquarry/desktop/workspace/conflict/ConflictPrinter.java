@@ -48,13 +48,13 @@ public class ConflictPrinter {
         System.out.println("remote " + SVNSynchronizer.nodeKindDesc(status.getReposKind()) + " '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
         for (Status s : conflict.getLocalAdded()) {
             System.out.println("  locally "
-                    + Kind.getDescription(s.getTextStatus()) + " "
+                    + SVNSynchronizer.textStatusDesc(s.getTextStatus()) + " "
                     + SVNSynchronizer.nodeKindDesc(s.getNodeKind()) + " "
                     + "'" + wcPath(s) + "'");
         }
         for (Status s : conflict.getRemoteAdded()) {
             System.out.println("  remotely "
-                    + Kind.getDescription(s.getRepositoryTextStatus()) + " "
+                    + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) + " "
                     + SVNSynchronizer.nodeKindDesc(s.getReposKind()) + " "
                     + "'" + wcPath(s) + "' by " + s.getReposLastCmtAuthor());
         }
@@ -68,7 +68,7 @@ public class ConflictPrinter {
             if (conflict.getOtherMods() != null) {
 	            for (Status s : conflict.getOtherMods()) {
 	                System.out.println("remote "
-	                        + Kind.getDescription(s.getRepositoryTextStatus()) + " "
+	                        + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) + " "
 	                        + s.getPath());
 	            }
             }
@@ -78,7 +78,7 @@ public class ConflictPrinter {
             if (conflict.getOtherMods() != null) {
 	            for (Status s : conflict.getOtherMods()) {
 	                System.out.println("local "
-	                        + Kind.getDescription(s.getTextStatus()) + " "
+	                        + SVNSynchronizer.textStatusDesc(s.getTextStatus()) + " "
 	                        + s.getPath());
 	            }
             }
@@ -87,20 +87,30 @@ public class ConflictPrinter {
 
     public void printConflict(ReplaceConflict conflict) {
         Status status = conflict.getStatus();
-        System.out.print("local " + Kind.getDescription(status.getTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "' conflicts with ");
-        System.out.println("remote " + Kind.getDescription(status.getRepositoryTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getReposKind()) + " '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
+        System.out.print("local " + SVNSynchronizer.textStatusDesc(status.getTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "' conflicts with ");
+        System.out.println("remote " + SVNSynchronizer.textStatusDesc(status.getRepositoryTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getReposKind()) + " '" + wcPath(status) + "' by " + status.getReposLastCmtAuthor());
         for (Status s : conflict.getLocalChildren()) {
             System.out.println("  locally "
-                    + Kind.getDescription(s.getTextStatus()) + " "
+                    + SVNSynchronizer.textStatusDesc(s.getTextStatus()) + " "
                     + SVNSynchronizer.nodeKindDesc(s.getNodeKind()) + " "
                     + "'" + wcPath(s) + "'");
         }
         for (Status s : conflict.getRemoteChildren()) {
             System.out.println("  remotely "
-                    + Kind.getDescription(s.getRepositoryTextStatus()) + " "
+                    + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) + " "
                     + SVNSynchronizer.nodeKindDesc(s.getReposKind()) + " "
                     + "'" + wcPath(s) + "' by " + s.getReposLastCmtAuthor());
         }
+    }
+
+    public void printConflict(ContentConflict conflict) {
+        Status status = conflict.getStatus();
+        System.out.println("locally " + SVNSynchronizer.textStatusDesc(status.getTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "'");
+    }
+
+    public void printConflict(ObstructedConflict conflict) {
+        Status status = conflict.getStatus();
+        System.out.println("locally " + SVNSynchronizer.textStatusDesc(status.getTextStatus()) + " " + SVNSynchronizer.nodeKindDesc(status.getNodeKind()) + " '" + wcPath(status) + "'");
     }
 
 }
