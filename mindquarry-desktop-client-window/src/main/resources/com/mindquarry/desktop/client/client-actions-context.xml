@@ -27,7 +27,9 @@
     
     <!-- workspace actions -->
     <bean id="SynchronizeWorkspacesAction" parent="ActionBase"
-        class="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction"/>
+        class="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction">
+        <!-- <property name="teamList" ref="TeamlistWidget"/> -->
+    </bean>
 
     <!-- task actions -->
     <bean id="SynchronizeTasksAction" parent="ActionBase"
@@ -45,4 +47,14 @@
 
     <bean id="CloseAction" parent="ActionBase"
         class="com.mindquarry.desktop.client.action.app.CloseAction"/>
+        
+    <!-- widgets 
+    <bean id="TeamlistWidget" parent="WidgetBase"
+        class="com.mindquarry.desktop.client.widget.team.TeamlistWidget"/>
+        <constructor-arg ref=""/>
+        <constructor-arg value="0"/>
+        <constructor-arg ref="MindClient"/>
+    </bean>
+    -->
+        
 </beans>
