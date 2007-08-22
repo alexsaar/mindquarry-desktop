@@ -1,5 +1,10 @@
 package com.mindquarry.desktop.workspace.conflict;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
@@ -75,4 +80,28 @@ public abstract class Conflict {
      * copy.
      */
 	public abstract void afterUpdate() throws ClientException;
+
+	protected void removeDotSVNDirectories(String path) {
+		File[] allDirs = new File(path).listFiles(new FileFilter() {
+			public boolean accept(File arg0) {
+				return arg0.isDirectory();
+			}});
+		
+		if (allDirs != null) {
+			for (File dir : allDirs) {
+				if (dir.getName().compareTo(".svn") == 0) {
+					// delete .svn directories
+					try {
+	                    FileUtils.forceDelete(dir);
+					} catch (IOException e) {
+						// Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else {
+					// recurse
+					removeDotSVNDirectories(dir.getPath());
+				}
+			}
+		}
+	}
 }
