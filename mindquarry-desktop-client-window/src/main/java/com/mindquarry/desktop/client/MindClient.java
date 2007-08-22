@@ -328,8 +328,9 @@ public class MindClient extends ApplicationWindow {
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
             addNewProfile(
-                    Messages.getString("Your Mindquarry Server Profile"), "http://your.mindquarry.server", //$NON-NLS-1$//$NON-NLS-2$
-                    "LoginID"); //$NON-NLS-1$
+                    Messages.getString("Your Mindquarry Server Profile"), //$NON-NLS-1$
+                    Messages.getString("http://your.mindquarry.server"), //$NON-NLS-1$
+                    Messages.getString("LoginID")); //$NON-NLS-1$
             showPreferenceDialog(true);
         } else {
             loadOptions();
@@ -357,7 +358,7 @@ public class MindClient extends ApplicationWindow {
         profile.setPassword(""); //$NON-NLS-1$
 
         File wsFolder = new File(System.getProperty("user.home") //$NON-NLS-1$ 
-                + "/Mindquarry Workspaces");
+                + "/Mindquarry Workspaces"); //$NON-NLS-1$
         if (!wsFolder.exists()) {
             wsFolder.mkdirs();
         }
