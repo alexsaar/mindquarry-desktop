@@ -249,7 +249,7 @@ public class SVNSynchronizer {
                     // update the svn:ignore property by appending a new line
                     // with the filename to be ignored (on the parent folder!)
                     PropertyData ignoreProp = client.propertyGet(file.getParent(), PropertyData.IGNORE);
-                    ignoreProp.setValue(ignoreProp.getValue() + "\n" + file.getName(), false);
+                    ignoreProp.setValue(mergeIgnoreProperty(ignoreProp, file.getName()), false);
                 } else {
                     // TODO: check for new files that have the same name when
                     // looking at it case-insensitive (on unix systems) to avoid
@@ -280,6 +280,26 @@ public class SVNSynchronizer {
                 }
             }
         }
+    }
+    
+    /**
+     * Merge a new value with an existing property value.
+     */
+    private String mergeIgnoreProperty(PropertyData property, String newValue) {
+        List<String> mergedValues = new ArrayList<String>();
+        mergedValues.addAll(Arrays.asList(property.getValue().split("\\n|\\r\\n")));
+        
+        if(!mergedValues.contains(newValue)) {
+            mergedValues.add(newValue);
+        }
+
+        StringBuffer buffer = new StringBuffer();
+        
+        for(String value : mergedValues) {
+            buffer.append(value + "\n");
+        }
+        
+        return buffer.toString();
     }
 
     /**
