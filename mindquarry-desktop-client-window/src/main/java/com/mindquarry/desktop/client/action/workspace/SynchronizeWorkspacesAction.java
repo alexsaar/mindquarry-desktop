@@ -55,8 +55,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
 	public void run() {
 	    try {
-	        // FIXME: redraw GUI:
 	        setEnabled(false);
+	        client.getToolBarManager().getControl().update();
 	        List<Team> teams = client.getSelectedTeams();
 	        System.err.println("teamList "+ teams);
 	        Profile selectedProfile = Profile.getSelectedProfile(client
