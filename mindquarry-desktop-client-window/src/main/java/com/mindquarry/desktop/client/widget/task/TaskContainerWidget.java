@@ -210,12 +210,14 @@ public class TaskContainerWidget extends WidgetBase {
             }
         });
         for (Object item : items) {
+            String url = profile.getServerURL();
+            String login = profile.getLogin();
+            String password = profile.getPassword();
+
             Team team = (Team) item;
             try {
-                tasks.getTasks().addAll(
-                        new TaskList(profile.getServerURL() + "/tasks/" //$NON-NLS-1$
-                                + team.getId() + "/", profile.getLogin(),
-                                profile.getPassword()).getTasks());
+                tasks.getTasks().addAll(new TaskList(url + "/tasks/" //$NON-NLS-1$
+                        + team.getId() + "/", login, password).getTasks());
             } catch (final NotAuthorizedException e) {
                 log.error("Could not update list of tasks for "
                         + profile.getServerURL(), e); //$NON-NLS-1$
