@@ -63,6 +63,8 @@ public class CategoryWidget extends WidgetBase {
             CategoryWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
 
+    private WorkspaceBrowserWidget workspaceBrowser;
+
     public CategoryWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
     }
@@ -169,9 +171,13 @@ public class CategoryWidget extends WidgetBase {
         tabItem.setImage(docsIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
+        workspaceBrowser = new WorkspaceBrowserWidget(
                 tabFolder, client);
         tabItem.setControl(workspaceBrowser);
+    }
+    
+    public WorkspaceBrowserWidget getWorkspaceBrowserWidget() {
+        return workspaceBrowser;
     }
 
     class FacetSelectionListener extends SelectionAdapter implements
