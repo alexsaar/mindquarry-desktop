@@ -1,5 +1,6 @@
 package com.mindquarry.desktop.workspace;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -494,9 +493,10 @@ public class SVNSynchronizerTestZip implements Notify2 {
 
         helper.synchronize();
         
-        TestCase.assertEquals("first_local_value", client.propertyGet(wcPath, "mq:first").getValue());
-        TestCase.assertEquals("second_local_value", client.propertyGet(wcPath, "mq:second").getValue());
-        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
+        String nl = System.getProperty("line.separator");
+        assertEquals("first_local_value", client.propertyGet(wcPath, "mq:first").getValue());
+        assertEquals("second_local_value", client.propertyGet(wcPath, "mq:second").getValue());
+        assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
         FileUtils.deleteDirectory(new File("target/property_conflict/"));
     }
@@ -507,10 +507,11 @@ public class SVNSynchronizerTestZip implements Notify2 {
         SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_REMOTE_VALUE));
 
         helper.synchronize();
-        
-        TestCase.assertEquals("first_remote_value", client.propertyGet(wcPath, "mq:first").getValue());
-        TestCase.assertEquals("second_remote_value", client.propertyGet(wcPath, "mq:second").getValue());
-        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
+
+        String nl = System.getProperty("line.separator");
+        assertEquals("first_remote_value", client.propertyGet(wcPath, "mq:first").getValue());
+        assertEquals("second_remote_value", client.propertyGet(wcPath, "mq:second").getValue());
+        assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
         FileUtils.deleteDirectory(new File("target/property_conflict/"));
     }
@@ -521,10 +522,11 @@ public class SVNSynchronizerTestZip implements Notify2 {
         SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_NEW_VALUE));
 
         helper.synchronize();
-        
-        TestCase.assertTrue(client.propertyGet(wcPath, "mq:first").getValue().startsWith("shiny new value "));
-        TestCase.assertTrue(client.propertyGet(wcPath, "mq:second").getValue().startsWith("shiny new value "));
-        TestCase.assertEquals("temp\n*.bak\n*.log\ntmp\nbin\n", client.propertyGet(wcPath, "svn:ignore").getValue());
+
+        String nl = System.getProperty("line.separator");
+        assertTrue(client.propertyGet(wcPath, "mq:first").getValue().startsWith("shiny new value "));
+        assertTrue(client.propertyGet(wcPath, "mq:second").getValue().startsWith("shiny new value "));
+        assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
         FileUtils.deleteDirectory(new File("target/property_conflict/"));
     }
