@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.widget.WidgetBase;
+import com.mindquarry.desktop.client.widget.util.ContainerWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.model.team.Team;
@@ -46,17 +46,11 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 /**
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class TaskContainerWidget extends WidgetBase {
+public class TaskContainerWidget extends ContainerWidget {
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
     private TaskList tasks;
     private TableViewer viewer;
-
-    private Composite noTasksWidget;
-    private Composite refreshWidget;
-    private Composite errorWidget;
-
-    private boolean refreshing = false;
 
     private String statusFacet = "all";
     private String priorityFacet = "all";
@@ -70,14 +64,9 @@ public class TaskContainerWidget extends WidgetBase {
     // ### WIDGET METHODS
     // #########################################################################
     protected void createContents(Composite parent) {
+        super.createContents(parent);
         setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 6,
                 1));
-
-        setLayout(new GridLayout(1, true));
-        ((GridLayout) getLayout()).horizontalSpacing = 0;
-        ((GridLayout) getLayout()).verticalSpacing = 0;
-        ((GridLayout) getLayout()).marginHeight = 0;
-        ((GridLayout) getLayout()).marginWidth = 0;
     }
 
     // #########################################################################
@@ -175,7 +164,7 @@ public class TaskContainerWidget extends WidgetBase {
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
-    private void refresh() {
+    protected void refresh() {
         log.info("Starting task list refresh."); //$NON-NLS-1$
         refreshing = true;
 
@@ -318,7 +307,7 @@ public class TaskContainerWidget extends WidgetBase {
                     viewer.getTable().getColumn(0).setWidth(getSize().x);
                 } else if (errMessage == null && empty) {
                     destroyContent();
-                    noTasksWidget = new NoTasksWidget(self, Messages
+                    noContentWidget = new NoTasksWidget(self, Messages
                             .getString("Currently no tasks are active.")); //$NON-NLS-1$
                 } else {
                     destroyContent();
@@ -340,9 +329,9 @@ public class TaskContainerWidget extends WidgetBase {
                     errorWidget.dispose();
                     errorWidget = null;
                 }
-                if (noTasksWidget != null) {
-                    noTasksWidget.dispose();
-                    noTasksWidget = null;
+                if (noContentWidget != null) {
+                    noContentWidget.dispose();
+                    noContentWidget = null;
                 }
             }
         });

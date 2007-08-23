@@ -29,42 +29,44 @@ import com.mindquarry.desktop.client.action.ActionBase;
  *         Saar</a>
  */
 public class UpdateWorkspacesAction extends ActionBase {
-    public static final String ID = UpdateWorkspacesAction.class.getSimpleName();
+    public static final String ID = UpdateWorkspacesAction.class
+            .getSimpleName();
 
-	private static final Image IMAGE = new Image(
-			Display.getCurrent(),
-			UpdateWorkspacesAction.class
-			        // FIXME: use a different icon, not the same as for synchronization
-					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
+    private static final Image IMAGE = new Image(
+            Display.getCurrent(),
+            UpdateWorkspacesAction.class
+            // FIXME: use a different icon, not the same as for synchronization
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
 
-	public UpdateWorkspacesAction(MindClient client) {
-		super(client);
+    public UpdateWorkspacesAction(MindClient client) {
+        super(client);
 
-		setId(ID);
-		setActionDefinitionId(ID);
+        setId(ID);
+        setActionDefinitionId(ID);
 
-		setText(Messages.getString("Update changes"));
-		setToolTipText(Messages.getString("Update the list of changes"));
-		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'U');
-		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
-	}
+        setText(Messages.getString("Update changes"));
+        setToolTipText(Messages.getString("Update the list of changes"));
+        setAccelerator(SWT.CTRL + +SWT.SHIFT + 'U');
+        setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
+    }
 
-	public void run() {
-	    try {
-	        // TODO: also disable synchronize button
-	        setEnabled(false);
-	        client.getToolBarManager().getControl().update();
-	        client.getCategoryWidget().getWorkspaceBrowserWidget().refresh();
+    public void run() {
+        try {
+            // TODO: also disable synchronize button
+            setEnabled(false);
+            client.getToolBarManager().getControl().update();
+            client.getCategoryWidget().getWorkspaceBrowserWidget()
+                    .asyncRefresh();
         } finally {
             setEnabled(true);
         }
-	}
-	
-	public String getGroup() {
+    }
+
+    public String getGroup() {
         return ActionBase.WORKSPACE_ACTION_GROUP;
     }
-	
-	public boolean isToolbarAction() {
+
+    public boolean isToolbarAction() {
         return true;
     }
 }
