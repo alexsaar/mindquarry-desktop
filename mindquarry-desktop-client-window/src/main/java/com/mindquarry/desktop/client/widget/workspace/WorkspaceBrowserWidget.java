@@ -288,9 +288,13 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                     File f = new File(dir, name);
                     // show only changed files, but within their directory structure:
                     if (f.isDirectory()) {
-                        // FIXME: is there at least one change below this directory,
+                        // if there is at least one change below this directory,
                         // show it, otherwise don't:
-                        return true;
+                        if (containsChange(f)) {
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                     if (!localChanges.containsKey(f) && !remoteChanges.containsKey(f)) {
                         return false;
@@ -299,6 +303,15 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                         return false;
                     }
                     return true;
+                }
+
+                private boolean containsChange(File f) {
+                    for (File remoteFile : remoteChanges.keySet()) {
+                        if (remoteFile.getAbsolutePath().startsWith(f.getAbsolutePath()+"/")) {
+                            return true;
+                        }
+                    }
+                    return false;
                 }
             });
             // files may be added remotely:
