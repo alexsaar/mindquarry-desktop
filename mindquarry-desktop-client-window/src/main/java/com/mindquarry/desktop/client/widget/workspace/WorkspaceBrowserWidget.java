@@ -22,10 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -37,6 +34,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TreeItem;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.WidgetBase;
@@ -89,7 +89,7 @@ public class WorkspaceBrowserWidget extends WidgetBase {
     // #########################################################################
     protected void createContents(Composite parent) {
         viewer = new TreeViewer(parent, SWT.BORDER | SWT.H_SCROLL
-                | SWT.V_SCROLL | SWT.FULL_SELECTION);
+                | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
         viewer.setContentProvider(new TreeContentProvider());
         viewer.setSorter(new ViewerSorter() {
             public int category(Object element) {
@@ -107,6 +107,32 @@ public class WorkspaceBrowserWidget extends WidgetBase {
         viewer.getTree().setLinesVisible(true);
         viewer.getTree().setFont(
                 JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+        viewer.getTree().addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                if (event.detail == SWT.CHECK) {
+                    TreeItem item = (TreeItem) event.item;
+                    if (item.getChecked()) {
+                        // check all parents
+                        TreeItem parent = item.getParentItem();
+                        while (parent != null) {
+                            parent.setChecked(true);
+                            parent = parent.getParentItem();
+                        }
+                    } else {
+                        // uncheck all children
+                        TreeItem[] children = item.getItems();
+                        uncheckChildren(children);
+                    }
+                }
+            }
+
+            private void uncheckChildren(TreeItem[] children) {
+                for (TreeItem child : children) {
+                    child.setChecked(false);
+                    uncheckChildren(child.getItems());
+                }
+            }
+        });
 
         TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.LEFT);
         col.getColumn().setText("Name");
