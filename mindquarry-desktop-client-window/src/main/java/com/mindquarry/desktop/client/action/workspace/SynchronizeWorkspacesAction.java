@@ -88,6 +88,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	                    new InteractiveConflictHandler(client.getShell()));
 	            sc.synchronizeOrCheckout();
 	        }
+            workspaceWidget.refresh();
         } finally {
             setEnabled(true);
         }
