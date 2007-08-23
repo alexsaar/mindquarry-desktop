@@ -92,8 +92,7 @@ public class WorkspaceUpdateContainerRunnable extends
         // create workspace/changes browser
         containerWidget
                 .setViewer(new TreeViewer(containerWidget, SWT.BORDER
-                        | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION
-                        | SWT.CHECK));
+                        | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION));
         containerWidget.getViewer().setContentProvider(
                 new ContentProvider((WorkspaceBrowserWidget) containerWidget));
         containerWidget.getViewer().setSorter(new ViewerSorter() {
