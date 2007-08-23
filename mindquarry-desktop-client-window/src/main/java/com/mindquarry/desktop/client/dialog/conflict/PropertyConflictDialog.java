@@ -14,6 +14,8 @@
 package com.mindquarry.desktop.client.dialog.conflict;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,6 +38,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
     private PropertyConflict conflict;
     private PropertyConflict.Action resolveMethod;
     
+    private Text newPropText;
     private String newValue = new String("");
 
     private static final PropertyConflict.Action DEFAULT_RESOLUTION = PropertyConflict.Action.USE_LOCAL_VALUE;
@@ -48,41 +51,50 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+        name.setText(Messages.getString("Property") + ": " + conflict.getLocalProperty().getName());
     }
 
     @Override
     protected String getMessage() {
-        // FIXME no text so far
-        return Messages.getString("Add text here.");
+        return Messages.getString("Somebody else modified the property you are trying to synchronize." +
+                "Please select the version that should be treated as the current version.");
     }
 
     @Override
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
+        subComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         subComposite.setLayout(new GridLayout(2, false));
 
         Button button1 = makeRadioButton(subComposite,
                 Messages.getString("Use your local version of the property"),  //$NON-NLS-1$
                 PropertyConflict.Action.USE_LOCAL_VALUE);
-        button1.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-            }
-        });
+        button1.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         
-        Text localPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY);
+        Text localPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
         localPropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-
-        Button button2 = makeRadioButton(subComposite,
-                Messages.getString("Use property value from the server"),  //$NON-NLS-1$
-                PropertyConflict.Action.USE_REMOTE_VALUE);
-        button2.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-            }
-        });
+        localPropText.setText(conflict.getLocalProperty().getValue());
         
-        Text remotePropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY);
+        Button button2 = makeRadioButton(subComposite,
+                Messages.getString("Use the property from the server"),  //$NON-NLS-1$
+                PropertyConflict.Action.USE_REMOTE_VALUE);
+        button2.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+        
+        Text remotePropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
         remotePropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        remotePropText.setText(conflict.getRemoteProperty().getValue());
+        
+        Button button3 = makeRadioButton(subComposite,
+                Messages.getString("Specify a new value for this property"),  //$NON-NLS-1$
+                PropertyConflict.Action.USE_NEW_VALUE);
+        button3.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+        
+        newPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+        newPropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        newPropText.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent event) {
+                newValue = newPropText.getText();
+            }});
     }
     
     public String getNewValue() {
