@@ -43,7 +43,6 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
-import com.mindquarry.desktop.client.widget.util.container.ErrorWidget;
 import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateWidget;
 import com.mindquarry.desktop.model.team.Team;
@@ -75,6 +74,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+
+    private static final String NO_CHANGES_MESSAGE = Messages.getString("No changes to synchronize.");
 
     private Image conflictImage = new Image(
             Display.getCurrent(),
@@ -155,7 +156,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
             log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
-        updateContainer(true, null, false);
+        updateContainer(true, Messages.getString("Updating list of changes..."));
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
         Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
@@ -164,7 +165,11 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
         workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
 
         boolean empty = localChanges.size() == 0 && remoteChanges.size() == 0;
-        updateContainer(false, null, empty);
+        if (empty) {
+            updateContainer(false, NO_CHANGES_MESSAGE);
+        } else {
+            updateContainer(false, null);
+        }
         refreshing = false;
     }
 
@@ -218,15 +223,14 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                         // e.g. conflict.txt.r172 etc -> hide them!
                     }
                 } else {
-                    log
-                            .info("obstructed status, not calling getRemoteAndLocalChanges()");
+                    log.info("obstructed status, not calling getRemoteAndLocalChanges()");
                 }
                 // FIXME:
                 System.err.println("local " + localChanges);
                 System.err.println("remote " + remoteChanges);
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
-            updateContainer(false, null, false);
+            updateContainer(false, null);
             refreshing = false;
         } catch (ClientException e) {
             // TODO: handle exception
@@ -237,15 +241,14 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
     }
 
     private void updateContainer(final boolean refreshing,
-            final String errMessage, final boolean empty) {
+            final String message) {
         final WorkspaceBrowserWidget self = this;
         getDisplay().syncExec(new Runnable() {
             public void run() {
                 if (refreshing) {
                     destroyContent();
-                    refreshWidget = new UpdateWidget(self, Messages
-                            .getString("Synchronizing workspaces...")); //$NON-NLS-1$
-                } else if (errMessage == null && !empty) {
+                    refreshWidget = new UpdateWidget(self, message);
+                } else if (message == null) {
                     destroyContent();
 
                     // create workspace/changes browser
@@ -359,14 +362,14 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                     });
                     viewer.setInput(workspaceRoot);
                     viewer.expandAll();
+                    if (viewer.getExpandedElements().length == 0) {
+                        destroyContent();
+                        noContentWidget = new NoContentWidget(self, NO_CHANGES_MESSAGE);
+                    }
                     //viewer.getTree().selectAll();
-                } else if (errMessage == null && empty) {
+                } else if (message != null) {
                     destroyContent();
-                    noContentWidget = new NoContentWidget(self, Messages
-                            .getString("No changes to synchronize.")); //$NON-NLS-1$
-                } else {
-                    destroyContent();
-                    errorWidget = new ErrorWidget(self, errMessage);
+                    noContentWidget = new NoContentWidget(self, message);
                 }
                 layout(true);
             }
