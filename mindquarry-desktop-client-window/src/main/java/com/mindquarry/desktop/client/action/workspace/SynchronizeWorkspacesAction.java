@@ -69,13 +69,17 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         .getString("Refreshing workspace changes"));
 
                 if (workspaceWidget.refreshNeeded()) {
-                    MessageBox messageBox = new MessageBox(client.getShell(),
-                            SWT.ICON_INFORMATION | SWT.OK);
-                    messageBox
-                            .setMessage(Messages
-                                    .getString("The list of changes is not up to date. It needs "
-                                            + "to be refreshed before you can synchronize changes. Please check the list of changes and press synchronize again."));
-                    messageBox.open();
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            MessageBox messageBox = new MessageBox(client
+                                    .getShell(), SWT.ICON_INFORMATION | SWT.OK);
+                            messageBox
+                                    .setMessage(Messages
+                                            .getString("The list of changes is not up to date. It needs "
+                                                    + "to be refreshed before you can synchronize changes. Please check the list of changes and press synchronize again."));
+                            messageBox.open();
+                        }
+                    });
                 } else {
                     // retrieve selected profile
                     PreferenceStore store = client.getPreferenceStore();

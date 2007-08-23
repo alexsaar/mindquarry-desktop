@@ -35,7 +35,6 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.model.team.Team;
