@@ -60,9 +60,7 @@ import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
-import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
-import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
 import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.app.CategoryWidget;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
@@ -99,10 +97,13 @@ public class MindClient extends ApplicationWindow {
     public static final String TEAM_NAME_FONT_KEY = "team-name";
 
     public static final List<String> INITIAL_TOOLBAR_GROUPS = new ArrayList<String>();
+    public static final List<String> DEFAULT_TOOLBAR_GROUPS = new ArrayList<String>();
 
     static {
+        DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
+
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.TASK_ACTION_GROUP);
-        INITIAL_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
+        INITIAL_TOOLBAR_GROUPS.addAll(DEFAULT_TOOLBAR_GROUPS);
     }
 
     private static BeanFactory factory;
@@ -223,25 +224,11 @@ public class MindClient extends ApplicationWindow {
     }
 
     public void setTasksActive() {
-        getToolBarManager().remove(
-                getAction(SynchronizeWorkspacesAction.class.getName()).getId());
-        
-        getToolBarManager().appendToGroup(ActionBase.TASK_ACTION_GROUP,
-                getAction(SynchronizeTasksAction.class.getName()));
-        getToolBarManager().appendToGroup(ActionBase.TASK_ACTION_GROUP,
-                getAction(CreateTaskAction.class.getName()));
-        getToolBarManager().update(true);
+        activateActionGroup(ActionBase.TASK_ACTION_GROUP);
     }
 
     public void setFilesActive() {
-        getToolBarManager().appendToGroup(ActionBase.WORKSPACE_ACTION_GROUP,
-                getAction(SynchronizeWorkspacesAction.class.getName()));
-
-        getToolBarManager().remove(
-                getAction(SynchronizeTasksAction.class.getName()).getId());
-        getToolBarManager().remove(
-                getAction(CreateTaskAction.class.getName()).getId());
-        getToolBarManager().update(true);
+        activateActionGroup(ActionBase.WORKSPACE_ACTION_GROUP);
     }
 
     public ActionBase getAction(String id) {
@@ -325,6 +312,19 @@ public class MindClient extends ApplicationWindow {
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
+    private void activateActionGroup(String group) {
+        for (ActionBase action : actions) {
+            if ((action.isToolbarAction())
+                    && (!DEFAULT_TOOLBAR_GROUPS.contains(action.getGroup()))) {
+                getToolBarManager().remove(action.getId());
+            }
+            if ((action.isToolbarAction()) && (action.getGroup().equals(group))) {
+                getToolBarManager().appendToGroup(group, action);
+            }
+        }
+        getToolBarManager().update(true);
+    }
+    
     private void checkArguments(String[] args) {
         if (args.length == 3 && prefFile.exists()) {
             loadOptions();
