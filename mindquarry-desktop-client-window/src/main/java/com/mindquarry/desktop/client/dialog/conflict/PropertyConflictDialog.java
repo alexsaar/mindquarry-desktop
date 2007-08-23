@@ -66,13 +66,16 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         subComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         subComposite.setLayout(new GridLayout(2, false));
 
+        GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+        gridData.minimumHeight = 35;
+
         Button button1 = makeRadioButton(subComposite,
                 Messages.getString("Use your local version of the property"),  //$NON-NLS-1$
                 PropertyConflict.Action.USE_LOCAL_VALUE);
         button1.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         
         Text localPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
-        localPropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        localPropText.setLayoutData(gridData);
         localPropText.setText(conflict.getLocalProperty().getValue());
         
         Button button2 = makeRadioButton(subComposite,
@@ -81,7 +84,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         button2.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         
         Text remotePropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
-        remotePropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        remotePropText.setLayoutData(gridData);
         remotePropText.setText(conflict.getRemoteProperty().getValue());
         
         Button button3 = makeRadioButton(subComposite,
@@ -90,7 +93,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         button3.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         
         newPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-        newPropText.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        newPropText.setLayoutData(gridData);
         newPropText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
                 newValue = newPropText.getText();
