@@ -21,6 +21,7 @@
         <property name="actions">
             <list>
                 <ref bean="RefreshTeamlistAction"/>
+                <ref bean="UpdateWorkspacesAction"/>
                 <ref bean="SynchronizeWorkspacesAction"/>
                 <ref bean="SynchronizeTasksAction"/>
                 <ref bean="CreateTaskAction"/>

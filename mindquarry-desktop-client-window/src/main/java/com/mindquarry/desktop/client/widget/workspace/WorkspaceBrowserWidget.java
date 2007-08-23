@@ -16,7 +16,10 @@ package com.mindquarry.desktop.client.widget.workspace;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,11 +40,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
+import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.workspace.SVNSynchronizer;
 
 /**
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
@@ -69,7 +77,16 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
 
+    private Image conflictImage = new Image(
+            Display.getCurrent(),
+            getClass()
+                    .getResourceAsStream(
+                            "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
+
     private TreeViewer viewer;
+
+    private Map<File, Integer> localChanges = new HashMap<File, Integer>();
+    private Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
@@ -166,11 +183,30 @@ public class WorkspaceBrowserWidget extends WidgetBase {
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
-                if (file.isDirectory()) {
-                    return downloadImage;
-                } else if (file.isFile()) {
-                    return uploadImage;
+                int localStatus = -1;
+                int remoteStatus = -1;
+                if (localChanges != null && localChanges.containsKey(file)) {
+                    localStatus = localChanges.get(file).intValue();
                 }
+                if (remoteChanges != null && remoteChanges.containsKey(file)) {
+                    remoteStatus = remoteChanges.get(file).intValue();
+                }
+                if (localStatus == StatusKind.obstructed) {
+                    //FIXME: add question mark icon
+                } else if (localStatus == StatusKind.added || localStatus == StatusKind.unversioned) {
+                    // TODO: show upload icon with "+" sign
+                    return uploadImage;
+                } else if (remoteStatus == StatusKind.modified) {
+                    return uploadImage;
+                } else if (remoteStatus == StatusKind.added) {
+                    return downloadImage;
+                } else if (localStatus == StatusKind.conflicted) {
+                    return conflictImage;
+                } else if (localStatus != -1 || remoteStatus != -1) {
+                    log.warn("No icon set for local/remote status " + localStatus + "/"
+                            + remoteStatus + " on file " + file.getAbsolutePath());
+                }
+                // TODO: which other cases do we need to display?
                 return null;
             }
 
@@ -178,25 +214,64 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                 return "";
             }
         });
-        refresh();
-    }
-
-    private void refresh() {
-        PreferenceStore store = client.getPreferenceStore();
-        Profile selected = Profile.getSelectedProfile(store);
-
-        // check profile
-        if (selected == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
-            return;
-        }
-        viewer.setInput(new File(selected.getWorkspaceFolder()));
-        viewer.expandAll();
     }
 
     // #########################################################################
     // ### PUBLIC METHODS
     // #########################################################################
+
+    public void refresh() {
+        try {
+            PreferenceStore store = client.getPreferenceStore();
+            Profile selected = Profile.getSelectedProfile(store);
+            if (selected == null) {
+                log.debug("No profile selected."); //$NON-NLS-1$
+                return;
+            }
+
+            List<Team> selectedTeams = client.getSelectedTeams();
+            for (Team team : selectedTeams) {
+                SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
+                        selected.getWorkspaceFolder(),
+                        selected.getLogin(), selected.getPassword(),
+                        new InteractiveConflictHandler(client.getShell()));
+                // iterate over local changes first to avoid exceptions
+                // later (in rare cases of "obstructed" state only):
+                List<Status> tmpLocalChanges = sc.getLocalChanges();
+                for (Status status : tmpLocalChanges) {
+                    if (status.getTextStatus() == StatusKind.obstructed) {
+                        localChanges.put(new File(status.getPath()), StatusKind.obstructed);
+                    }
+                }
+                // we need to stop here in case of obstruction,
+                // as getRemoteAndLocalChanges() would throw a
+                // ClientException:
+                if (localChanges.size() == 0) {
+                    List<Status> allChanges = sc.getRemoteAndLocalChanges();
+                    for (Status status : allChanges) {
+                        localChanges.put(new File(status.getPath()), new Integer(status.getTextStatus()));
+                        remoteChanges.put(new File(status.getPath()), new Integer(status.getRepositoryTextStatus()));
+                        // TODO: get the two files (remote/local) from the conflict,
+                        // e.g. conflict.txt.r172 etc -> hide them!
+                    }
+                } else {
+                    log.info("obstructed status, not calling getRemoteAndLocalChanges()");
+                }
+                //FIXME:
+                System.err.println("local " + localChanges);
+                System.err.println("remote " + remoteChanges);
+            }
+
+            //viewer.setInput(new File(selected.getWorkspaceFolder()));
+            viewer.setInput(new File(selected.getWorkspaceFolder()));
+            viewer.expandAll();
+        } catch (ClientException e) {
+            // TODO: handle exception
+            // may happen on very first checkout (before checkout, actually)
+            //log.error(e.toString(), e);
+            log.error(e.toString());
+        }
+    }
 
     // #########################################################################
     // ### PRIVATE METHODS
@@ -207,22 +282,38 @@ public class WorkspaceBrowserWidget extends WidgetBase {
     // #########################################################################
     private final class TreeContentProvider implements ITreeContentProvider {
         public Object[] getChildren(Object parentElement) {
-            final List<Team> selectedTeams = new ArrayList();
-            Display.getDefault().syncExec(new Runnable() {
-                public void run() {
-                    selectedTeams.addAll(client.getSelectedTeams());
-                }
-            });
             File workspaceRoot = (File) parentElement;
             File[] children = workspaceRoot.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
+                    File f = new File(dir, name);
+                    // show only changed files, but within their directory structure:
+                    if (f.isDirectory()) {
+                        // FIXME: is there at least one change below this directory,
+                        // show it, otherwise don't:
+                        return true;
+                    }
+                    if (!localChanges.containsKey(f) && !remoteChanges.containsKey(f)) {
+                        return false;
+                    }
                     if (name.equals(".svn") || name.equals(".svnref")) {
                         return false;
                     }
                     return true;
                 }
             });
-            return children;
+            // files may be added remotely:
+            List<File> allFiles = new ArrayList<File>();
+            allFiles.addAll(Arrays.asList(children));
+            if (remoteChanges != null) {
+                for (File remoteFile : remoteChanges.keySet()) {
+                    if (remoteChanges.containsKey(remoteFile) &&
+                            remoteChanges.get(remoteFile) == StatusKind.added &&
+                            remoteFile.getParentFile().equals(workspaceRoot)) {
+                        allFiles.add(remoteFile);
+                    }
+                }
+            }
+            return allFiles.toArray(new File[]{});
         }
 
         public Object getParent(Object element) {
@@ -250,4 +341,5 @@ public class WorkspaceBrowserWidget extends WidgetBase {
             // nothing to do here
         }
     }
+
 }

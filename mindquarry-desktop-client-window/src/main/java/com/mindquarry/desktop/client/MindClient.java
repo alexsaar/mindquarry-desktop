@@ -64,9 +64,11 @@ import com.mindquarry.desktop.client.action.app.PreferencesAction;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
+import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.CategoryWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
+import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
@@ -125,6 +127,7 @@ public class MindClient extends ApplicationWindow {
     private TeamlistWidget teamList;
 
     private FileTypeMap mimeMap = MimetypesFileTypeMap.getDefaultFileTypeMap();
+    private CategoryWidget categoryWidget;
 
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
@@ -263,6 +266,10 @@ public class MindClient extends ApplicationWindow {
     public String getMimeType(File file) {
         return mimeMap.getContentType(file);
     }
+    
+    public CategoryWidget getCategoryWidget() {
+        return categoryWidget;
+    }
 
     // #########################################################################
     // ### PROTECTED METHODS
@@ -293,8 +300,7 @@ public class MindClient extends ApplicationWindow {
         sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         teamList = new TeamlistWidget(sashForm, SWT.NONE, this);
-        new CategoryWidget(sashForm, SWT.NONE, this);
-
+        categoryWidget = new CategoryWidget(sashForm, SWT.NONE, this);
         sashForm.setWeights(new int[] { 1, 3 });
 
         // initialize window shell
@@ -541,6 +547,7 @@ public class MindClient extends ApplicationWindow {
     private void refreshOnStartup() {
         teamList.refresh();
         getAction(SynchronizeTasksAction.class.getName()).run();
+        getAction(UpdateWorkspacesAction.class.getName()).run();
     }
 
     // #########################################################################

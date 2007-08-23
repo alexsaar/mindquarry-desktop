@@ -26,9 +26,11 @@
         class="com.mindquarry.desktop.client.action.team.RefreshTeamlistAction"/>
     
     <!-- workspace actions -->
+    <bean id="UpdateWorkspacesAction" parent="ActionBase"
+        class="com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction">
+    </bean>
     <bean id="SynchronizeWorkspacesAction" parent="ActionBase"
         class="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction">
-        <!-- <property name="teamList" ref="TeamlistWidget"/> -->
     </bean>
 
     <!-- task actions -->
