@@ -15,9 +15,9 @@ package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -62,13 +62,13 @@ public class ContentProvider implements ITreeContentProvider {
             private boolean containsChange(File f) {
                 for (File remoteFile : workspaceBrowser.remoteChanges.keySet()) {
                     if (remoteFile.getAbsolutePath().startsWith(
-                            f.getAbsolutePath() + "/")) {
+                            f.getAbsolutePath())) {
                         return true;
                     }
                 }
                 for (File localFile : workspaceBrowser.localChanges.keySet()) {
                     if (localFile.getAbsolutePath().startsWith(
-                            f.getAbsolutePath() + "/")) {
+                            f.getAbsolutePath())) {
                         return true;
                     }
                 }
@@ -76,15 +76,18 @@ public class ContentProvider implements ITreeContentProvider {
             }
         });
         // don't skip files that have been added remotely:
-        List<File> allFiles = new ArrayList<File>();
+        Set<File> allFiles = new HashSet<File>();
         if (children != null) {
             allFiles.addAll(Arrays.asList(children));
         }
         if (workspaceBrowser.remoteChanges != null) {
             for (File remoteFile : workspaceBrowser.remoteChanges.keySet()) {
-                if (workspaceBrowser.remoteChanges.containsKey(remoteFile)
-                        && workspaceBrowser.remoteChanges.get(remoteFile) == StatusKind.added
-                        && remoteFile.getParentFile().equals(workspaceRoot)) {
+                int remoteStatus = -1;
+                if (workspaceBrowser.remoteChanges.containsKey(remoteFile)) {
+                    remoteStatus = workspaceBrowser.remoteChanges.get(remoteFile); 
+                }
+                if (remoteStatus == StatusKind.added &&
+                        remoteFile.getParentFile().equals(workspaceRoot)) {
                     allFiles.add(remoteFile);
                 }
             }
@@ -92,10 +95,19 @@ public class ContentProvider implements ITreeContentProvider {
         // don't skip the files that were deleted locally:
         if (workspaceBrowser.localChanges != null) {
             for (File localFile : workspaceBrowser.localChanges.keySet()) {
-                if (workspaceBrowser.localChanges.containsKey(localFile)
-                        && (workspaceBrowser.localChanges.get(localFile) == StatusKind.deleted ||
-                                workspaceBrowser.localChanges.get(localFile) == StatusKind.missing)
+                int localStatus = -1;
+                if (workspaceBrowser.localChanges.containsKey(localFile)) {
+                    localStatus = workspaceBrowser.localChanges.get(localFile);
+                }
+                if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
                         && localFile.getParentFile().equals(workspaceRoot)) {
+                    // If someone moves a directory, local status of the old name
+                    // will be "deleted" locally, but remote status will be "added". 
+                    // This directory has been displayed above already, so we need
+                    // to filter them out:
+                    if (allFiles.contains(localFile)) {
+                        continue;
+                    }
                     allFiles.add(localFile);
                 }
             }
