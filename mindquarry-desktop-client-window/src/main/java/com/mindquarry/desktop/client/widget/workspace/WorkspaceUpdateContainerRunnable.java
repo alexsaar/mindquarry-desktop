@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
@@ -70,11 +71,16 @@ public class WorkspaceUpdateContainerRunnable extends
             getClass()
                     .getResourceAsStream(
                             "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
+    
+    private static final String UPDATE_MESSAGE = Messages.getString("Updating workspace changes"); //$NON-NLS-1$
+    private static final String EMPTY_MESSAGE = Messages
+        .getString("There are currently no workspace changes to synchronize."); //$NON-NLS-1$
 
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean empty,
             String errMessage, boolean refreshing) {
-        super(containerWidget, empty, errMessage, refreshing);
+        super(containerWidget, empty, errMessage, UPDATE_MESSAGE,
+                EMPTY_MESSAGE, refreshing);
     }
 
     /**

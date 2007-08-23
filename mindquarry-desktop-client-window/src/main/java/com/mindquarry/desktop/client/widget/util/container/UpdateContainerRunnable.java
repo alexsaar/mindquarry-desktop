@@ -29,13 +29,18 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     private final boolean empty;
     private final String errMessage;
     private final boolean refreshing;
+    private final String updateMessage;
+    private final String emptyMessage;
 
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
-            boolean empty, String errMessage, boolean refreshing) {
+            boolean empty, String errMessage, String updateMessage, 
+            String emptyMessage, boolean refreshing) {
         this.containerWidget = containerWidget;
 
         this.empty = empty;
         this.errMessage = errMessage;
+        this.updateMessage = updateMessage;
+        this.emptyMessage = emptyMessage;
         this.refreshing = refreshing;
     }
 
@@ -43,16 +48,14 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
         if (refreshing) {
             destroyContent();
             containerWidget.refreshWidget = new UpdateWidget(containerWidget,
-                    Messages.getString("Updating task list") //$NON-NLS-1$
-                            + " ..."); //$NON-NLS-1$
+                    updateMessage);
         } else if (errMessage == null && !empty) {
             destroyContent();
             createContainerContent();
         } else if (errMessage == null && empty) {
             destroyContent();
             containerWidget.noContentWidget = new NoContentWidget(
-                    containerWidget, Messages
-                            .getString("Currently no tasks are active.")); //$NON-NLS-1$
+                    containerWidget, emptyMessage);
         } else {
             destroyContent();
             containerWidget.errorWidget = new ErrorWidget(containerWidget,

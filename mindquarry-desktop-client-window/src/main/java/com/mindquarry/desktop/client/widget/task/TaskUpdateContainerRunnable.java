@@ -33,12 +33,16 @@ import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnab
  */
 public class TaskUpdateContainerRunnable extends
         UpdateContainerRunnable<TableViewer> {
+    private static final String UPDATE_MESSAGE = Messages.getString("Updating task list"); //$NON-NLS-1$
+    private static final String EMPTY_MESSAGE = Messages
+        .getString("Currently no tasks are active."); //$NON-NLS-1$
     private MindClient client;
 
     public TaskUpdateContainerRunnable(MindClient client,
             ContainerWidget<TableViewer> containerWidget, boolean empty,
             String errMessage, boolean refreshing) {
-        super(containerWidget, empty, errMessage, refreshing);
+        super(containerWidget, empty, errMessage, 
+                UPDATE_MESSAGE, EMPTY_MESSAGE, refreshing);
         this.client = client;
     }
 
