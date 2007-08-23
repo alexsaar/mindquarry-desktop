@@ -35,120 +35,120 @@ import com.mindquarry.desktop.client.MindClient;
  *         Saar</a>
  */
 public class IconActionThread extends Thread {
-	private Log log;
+    private Log log;
 
-	private TrayItem item;
+    private TrayItem item;
 
-	private boolean running = false;
+    private boolean running = false;
 
-	private int count = 10;
+    private int count = 10;
 
-	private boolean ascending = false;
+    private boolean ascending = false;
 
-	private List actions = new ArrayList();
+    private List<String> actions = new ArrayList<String>();
 
-	private Shell shell;
+    private Shell shell;
 
-	public IconActionThread(TrayItem item, Shell shell) {
-		this.item = item;
-		this.item.setToolTipText(MindClient.APPLICATION_NAME);
+    public IconActionThread(TrayItem item, Shell shell) {
+        this.item = item;
+        this.item.setToolTipText(MindClient.APPLICATION_NAME);
 
-		this.shell = shell;
+        this.shell = shell;
 
-		log = LogFactory.getLog(IconActionThread.class);
-	}
+        log = LogFactory.getLog(IconActionThread.class);
+    }
 
-	/**
-	 * @see java.lang.Thread#run()
-	 */
-	public void run() {
-		while (true) {
-			if (running) {
-				// increase or decrease counter depending on current modus
-				if (ascending) {
-					count++;
-				} else {
-					count--;
-				}
-				// set new icon
-				final Image icon = getImage(count);
-				shell.getDisplay().syncExec(new Runnable() {
-					public void run() {
-						item.setImage(icon);
-					}
-				});
-				// check next modus and switch, if necessary
-				if (!ascending && (count == 1)) {
-					ascending = true;
-				}
-				if (ascending && (count == 10)) {
-					ascending = false;
-				}
-			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				log.error("thread error", e); //$NON-NLS-1$
-			}
-		}
-	}
+    /**
+     * @see java.lang.Thread#run()
+     */
+    public void run() {
+        while (true) {
+            if (running) {
+                // increase or decrease counter depending on current modus
+                if (ascending) {
+                    count++;
+                } else {
+                    count--;
+                }
+                // set new icon
+                final Image icon = getImage(count);
+                shell.getDisplay().syncExec(new Runnable() {
+                    public void run() {
+                        item.setImage(icon);
+                    }
+                });
+                // check next modus and switch, if necessary
+                if (!ascending && (count == 1)) {
+                    ascending = true;
+                }
+                if (ascending && (count == 10)) {
+                    ascending = false;
+                }
+            }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                log.error("thread error", e); //$NON-NLS-1$
+            }
+        }
+    }
 
-	private Image getImage(int count) {
-		if (count == 10) {
-			return new Image(
-					Display.getCurrent(),
-					getClass()
-							.getResourceAsStream(
-									"/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
-		}
-		return new Image(Display.getCurrent(), getClass().getResourceAsStream(
-				"/com/mindquarry/icons/16x16/logo/mindquarry-icon-" + count //$NON-NLS-1$
-						+ ".png")); //$NON-NLS-1$
-	}
+    private Image getImage(int count) {
+        if (count == 10) {
+            return new Image(
+                    Display.getCurrent(),
+                    getClass()
+                            .getResourceAsStream(
+                                    "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+        }
+        return new Image(Display.getCurrent(), getClass().getResourceAsStream(
+                "/com/mindquarry/icons/16x16/logo/mindquarry-icon-" + count //$NON-NLS-1$
+                        + ".png")); //$NON-NLS-1$
+    }
 
-	public void startAction(String description) {
-		actions.add(description);
-		updateToolTip();
-		running = true;
-	}
+    public void startAction(String description) {
+        actions.add(description);
+        updateToolTip();
+        running = true;
+    }
 
-	public void stopAction(String description) {
-		actions.remove(description);
-		if (actions.size() == 0) {
-			running = false;
-			reset();
-		}
-		updateToolTip();
-	}
+    public void stopAction(String description) {
+        actions.remove(description);
+        if (actions.size() == 0) {
+            running = false;
+            reset();
+        }
+        updateToolTip();
+    }
 
-	private void updateToolTip() {
-		String tooltip = ""; //$NON-NLS-1$
-		if (actions.size() > 0) {
-			tooltip += "Running actions:" + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+    private void updateToolTip() {
+        String tooltip = ""; //$NON-NLS-1$
+        if (actions.size() > 0) {
+            tooltip += "Running actions:" + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
-			Iterator aIt = actions.iterator();
-			while (aIt.hasNext()) {
-				String action = (String) aIt.next();
-				tooltip += "- " + action; //$NON-NLS-1$
-			}
-		} else {
-			tooltip += Messages.getString("Currently no action is running."); //$NON-NLS-1$
-		}
-		final String util = tooltip;
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				item.setToolTipText(util);
-			}
-		});
-	}
+            Iterator<String> aIt = actions.iterator();
+            while (aIt.hasNext()) {
+                String action = aIt.next();
+                tooltip += "- " + action + "\n"; //$NON-NLS-1$//$NON-NLS-2$
+            }
+        } else {
+            tooltip += Messages.getString("Currently no action is running."); //$NON-NLS-1$
+        }
+        final String util = tooltip;
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                item.setToolTipText(util);
+            }
+        });
+    }
 
-	private void reset() {
-		shell.getDisplay().syncExec(new Runnable() {
-			public void run() {
-				item.setImage(getImage(10));
-			}
-		});
-		ascending = false;
-		count = 10;
-	}
+    private void reset() {
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                item.setImage(getImage(10));
+            }
+        });
+        ascending = false;
+        count = 10;
+    }
 }

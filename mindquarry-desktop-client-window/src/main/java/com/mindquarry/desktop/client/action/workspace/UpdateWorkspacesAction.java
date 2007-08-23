@@ -13,23 +13,15 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
-import com.mindquarry.desktop.model.team.Team;
-import com.mindquarry.desktop.preferences.profile.Profile;
-import com.mindquarry.desktop.workspace.SVNSynchronizer;
 
 /**
  * Update list of SVN changes.
@@ -60,19 +52,21 @@ public class UpdateWorkspacesAction extends ActionBase {
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }
 
+    private static final String REFRESH_MESSAGE = Messages
+            .getString("Refreshing workspaces changes ...");
+
     public void run() {
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
-                client.startAction(Messages
-                        .getString("Refreshing workspace changes"));
+                client.startAction(REFRESH_MESSAGE);
 
-                workspaceWidget.updateContainer(true, null, false);
+                workspaceWidget.updateContainer(true, REFRESH_MESSAGE, null,
+                        false);
                 workspaceWidget.refresh();
-                workspaceWidget.updateContainer(false, null, false);
+                workspaceWidget.updateContainer(false, null, null, false);
 
-                client.stopAction(Messages
-                        .getString("Refreshing workspace changes"));
+                client.stopAction(REFRESH_MESSAGE);
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
         }, "workspace-changes-update");

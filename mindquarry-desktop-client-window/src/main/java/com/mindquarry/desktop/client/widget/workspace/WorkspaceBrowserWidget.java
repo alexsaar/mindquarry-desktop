@@ -203,10 +203,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     }
 
     public void updateContainer(final boolean refreshing,
-            final String errMessage, boolean empty) {
+            final String refreshMessage, final String errMessage, boolean empty) {
         getDisplay().syncExec(
                 new WorkspaceUpdateContainerRunnable(client, this, empty,
-                        errMessage, refreshing));
+                        errMessage, refreshing, refreshMessage));
     }
 
     class SetStatusFileFilter extends FileFileFilter {

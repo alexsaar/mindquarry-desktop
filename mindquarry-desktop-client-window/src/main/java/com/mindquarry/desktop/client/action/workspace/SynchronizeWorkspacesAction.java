@@ -65,11 +65,14 @@ public class SynchronizeWorkspacesAction extends ActionBase {
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
-                client.startAction(Messages
-                        .getString("Synchronizing workspaces ..."));
+                workspaceWidget.updateContainer(true, Messages
+                        .getString("Refreshing workspaces changes ..."), //$NON-NLS-1$
+                        null, false);
 
-                workspaceWidget.updateContainer(true, null, false);
                 if (workspaceWidget.refreshNeeded()) {
+                    client.startAction(Messages
+                            .getString("Refreshing workspaces changes ..."));
+
                     Display.getDefault().syncExec(new Runnable() {
                         public void run() {
                             MessageBox messageBox = new MessageBox(client
@@ -81,10 +84,17 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                                     + "Please check the list of changes and press synchronize again."));
                             messageBox.open();
                         }
-
                     });
                     workspaceWidget.refresh();
+                    client.stopAction(Messages
+                            .getString("Refreshing workspaces changes ..."));
                 } else {
+                    workspaceWidget.updateContainer(true, Messages
+                            .getString("Synchronizing workspaces ..."), //$NON-NLS-1$
+                            null, false);
+                    client.startAction(Messages
+                            .getString("Synchronizing workspaces ..."));
+
                     // retrieve selected profile
                     PreferenceStore store = client.getPreferenceStore();
                     Profile selected = Profile.getSelectedProfile(store);
@@ -110,10 +120,10 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                         .getShell()));
                         sc.synchronizeOrCheckout();
                     }
+                    client.stopAction(Messages
+                            .getString("Synchronizing workspaces ..."));
                 }
-                workspaceWidget.updateContainer(false, null, false);
-                client.stopAction(Messages
-                        .getString("Synchronizing workspaces ..."));
+                workspaceWidget.updateContainer(false, null, null, false);
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
         }, "workspace-changes-update");
