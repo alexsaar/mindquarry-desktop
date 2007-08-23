@@ -18,8 +18,10 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.dialog.conflict.AddConflictDialog;
+import com.mindquarry.desktop.client.dialog.conflict.ContentConflictDialog;
 import com.mindquarry.desktop.client.dialog.conflict.DeleteWithModificationConflictDialog;
 import com.mindquarry.desktop.client.dialog.conflict.ObstructedConflictDialog;
+import com.mindquarry.desktop.client.dialog.conflict.PropertyConflictDialog;
 import com.mindquarry.desktop.client.dialog.conflict.ReplaceConflictDialog;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
@@ -34,6 +36,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * Show GUI dialogs to let the user resolve conflicts.
  * 
  * @author dnaber
+ * @author <a href="mailto:victor(dot)saar(at)mindquarry(dot)com">Victor Saar</a>
  */
 public class InteractiveConflictHandler implements ConflictHandler {
 
@@ -99,8 +102,23 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(ContentConflict conflict) throws CancelException {
-        // TODO Auto-generated method stub
-        System.err.println("FIXME: implement");
+        ContentConflictDialog dlg = 
+            new ContentConflictDialog(conflict, shell);
+        int resolution = dlg.open();
+        if (resolution == IDialogConstants.OK_ID) {
+            if (dlg.getResolveMethod() == ContentConflict.Action.USE_LOCAL) {
+                conflict.doUseLocal();
+            } else if (dlg.getResolveMethod() == ContentConflict.Action.USE_REMOTE) {
+                conflict.doUseRemote();
+            } else if (dlg.getResolveMethod() == ContentConflict.Action.MERGE) {
+                conflict.doMerge();
+            } else {
+                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                        dlg.getResolveMethod());
+            }
+        } else {
+            throw new CancelException();
+        }
     }
 
     public void handle(ObstructedConflict conflict)
@@ -123,8 +141,23 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(PropertyConflict conflict) throws CancelException {
-        // TODO Auto-generated method stub
-        System.err.println("FIXME: implement");
+        PropertyConflictDialog dlg = 
+            new PropertyConflictDialog(conflict, shell);
+        int resolution = dlg.open();
+        if (resolution == IDialogConstants.OK_ID) {
+            if (dlg.getResolveMethod() == PropertyConflict.Action.USE_LOCAL_VALUE) {
+                conflict.doUseLocalValue();
+            } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_REMOTE_VALUE) {
+                conflict.doUseRemoteValue();
+            } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_NEW_VALUE) {
+                conflict.doUseNewValue(dlg.getNewValue());
+            } else {
+                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                        dlg.getResolveMethod());
+            }
+        } else {
+            throw new CancelException();
+        }
     }
 
     public String getCommitMessage(String repoURL) throws CancelException {
