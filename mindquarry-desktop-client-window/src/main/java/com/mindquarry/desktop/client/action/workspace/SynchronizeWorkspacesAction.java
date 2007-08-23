@@ -108,11 +108,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                         .getShell()));
                         sc.synchronizeOrCheckout();
                     }
-                    client.stopAction(Messages
-                            .getString("Refreshing workspace changes"));
-                    client.enableActions(true,
-                            ActionBase.WORKSPACE_ACTION_GROUP);
                 }
+                client.stopAction(Messages
+                        .getString("Refreshing workspace changes"));
+                client.enableActions(true,
+                        ActionBase.WORKSPACE_ACTION_GROUP);
             }
         }, "workspace-changes-update");
         updateThread.setDaemon(true);
