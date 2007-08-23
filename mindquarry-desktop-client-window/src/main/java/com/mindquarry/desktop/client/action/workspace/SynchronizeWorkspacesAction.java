@@ -56,42 +56,34 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	}
 
 	public void run() {
-	    try {
-	        // TODO: also disable update button
-	        setEnabled(false);
-	        client.getToolBarManager().getControl().update();
-            
-	        WorkspaceBrowserWidget workspaceWidget = client.getCategoryWidget().getWorkspaceBrowserWidget();
-            if (workspaceWidget.refreshNeeded()) {
-                MessageBox messageBox = new MessageBox(client.getShell(), SWT.ICON_QUESTION
-                        | SWT.YES | SWT.NO);
-                messageBox.setMessage(Messages.getString("There list of changes is not up to date. It needs " +
-                		"to be refreshed before you can synchronize changes. Refresh the list of changes now?"));
-                int result = messageBox.open();
-                if (result == SWT.YES) {
-                    workspaceWidget.asyncRefresh();
-                }
-                return;
+        WorkspaceBrowserWidget workspaceWidget = client.getCategoryWidget().getWorkspaceBrowserWidget();
+        if (workspaceWidget.refreshNeeded()) {
+            MessageBox messageBox = new MessageBox(client.getShell(), SWT.ICON_QUESTION
+                    | SWT.YES | SWT.NO);
+            messageBox.setMessage(Messages.getString("There list of changes is not up to date. It needs " +
+            		"to be refreshed before you can synchronize changes. Refresh the list of changes now?"));
+            int result = messageBox.open();
+            if (result == SWT.YES) {
+                workspaceWidget.asyncRefresh();
             }
-
-            List<Team> teams = client.getSelectedTeams();
-	        Profile selectedProfile = Profile.getSelectedProfile(client
-	                .getPreferenceStore());
-            if (selectedProfile == null) {
-                log.debug("No profile selected."); //$NON-NLS-1$
-                return;
-            }
-	        for (Team team : teams) {
-	            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
-	                    selectedProfile.getWorkspaceFolder() + "/" + team.getName(),
-	                    selectedProfile.getLogin(), selectedProfile.getPassword(),
-	                    new InteractiveConflictHandler(client.getShell()));
-	            sc.synchronizeOrCheckout();
-	        }
-            workspaceWidget.refresh();
-        } finally {
-            setEnabled(true);
+            return;
         }
+
+        List<Team> teams = client.getSelectedTeams();
+        Profile selectedProfile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+        if (selectedProfile == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return;
+        }
+        for (Team team : teams) {
+            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
+                    selectedProfile.getWorkspaceFolder() + "/" + team.getName(),
+                    selectedProfile.getLogin(), selectedProfile.getPassword(),
+                    new InteractiveConflictHandler(client.getShell()));
+            sc.synchronizeOrCheckout();
+        }
+        workspaceWidget.refresh();
 	}
 	
 	public String getGroup() {

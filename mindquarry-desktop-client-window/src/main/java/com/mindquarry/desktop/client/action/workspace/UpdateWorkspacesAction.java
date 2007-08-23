@@ -35,7 +35,6 @@ public class UpdateWorkspacesAction extends ActionBase {
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
             UpdateWorkspacesAction.class
-            // FIXME: use a different icon, not the same as for synchronization
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
 
     public UpdateWorkspacesAction(MindClient client) {
@@ -51,15 +50,8 @@ public class UpdateWorkspacesAction extends ActionBase {
     }
 
     public void run() {
-        try {
-            // TODO: also disable synchronize button
-            setEnabled(false);
-            client.getToolBarManager().getControl().update();
-            client.getCategoryWidget().getWorkspaceBrowserWidget()
-                    .asyncRefresh();
-        } finally {
-            setEnabled(true);
-        }
+        client.getCategoryWidget().getWorkspaceBrowserWidget()
+                .asyncRefresh();
     }
 
     public String getGroup() {
@@ -67,6 +59,6 @@ public class UpdateWorkspacesAction extends ActionBase {
     }
 
     public boolean isToolbarAction() {
-        return true;
+        return false;
     }
 }

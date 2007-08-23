@@ -32,6 +32,7 @@ import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.model.team.Team;
@@ -115,6 +116,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
+        
+        client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
         updateContainer(true, null, false);
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
         Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
@@ -130,6 +133,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             updateContainer(false, null, false);
         }
         refreshing = false;
+        client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
     }
 
     // #########################################################################
