@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.client.widget.util.container;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
