@@ -171,6 +171,27 @@ public class SVNSynchronizerTestZip implements Notify2 {
 		
 		// TODO: we need to test the conflict objects: extend AutomaticConflictHandler
 		// class with methods testing the fields of the conflict object
+
+		// Test correct working copy contents
+		String localPath = helper.getLocalPath();
+        assertFileExists(localPath, "/first");
+        assertFileExists(localPath, "/first_renamed_0");
+        assertFileExists(localPath, "/second");
+        assertFileExists(localPath, "/second_renamed_2/");
+        assertFileExists(localPath, "/second_renamed_2/file");
+        assertFileExists(localPath, "/second_renamed_2/another_file");
+        assertFileExists(localPath, "/third/");
+        assertFileExists(localPath, "/third/first");
+        assertFileExists(localPath, "/third/second");
+        assertFileExists(localPath, "/third/second/first");
+        assertFileExists(localPath, "/third_renamed_3");
+        assertFileExists(localPath, "/fourth/");
+        assertFileExists(localPath, "/fourth/first");
+        assertFileExists(localPath, "/fourth/second/");
+        assertFileExists(localPath, "/fourth/second/first");
+        assertFileExists(localPath, "/fourth_renamed_1/");
+        assertFileExists(localPath, "/fourth_renamed_1/file");
+        assertFileExists(localPath, "/fourth_renamed_1/different_file");
 		
 		// TODO: here we have to test if the remote/localAdded fields contain
 		// all files/folders of the test zip case
@@ -187,6 +208,19 @@ public class SVNSynchronizerTestZip implements Notify2 {
         
         // TODO: we need to test the conflict objects: extend AutomaticConflictHandler
         // class with methods testing the fields of the conflict object
+
+		// Test correct working copy contents
+		String localPath = helper.getLocalPath();
+        assertFileExists(localPath, "/first");
+        assertFileExists(localPath, "/second");
+        assertFileExists(localPath, "/third/");
+        assertFileExists(localPath, "/third/first");
+        assertFileExists(localPath, "/third/second");
+        assertFileExists(localPath, "/third/second/first");
+        assertFileExists(localPath, "/fourth/");
+        assertFileExists(localPath, "/fourth/first");
+        assertFileExists(localPath, "/fourth/second/");
+        assertFileExists(localPath, "/fourth/second/first");
         
         // TODO: here we have to test if the remote/localAdded fields contain
         // all files/folders of the test zip case
