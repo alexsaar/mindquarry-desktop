@@ -83,7 +83,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             }
 	        for (Team team : teams) {
 	            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
-	                    selectedProfile.getWorkspaceFolder(),
+	                    selectedProfile.getWorkspaceFolder() + "/" + team.getName(),
 	                    selectedProfile.getLogin(), selectedProfile.getPassword(),
 	                    new InteractiveConflictHandler(client.getShell()));
 	            sc.synchronizeOrCheckout();
