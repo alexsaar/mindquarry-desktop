@@ -296,7 +296,6 @@ public class MindClient extends ApplicationWindow {
         getShell().setSize(800, 600);
 
         setStatus("Ready.");
-
         createTrayIconAndMenu(Display.getDefault());
         return parent;
     }
