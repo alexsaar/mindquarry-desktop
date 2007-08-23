@@ -52,7 +52,7 @@ public class SynchronizeTasksAction extends ActionBase {
 	}
 
 	public void run() {
-		taskContainer.asyncRefresh();
+	    taskContainer.asyncRefresh();
 	}
 
 	public void setTaskContainer(TaskContainerWidget taskContainer) {

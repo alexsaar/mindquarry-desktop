@@ -99,7 +99,7 @@ public class MindClient extends ApplicationWindow {
     public static final String TEAM_NAME_FONT_KEY = "team-name";
 
     public static final List<String> INITIAL_TOOLBAR_GROUPS = new ArrayList<String>();
-    
+
     static {
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.TASK_ACTION_GROUP);
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
@@ -268,7 +268,7 @@ public class MindClient extends ApplicationWindow {
     public String getMimeType(File file) {
         return mimeMap.getContentType(file);
     }
-    
+
     public CategoryWidget getCategoryWidget() {
         return categoryWidget;
     }
@@ -318,6 +318,14 @@ public class MindClient extends ApplicationWindow {
         return parent;
     }
 
+    public void enableActions(boolean enabled, String group) {
+        for (ActionBase action : actions) {
+            if (action.getGroup().equals(group)) {
+                action.setEnabled(enabled);
+            }
+        }
+    }
+
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
@@ -335,8 +343,7 @@ public class MindClient extends ApplicationWindow {
             addNewProfile(args[0], args[1], args[2]);
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
-            addNewProfile(
-                    Messages.getString("Your Mindquarry Server Profile"), //$NON-NLS-1$
+            addNewProfile(Messages.getString("Your Mindquarry Server Profile"), //$NON-NLS-1$
                     Messages.getString("http://your.mindquarry.server"), //$NON-NLS-1$
                     Messages.getString("LoginID")); //$NON-NLS-1$
             showPreferenceDialog(true);
@@ -465,7 +472,7 @@ public class MindClient extends ApplicationWindow {
             }
         });
         updateProfileSelector();
-        
+
         menuItem.setMenu(profilesMenu);
 
         // open web page action
@@ -537,8 +544,9 @@ public class MindClient extends ApplicationWindow {
             profilesInMenu.add(menuItem);
         }
         if (!hasSelection && firstMenuItem != null) {
-            Profile.selectProfile(getPreferenceStore(), firstMenuItem
-                    .getText());
+            Profile
+                    .selectProfile(getPreferenceStore(), firstMenuItem
+                            .getText());
         }
     }
 

@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -36,6 +35,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.ErrorWidget;
 import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
@@ -169,6 +169,7 @@ public class TaskContainerWidget extends ContainerWidget {
     // #########################################################################
     protected void refresh() {
         log.info("Starting task list refresh."); //$NON-NLS-1$
+        client.enableActions(false, ActionBase.TASK_ACTION_GROUP);
         refreshing = true;
 
         PreferenceStore store = client.getPreferenceStore();
@@ -177,6 +178,7 @@ public class TaskContainerWidget extends ContainerWidget {
         // check profile
         if (profile == null) {
             log.debug("No profile selected."); //$NON-NLS-1$
+            client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
             refreshing = false;
             return;
         }
@@ -232,6 +234,7 @@ public class TaskContainerWidget extends ContainerWidget {
                         Messages.getString("Error"), errMessage);
 
                 updateContainer(false, errMessage, false);
+                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
                 refreshing = false;
                 return;
             }
@@ -251,6 +254,7 @@ public class TaskContainerWidget extends ContainerWidget {
             });
         }
         refreshing = false;
+        client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
     }
 
     private void markColumns() {
@@ -307,7 +311,7 @@ public class TaskContainerWidget extends ContainerWidget {
                     col.getColumn().setResizable(false);
                     col.getColumn().setWidth(200);
                     col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
-                    viewer.getTable().getColumn(0).setWidth(getSize().x);
+                    viewer.getTable().getColumn(0).setWidth(getSize().x - 4);
                 } else if (errMessage == null && empty) {
                     destroyContent();
                     noContentWidget = new NoContentWidget(self, Messages
