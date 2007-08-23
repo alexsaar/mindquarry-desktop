@@ -22,19 +22,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TreeViewerColumn;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
@@ -52,43 +43,16 @@ import com.mindquarry.desktop.workspace.SVNSynchronizer;
 /**
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class WorkspaceBrowserWidget extends ContainerWidget {
+public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     private static Log log = LogFactory.getLog(WorkspaceBrowserWidget.class);
 
-    private static final Image folderImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
+    protected File workspaceRoot;
 
-    private static final Image fileImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+    protected Map<File, Integer> localChanges = new HashMap<File, Integer>();
+    protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
 
-    private static final Image downloadImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
-
-    private static final Image uploadImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
-
-    private static final String NO_CHANGES_MESSAGE = Messages.getString("No changes to synchronize.");
-
-    private Image conflictImage = new Image(
-            Display.getCurrent(),
-            getClass()
-                    .getResourceAsStream(
-                            "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
-
-    private TreeViewer viewer;
-
-    private File workspaceRoot;
-
-    Map<File, Integer> localChanges = new HashMap<File, Integer>();
-    Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
+    private static final String NO_CHANGES_MESSAGE = Messages
+            .getString("No changes to synchronize.");
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
@@ -156,7 +120,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
             log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
-        updateContainer(true, Messages.getString("Updating list of changes..."));
+        updateContainer(true,
+                Messages.getString("Updating list of changes..."), false);
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
         Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
@@ -166,9 +131,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
 
         boolean empty = localChanges.size() == 0 && remoteChanges.size() == 0;
         if (empty) {
-            updateContainer(false, NO_CHANGES_MESSAGE);
+            updateContainer(false, NO_CHANGES_MESSAGE, true);
         } else {
-            updateContainer(false, null);
+            updateContainer(false, null, false);
         }
         refreshing = false;
     }
@@ -223,14 +188,15 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                         // e.g. conflict.txt.r172 etc -> hide them!
                     }
                 } else {
-                    log.info("obstructed status, not calling getRemoteAndLocalChanges()");
+                    log
+                            .info("obstructed status, not calling getRemoteAndLocalChanges()");
                 }
                 // FIXME:
                 System.err.println("local " + localChanges);
                 System.err.println("remote " + remoteChanges);
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
-            updateContainer(false, null);
+            updateContainer(false, null, false);
             refreshing = false;
         } catch (ClientException e) {
             // TODO: handle exception
@@ -241,157 +207,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
     }
 
     private void updateContainer(final boolean refreshing,
-            final String message) {
-        final WorkspaceBrowserWidget self = this;
-        getDisplay().syncExec(new Runnable() {
-            public void run() {
-                if (refreshing) {
-                    destroyContent();
-                    refreshWidget = new UpdateWidget(self, message);
-                } else if (message == null) {
-                    destroyContent();
-
-                    // create workspace/changes browser
-                    viewer = new TreeViewer(self, SWT.BORDER | SWT.H_SCROLL
-                            | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.CHECK);
-                    viewer.setContentProvider(new ContentProvider(self));
-                    viewer.setSorter(new ViewerSorter() {
-                        public int category(Object element) {
-                            File file = (File) element;
-                            // sort directories first, rest is sorted naturally
-                            if (file.isDirectory()) {
-                                return 1;
-                            } else {
-                                return 2;
-                            }
-                        }
-                    });
-                    viewer.getTree().setLayoutData(
-                            new GridData(GridData.FILL_BOTH));
-                    viewer.getTree().setHeaderVisible(true);
-                    viewer.getTree().setLinesVisible(true);
-                    viewer.getTree().setFont(
-                            JFaceResources
-                                    .getFont(MindClient.TEAM_NAME_FONT_KEY));
-                    viewer.getTree().addListener(SWT.Selection, new Listener() {
-                        public void handleEvent(Event event) {
-                            if (event.detail == SWT.CHECK) {
-                                TreeItem item = (TreeItem) event.item;
-                                if (item.getChecked()) {
-                                    // check all parents
-                                    TreeItem parent = item.getParentItem();
-                                    while (parent != null) {
-                                        parent.setChecked(true);
-                                        parent = parent.getParentItem();
-                                    }
-                                } else {
-                                    // uncheck all children
-                                    TreeItem[] children = item.getItems();
-                                    uncheckChildren(children);
-                                }
-                            }
-                        }
-
-                        private void uncheckChildren(TreeItem[] children) {
-                            for (TreeItem child : children) {
-                                child.setChecked(false);
-                                uncheckChildren(child.getItems());
-                            }
-                        }
-                    });
-                    TreeViewerColumn col = new TreeViewerColumn(viewer,
-                            SWT.LEFT);
-                    col.getColumn().setText("Name");
-                    col.getColumn().setWidth(540);
-                    col.setLabelProvider(new ColumnLabelProvider() {
-                        public Image getImage(Object element) {
-                            File file = (File) element;
-                            if (file.isDirectory()) {
-                                return folderImage;
-                            } else if (file.isFile()) {
-                                return fileImage;
-                            }
-                            return null;
-                        }
-
-                        public String getText(Object element) {
-                            return ((File) element).getName();
-                        }
-                    });
-                    col = new TreeViewerColumn(viewer, SWT.CENTER);
-                    col.getColumn().setResizable(false);
-                    col.getColumn().setWidth(32);
-                    col.setLabelProvider(new ColumnLabelProvider() {
-                        public Image getImage(Object element) {
-                            File file = (File) element;
-                            int localStatus = -1;
-                            int remoteStatus = -1;
-                            if (localChanges != null
-                                    && localChanges.containsKey(file)) {
-                                localStatus = localChanges.get(file).intValue();
-                            }
-                            if (remoteChanges != null
-                                    && remoteChanges.containsKey(file)) {
-                                remoteStatus = remoteChanges.get(file)
-                                        .intValue();
-                            }
-                            if (localStatus == StatusKind.obstructed) {
-                                // FIXME: add question mark icon
-                            } else if (localStatus == StatusKind.added
-                                    || localStatus == StatusKind.unversioned) {
-                                // TODO: show upload icon with "+" sign
-                                return uploadImage;
-                            } else if (remoteStatus == StatusKind.modified) {
-                                return uploadImage;
-                            } else if (remoteStatus == StatusKind.added) {
-                                return downloadImage;
-                            } else if (localStatus == StatusKind.conflicted) {
-                                return conflictImage;
-                            } else if (localStatus != -1 || remoteStatus != -1) {
-                                log.warn("No icon set for local/remote status "
-                                        + localStatus + "/" + remoteStatus
-                                        + " on file " + file.getAbsolutePath());
-                            }
-                            // TODO: which other cases do we need to display?
-                            return null;
-                        }
-
-                        public String getText(Object element) {
-                            return "";
-                        }
-                    });
-                    viewer.setInput(workspaceRoot);
-                    viewer.expandAll();
-                    if (viewer.getExpandedElements().length == 0) {
-                        destroyContent();
-                        noContentWidget = new NoContentWidget(self, NO_CHANGES_MESSAGE);
-                    }
-                    //viewer.getTree().selectAll();
-                } else if (message != null) {
-                    destroyContent();
-                    noContentWidget = new NoContentWidget(self, message);
-                }
-                layout(true);
-            }
-
-            private void destroyContent() {
-                if (viewer != null) {
-                    viewer.getTree().dispose();
-                    viewer = null;
-                }
-                if (refreshWidget != null) {
-                    refreshWidget.dispose();
-                    refreshWidget = null;
-                }
-                if (errorWidget != null) {
-                    errorWidget.dispose();
-                    errorWidget = null;
-                }
-                if (noContentWidget != null) {
-                    noContentWidget.dispose();
-                    noContentWidget = null;
-                }
-            }
-        });
+            final String message, boolean empty) {
+        getDisplay().syncExec(
+                new WorkspaceUpdateContainerRunnable(client, this, empty,
+                        NO_CHANGES_MESSAGE, refreshing));
     }
 }

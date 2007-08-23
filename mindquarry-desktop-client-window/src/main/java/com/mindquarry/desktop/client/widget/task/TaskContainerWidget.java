@@ -21,25 +21,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
-import com.mindquarry.desktop.client.widget.util.container.ErrorWidget;
-import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
-import com.mindquarry.desktop.client.widget.util.container.UpdateWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.model.team.Team;
@@ -49,11 +42,10 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 /**
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class TaskContainerWidget extends ContainerWidget {
+public class TaskContainerWidget extends ContainerWidget<TableViewer> {
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
     private TaskList tasks;
-    private TableViewer viewer;
 
     private String statusFacet = "all";
     private String priorityFacet = "all";
@@ -183,7 +175,6 @@ public class TaskContainerWidget extends ContainerWidget {
             return;
         }
         updateContainer(true, null, false);
-
         log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
         // cleanup current task list
@@ -270,77 +261,8 @@ public class TaskContainerWidget extends ContainerWidget {
 
     private void updateContainer(final boolean refreshing,
             final String errMessage, final boolean empty) {
-        final Composite self = this;
-        getDisplay().syncExec(new Runnable() {
-            public void run() {
-                if (refreshing) {
-                    destroyContent();
-                    refreshWidget = new UpdateWidget(self, Messages
-                            .getString("Updating task list") //$NON-NLS-1$
-                            + " ..."); //$NON-NLS-1$
-                } else if (errMessage == null && !empty) {
-                    destroyContent();
-
-                    // create table viewer
-                    viewer = new TableViewer(self, SWT.FULL_SELECTION);
-                    viewer.activateCustomTooltips();
-                    viewer.getTable().setLayoutData(
-                            new GridData(GridData.FILL_BOTH));
-                    viewer.getTable().setHeaderVisible(false);
-                    viewer.getTable().setLinesVisible(false);
-                    viewer.getTable().setToolTipText(""); //$NON-NLS-1$
-                    viewer.getTable().setFont(
-                            JFaceResources
-                                    .getFont(MindClient.TASK_TITLE_FONT_KEY));
-                    viewer.getTable().setLayoutData(
-                            new GridData(SWT.FILL, SWT.FILL, true, true));
-                    getShell().addListener(SWT.Resize, new Listener() {
-                        public void handleEvent(Event event) {
-                            viewer.getTable().getColumn(0).setWidth(
-                                    viewer.getTable().getSize().x);
-                        }
-                    });
-                    viewer.setContentProvider(new ContentProvider());
-                    viewer.addDoubleClickListener(new DoubleClickListener(
-                            client, viewer, tasks));
-
-                    // create columns
-                    TableViewerColumn col = new TableViewerColumn(viewer,
-                            SWT.NONE);
-                    col.setLabelProvider(new TaskLabelProvider());
-                    col.getColumn().setResizable(false);
-                    col.getColumn().setWidth(200);
-                    col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
-                    viewer.getTable().getColumn(0).setWidth(getSize().x - 4);
-                } else if (errMessage == null && empty) {
-                    destroyContent();
-                    noContentWidget = new NoContentWidget(self, Messages
-                            .getString("Currently no tasks are active.")); //$NON-NLS-1$
-                } else {
-                    destroyContent();
-                    errorWidget = new ErrorWidget(self, errMessage);
-                }
-                layout(true);
-            }
-
-            private void destroyContent() {
-                if (viewer != null) {
-                    viewer.getTable().dispose();
-                    viewer = null;
-                }
-                if (refreshWidget != null) {
-                    refreshWidget.dispose();
-                    refreshWidget = null;
-                }
-                if (errorWidget != null) {
-                    errorWidget.dispose();
-                    errorWidget = null;
-                }
-                if (noContentWidget != null) {
-                    noContentWidget.dispose();
-                    noContentWidget = null;
-                }
-            }
-        });
+        getDisplay().syncExec(
+                new TaskUpdateContainerRunnable(client, this, empty,
+                        errMessage, refreshing));
     }
 }

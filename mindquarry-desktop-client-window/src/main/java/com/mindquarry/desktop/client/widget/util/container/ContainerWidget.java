@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.util.container;
 
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,10 +24,12 @@ import com.mindquarry.desktop.client.widget.WidgetBase;
 /**
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public abstract class ContainerWidget extends WidgetBase {
+public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     protected Composite refreshWidget;
     protected Composite noContentWidget;
     protected Composite errorWidget;
+    
+    protected V viewer;
 
     protected boolean refreshing = false;
 
@@ -59,4 +62,12 @@ public abstract class ContainerWidget extends WidgetBase {
     public abstract void asyncRefresh();
 
     protected abstract void refresh();
+
+    public V getViewer() {
+        return viewer;
+    }
+    
+    public void setViewer(V viewer) {
+        this.viewer = viewer;
+    }
 }

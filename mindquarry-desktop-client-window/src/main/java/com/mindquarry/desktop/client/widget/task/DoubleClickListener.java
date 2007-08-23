@@ -29,7 +29,6 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
 import com.mindquarry.desktop.model.task.Task;
-import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.HttpUtilities;
 
@@ -42,16 +41,11 @@ public class DoubleClickListener implements IDoubleClickListener {
     private static Log log = LogFactory.getLog(DoubleClickListener.class);
 
     private final MindClient client;
-
     private final TableViewer viewer;
-    private final TaskList tasks;
 
-    public DoubleClickListener(MindClient client, TableViewer tableViewer,
-            TaskList tasks) {
+    public DoubleClickListener(MindClient client, TableViewer tableViewer) {
         this.client = client;
-
         this.viewer = tableViewer;
-        this.tasks = tasks;
     }
 
     public void doubleClick(DoubleClickEvent event) {
@@ -72,12 +66,6 @@ public class DoubleClickListener implements IDoubleClickListener {
                             SWT.ON_TOP), task.clone(), false);
 
                     if (dlg.open() == Window.OK) {
-                        int taskPos = tasks.getTasks().indexOf(task);
-                        if (taskPos != -1) {
-                            // can be -1 if set to "done" while the dialog
-                            // was open
-                            tasks.getTasks().set(taskPos, dlg.getChangedTask());
-                        }
                         task = dlg.getChangedTask();
                         HttpUtilities.putAsXML(prof.getLogin(), prof
                                 .getPassword(), task.getId(), task
