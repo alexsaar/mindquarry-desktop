@@ -19,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
@@ -27,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
@@ -177,10 +181,24 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 if (localChanges.size() == 0) {
                     List<Status> allChanges = sc.getRemoteAndLocalChanges();
                     for (Status status : allChanges) {
+                        File f = new File(status.getPath());
                         localChanges.put(new File(status.getPath()),
                                 new Integer(status.getTextStatus()));
                         remoteChanges.put(new File(status.getPath()),
                                 new Integer(status.getRepositoryTextStatus()));
+                        // If we add a directory with contents, SVN will only
+                        // report the directory as unversioned, not the files
+                        // inside the directory, so we add the files (= all files
+                        // below the directory) here:
+                        if (status.getTextStatus() == StatusKind.unversioned &&
+                                f.isDirectory()) {
+                            SetStatusFileFilter fileFilter = new SetStatusFileFilter();
+                            SetStatusDirFilter dirFilter = new SetStatusDirFilter();
+                            FileUtils.iterateFiles(f, fileFilter, dirFilter);
+                            for (Status tmpStatus : fileFilter.getSubFiles()) {
+                                localChanges.put(new File(tmpStatus.getPath()), StatusKind.unversioned);
+                            }
+                        }
                         // TODO: get the two files (remote/local) from the
                         // conflict,
                         // e.g. conflict.txt.r172 etc -> hide them!
@@ -210,4 +228,35 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 new WorkspaceUpdateContainerRunnable(client, this, empty,
                         errMessage, refreshing));
     }
+    
+    class SetStatusFileFilter extends FileFileFilter {
+        List<Status> subFiles = new ArrayList<Status>();
+        public boolean accept(File file) {
+            Status status = new Status(file.getAbsolutePath(), null, NodeKind.file, 0, 0, 0, null, StatusKind.unversioned,
+                    0, 0, 0, false, false, null, null, null,
+                    null, 0, false, null, null, null, 0,
+                    null, 0, 0, 0, null);
+            subFiles.add(status);
+            return true;
+        }
+        List<Status> getSubFiles() {
+            return subFiles;
+        }
+    }
+
+    class SetStatusDirFilter extends DirectoryFileFilter {
+        List<Status> subFiles = new ArrayList<Status>();
+        public boolean accept(File file) {
+            Status status = new Status(file.getAbsolutePath(), null, NodeKind.dir, 0, 0, 0, null, StatusKind.unversioned,
+                    0, 0, 0, false, false, null, null, null,
+                    null, 0, false, null, null, null, 0,
+                    null, 0, 0, 0, null);
+            subFiles.add(status);
+            return true;
+        }
+        List<Status> getSubFiles() {
+            return subFiles;
+        }
+    }
+
 }

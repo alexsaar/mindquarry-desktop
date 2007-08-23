@@ -66,6 +66,12 @@ public class ContentProvider implements ITreeContentProvider {
                         return true;
                     }
                 }
+                for (File localFile : workspaceBrowser.localChanges.keySet()) {
+                    if (localFile.getAbsolutePath().startsWith(
+                            f.getAbsolutePath() + "/")) {
+                        return true;
+                    }
+                }
                 return false;
             }
         });
