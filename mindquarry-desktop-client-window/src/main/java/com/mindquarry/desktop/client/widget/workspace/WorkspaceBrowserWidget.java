@@ -163,7 +163,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
         remoteChanges = newRemoteChanges;
         workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
 
-        updateContainer(false, null, false);
+        boolean empty = localChanges.size() == 0 && remoteChanges.size() == 0;
+        updateContainer(false, null, empty);
         refreshing = false;
     }
 
@@ -183,12 +184,17 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                 String login = selected.getLogin();
                 String password = selected.getPassword();
 
+                // iterate over local changes first to avoid exceptions
+                // later (in rare cases of "obstructed" state only):
+                File teamDir = new File(folder);
+                // TODO: also consider the case where the team folder exists
+                // but is not a SVN checkout
+                if (!teamDir.exists()) {
+                    continue;
+                }
                 SVNSynchronizer sc = new SVNSynchronizer(url, folder, login,
                         password, new InteractiveConflictHandler(client
                                 .getShell()));
-                
-                // iterate over local changes first to avoid exceptions
-                // later (in rare cases of "obstructed" state only):
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
@@ -238,8 +244,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                 if (refreshing) {
                     destroyContent();
                     refreshWidget = new UpdateWidget(self, Messages
-                            .getString("Synchronizing workspaces") //$NON-NLS-1$
-                            + " ..."); //$NON-NLS-1$
+                            .getString("Synchronizing workspaces...")); //$NON-NLS-1$
                 } else if (errMessage == null && !empty) {
                     destroyContent();
 
@@ -354,6 +359,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                     });
                     viewer.setInput(workspaceRoot);
                     viewer.expandAll();
+                    //viewer.getTree().selectAll();
                 } else if (errMessage == null && empty) {
                     destroyContent();
                     noContentWidget = new NoContentWidget(self, Messages
