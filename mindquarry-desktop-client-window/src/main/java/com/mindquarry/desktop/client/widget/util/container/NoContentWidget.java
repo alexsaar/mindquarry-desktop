@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.widget.workspace;
+package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.Label;
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class NoChangesWidget extends Composite {
+public class NoContentWidget extends Composite {
 	private String message;
 
-	public NoChangesWidget(Composite parent, String message) {
+	public NoContentWidget(Composite parent, String message) {
 		super(parent, SWT.NONE);
 		this.message = message;
 

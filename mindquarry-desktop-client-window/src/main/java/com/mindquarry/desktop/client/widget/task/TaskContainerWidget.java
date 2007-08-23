@@ -36,7 +36,10 @@ import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
-import com.mindquarry.desktop.client.widget.util.ContainerWidget;
+import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.client.widget.util.container.ErrorWidget;
+import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
+import com.mindquarry.desktop.client.widget.util.container.UpdateWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.model.team.Team;
@@ -307,7 +310,7 @@ public class TaskContainerWidget extends ContainerWidget {
                     viewer.getTable().getColumn(0).setWidth(getSize().x);
                 } else if (errMessage == null && empty) {
                     destroyContent();
-                    noContentWidget = new NoTasksWidget(self, Messages
+                    noContentWidget = new NoContentWidget(self, Messages
                             .getString("Currently no tasks are active.")); //$NON-NLS-1$
                 } else {
                     destroyContent();

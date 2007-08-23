@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.widget.task;
+package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;

@@ -42,7 +42,10 @@ import org.tigris.subversion.javahl.StatusKind;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
-import com.mindquarry.desktop.client.widget.util.ContainerWidget;
+import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.client.widget.util.container.ErrorWidget;
+import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
+import com.mindquarry.desktop.client.widget.util.container.UpdateWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -191,7 +194,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
             public void run() {
                 if (refreshing) {
                     destroyContent();
-                    refreshWidget = new WorkspaceUpdateWidget(self, Messages
+                    refreshWidget = new UpdateWidget(self, Messages
                             .getString("Synchronizing workspaces") //$NON-NLS-1$
                             + " ..."); //$NON-NLS-1$
                 } else if (errMessage == null && !empty) {
@@ -308,7 +311,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                     });
                 } else if (errMessage == null && empty) {
                     destroyContent();
-                    noContentWidget = new NoChangesWidget(self, Messages
+                    noContentWidget = new NoContentWidget(self, Messages
                             .getString("No changes to synchronize.")); //$NON-NLS-1$
                 } else {
                     destroyContent();
