@@ -58,10 +58,12 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	        setEnabled(false);
 	        client.getToolBarManager().getControl().update();
 	        List<Team> teams = client.getSelectedTeams();
-	        System.err.println("teamList "+ teams);
 	        Profile selectedProfile = Profile.getSelectedProfile(client
 	                .getPreferenceStore());
-	        // TODO: error on null
+            if (selectedProfile == null) {
+                log.debug("No profile selected."); //$NON-NLS-1$
+                return;
+            }
 	        for (Team team : teams) {
 	            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
 	                    selectedProfile.getWorkspaceFolder(),
