@@ -16,7 +16,6 @@ package com.mindquarry.desktop.preferences.pages;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -64,12 +63,5 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
                 Messages.getString("Run at system startup (Windows only)"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(autostartFlag);
-
-        IntegerFieldEditor notifyDisplayDelay = new IntegerFieldEditor(
-                NOTIFY_DELAY, Messages
-                        .getString("Notification Message Delay (in seconds)") //$NON-NLS-1$
-                        + ":", //$NON-NLS-1$
-                getFieldEditorParent());
-        addField(notifyDisplayDelay);
     }
 }
