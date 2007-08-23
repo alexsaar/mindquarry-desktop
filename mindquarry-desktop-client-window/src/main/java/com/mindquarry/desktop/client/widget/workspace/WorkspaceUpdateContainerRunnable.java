@@ -183,8 +183,10 @@ public class WorkspaceUpdateContainerRunnable extends
                         || localStatus == StatusKind.unversioned) {
                     // TODO: show upload icon with "+" sign
                     return uploadImage;
-                } else if (remoteStatus == StatusKind.modified) {
+                } else if (localStatus == StatusKind.modified) {
                     return uploadImage;
+                } else if (remoteStatus == StatusKind.modified) {
+                    return downloadImage;
                 } else if (remoteStatus == StatusKind.added) {
                     return downloadImage;
                 } else if (localStatus == StatusKind.conflicted) {
