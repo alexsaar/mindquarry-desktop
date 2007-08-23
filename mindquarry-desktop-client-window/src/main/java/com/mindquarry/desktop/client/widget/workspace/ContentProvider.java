@@ -71,7 +71,9 @@ public class ContentProvider implements ITreeContentProvider {
         });
         // files may be added remotely:
         List<File> allFiles = new ArrayList<File>();
-        allFiles.addAll(Arrays.asList(children));
+        if (children != null) {
+            allFiles.addAll(Arrays.asList(children));
+        }
         if (workspaceBrowser.remoteChanges != null) {
             for (File remoteFile : workspaceBrowser.remoteChanges.keySet()) {
                 if (workspaceBrowser.remoteChanges.containsKey(remoteFile)
