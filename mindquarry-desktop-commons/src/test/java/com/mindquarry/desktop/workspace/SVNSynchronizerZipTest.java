@@ -34,7 +34,7 @@ import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 
-public class SVNSynchronizerTestZip implements Notify2 {
+public class SVNSynchronizerZipTest implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
     
     private String wcPath;
