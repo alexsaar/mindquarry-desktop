@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Table;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -38,76 +37,68 @@ import com.mindquarry.desktop.util.HttpUtilities;
  * Add summary documentation here.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
- * 
  */
 public class DoubleClickListener implements IDoubleClickListener {
-	private static Log log = LogFactory
-			.getLog(DoubleClickListener.class);
+    private static Log log = LogFactory.getLog(DoubleClickListener.class);
 
-	private final MindClient client;
+    private final MindClient client;
 
-	private final Table table;
-	private final TableViewer tableViewer;
+    private final TableViewer viewer;
+    private final TaskList tasks;
 
-	private final TaskList tasks;
+    public DoubleClickListener(MindClient client, TableViewer tableViewer,
+            TaskList tasks) {
+        this.client = client;
 
-	public DoubleClickListener(MindClient client, Table table,
-			TableViewer tableViewer, TaskList tasks) {
-		this.client = client;
+        this.viewer = tableViewer;
+        this.tasks = tasks;
+    }
 
-		this.table = table;
-		this.tableViewer = tableViewer;
+    public void doubleClick(DoubleClickEvent event) {
+        Profile prof = Profile.getSelectedProfile(client.getPreferenceStore());
 
-		this.tasks = tasks;
-	}
+        ISelection selection = event.getSelection();
 
-	public void doubleClick(DoubleClickEvent event) {
-		Profile prof = Profile.getSelectedProfile(client.getPreferenceStore());
+        if (selection instanceof StructuredSelection) {
+            StructuredSelection structsel = (StructuredSelection) selection;
+            Object element = structsel.getFirstElement();
 
-		ISelection selection = event.getSelection();
+            if (element instanceof Task) {
+                Task task = (Task) element;
 
-		if (selection instanceof StructuredSelection) {
-			StructuredSelection structsel = (StructuredSelection) selection;
-			Object element = structsel.getFirstElement();
+                try {
+                    // use a clone of the task so cancel works:
+                    TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(
+                            SWT.ON_TOP), task.clone(), false);
 
-			if (element instanceof Task) {
-				Task task = (Task) element;
-
-				try {
-					// use a clone of the task so cancel works:
-					TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(
-							SWT.ON_TOP), task.clone(), false);
-
-					if (dlg.open() == Window.OK) {
-						int taskPos = tasks.getTasks().indexOf(task);
-						if (taskPos != -1) {
-							// can be -1 if set to "done" while the dialog
-							// was open
-							tasks.getTasks().set(taskPos, dlg.getChangedTask());
-						}
-						task = dlg.getChangedTask();
-						HttpUtilities.putAsXML(prof.getLogin(), prof
-								.getPassword(), task.getId(), task
-								.getContentAsXML().asXML().getBytes("utf-8"));
-					}
-				} catch (Exception e) {
-					MessageDialog
-							.openError(
-									new Shell(SWT.ON_TOP),
-									Messages.getString("Network error"),//$NON-NLS-1$
-									Messages.getString("Could not update the task")//$NON-NLS-1$
-									+ ": " + e.toString());
-					log.error("Could not update task with id " //$NON-NLS-1$
-							+ task.getId(), e);
-				}
-			}
-			if (table != null) {
-				// avoid crash if last bug got closed but the task dialog
-				// was still open and then OK was pressed:
-				// (TODO: task is submitted but not visible until manual
-				// refresh)
-				tableViewer.refresh();
-			}
-		}
-	}
+                    if (dlg.open() == Window.OK) {
+                        int taskPos = tasks.getTasks().indexOf(task);
+                        if (taskPos != -1) {
+                            // can be -1 if set to "done" while the dialog
+                            // was open
+                            tasks.getTasks().set(taskPos, dlg.getChangedTask());
+                        }
+                        task = dlg.getChangedTask();
+                        HttpUtilities.putAsXML(prof.getLogin(), prof
+                                .getPassword(), task.getId(), task
+                                .getContentAsXML().asXML().getBytes("utf-8"));
+                    }
+                } catch (Exception e) {
+                    MessageDialog.openError(new Shell(SWT.ON_TOP), Messages
+                            .getString("Network error"),//$NON-NLS-1$
+                            Messages.getString("Could not update the task")//$NON-NLS-1$
+                                    + ": " + e.toString());
+                    log.error("Could not update task with id " //$NON-NLS-1$
+                            + task.getId(), e);
+                }
+            }
+            if (viewer != null) {
+                // avoid crash if last bug got closed but the task dialog
+                // was still open and then OK was pressed:
+                // (TODO: task is submitted but not visible until manual
+                // refresh)
+                viewer.refresh();
+            }
+        }
+    }
 }

@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.widget.util;
+package com.mindquarry.desktop.client.widget.app;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;

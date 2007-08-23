@@ -56,7 +56,6 @@ public class TaskContainerWidget extends WidgetBase {
 
     private TaskList tasks;
 
-    private Table table;
     private TableViewer viewer;
 
     private Composite noTasksWidget;
@@ -312,7 +311,7 @@ public class TaskContainerWidget extends WidgetBase {
                     viewer.addSelectionChangedListener(new SelectionChanged(
                             viewer, null));
                     viewer.addDoubleClickListener(new DoubleClickListener(
-                            client, table, viewer, tasks));
+                            client, viewer, tasks));
 
                     // create columns
                     TableViewerColumn col = new TableViewerColumn(viewer,
@@ -334,9 +333,9 @@ public class TaskContainerWidget extends WidgetBase {
             }
 
             private void destroyContent() {
-                if (table != null) {
-                    table.dispose();
-                    table = null;
+                if (viewer != null) {
+                    viewer.getTable().dispose();
+                    viewer = null;
                 }
                 if (refreshWidget != null) {
                     refreshWidget.dispose();
