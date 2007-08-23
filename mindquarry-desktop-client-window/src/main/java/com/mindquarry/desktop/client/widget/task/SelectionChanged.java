@@ -24,12 +24,12 @@ import org.eclipse.swt.widgets.Button;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskSelectionChangedListener implements ISelectionChangedListener {
+public class SelectionChanged implements ISelectionChangedListener {
 	private final TableViewer taskTableViewer;
 
 //	private final Button button;
 
-	public TaskSelectionChangedListener(final TableViewer taskTableViewer,
+	public SelectionChanged(final TableViewer taskTableViewer,
 			final Button button) {
 //		this.button = button;
 		this.taskTableViewer = taskTableViewer;

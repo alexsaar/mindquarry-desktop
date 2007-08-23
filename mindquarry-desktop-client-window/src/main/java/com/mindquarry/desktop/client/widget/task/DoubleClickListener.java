@@ -40,9 +40,9 @@ import com.mindquarry.desktop.util.HttpUtilities;
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * 
  */
-public class TaskTableDoubleClickListener implements IDoubleClickListener {
+public class DoubleClickListener implements IDoubleClickListener {
 	private static Log log = LogFactory
-			.getLog(TaskTableDoubleClickListener.class);
+			.getLog(DoubleClickListener.class);
 
 	private final MindClient client;
 
@@ -51,7 +51,7 @@ public class TaskTableDoubleClickListener implements IDoubleClickListener {
 
 	private final TaskList tasks;
 
-	public TaskTableDoubleClickListener(MindClient client, Table table,
+	public DoubleClickListener(MindClient client, Table table,
 			TableViewer tableViewer, TaskList tasks) {
 		this.client = client;
 

@@ -150,10 +150,9 @@ public class WorkspaceBrowserWidget extends WidgetBase {
                 }
             }
         });
-
         TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.LEFT);
         col.getColumn().setText("Name");
-        col.getColumn().setWidth(500);
+        col.getColumn().setWidth(540);
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
@@ -167,14 +166,6 @@ public class WorkspaceBrowserWidget extends WidgetBase {
 
             public String getText(Object element) {
                 return ((File) element).getName();
-            }
-        });
-        col = new TreeViewerColumn(viewer, SWT.CENTER);
-        col.getColumn().setResizable(false);
-        col.getColumn().setWidth(32);
-        col.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(Object element) {
-                return "";
             }
         });
         col = new TreeViewerColumn(viewer, SWT.CENTER);

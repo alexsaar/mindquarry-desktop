@@ -56,7 +56,6 @@ import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
@@ -68,7 +67,6 @@ import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.CategoryWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
-import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
