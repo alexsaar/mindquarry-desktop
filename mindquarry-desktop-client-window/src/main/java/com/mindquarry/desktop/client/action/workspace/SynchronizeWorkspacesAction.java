@@ -79,7 +79,9 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                                     + "to be refreshed before you can synchronize changes. Please check the list of changes and press synchronize again."));
                             messageBox.open();
                         }
+                        
                     });
+                    workspaceWidget.refresh();
                 } else {
                     // retrieve selected profile
                     PreferenceStore store = client.getPreferenceStore();
