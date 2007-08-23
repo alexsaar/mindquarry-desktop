@@ -13,14 +13,23 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
+import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.workspace.SVNSynchronizer;
 
 /**
  * Update list of SVN changes.
@@ -31,6 +40,8 @@ import com.mindquarry.desktop.client.action.ActionBase;
 public class UpdateWorkspacesAction extends ActionBase {
     public static final String ID = UpdateWorkspacesAction.class
             .getSimpleName();
+
+    private WorkspaceBrowserWidget workspaceWidget;
 
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
@@ -50,8 +61,21 @@ public class UpdateWorkspacesAction extends ActionBase {
     }
 
     public void run() {
-        client.getCategoryWidget().getWorkspaceBrowserWidget()
-                .asyncRefresh();
+        Thread updateThread = new Thread(new Runnable() {
+            public void run() {
+                client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+                client.startAction(Messages
+                        .getString("Refreshing workspace changes"));
+
+                workspaceWidget.refresh();
+
+                client.stopAction(Messages
+                        .getString("Refreshing workspace changes"));
+                client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
+            }
+        }, "workspace-changes-update");
+        updateThread.setDaemon(true);
+        updateThread.start();
     }
 
     public String getGroup() {
@@ -60,5 +84,9 @@ public class UpdateWorkspacesAction extends ActionBase {
 
     public boolean isToolbarAction() {
         return false;
+    }
+
+    public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {
+        this.workspaceWidget = workspaceWidget;
     }
 }

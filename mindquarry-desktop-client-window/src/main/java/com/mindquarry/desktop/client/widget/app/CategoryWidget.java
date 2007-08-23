@@ -36,6 +36,8 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
+import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
+import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
@@ -66,8 +68,6 @@ public class CategoryWidget extends WidgetBase {
             Display.getCurrent(),
             CategoryWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
-
-    private WorkspaceBrowserWidget workspaceBrowser;
 
     public CategoryWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
@@ -159,11 +159,11 @@ public class CategoryWidget extends WidgetBase {
                 | SWT.BORDER);
         search.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         search.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-        
+
         Button reset = new Button(taskComposite, SWT.CENTER | SWT.PUSH);
         reset.setText(Messages.getString("Reset"));
         reset.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-        
+
         final TaskContainerWidget taskContainer = new TaskContainerWidget(
                 taskComposite, client);
 
@@ -186,12 +186,15 @@ public class CategoryWidget extends WidgetBase {
         tabItem.setImage(docsIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        workspaceBrowser = new WorkspaceBrowserWidget(tabFolder, client);
+        WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
+                tabFolder, client);
         tabItem.setControl(workspaceBrowser);
-    }
 
-    public WorkspaceBrowserWidget getWorkspaceBrowserWidget() {
-        return workspaceBrowser;
+        ((SynchronizeWorkspacesAction) client
+                .getAction(SynchronizeWorkspacesAction.class.getName()))
+                .setWorkspaceWidget(workspaceBrowser);
+        ((UpdateWorkspacesAction) client.getAction(UpdateWorkspacesAction.class
+                .getName())).setWorkspaceWidget(workspaceBrowser);
     }
 
     class FacetSelectionListener extends SelectionAdapter implements
@@ -212,7 +215,7 @@ public class CategoryWidget extends WidgetBase {
         }
 
         public void widgetSelected(SelectionEvent e) {
-            if(e.widget instanceof Button) {
+            if (e.widget instanceof Button) {
                 status.select(0);
                 priority.select(0);
                 search.setText("");

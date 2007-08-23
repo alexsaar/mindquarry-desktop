@@ -13,8 +13,10 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -36,62 +38,90 @@ import com.mindquarry.desktop.workspace.SVNSynchronizer;
  *         Saar</a>
  */
 public class SynchronizeWorkspacesAction extends ActionBase {
-    public static final String ID = SynchronizeWorkspacesAction.class.getSimpleName();
+    public static final String ID = SynchronizeWorkspacesAction.class
+            .getSimpleName();
 
-	private static final Image IMAGE = new Image(
-			Display.getCurrent(),
-			SynchronizeWorkspacesAction.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
+    private WorkspaceBrowserWidget workspaceWidget;
 
-	public SynchronizeWorkspacesAction(MindClient client) {
-		super(client);
+    private static final Image IMAGE = new Image(
+            Display.getCurrent(),
+            SynchronizeWorkspacesAction.class
+                    .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
 
-		setId(ID);
-		setActionDefinitionId(ID);
+    public SynchronizeWorkspacesAction(MindClient client) {
+        super(client);
 
-		setText(Messages.getString("Synchronize workspaces"));
-		setToolTipText(Messages.getString("Synchronize workspaces with your desktop."));
-		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
-		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
-	}
+        setId(ID);
+        setActionDefinitionId(ID);
 
-	public void run() {
-        WorkspaceBrowserWidget workspaceWidget = client.getCategoryWidget().getWorkspaceBrowserWidget();
-        if (workspaceWidget.refreshNeeded()) {
-            MessageBox messageBox = new MessageBox(client.getShell(), SWT.ICON_QUESTION
-                    | SWT.YES | SWT.NO);
-            messageBox.setMessage(Messages.getString("The list of changes is not up to date. It needs " +
-            		"to be refreshed before you can synchronize changes. Refresh the list of changes now?"));
-            int result = messageBox.open();
-            if (result == SWT.YES) {
-                workspaceWidget.asyncRefresh();
+        setText(Messages.getString("Synchronize workspaces"));
+        setToolTipText(Messages
+                .getString("Synchronize workspaces with your desktop."));
+        setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
+        setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
+    }
+
+    public void run() {
+        Thread updateThread = new Thread(new Runnable() {
+            public void run() {
+                client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+                client.startAction(Messages
+                        .getString("Refreshing workspace changes"));
+
+                if (workspaceWidget.refreshNeeded()) {
+                    MessageBox messageBox = new MessageBox(client.getShell(),
+                            SWT.ICON_INFORMATION | SWT.OK);
+                    messageBox
+                            .setMessage(Messages
+                                    .getString("The list of changes is not up to date. It needs "
+                                            + "to be refreshed before you can synchronize changes. Please check the list of changes and press synchronize again."));
+                    messageBox.open();
+                } else {
+                    // retrieve selected profile
+                    PreferenceStore store = client.getPreferenceStore();
+                    Profile selected = Profile.getSelectedProfile(store);
+                    if (selected == null) {
+                        log.debug("No profile selected."); //$NON-NLS-1$
+                        return;
+                    }
+
+                    // retrieve selected teams
+                    final List<Team> teams = new ArrayList<Team>();
+                    Display.getDefault().syncExec(new Runnable() {
+                        public void run() {
+                            teams.addAll(client.getSelectedTeams());
+                        }
+                    });
+                    for (Team team : teams) {
+                        SVNSynchronizer sc = new SVNSynchronizer(team
+                                .getWorkspaceURL(), selected
+                                .getWorkspaceFolder()
+                                + "/" + team.getName(), selected.getLogin(),
+                                selected.getPassword(),
+                                new InteractiveConflictHandler(client
+                                        .getShell()));
+                        sc.synchronizeOrCheckout();
+                    }
+                    client.stopAction(Messages
+                            .getString("Refreshing workspace changes"));
+                    client.enableActions(true,
+                            ActionBase.WORKSPACE_ACTION_GROUP);
+                }
             }
-            return;
-        }
+        }, "workspace-changes-update");
+        updateThread.setDaemon(true);
+        updateThread.start();
+    }
 
-        List<Team> teams = client.getSelectedTeams();
-        Profile selectedProfile = Profile.getSelectedProfile(client
-                .getPreferenceStore());
-        if (selectedProfile == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
-            return;
-        }
-        for (Team team : teams) {
-            SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
-                    selectedProfile.getWorkspaceFolder() + "/" + team.getName(),
-                    selectedProfile.getLogin(), selectedProfile.getPassword(),
-                    new InteractiveConflictHandler(client.getShell()));
-            sc.synchronizeOrCheckout();
-        }
-        workspaceWidget.refresh();
-	}
-	
-	public String getGroup() {
+    public String getGroup() {
         return ActionBase.WORKSPACE_ACTION_GROUP;
     }
-	
-	public boolean isToolbarAction() {
+
+    public boolean isToolbarAction() {
         return true;
     }
-	
+
+    public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {
+        this.workspaceWidget = workspaceWidget;
+    }
 }

@@ -34,7 +34,6 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
@@ -52,7 +51,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     protected File workspaceRoot;
 
     protected Map<File, Integer> localChanges = new HashMap<File, Integer>();
-
     protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
@@ -69,23 +67,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
      * the Task Manager will show an update widget instead of the task table.
      */
     public void asyncRefresh() {
-        log.info("Starting async workspace changes refresh."); //$NON-NLS-1$
-        if (refreshing) {
-            log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
-            return;
-        }
-        refreshing = true;
-        Thread updateThread = new Thread(new Runnable() {
-            public void run() {
-                client.startAction(Messages
-                        .getString("Refreshing workspace changes"));
-                refresh();
-                client.stopAction(Messages
-                        .getString("Refreshing workspace changes"));
-            }
-        }, "workspace-changes-update");
-        updateThread.setDaemon(true);
-        updateThread.start();
+        throw new UnsupportedOperationException("not implemented");
     }
 
     /**
@@ -117,9 +99,15 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
-        
-        client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+        log.info("Starting async workspace changes refresh."); //$NON-NLS-1$
+        if (refreshing) {
+            log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
+            return;
+        }
+        refreshing = true;
         updateContainer(true, null, false);
+
+        // update tree
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
         Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
@@ -134,7 +122,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             updateContainer(false, null, false);
         }
         refreshing = false;
-        client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
     }
 
     // #########################################################################
@@ -188,15 +175,17 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                                 new Integer(status.getRepositoryTextStatus()));
                         // If we add a directory with contents, SVN will only
                         // report the directory as unversioned, not the files
-                        // inside the directory, so we add the files (= all files
+                        // inside the directory, so we add the files (= all
+                        // files
                         // below the directory) here:
-                        if (status.getTextStatus() == StatusKind.unversioned &&
-                                f.isDirectory()) {
+                        if (status.getTextStatus() == StatusKind.unversioned
+                                && f.isDirectory()) {
                             SetStatusFileFilter fileFilter = new SetStatusFileFilter();
                             SetStatusDirFilter dirFilter = new SetStatusDirFilter();
                             FileUtils.iterateFiles(f, fileFilter, dirFilter);
                             for (Status tmpStatus : fileFilter.getSubFiles()) {
-                                localChanges.put(new File(tmpStatus.getPath()), StatusKind.unversioned);
+                                localChanges.put(new File(tmpStatus.getPath()),
+                                        StatusKind.unversioned);
                             }
                         }
                         // TODO: get the two files (remote/local) from the
@@ -228,17 +217,19 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 new WorkspaceUpdateContainerRunnable(client, this, empty,
                         errMessage, refreshing));
     }
-    
+
     class SetStatusFileFilter extends FileFileFilter {
         List<Status> subFiles = new ArrayList<Status>();
+
         public boolean accept(File file) {
-            Status status = new Status(file.getAbsolutePath(), null, NodeKind.file, 0, 0, 0, null, StatusKind.unversioned,
-                    0, 0, 0, false, false, null, null, null,
-                    null, 0, false, null, null, null, 0,
-                    null, 0, 0, 0, null);
+            Status status = new Status(file.getAbsolutePath(), null,
+                    NodeKind.file, 0, 0, 0, null, StatusKind.unversioned, 0, 0,
+                    0, false, false, null, null, null, null, 0, false, null,
+                    null, null, 0, null, 0, 0, 0, null);
             subFiles.add(status);
             return true;
         }
+
         List<Status> getSubFiles() {
             return subFiles;
         }
@@ -246,17 +237,18 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     class SetStatusDirFilter extends DirectoryFileFilter {
         List<Status> subFiles = new ArrayList<Status>();
+
         public boolean accept(File file) {
-            Status status = new Status(file.getAbsolutePath(), null, NodeKind.dir, 0, 0, 0, null, StatusKind.unversioned,
-                    0, 0, 0, false, false, null, null, null,
-                    null, 0, false, null, null, null, 0,
-                    null, 0, 0, 0, null);
+            Status status = new Status(file.getAbsolutePath(), null,
+                    NodeKind.dir, 0, 0, 0, null, StatusKind.unversioned, 0, 0,
+                    0, false, false, null, null, null, null, 0, false, null,
+                    null, null, 0, null, 0, 0, 0, null);
             subFiles.add(status);
             return true;
         }
+
         List<Status> getSubFiles() {
             return subFiles;
         }
     }
-
 }
