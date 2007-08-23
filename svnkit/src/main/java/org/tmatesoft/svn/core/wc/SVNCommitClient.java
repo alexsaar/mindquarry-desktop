@@ -742,6 +742,16 @@ public class SVNCommitClient extends SVNBasicClient {
                         file.delete();
                     }
                 }
+
+                // Clean up orphaned .svn directories in shallow working copies
+                SVNCommitItem[] items = commitPacket.getCommitItems();
+                for(SVNCommitItem item : items) {
+                	// directories that were deleted in the commit
+                	if(item.isDeleted() && item.getKind() == SVNNodeKind.DIR) {
+                		SVNAdminDirectoryLocator.cleanupDirDueToDeletion(item.getFile());
+                	}
+                }
+                
                 if (commitPacket != null) {
                     commitPacket.dispose();
                 }
