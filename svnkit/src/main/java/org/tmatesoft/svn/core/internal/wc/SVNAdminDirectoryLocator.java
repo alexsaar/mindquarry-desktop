@@ -512,6 +512,10 @@ public class SVNAdminDirectoryLocator {
     private static void convertEmbedded2Shallow(File wcRoot) throws SVNException {
         // create shallow wc (with .svnref)
         File shallowWC = createShallowWorkingCopyBaseDir(wcRoot);
+        
+        File svnRef = new File(wcRoot, SHALLOW_DIR_REF_FILENAME);
+        System.out.println("created '" + svnRef + "'");
+        
         try {
             // copy dir structure and move .svn dirs
             copySVNDirs(wcRoot, shallowWC);
@@ -531,6 +535,7 @@ public class SVNAdminDirectoryLocator {
     private static void deleteEmbeddedSVNDirs(File dir) {
         File adminDir = new File(dir, getAdminDirectoryName());
         if (adminDir.exists() && adminDir.isDirectory()) {
+            System.out.println("removing '" + adminDir + "'");
             SVNFileUtil.deleteAll(adminDir, true);
         }
         // walk down the child directories
@@ -556,6 +561,7 @@ public class SVNAdminDirectoryLocator {
         if (adminDir.exists() && adminDir.isDirectory()) {
             // copy over the .svn directory
             File toAdminDir = new File(toDir, getAdminDirectoryName());
+            System.out.println("copying '" + adminDir + "' to '" + toAdminDir + "'");
             SVNFileUtil.copyDirectory(adminDir, toAdminDir, true, null);
         }
         
@@ -573,9 +579,14 @@ public class SVNAdminDirectoryLocator {
     private static void convertShallow2Embedded(File wcRoot, File shallowDir) throws SVNException {
         // copy .svn dirs from shallow to wc
         copySVNDirs(shallowDir, wcRoot);
+        
         // remove .svnref
-        SVNFileUtil.deleteFile(new File(wcRoot, SHALLOW_DIR_REF_FILENAME));
+        File svnRef = new File(wcRoot, SHALLOW_DIR_REF_FILENAME);
+        System.out.println("removing '" + svnRef + "'");
+        SVNFileUtil.deleteFile(svnRef);
+        
         // remove shallow wc
+        System.out.println("removing '" + shallowDir + "'");
         SVNFileUtil.deleteAll(shallowDir, true);
     }
 }
