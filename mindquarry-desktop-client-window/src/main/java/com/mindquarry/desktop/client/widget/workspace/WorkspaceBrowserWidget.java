@@ -176,7 +176,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 if (localChanges.size() == 0) {
                     List<Status> allChanges = sc.getRemoteAndLocalChanges();
                     for (Status status : allChanges) {
-                        System.err.println("+ " + status.getPath());
                         localChanges.put(new File(status.getPath()),
                                 new Integer(status.getTextStatus()));
                         remoteChanges.put(new File(status.getPath()),
