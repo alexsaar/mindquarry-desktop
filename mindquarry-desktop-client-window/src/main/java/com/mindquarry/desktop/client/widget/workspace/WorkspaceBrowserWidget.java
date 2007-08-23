@@ -51,9 +51,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
 
-    private static final String NO_CHANGES_MESSAGE = Messages
-            .getString("No changes to synchronize.");
-
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
     }
