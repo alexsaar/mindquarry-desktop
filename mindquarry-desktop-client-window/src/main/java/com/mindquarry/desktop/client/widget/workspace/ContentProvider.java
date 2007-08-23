@@ -69,7 +69,7 @@ public class ContentProvider implements ITreeContentProvider {
                 return false;
             }
         });
-        // files may be added remotely:
+        // don't skip files that have been added remotely:
         List<File> allFiles = new ArrayList<File>();
         if (children != null) {
             allFiles.addAll(Arrays.asList(children));
@@ -80,6 +80,17 @@ public class ContentProvider implements ITreeContentProvider {
                         && workspaceBrowser.remoteChanges.get(remoteFile) == StatusKind.added
                         && remoteFile.getParentFile().equals(workspaceRoot)) {
                     allFiles.add(remoteFile);
+                }
+            }
+        }
+        // don't skip the files that were deleted locally:
+        if (workspaceBrowser.localChanges != null) {
+            for (File localFile : workspaceBrowser.localChanges.keySet()) {
+                if (workspaceBrowser.localChanges.containsKey(localFile)
+                        && (workspaceBrowser.localChanges.get(localFile) == StatusKind.deleted ||
+                                workspaceBrowser.localChanges.get(localFile) == StatusKind.missing)
+                        && localFile.getParentFile().equals(workspaceRoot)) {
+                    allFiles.add(localFile);
                 }
             }
         }

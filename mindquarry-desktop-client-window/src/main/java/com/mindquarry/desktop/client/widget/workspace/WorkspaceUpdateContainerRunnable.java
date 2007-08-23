@@ -56,6 +56,11 @@ public class WorkspaceUpdateContainerRunnable extends
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
 
+    private static final Image unknownFileImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
+
     private static final Image downloadImage = new Image(
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
@@ -65,6 +70,11 @@ public class WorkspaceUpdateContainerRunnable extends
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
+
+    private static final Image deleteImage = new Image(
+            Display.getCurrent(),
+            WorkspaceBrowserWidget.class
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/status/user-trash-full.png")); //$NON-NLS-1$
 
     private Image conflictImage = new Image(
             Display.getCurrent(),
@@ -149,8 +159,9 @@ public class WorkspaceUpdateContainerRunnable extends
                     return folderImage;
                 } else if (file.isFile()) {
                     return fileImage;
+                } else {
+                    return unknownFileImage;
                 }
-                return null;
             }
 
             public String getText(Object element) {
@@ -189,6 +200,10 @@ public class WorkspaceUpdateContainerRunnable extends
                     return downloadImage;
                 } else if (remoteStatus == StatusKind.added) {
                     return downloadImage;
+                } else if (localStatus == StatusKind.deleted || localStatus == StatusKind.missing) {
+                    return deleteImage;
+                } else if (remoteStatus == StatusKind.deleted) {
+                    return deleteImage;
                 } else if (localStatus == StatusKind.conflicted) {
                     return conflictImage;
                 } else if (localStatus != -1 || remoteStatus != -1) {
