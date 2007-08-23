@@ -23,7 +23,7 @@ import com.mindquarry.desktop.model.task.TaskList;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskTableContentProvider implements IStructuredContentProvider {
+public class ContentProvider implements IStructuredContentProvider {
     /**
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */

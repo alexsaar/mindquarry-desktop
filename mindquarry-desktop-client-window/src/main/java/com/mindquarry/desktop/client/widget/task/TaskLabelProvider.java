@@ -26,28 +26,28 @@ import com.mindquarry.desktop.model.task.Task;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class TaskTableLabelProvider extends ColumnLabelProvider {
+public class TaskLabelProvider extends ColumnLabelProvider {
 	private static final String ICON_SIZE = "32x32";//$NON-NLS-1$
 
 	// status images
 	private static Image newTask = new Image(
 			Display.getCurrent(),
-			TaskTableLabelProvider.class
+			TaskLabelProvider.class
 					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-new.png")); //$NON-NLS-1$
 
 	private static Image runningTask = new Image(
 			Display.getCurrent(),
-			TaskTableLabelProvider.class
+			TaskLabelProvider.class
 					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-running.png")); //$NON-NLS-1$
 
 	private static Image pausedTask = new Image(
 			Display.getCurrent(),
-			TaskTableLabelProvider.class
+			TaskLabelProvider.class
 					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-paused.png")); //$NON-NLS-1$
 
 	private static Image doneTask = new Image(
 			Display.getCurrent(),
-			TaskTableLabelProvider.class
+			TaskLabelProvider.class
 					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-done.png")); //$NON-NLS-1$
 
 	public Image getImage(Object element) {
@@ -71,7 +71,7 @@ public class TaskTableLabelProvider extends ColumnLabelProvider {
 		Image overlay = image;
 		if (task.getPriority() != null) {
 			overlay = new Image(Display.getCurrent(),
-					TaskTableLabelProvider.class
+					TaskLabelProvider.class
 							.getResourceAsStream("/com/mindquarry/icons/"
 									+ ICON_SIZE + "/status/task-" + status
 									+ "-" + task.getPriority() + ".png"));

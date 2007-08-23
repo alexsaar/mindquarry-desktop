@@ -14,21 +14,21 @@
 package com.mindquarry.desktop.client.widget.task;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ProgressBar;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class TaskUpdateWidget extends Composite {
+public class ErrorWidget extends Composite {
 	private String message;
 	
-    public TaskUpdateWidget(Composite parent, String message) {
+    public ErrorWidget(Composite parent, String message) {
     	super(parent, SWT.NONE);
 		this.message = message;
 		
@@ -44,18 +44,20 @@ public class TaskUpdateWidget extends Composite {
         ((GridData) getLayoutData()).heightHint = ((GridData) parent
                 .getLayoutData()).heightHint;
 
-        Composite internalComp = new Composite(this, SWT.NONE);
+        Composite internalComp = new Composite(parent, SWT.NONE);
         internalComp.setBackground(internalComp.getParent().getBackground());
         internalComp.setLayout(new GridLayout(1, true));
-        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-                true));
+        internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
-        ProgressBar bar = new ProgressBar(internalComp, SWT.HORIZONTAL
-                | SWT.INDETERMINATE);
-        bar.setSize(200, 16);
-        bar.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-
+        Image icon = new Image(null, getClass().getResourceAsStream(
+                "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
+        
         Label label = new Label(internalComp, SWT.CENTER);
+        label.setImage(icon);
+        label.setBackground(label.getParent().getBackground());
+        label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        
+        label = new Label(internalComp, SWT.CENTER|SWT.WRAP);
         label.setText(message);
         label.setBackground(label.getParent().getBackground());
         label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));

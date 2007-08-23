@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
@@ -45,22 +44,23 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
- * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
- *         Trieloff</a>
+ * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public class TaskContainerWidget extends WidgetBase {
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
-    private boolean refreshing = false;
-    private boolean initialized = false;
-
     private TaskList tasks;
-
     private TableViewer viewer;
 
     private Composite noTasksWidget;
     private Composite refreshWidget;
     private Composite errorWidget;
+
+    private boolean refreshing = false;
+
+    private String statusFacet = "all";
+    private String priorityFacet = "all";
+    private String searchFacet = "";
 
     public TaskContainerWidget(Composite parent, MindClient client) {
         super(parent, SWT.BORDER, client);
@@ -114,10 +114,6 @@ public class TaskContainerWidget extends WidgetBase {
         updateThread.setDaemon(true);
         updateThread.start();
     }
-
-    private String statusFacet = "all";
-    private String priorityFacet = "all";
-    private String searchFacet = "";
 
     public void applyFacets(String status, String priority, String search) {
         statusFacet = status;
@@ -203,7 +199,7 @@ public class TaskContainerWidget extends WidgetBase {
         tasks.getTasks().clear();
 
         // retrieve tasks for all selected teams
-        final List items = new ArrayList();
+        final List<Team> items = new ArrayList<Team>();
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 items.addAll(client.getSelectedTeams());
@@ -263,7 +259,6 @@ public class TaskContainerWidget extends WidgetBase {
             });
         }
         refreshing = false;
-        initialized = true;
     }
 
     private void markColumns() {
@@ -284,7 +279,7 @@ public class TaskContainerWidget extends WidgetBase {
             public void run() {
                 if (refreshing) {
                     destroyContent();
-                    refreshWidget = new TaskUpdateWidget(self, Messages
+                    refreshWidget = new UpdateWidget(self, Messages
                             .getString("Updating task list") //$NON-NLS-1$
                             + " ..."); //$NON-NLS-1$
                 } else if (errMessage == null && !empty) {
@@ -309,16 +304,14 @@ public class TaskContainerWidget extends WidgetBase {
                                     viewer.getTable().getSize().x);
                         }
                     });
-                    viewer.setContentProvider(new TaskTableContentProvider());
-                    viewer.addSelectionChangedListener(new SelectionChanged(
-                            viewer, null));
+                    viewer.setContentProvider(new ContentProvider());
                     viewer.addDoubleClickListener(new DoubleClickListener(
                             client, viewer, tasks));
 
                     // create columns
                     TableViewerColumn col = new TableViewerColumn(viewer,
                             SWT.NONE);
-                    col.setLabelProvider(new TaskTableLabelProvider());
+                    col.setLabelProvider(new TaskLabelProvider());
                     col.getColumn().setResizable(false);
                     col.getColumn().setWidth(200);
                     col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
@@ -329,7 +322,7 @@ public class TaskContainerWidget extends WidgetBase {
                             .getString("Currently no tasks are active.")); //$NON-NLS-1$
                 } else {
                     destroyContent();
-                    errorWidget = new TaskErrorWidget(self, errMessage);
+                    errorWidget = new ErrorWidget(self, errMessage);
                 }
                 layout(true);
             }
