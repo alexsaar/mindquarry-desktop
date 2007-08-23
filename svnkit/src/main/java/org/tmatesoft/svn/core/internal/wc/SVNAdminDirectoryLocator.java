@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import org.tmatesoft.svn.core.SVNErrorCode;
+import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
 
 
@@ -401,6 +403,7 @@ public class SVNAdminDirectoryLocator {
         public boolean found = false;
         public String wcRelativePath = "";
         public String shallowWorkingCopyDir = "";
+        public File wcRoot = null;
     }
     
     /**
@@ -419,6 +422,7 @@ public class SVNAdminDirectoryLocator {
             if (svnRef.exists() && svnRef.isFile()) {
                 // if there is an .svnref, we have found the wc root 
                 result.shallowWorkingCopyDir = readShallowWorkingCopyDirReference(svnRef);
+                result.wcRoot = dir;
                 // do sanity checks
                 checkShallowWorkingCopyDir(result.shallowWorkingCopyDir, dir);
                 break;
@@ -437,5 +441,137 @@ public class SVNAdminDirectoryLocator {
         
         result.found = true;
         return result;
-    }    
+    }
+    
+    private static File findWCRootForEmbeddedAdminDir(File dir) {
+        // if we start in a dir without a .svn, we aren't inside a wc at all
+        if (!hasEmbeddedAdminDirectory(dir)) {
+            return null;
+        }
+        
+        // walk up the parents until we find a dir without an embedded .svn dir
+        while (true) {
+            File parent = dir.getParentFile();
+            // if it is null or does not exist, we are at the root of the file system
+            if (parent == null || !parent.exists() || !hasEmbeddedAdminDirectory(parent)) {
+                // we found it
+                break;
+            }
+            
+            dir = parent;
+        }
+        return dir;
+    }
+    
+    /**
+     * Converts the working copy containing the given dir from the variant with
+     * embedded .svn directories into the variant with the shallow wc. The
+     * currently used variant is automatically detected.
+     * 
+     * @param dir   can be any dir inside the working copy; the entire working
+     *              copy will be converted
+     * @throws SVNException if something went wrong
+     */
+    public static void convert(File dir) throws SVNException {
+        try {
+            // make sure we have an absolute file name
+            dir = dir.getCanonicalFile();
+            
+            System.out.println("Working dir: " + new File(".").getAbsolutePath());
+            if (hasEmbeddedAdminDirectory(dir)) {
+                // embedded .svn dirs
+                System.out.println("Found embedded .svn dir, converting to shallow working copy.");
+                
+                File wcRoot = findWCRootForEmbeddedAdminDir(dir);
+                    System.out.println("Found wc root at '" + wcRoot.getCanonicalPath() + "'");
+                convertEmbedded2Shallow(wcRoot);
+            } else {
+                // try to find wc root
+                WCRootInfo wcRootInfo = findWCRoot(dir);
+                if (!wcRootInfo.found) {
+                    // TODO: throw SVNException
+                    System.out.println("Cannot convert, '" + dir + "' is not a working copy.");
+                    System.exit(-1);
+                }
+                System.out.println("Found wc root at '" + wcRootInfo.wcRoot.getCanonicalPath() + "'");
+                System.out.println("Found shallow working copy '" + wcRootInfo.shallowWorkingCopyDir + "', converting to embedded .svn dir.");
+                // TODO:
+                convertShallow2Embedded(wcRootInfo.wcRoot, wcRootInfo.shallowWorkingCopyDir);
+            }
+        } catch (IOException e) {
+            throw new SVNException(SVNErrorMessage.create(SVNErrorCode.IO_ERROR, "file problem during convert"), e);
+        }
+    }
+
+    /**
+     * Converts a working copy with embedded .svn directories into the variant
+     * with a shallow working copy inside .svndata.
+     * 
+     * @param wcRoot the root of the working copy
+     * @throws SVNException 
+     */
+    private static void convertEmbedded2Shallow(File wcRoot) throws SVNException {
+        // create shallow wc (with .svnref)
+        File shallowWC = createShallowWorkingCopyBaseDir(wcRoot);
+        try {
+            // copy dir structure and move .svn dirs
+            copyEmbeddedSVNDirs2Shallow(wcRoot, shallowWC);
+        } catch (SVNException e) {
+            // if copying failed, delete the shallow wc and stop
+            SVNFileUtil.deleteAll(shallowWC, true);
+            return;
+        }
+        // delete .svn dirs only after successful copying
+        deleteEmbeddedSVNDirs(wcRoot);
+        
+    }
+
+    /**
+     * Deletes all .svn directories in the dir and below.
+     */
+    private static void deleteEmbeddedSVNDirs(File dir) {
+        File adminDir = new File(dir, getAdminDirectoryName());
+        if (adminDir.exists() && adminDir.isDirectory()) {
+            SVNFileUtil.deleteAll(adminDir, true);
+        }
+        // walk down the child directories
+        File[] children = dir.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (child.isDirectory() && !isAdminResource(child)) {
+                    deleteEmbeddedSVNDirs(child);
+                }
+            }
+        }
+    }
+
+    /**
+     * Method that does recursive copying of .svn dirs.
+     * 
+     * @param wcDir       the dir in the working copy (must not be a file)
+     * @param shallowDir  the dir in the shallow working copy (can be non-existent)
+     * @throws SVNException 
+     */
+    private static void copyEmbeddedSVNDirs2Shallow(File wcDir, File shallowDir) throws SVNException {
+        File adminDir = new File(wcDir, getAdminDirectoryName());
+        if (adminDir.exists() && adminDir.isDirectory()) {
+            // copy over the .svn directory
+            File shallowAdminDir = new File(shallowDir, getAdminDirectoryName());
+            SVNFileUtil.copyDirectory(adminDir, shallowAdminDir, true, null);
+        }
+        
+        // walk down the child directories
+        File[] children = wcDir.listFiles();
+        if (children != null) {
+            for (File child : children) {
+                if (child.isDirectory() && !isAdminResource(child)) {
+                    copyEmbeddedSVNDirs2Shallow(child, new File(shallowDir, child.getName()));
+                }
+            }
+        }
+    }
+
+    private static void convertShallow2Embedded(File wcRoot, String shallowDir) {
+        // TODO: implement
+    }
 }
