@@ -19,6 +19,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.dialog.conflict.AddConflictDialog;
 import com.mindquarry.desktop.client.dialog.conflict.DeleteWithModificationConflictDialog;
+import com.mindquarry.desktop.client.dialog.conflict.ObstructedConflictDialog;
+import com.mindquarry.desktop.client.dialog.conflict.ReplaceConflictDialog;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
@@ -80,19 +82,44 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(ReplaceConflict conflict) throws CancelException {
+        ReplaceConflictDialog dlg = new ReplaceConflictDialog(conflict, shell);
+        int resolution = dlg.open();
+        if (resolution == IDialogConstants.OK_ID) {
+            if (dlg.getResolveMethod() == ReplaceConflict.Action.RENAME) {
+                conflict.doRename(dlg.getNewName());
+            } else if (dlg.getResolveMethod() == ReplaceConflict.Action.REPLACE) {
+                conflict.doReplace();
+            } else {
+                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                        dlg.getResolveMethod());
+            }
+        } else {
+            throw new CancelException();
+        }
+    }
+
+    public void handle(ContentConflict conflict) throws CancelException {
         // TODO Auto-generated method stub
         System.err.println("FIXME: implement");
     }
 
-    public void handle(ContentConflict contentConflict) throws CancelException {
-        // TODO Auto-generated method stub
-        System.err.println("FIXME: implement");
-    }
-
-    public void handle(ObstructedConflict obstructedConflict)
+    public void handle(ObstructedConflict conflict)
             throws CancelException {
-        // TODO Auto-generated method stub
-        System.err.println("FIXME: implement");
+        ObstructedConflictDialog dlg = 
+            new ObstructedConflictDialog(conflict, shell);
+        int resolution = dlg.open();
+        if (resolution == IDialogConstants.OK_ID) {
+            if (dlg.getResolveMethod() == ObstructedConflict.Action.RENAME) {
+                conflict.doRename(dlg.getNewName());
+            } else if (dlg.getResolveMethod() == ObstructedConflict.Action.REVERT) {
+                conflict.doRevert();
+            } else {
+                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                        dlg.getResolveMethod());
+            }
+        } else {
+            throw new CancelException();
+        }
     }
 
     public void handle(PropertyConflict conflict) throws CancelException {

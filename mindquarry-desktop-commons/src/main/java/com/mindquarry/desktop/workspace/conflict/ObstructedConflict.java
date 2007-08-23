@@ -28,7 +28,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  *         Alexander Klimetschek</a>
  *
  */
-public class ObstructedConflict extends Conflict {
+public class ObstructedConflict extends RenamingConflict {
 
     private Action action = Action.UNKNOWN;
     private String newName;
