@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.StatusKind;
 
@@ -206,7 +207,15 @@ public class WorkspaceUpdateContainerRunnable extends
         containerWidget.getViewer().setInput(
                 ((WorkspaceBrowserWidget) containerWidget).workspaceRoot);
         containerWidget.getViewer().expandAll();
+        checkAllItem(containerWidget.getViewer().getTree().getItems());
         containerWidget.layout(true);
+    }
+    
+    private void checkAllItem(TreeItem[] items) {
+        for(TreeItem item : items) {
+            item.setChecked(true);
+            checkAllItem(item.getItems());
+        }
     }
 
     @Override
