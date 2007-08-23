@@ -19,10 +19,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -58,7 +60,21 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	        // TODO: also disable update button
 	        setEnabled(false);
 	        client.getToolBarManager().getControl().update();
-	        List<Team> teams = client.getSelectedTeams();
+            
+	        WorkspaceBrowserWidget workspaceWidget = client.getCategoryWidget().getWorkspaceBrowserWidget();
+            if (workspaceWidget.refreshNeeded()) {
+                MessageBox messageBox = new MessageBox(client.getShell(), SWT.ICON_QUESTION
+                        | SWT.YES | SWT.NO);
+                messageBox.setMessage(Messages.getString("There list of changes is not up to date. It needs " +
+                		"to be refreshed before you can synchronize changes. Refresh the list of changes now?"));
+                int result = messageBox.open();
+                if (result == SWT.YES) {
+                    workspaceWidget.asyncRefresh();
+                }
+                return;
+            }
+
+            List<Team> teams = client.getSelectedTeams();
 	        Profile selectedProfile = Profile.getSelectedProfile(client
 	                .getPreferenceStore());
             if (selectedProfile == null) {
@@ -84,4 +100,5 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 	public boolean isToolbarAction() {
         return true;
     }
+	
 }

@@ -83,6 +83,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                             "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
 
     private TreeViewer viewer;
+    
+    private File workspaceRoot;
 
     Map<File, Integer> localChanges = new HashMap<File, Integer>();
     Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
@@ -123,16 +125,49 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
-    protected void refresh() {
-        try {
-            PreferenceStore store = client.getPreferenceStore();
-            Profile selected = Profile.getSelectedProfile(store);
-            if (selected == null) {
-                log.debug("No profile selected."); //$NON-NLS-1$
-                return;
-            }
-            updateContainer(true, null, false);
+    
+    /**
+     * Checks if a refresh of the changes list itself is needed. 
+     */
+    public boolean refreshNeeded() {
+        PreferenceStore store = client.getPreferenceStore();
+        Profile selectedProfile = Profile.getSelectedProfile(store);
+        if (selectedProfile == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return false;
+        }
+        Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
+        Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
+        getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
+        if (newLocalChanges.equals(localChanges) && newRemoteChanges.equals(remoteChanges)) {
+            log.debug("Changes list does not need update");
+            return false;
+        }
+        log.debug("Changes list needs update");
+        return true;
+    }
 
+    public void refresh() {
+        PreferenceStore store = client.getPreferenceStore();
+        Profile selectedProfile = Profile.getSelectedProfile(store);
+        if (selectedProfile == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return;
+        }
+        updateContainer(true, null, false);
+        Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
+        Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
+        getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
+        localChanges = newLocalChanges;
+        remoteChanges = newRemoteChanges;
+        workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
+        updateContainer(false, null, false);
+        refreshing = false;
+    }
+
+    private void getAllChanges(Profile selectedProfile, Map<File, Integer> localChanges,
+            Map<File, Integer> remoteChanges) {
+        try {
             final List<Team> selectedTeams = new ArrayList<Team>();
             Display.getDefault().syncExec(new Runnable() {
                 public void run() {
@@ -140,17 +175,16 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                 }
             });
             for (Team team : selectedTeams) {
-                SVNSynchronizer sc = new SVNSynchronizer(
-                        team.getWorkspaceURL(), selected.getWorkspaceFolder(),
-                        selected.getLogin(), selected.getPassword(),
+                SVNSynchronizer sc = new SVNSynchronizer(team.getWorkspaceURL(),
+                        selectedProfile.getWorkspaceFolder(),
+                        selectedProfile.getLogin(), selectedProfile.getPassword(),
                         new InteractiveConflictHandler(client.getShell()));
                 // iterate over local changes first to avoid exceptions
                 // later (in rare cases of "obstructed" state only):
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
-                        localChanges.put(new File(status.getPath()),
-                                StatusKind.obstructed);
+                        localChanges.put(new File(status.getPath()), StatusKind.obstructed);
                     }
                 }
                 // we need to stop here in case of obstruction,
@@ -159,31 +193,28 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                 if (localChanges.size() == 0) {
                     List<Status> allChanges = sc.getRemoteAndLocalChanges();
                     for (Status status : allChanges) {
-                        localChanges.put(new File(status.getPath()),
-                                new Integer(status.getTextStatus()));
-                        remoteChanges.put(new File(status.getPath()),
-                                new Integer(status.getRepositoryTextStatus()));
-                        // TODO: get the two files (remote/local) from the
-                        // conflict,
+                        System.err.println("+ " + status.getPath());
+                        localChanges.put(new File(status.getPath()), new Integer(status.getTextStatus()));
+                        remoteChanges.put(new File(status.getPath()), new Integer(status.getRepositoryTextStatus()));
+                        // TODO: get the two files (remote/local) from the conflict,
                         // e.g. conflict.txt.r172 etc -> hide them!
                     }
                 } else {
-                    log
-                            .info("obstructed status, not calling getRemoteAndLocalChanges()");
+                    log.info("obstructed status, not calling getRemoteAndLocalChanges()");
                 }
-                // FIXME:
+                //FIXME:
                 System.err.println("local " + localChanges);
                 System.err.println("remote " + remoteChanges);
             }
-            // viewer.setInput(new File(selected.getWorkspaceFolder()));
-            viewer.setInput(new File(selected.getWorkspaceFolder()));
-            viewer.expandAll();
+
+            workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
+            updateContainer(false, null, false);
+            refreshing = false;
         } catch (ClientException e) {
             // TODO: handle exception
             // may happen on very first checkout (before checkout, actually)
-            // log.error(e.toString(), e);
+            //log.error(e.toString(), e);
             log.error(e.toString());
-            updateContainer(false, "error", false);
         }
     }
 
@@ -309,6 +340,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget {
                             return "";
                         }
                     });
+                    viewer.setInput(workspaceRoot);
+                    viewer.expandAll();
                 } else if (errMessage == null && empty) {
                     destroyContent();
                     noContentWidget = new NoContentWidget(self, Messages
