@@ -86,10 +86,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         updateThread.start();
     }
 
-    // #########################################################################
-    // ### PRIVATE METHODS
-    // #########################################################################
-
     /**
      * Checks if a refresh of the changes list itself is needed.
      */
@@ -135,6 +131,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         }
         refreshing = false;
     }
+
+    // #########################################################################
+    // ### PRIVATE METHODS
+    // #########################################################################
 
     private void getAllChanges(Profile selected,
             Map<File, Integer> localChanges, Map<File, Integer> remoteChanges) {
