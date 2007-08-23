@@ -34,8 +34,6 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
-import com.mindquarry.desktop.client.widget.util.container.NoContentWidget;
-import com.mindquarry.desktop.client.widget.util.container.UpdateWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -49,6 +47,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     protected File workspaceRoot;
 
     protected Map<File, Integer> localChanges = new HashMap<File, Integer>();
+
     protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
 
     private static final String NO_CHANGES_MESSAGE = Messages
@@ -120,8 +119,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
-        updateContainer(true,
-                Messages.getString("Updating list of changes..."), false);
+        updateContainer(true, null, false);
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
         Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
@@ -131,7 +129,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
         boolean empty = localChanges.size() == 0 && remoteChanges.size() == 0;
         if (empty) {
-            updateContainer(false, NO_CHANGES_MESSAGE, true);
+            updateContainer(false, null, true);
         } else {
             updateContainer(false, null, false);
         }
@@ -207,9 +205,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     }
 
     private void updateContainer(final boolean refreshing,
-            final String message, boolean empty) {
+            final String errMessage, boolean empty) {
         getDisplay().syncExec(
                 new WorkspaceUpdateContainerRunnable(client, this, empty,
-                        NO_CHANGES_MESSAGE, refreshing));
+                        errMessage, refreshing));
     }
 }
