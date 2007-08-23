@@ -68,7 +68,7 @@ public class TaskContainerWidget extends ContainerWidget {
     // #########################################################################
     protected void createContents(Composite parent) {
         super.createContents(parent);
-        setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 6,
+        setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 7,
                 1));
     }
 

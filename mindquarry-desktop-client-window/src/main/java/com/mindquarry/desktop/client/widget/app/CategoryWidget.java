@@ -26,6 +26,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -50,8 +51,11 @@ public class CategoryWidget extends WidgetBase {
 
     // add spaces to make the tab a bit wider for better usability
     // (TODO: find a cleaner way):
-    private static final String TAB_TASKS_TEXT = Messages.getString("Tasks") + "      ";
-    private static final String TAB_FILES_TEXT = Messages.getString("Files") + "      ";
+    private static final String SPACE_HOLDER = "      ";
+    private static final String TAB_TASKS_TEXT = Messages.getString("Tasks")
+            + SPACE_HOLDER;
+    private static final String TAB_FILES_TEXT = Messages.getString("Files")
+            + SPACE_HOLDER;
 
     private static Image tasksIcon = new Image(
             Display.getCurrent(),
@@ -86,20 +90,25 @@ public class CategoryWidget extends WidgetBase {
             public void widgetSelected(SelectionEvent e) {
                 if (tabFolder.getSelection().getText().equals(TAB_TASKS_TEXT)) {
                     client.setTasksActive();
-                } else if (tabFolder.getSelection().getText().equals(TAB_FILES_TEXT)) {
+                } else if (tabFolder.getSelection().getText().equals(
+                        TAB_FILES_TEXT)) {
                     client.setFilesActive();
                 }
             }
         });
+        createTasksCategory(tabFolder);
+        createWorkspaceCategory(tabFolder);
+    }
+
+    private void createTasksCategory(final CTabFolder tabFolder) {
         CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
         tabItem.setText(TAB_TASKS_TEXT);
         tabItem.setImage(tasksIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         tabFolder.setSelection(tabItem);
 
-        // create tasks tab
         Composite taskComposite = new Composite(tabFolder, SWT.NONE);
-        taskComposite.setLayout(new GridLayout(6, false));
+        taskComposite.setLayout(new GridLayout(7, false));
         taskComposite.setBackground(getShell().getDisplay().getSystemColor(
                 SWT.COLOR_WHITE));
         tabItem.setControl(taskComposite);
@@ -150,7 +159,11 @@ public class CategoryWidget extends WidgetBase {
                 | SWT.BORDER);
         search.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         search.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-
+        
+        Button reset = new Button(taskComposite, SWT.CENTER | SWT.PUSH);
+        reset.setText(Messages.getString("Reset"));
+        reset.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+        
         final TaskContainerWidget taskContainer = new TaskContainerWidget(
                 taskComposite, client);
 
@@ -159,23 +172,24 @@ public class CategoryWidget extends WidgetBase {
         priority.addSelectionListener(listener);
         status.addSelectionListener(listener);
         search.addModifyListener(listener);
+        reset.addSelectionListener(listener);
 
-        // set action fields
         ((SynchronizeTasksAction) client.getAction(SynchronizeTasksAction.class
                 .getName())).setTaskContainer(taskContainer);
         ((CreateTaskAction) client.getAction(CreateTaskAction.class.getName()))
                 .setTaskContainer(taskContainer);
+    }
 
-        tabItem = new CTabItem(tabFolder, SWT.NULL);
+    private void createWorkspaceCategory(final CTabFolder tabFolder) {
+        CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
         tabItem.setText(TAB_FILES_TEXT);
         tabItem.setImage(docsIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        workspaceBrowser = new WorkspaceBrowserWidget(
-                tabFolder, client);
+        workspaceBrowser = new WorkspaceBrowserWidget(tabFolder, client);
         tabItem.setControl(workspaceBrowser);
     }
-    
+
     public WorkspaceBrowserWidget getWorkspaceBrowserWidget() {
         return workspaceBrowser;
     }
@@ -198,6 +212,11 @@ public class CategoryWidget extends WidgetBase {
         }
 
         public void widgetSelected(SelectionEvent e) {
+            if(e.widget instanceof Button) {
+                status.select(0);
+                priority.select(0);
+                search.setText("");
+            }
             applyFacets();
         }
 
