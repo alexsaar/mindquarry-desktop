@@ -203,11 +203,6 @@ public class MindClient extends ApplicationWindow {
             return;
         }
         iconAction.startAction(description);
-        getShell().getDisplay().syncExec(new Runnable() {
-            public void run() {
-                getStatusLineManager().setMessage(description);
-            }
-        });
     }
 
     public void stopAction(String description) {
@@ -216,11 +211,6 @@ public class MindClient extends ApplicationWindow {
             return;
         }
         iconAction.stopAction(description);
-        getShell().getDisplay().syncExec(new Runnable() {
-            public void run() {
-                getStatusLineManager().setMessage("Ready");
-            }
-        });
     }
 
     public void setTasksActive() {
@@ -295,7 +285,6 @@ public class MindClient extends ApplicationWindow {
         getShell().setText(APPLICATION_NAME);
         getShell().setSize(800, 600);
 
-        setStatus("Ready.");
         createTrayIconAndMenu(Display.getDefault());
         return parent;
     }

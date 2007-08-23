@@ -66,20 +66,22 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             public void run() {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
                 client.startAction(Messages
-                        .getString("Refreshing workspace changes"));
+                        .getString("Synchronizing workspaces ..."));
 
+                workspaceWidget.updateContainer(true, null, false);
                 if (workspaceWidget.refreshNeeded()) {
-                    Display.getDefault().asyncExec(new Runnable() {
+                    Display.getDefault().syncExec(new Runnable() {
                         public void run() {
                             MessageBox messageBox = new MessageBox(client
                                     .getShell(), SWT.ICON_INFORMATION | SWT.OK);
                             messageBox
                                     .setMessage(Messages
-                                            .getString("The list of changes is not up to date. It needs "
-                                                    + "to be refreshed before you can synchronize changes. Please check the list of changes and press synchronize again."));
+                                            .getString("The list of changes is not up to date. It will be updated now. "
+                                                    + "\n"
+                                                    + "Please check the list of changes and press synchronize again."));
                             messageBox.open();
                         }
-                        
+
                     });
                     workspaceWidget.refresh();
                 } else {
@@ -109,10 +111,10 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         sc.synchronizeOrCheckout();
                     }
                 }
+                workspaceWidget.updateContainer(false, null, false);
                 client.stopAction(Messages
-                        .getString("Refreshing workspace changes"));
-                client.enableActions(true,
-                        ActionBase.WORKSPACE_ACTION_GROUP);
+                        .getString("Synchronizing workspaces ..."));
+                client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
         }, "workspace-changes-update");
         updateThread.setDaemon(true);

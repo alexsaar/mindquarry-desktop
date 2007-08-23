@@ -104,7 +104,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             return;
         }
         refreshing = true;
-        updateContainer(true, null, false);
 
         // update tree
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
@@ -114,12 +113,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         remoteChanges = newRemoteChanges;
         workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
 
-        boolean empty = localChanges.size() == 0 && remoteChanges.size() == 0;
-        if (empty) {
-            updateContainer(false, null, true);
-        } else {
-            updateContainer(false, null, false);
-        }
         refreshing = false;
     }
 
@@ -200,7 +193,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 System.err.println("remote " + remoteChanges);
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
-            updateContainer(false, null, false);
             refreshing = false;
         } catch (ClientException e) {
             // TODO: handle exception
@@ -210,7 +202,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         }
     }
 
-    private void updateContainer(final boolean refreshing,
+    public void updateContainer(final boolean refreshing,
             final String errMessage, boolean empty) {
         getDisplay().syncExec(
                 new WorkspaceUpdateContainerRunnable(client, this, empty,

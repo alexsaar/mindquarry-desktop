@@ -67,7 +67,9 @@ public class UpdateWorkspacesAction extends ActionBase {
                 client.startAction(Messages
                         .getString("Refreshing workspace changes"));
 
+                workspaceWidget.updateContainer(true, null, false);
                 workspaceWidget.refresh();
+                workspaceWidget.updateContainer(false, null, false);
 
                 client.stopAction(Messages
                         .getString("Refreshing workspace changes"));
@@ -83,7 +85,7 @@ public class UpdateWorkspacesAction extends ActionBase {
     }
 
     public boolean isToolbarAction() {
-        return false;
+        return true;
     }
 
     public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {

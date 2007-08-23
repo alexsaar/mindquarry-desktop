@@ -82,7 +82,7 @@ public class WorkspaceUpdateContainerRunnable extends
                     .getResourceAsStream(
                             "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
     
-    private static final String UPDATE_MESSAGE = Messages.getString("Updating workspace changes"); //$NON-NLS-1$
+    private static final String UPDATE_MESSAGE = Messages.getString("Synchronizing workspaces ..."); //$NON-NLS-1$
     private static final String EMPTY_MESSAGE = Messages
         .getString("There are currently no workspace changes to synchronize."); //$NON-NLS-1$
 
