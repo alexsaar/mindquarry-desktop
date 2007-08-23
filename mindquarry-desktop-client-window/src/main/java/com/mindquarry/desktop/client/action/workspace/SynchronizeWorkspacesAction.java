@@ -55,6 +55,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
 	public void run() {
 	    try {
+	        // TODO: also disable update button
 	        setEnabled(false);
 	        client.getToolBarManager().getControl().update();
 	        List<Team> teams = client.getSelectedTeams();

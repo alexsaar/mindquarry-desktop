@@ -225,6 +225,8 @@ public class MindClient extends ApplicationWindow {
     public void setTasksActive() {
         getToolBarManager().remove(
                 getAction(SynchronizeWorkspacesAction.class.getName()).getId());
+        getToolBarManager().remove(
+                getAction(UpdateWorkspacesAction.class.getName()).getId());
 
         getToolBarManager().appendToGroup(ActionBase.TASK_ACTION_GROUP,
                 getAction(SynchronizeTasksAction.class.getName()));
@@ -234,6 +236,8 @@ public class MindClient extends ApplicationWindow {
     }
 
     public void setFilesActive() {
+        getToolBarManager().appendToGroup(ActionBase.WORKSPACE_ACTION_GROUP,
+                getAction(UpdateWorkspacesAction.class.getName()));
         getToolBarManager().appendToGroup(ActionBase.WORKSPACE_ACTION_GROUP,
                 getAction(SynchronizeWorkspacesAction.class.getName()));
 

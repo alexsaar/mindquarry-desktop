@@ -35,7 +35,7 @@ public class UpdateWorkspacesAction extends ActionBase {
 			Display.getCurrent(),
 			UpdateWorkspacesAction.class
 			        // FIXME: use a different icon, not the same as for synchronization
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
+					.getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
 
 	public UpdateWorkspacesAction(MindClient client) {
 		super(client);
@@ -51,6 +51,7 @@ public class UpdateWorkspacesAction extends ActionBase {
 
 	public void run() {
 	    try {
+	        // TODO: also disable synchronize button
 	        setEnabled(false);
 	        client.getToolBarManager().getControl().update();
 	        client.getCategoryWidget().getWorkspaceBrowserWidget().refresh();
