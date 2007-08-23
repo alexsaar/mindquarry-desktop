@@ -120,6 +120,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                         .getShell()));
                         sc.synchronizeOrCheckout();
                     }
+                    workspaceWidget.refresh();
                     client.stopAction(Messages
                             .getString("Synchronizing workspaces ..."));
                 }
