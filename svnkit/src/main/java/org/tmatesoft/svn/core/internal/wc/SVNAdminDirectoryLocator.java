@@ -256,6 +256,8 @@ public class SVNAdminDirectoryLocator {
         return System.getProperty("user.home") + "/" + SVNAdminDirectoryLocator.SHALLOW_BASEDIR_NAME;
     }    
 
+    private static boolean warningPrinted = false;
+    
     /**
      * Does a sanity check to detect corrupting moves or copies of the working
      * directory.
@@ -278,10 +280,18 @@ public class SVNAdminDirectoryLocator {
             File expectedWC = new File(readWorkingCopyPathFile(wcPathFile)).getCanonicalFile();
             wcRoot = wcRoot.getCanonicalFile();
             if (!expectedWC.equals(wcRoot)) {
-                // TODO: throw svn exception
-                System.out.println("Shallow working copy '" + wcRoot.getPath() + "' was copied or moved from '" + expectedWC.getPath() + "'. Cannot proceed.");
-                Thread.dumpStack();
-                System.exit(-1);            
+                // TODO: this case forbids the move of a working copy
+                // there is only a problem if the user copies the working copy
+                // so that there are now two of them pointing to the same
+                // shallow wc. if he now separately works in both wcs, it will
+                // all mess up. but this is probably a very seldom case, so we
+                // don't exit here.
+                if (!warningPrinted) {
+                    warningPrinted = true;
+                    System.out.println("Warning: Shallow working copy '" + wcRoot.getPath() + "' was copied or moved from '" + expectedWC.getPath() + "'.");
+                }
+//                Thread.dumpStack();
+//                System.exit(-1);            
             }
         } catch (IOException ioe) {
             // TODO: throw svn exception
