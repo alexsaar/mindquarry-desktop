@@ -37,6 +37,7 @@ import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
+import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
 public class SVNSynchronizerZipTest implements Notify2 {
 	private SVNClientImpl client = SVNClientImpl.newInstance();
@@ -231,7 +232,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testMove() throws IOException, ClientException {
+    public void testMove() throws IOException, ClientException, SynchronizeException {
         setupTestOnlyRepo("move");
 
         // first create the files/dirs
@@ -259,7 +260,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testMoveAdded() throws IOException, ClientException {
+    public void testMoveAdded() throws IOException, ClientException, SynchronizeException {
         setupTestOnlyRepo("move");
 
         // first create the files/dirs
@@ -290,7 +291,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-	public void testAddConflictDoRename() throws IOException {
+	public void testAddConflictDoRename() throws IOException, SynchronizeException {
 		setupTest("add_add_conflict");
 		SVNSynchronizer helper = setupSynchronizer(new AddConflictHandlerMock(wcPath, AddConflict.Action.RENAME));
 
@@ -327,7 +328,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	}
     
     @Test
-    public void testAddConflictDoReplace() throws IOException {
+    public void testAddConflictDoReplace() throws IOException, SynchronizeException {
         setupTest("add_add_conflict");
         SVNSynchronizer helper = setupSynchronizer(new AddConflictHandlerMock(wcPath, AddConflict.Action.REPLACE));
 
@@ -356,7 +357,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
 
 	@Test
-	public void testDeletedModifiedConflictDoRevertDelete() throws IOException, ClientException  {
+	public void testDeletedModifiedConflictDoRevertDelete() throws IOException, ClientException, SynchronizeException  {
 		setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.REVERTDELETE));
 		String localPath = helper.getLocalPath();
@@ -393,7 +394,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	}
 
     @Test
-    public void testDeletedModifiedConflictDoOnlyKeepModified() throws IOException, ClientException  {
+    public void testDeletedModifiedConflictDoOnlyKeepModified() throws IOException, ClientException, SynchronizeException  {
         setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED));
 		String localPath = helper.getLocalPath();
@@ -430,7 +431,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
 
     @Test
-    public void testDeletedModifiedConflictDoDelete() throws IOException, ClientException  {
+    public void testDeletedModifiedConflictDoDelete() throws IOException, ClientException, SynchronizeException  {
         setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.DELETE));
 		String localPath = helper.getLocalPath();
@@ -547,7 +548,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
 
     @Test
-    public void testReplacedConflictsDoRename() throws IOException, ClientException {
+    public void testReplacedConflictsDoRename() throws IOException, ClientException, SynchronizeException {
         setupTest("replaced_conflict");
         SVNSynchronizer helper = setupSynchronizer(new ReplaceConflictHandlerMock(wcPath, ReplaceConflict.Action.RENAME));
         
@@ -559,7 +560,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testReplacedConflictsDoReplace() throws IOException, ClientException {
+    public void testReplacedConflictsDoReplace() throws IOException, ClientException, SynchronizeException {
         setupTest("replaced_conflict");
         SVNSynchronizer helper = setupSynchronizer(new ReplaceConflictHandlerMock(wcPath, ReplaceConflict.Action.REPLACE));
         
@@ -578,7 +579,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testObstructedAndConflictedDoRenameAndUseLocal() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRenameAndUseLocal() throws IOException, ClientException, SynchronizeException {
         setupTest("obstructed_and_conflicted");
         SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.RENAME, ContentConflict.Action.USE_LOCAL));
         
@@ -590,7 +591,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
 
     @Test
-    public void testObstructedAndConflictedDoRenameAndUseRemote() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRenameAndUseRemote() throws IOException, ClientException, SynchronizeException {
         setupTest("obstructed_and_conflicted");
         SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.RENAME, ContentConflict.Action.USE_REMOTE));
         
@@ -616,7 +617,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     */
 
     @Test
-    public void testObstructedAndConflictedDoRevertAndUseLocal() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRevertAndUseLocal() throws IOException, ClientException, SynchronizeException {
         setupTest("obstructed_and_conflicted");
         SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.REVERT, ContentConflict.Action.USE_LOCAL));
         
@@ -628,7 +629,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
 
     @Test
-    public void testObstructedAndConflictedDoRevertAndUseRemote() throws IOException, ClientException {
+    public void testObstructedAndConflictedDoRevertAndUseRemote() throws IOException, ClientException, SynchronizeException {
         setupTest("obstructed_and_conflicted");
         SVNSynchronizer helper = setupSynchronizer(new ObstructedConflictedHandlerMock(wcPath, ObstructedConflict.Action.REVERT, ContentConflict.Action.USE_REMOTE));
         
@@ -657,7 +658,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	// - simple test if it gets ignored (no ignored set previously)
 	// - test with an svn:ignore property already set to check correct incremental setting of that property
     @Test
-    public void testPropertyConflictDoUseLocalValue() throws IOException, ClientException {
+    public void testPropertyConflictDoUseLocalValue() throws IOException, ClientException, SynchronizeException {
         setupTest("property_conflict");
         SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_LOCAL_VALUE));
 
@@ -672,7 +673,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testPropertyConflictDoUseRemoteValue() throws IOException, ClientException {
+    public void testPropertyConflictDoUseRemoteValue() throws IOException, ClientException, SynchronizeException {
         setupTest("property_conflict");
         SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_REMOTE_VALUE));
 
@@ -687,7 +688,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     @Test
-    public void testPropertyConflictDoUseNewValue() throws IOException, ClientException {
+    public void testPropertyConflictDoUseNewValue() throws IOException, ClientException, SynchronizeException {
         setupTest("property_conflict");
         SVNSynchronizer helper = setupSynchronizer(new PropertyConflictHandlerMock(wcPath, PropertyConflict.Action.USE_NEW_VALUE));
 

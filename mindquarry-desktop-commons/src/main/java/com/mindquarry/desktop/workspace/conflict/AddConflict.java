@@ -22,6 +22,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -61,7 +62,7 @@ public class AddConflict extends RenamingConflict {
 		this.folder = new File(status.getPath()).getParentFile();
 	}
 
-	public void beforeUpdate() throws ClientException {
+	public void beforeUpdate() throws ClientException, IOException {
 		File file = new File(status.getPath());
 		
 		switch (action) {
@@ -80,16 +81,12 @@ public class AddConflict extends RenamingConflict {
 			}
 			
 			File destination = new File(file.getParentFile(), newName);
-			if (!file.renameTo(destination)) {
-				log.error("rename to " + newName + " failed.");
-				// TODO: callback for error handling
-				// NOTE: this could fail if the file with newName already exists
-				// although we do check this previously in isRenamePossible() it
-				// can happen when there are multiple add conflicts and the user
-				// chooses twice the same newName for different add conflicts -
-				// this is very seldom and can simply be given as error messages
-				System.exit(-1);
-			}
+			FileHelper.renameTo(file, destination);
+			// NOTE: this could fail if the file with newName already exists
+			// although we do check this previously in isRenamePossible() it
+			// can happen when there are multiple add conflicts and the user
+			// chooses twice the same newName for different add conflicts -
+			// this is very seldom and can simply be given as error messages
 			
             client.add(destination.getPath(), true, true);
             
@@ -104,13 +101,7 @@ public class AddConflict extends RenamingConflict {
                 client.revert(status.getPath(), true);
             }
 
-            try {
-                FileUtils.forceDelete(file);
-            } catch (IOException e) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+            FileUtils.forceDelete(file);
             
 			break;
 		}

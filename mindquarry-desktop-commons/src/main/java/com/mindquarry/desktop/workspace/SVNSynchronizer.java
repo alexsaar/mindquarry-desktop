@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.CommitMessage;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
@@ -48,13 +49,15 @@ import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
+import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
 /**
  * Helper class that implements desktop synchronization using the SVN kit. It
  * provides callback hooks for handling conflicts that need user interaction.
  * 
  * Callback handler for conflict resolving must implement the
- * {@link ConflictHandler} interface.
+ * {@link ConflictHandler} interface. A commit message handler must be set
+ * by calling {@link setCommitMessageHandler()}.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
@@ -120,12 +123,17 @@ public class SVNSynchronizer {
         // register for svn notifications on update and commit
         client.notification2(notifyListener);
 	}
+	
+	public void setCommitMessageHandler(CommitMessage commitMsgHandler) {
+	    client.commitMessageHandler(commitMsgHandler);
+	}
 
 	/**
 	 * Like synchronize(), but does a checkout if <tt>localPath</tt>
 	 * isn't a checkout. Also, creates the path if it doesn't exist.
+	 * @throws SynchronizeException 
 	 */
-	public void synchronizeOrCheckout() {
+	public void synchronizeOrCheckout() throws SynchronizeException {
         File localDir = new File(localPath);
         
         // if directory doesn't exist, create it:
@@ -174,13 +182,14 @@ public class SVNSynchronizer {
 	 * Central method: will do a full synchronization, including update and
 	 * commit. During that the ConflictHandler will be asked.
 	 * Will fail if there's no checkout yet, see synchronizeOrCheckout().
+	 * If the users cancels (i.e. a CancelException is thrown inside a ConflictHandler),
+	 * the method will end silently.
+	 * 
+	 * @throws SynchronizeException thrown if an unexpected IO, network or SVN error occurs 
 	 */
-	public void synchronize() {
+	public void synchronize() throws SynchronizeException {
 		try {
-		    // a cleanup is good for removing any old working copy locks
-		    // (throws only exception if the path does not exist or is not part
-		    // of a working copy - that has to be checked outside this method)
-			client.cleanup(localPath);
+		    cleanup();
 			
 			// TODO: local checks only: conflicted and obstructed
 			List<Conflict> localConflicts = analyzeConflictedAndObstructed();
@@ -203,10 +212,8 @@ public class SVNSynchronizer {
 			localConflicts = analyzeConflicted();
 			handleConflictsBeforeCommit(localConflicts);
 			
-			// TODO: we could use client.commitMessageHandler() along with the
-			// CommitMessage interface as callback
-			String message = handler.getCommitMessage(repositoryURL);
-			client.commit(new String[] { localPath }, message, true);
+			// we use the CommitMessage interface as callback
+			client.commit(new String[] { localPath }, null, true);
 
         } catch (CancelException e) {
             log.info("Canceled");
@@ -216,7 +223,8 @@ public class SVNSynchronizer {
 			if (e.getCause() != null) {
 			    e.getCause().printStackTrace();
 			}
-			throw new RuntimeException("synchronize() failed", e);
+			throw new SynchronizeException("synchronize() failed: "
+			        +e.toString(), e);
 		} finally {
 			// try {
 			// client.unlock(new String[] {localPath}, false);
@@ -334,7 +342,18 @@ public class SVNSynchronizer {
         
         return buffer.toString();
     }
-
+    
+    /**
+     * A cleanup is good for removing any old working copy locks
+     * (throws only exception if the path does not exist or is not part
+     * of a working copy - that has to be checked outside this method)
+     * 
+     * @throws ClientException
+     */
+    public void cleanup() throws ClientException {
+        client.cleanup(localPath);
+    }
+    
     /**
      * Retrieves local changes for the wc root as a list that is sorted with the
      * top-most folder or file first.
@@ -499,8 +518,9 @@ public class SVNSynchronizer {
 
     /**
      * Handles conflicts that need to be resolved before calling remote status.
+     * @throws IOException 
      */
-    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException {
+    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException, IOException {
         for (Conflict conflict : localConflicts) {
             log.info(">> Before Remote Status: " + conflict.toString());
             conflict.beforeRemoteStatus();
@@ -509,8 +529,9 @@ public class SVNSynchronizer {
 
     /**
      * Handles conflicts that need to be resolved before committing.
+     * @throws IOException 
      */
-    private void handleConflictsBeforeCommit(List<Conflict> localConflicts) throws ClientException {
+    private void handleConflictsBeforeCommit(List<Conflict> localConflicts) throws ClientException, IOException {
         for (Conflict conflict : localConflicts) {
             log.info(">> Before Commit: " + conflict.toString());
             conflict.beforeCommit();
@@ -711,16 +732,23 @@ public class SVNSynchronizer {
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
         
+        // remember any deleted dirs we have already handled to
+        // avoid an endless recursion of the main while loop
+        Set<Status> handledDeletedDirs = new HashSet<Status>();
+        
         while (iter.hasNext()) {
             Status status = iter.next();
             
             // DELETED DIRECTORIES (remotely)
-            if (status.getNodeKind() == NodeKind.dir &&
-                    status.getRepositoryTextStatus() == StatusKind.deleted) {
+            if (status.getNodeKind() == NodeKind.dir
+                    && status.getRepositoryTextStatus() == StatusKind.deleted
+                    && !handledDeletedDirs.contains(status)) {
                 
                 // conflict if there is a child that is added or removed locally
                 
                 Status conflictParent = status;
+                handledDeletedDirs.add(conflictParent);
+                
                 List<Status> localModList = new ArrayList<Status>();
                 
                 // find all children
@@ -819,16 +847,23 @@ public class SVNSynchronizer {
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
         
+        // remember any replaced dirs we have already handled to
+        // avoid an endless recursion of the main while loop
+        Set<Status> handledReplacedDirs = new HashSet<Status>();
+        
         while (iter.hasNext()) {
             Status status = iter.next();
             
             // REPLACED DIRECTORIES (locally)
-            if (status.getNodeKind() == NodeKind.dir &&
-                    status.getTextStatus() == StatusKind.replaced) {
+            if (status.getNodeKind() == NodeKind.dir
+                    && status.getTextStatus() == StatusKind.replaced
+                    && !handledReplacedDirs.contains(status)) {
                 
                 // conflict if there is a modification inside the directory remotely
                 
                 Status conflictParent = status;
+                handledReplacedDirs.add(conflictParent);
+                
                 List<Status> localChildren = new ArrayList<Status>();
                 List<Status> remoteChildren = new ArrayList<Status>();
                 
@@ -876,20 +911,26 @@ public class SVNSynchronizer {
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
         
+        // remember any replaced dirs we have already handled to
+        // avoid an endless recursion of the main while loop
+        Set<Status> handledReplacedDirs = new HashSet<Status>();
+        
         while (iter.hasNext()) {
             Status status = iter.next();
             
             // REPLACED DIRECTORIES (remotely)
-            if (status.getReposKind() == NodeKind.dir &&
-                    status.getRepositoryTextStatus() == StatusKind.replaced) {
+            if (status.getReposKind() == NodeKind.dir
+                    && status.getRepositoryTextStatus() == StatusKind.replaced
+                    && !handledReplacedDirs.contains(status)) {
+
                 
                 // conflict if there is a modification inside the directory locally
                 
                 Status conflictParent = status;
+                handledReplacedDirs.add(conflictParent);
+                
                 List<Status> localChildren = new ArrayList<Status>();
                 List<Status> remoteChildren = new ArrayList<Status>();
-                
-                // TODO: second_dir problem: get local changes for conflictParent
                 
                 // find all children
                 while (iter.hasNext()) {
@@ -979,9 +1020,10 @@ public class SVNSynchronizer {
     
     /**
      * @throws CancelException 
+     * @throws ClientException 
      * 
      */
-    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) throws CancelException, ClientException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -1001,30 +1043,25 @@ public class SVNSynchronizer {
             //   modified
             if(status.getRepositoryPropStatus() == StatusKind.modified &&
                     status.getPropStatus() == StatusKind.modified) {
-                try {
-                    PropertyData[] remoteProps = client.properties(status.getUrl());
-                    PropertyData[] localProps = client.properties(status.getPath());
-                    
-                    for(PropertyData localProp : localProps) {
-                        for(PropertyData remoteProp : remoteProps) {
-                            if(localProp.getName().equals(remoteProp.getName()) &&
-                                    !localProp.getValue().equals(remoteProp.getValue())) {
-                                log.info("found conflicting property " + localProp.getName());
+                PropertyData[] remoteProps = client.properties(status.getUrl());
+                PropertyData[] localProps = client.properties(status.getPath());
+                
+                for(PropertyData localProp : localProps) {
+                    for(PropertyData remoteProp : remoteProps) {
+                        if(localProp.getName().equals(remoteProp.getName()) &&
+                                !localProp.getValue().equals(remoteProp.getValue())) {
+                            log.info("found conflicting property " + localProp.getName());
 
-                                // TODO add further mergeable properties (e.g. mq:tags for Tagging)
-                                if(localProp.getName().equals(PropertyData.IGNORE) || 
-                                        localProp.getName().equals(PropertyData.EXTERNALS)) {
-                                    presentNewConflict(new PropertyConflict(status, localProp, remoteProp, true), conflicts);
-                                } else {
-                                    presentNewConflict(new PropertyConflict(status, localProp, remoteProp, false), conflicts);
-                                }
-                                break;
+                            // TODO add further mergeable properties (e.g. mq:tags for Tagging)
+                            if(localProp.getName().equals(PropertyData.IGNORE) || 
+                                    localProp.getName().equals(PropertyData.EXTERNALS)) {
+                                presentNewConflict(new PropertyConflict(status, localProp, remoteProp, true), conflicts);
+                            } else {
+                                presentNewConflict(new PropertyConflict(status, localProp, remoteProp, false), conflicts);
                             }
+                            break;
                         }
                     }
-                } catch (ClientException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
         }
@@ -1035,8 +1072,9 @@ public class SVNSynchronizer {
 
     /**
 	 * Calls {@link Conflict.handleBeforeUpdate} on all conflicts in the list.
+     * @throws IOException 
 	 */
-	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException {
+	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException, IOException {
 		for (Conflict conflict : conflicts) {
 			log.info(">> Before Update: " + conflict.toString());
 			conflict.beforeUpdate();
@@ -1045,8 +1083,9 @@ public class SVNSynchronizer {
 
     /**
      * Calls {@link Conflict.handleAfterUpdate} on all conflicts in the list.
+     * @throws IOException 
      */
-	private void handleConflictsAfterUpdate(List<Conflict> conflicts) throws ClientException {
+	private void handleConflictsAfterUpdate(List<Conflict> conflicts) throws ClientException, IOException {
 		for (Conflict conflict : conflicts) {
 			log.info(">> After Update: " + conflict.toString());
 			conflict.afterUpdate();

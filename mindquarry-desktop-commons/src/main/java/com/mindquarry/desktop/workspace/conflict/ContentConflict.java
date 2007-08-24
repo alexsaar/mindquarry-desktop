@@ -14,10 +14,12 @@
 package com.mindquarry.desktop.workspace.conflict;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -62,7 +64,7 @@ public class ContentConflict extends Conflict {
         handler.handle(this);
     }
 
-    private void resolveConflict() throws ClientException {
+    private void resolveConflict() throws ClientException, IOException {
         // check for conflict resolve method
         switch (action) {
         case UNKNOWN:
@@ -76,17 +78,9 @@ public class ContentConflict extends Conflict {
             File remoteFile = new File(parent, status.getConflictNew());
             
             File conflictFile = new File(status.getPath());
-            if (!conflictFile.delete()) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+            FileHelper.delete(conflictFile);
+            FileHelper.renameTo(remoteFile, conflictFile);
             
-            if (!remoteFile.renameTo(conflictFile)) {
-                log.error("renaming failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
             break;
             
         case USE_LOCAL:
@@ -95,17 +89,9 @@ public class ContentConflict extends Conflict {
             File localFile = new File(parent, status.getConflictWorking());
             
             conflictFile = new File(status.getPath());
-            if (!conflictFile.delete()) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+            FileHelper.delete(conflictFile);
+            FileHelper.renameTo(localFile, conflictFile);
             
-            if (!localFile.renameTo(conflictFile)) {
-                log.error("renaming failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
             break;
             
         case MERGE:
@@ -118,12 +104,12 @@ public class ContentConflict extends Conflict {
     }
 
     @Override
-    public void beforeCommit() throws ClientException {
+    public void beforeCommit() throws ClientException, IOException {
         resolveConflict();
     }
 
     @Override
-    public void beforeRemoteStatus() throws ClientException {
+    public void beforeRemoteStatus() throws ClientException, IOException {
         resolveConflict();
     }
 

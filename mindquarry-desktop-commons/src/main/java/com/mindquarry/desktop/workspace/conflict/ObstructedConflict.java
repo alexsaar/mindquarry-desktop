@@ -21,6 +21,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -58,7 +59,7 @@ public class ObstructedConflict extends RenamingConflict {
     }
 
     @Override
-    public void beforeRemoteStatus() throws ClientException {
+    public void beforeRemoteStatus() throws ClientException, IOException {
         File file = new File(status.getPath());
         switch (action) {
         case UNKNOWN:
@@ -71,12 +72,7 @@ public class ObstructedConflict extends RenamingConflict {
             log.info("renaming to " + newName);
 
             File destination = new File(file.getParentFile(), newName);
-            
-            if (!file.renameTo(destination)) {
-                log.error("rename to " + newName + " failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+            FileHelper.renameTo(file, destination);
             
             client.add(destination.getPath(), true, true);
             
@@ -88,13 +84,7 @@ public class ObstructedConflict extends RenamingConflict {
         case REVERT:
             log.info("reverting obstructed file/folder: " + status.getPath());
             
-            try {
-                FileUtils.forceDelete(file);
-            } catch (IOException e) {
-                log.error("deleting failed.");
-                // TODO: callback for error handling
-                System.exit(-1);
-            }
+            FileUtils.forceDelete(file);
             
             // restore file or folder (updating to working copy base revision)
             client.update(status.getPath(), Revision.BASE, true);

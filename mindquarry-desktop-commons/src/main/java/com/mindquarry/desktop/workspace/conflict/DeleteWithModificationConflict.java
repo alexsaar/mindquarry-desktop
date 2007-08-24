@@ -26,6 +26,7 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Revision.Number;
 
+import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -97,22 +98,15 @@ public class DeleteWithModificationConflict extends Conflict {
 	throws IOException {
 		// create and immediately delete temporary file using library function
 		File file = File.createTempFile(prefix, suffix, directory);
-		if (!file.delete()) {
-			log.error("Failed to delete temp file " + file.getPath());
-			// TODO: throw IOException on all boolean-returning file methods in false case
-			System.exit(-1);
-		}
+		FileHelper.delete(file);
 		
-		// create directory with the same unique name
-		if (!file.mkdir()) {
-			log.error("Failed to mkdir " + file.getPath());
-			// TODO: throw IOException on all boolean-returning file methods in false case
-			System.exit(-1);
-		}
+        // create directory with the same unique name
+		FileHelper.mkdir(file);
+		
 		return file;
 	}
 
-	public void beforeUpdate() throws ClientException {
+	public void beforeUpdate() throws ClientException, IOException {
         // NOTE: here we could implement a fast-path avoiding the download
         // of the new files by simply deleting the folder on the server
         // before we run the update
@@ -121,7 +115,6 @@ public class DeleteWithModificationConflict extends Conflict {
         // the folder again (svn will recreate it due to the remote mods)
 	    // }
 
-    	// TODO: check correctness
 	    if (action == Action.REVERTDELETE) {	 
 	    	if (localDelete) {   	
 		    	// revert local delete
@@ -129,25 +122,16 @@ public class DeleteWithModificationConflict extends Conflict {
 	    	} else {
 	    		// make a local copy of the file/dir
 	    		File source      = new File(status.getPath());
-	    		try {
-//	    		File destination = File.createTempFile(source.getName(), null, source.getParentFile());
-//	    		File destination = new File(source.getParentFile(), "__"+source.getName());
 	    		
-					if (source.isFile()) {
-		    			tempCopy = File.createTempFile(source.getName(), null, source.getParentFile());
-						FileUtils.copyFile(source, tempCopy);
-					} else {
-		    			tempCopy = createTempDir(source.getName(), null, source.getParentFile());
-						FileUtils.copyDirectory(source, tempCopy);
-					}
-				} catch (IOException e) {
-					log.error("Failed to copy file/dir.");
-					e.printStackTrace();
+				if (source.isFile()) {
+	    			tempCopy = File.createTempFile(source.getName(), null, source.getParentFile());
+					FileUtils.copyFile(source, tempCopy);
+				} else {
+	    			tempCopy = createTempDir(source.getName(), null, source.getParentFile());
+					FileUtils.copyDirectory(source, tempCopy);
 				}
 				
-				// remove .svn directories from copy
-				// TODO: not required for new client which stores .svn stuff in
-				// a different directory
+				// remove .svn directories from copy (if there are any)
 				removeDotSVNDirectories(tempCopy.getPath());
 	    		
 	    		// revert all local changes to file/dir
@@ -155,20 +139,12 @@ public class DeleteWithModificationConflict extends Conflict {
 	    		
 	    		// Delete complete file/dir as the update operation will leave
 				// unversioned copies of files that were locally modified.
-				try {
-					FileUtils.forceDelete(source);
-				} catch (IOException e) {
-					log.error("Failed to delete file/dir.");
-					e.printStackTrace();
-				}
+				FileUtils.forceDelete(source);
 	    	}
-	        
-	        // TODO: What does this mean?
-	    	// > status probably missing (not svn deleted yet) because it's a conflict
 	    }
 	}
 
-	public void afterUpdate() throws ClientException {
+	public void afterUpdate() throws ClientException, IOException {
         switch (action) {
         case UNKNOWN:
             // client did not set a conflict resolution
@@ -199,13 +175,7 @@ public class DeleteWithModificationConflict extends Conflict {
             //    Update operation leaves the affected file as unversioned which
             //    is therefore deleted.
 			File file = new File(status.getPath());
-			try {
-                FileUtils.forceDelete(file);
-			} catch (IOException e) {
-    			log.error("deleting directory failed.");
-    			// TODO: callback for error handling
-    			System.exit(-1);
-			}
+            FileUtils.forceDelete(file);
             
             break;
             
@@ -271,18 +241,13 @@ public class DeleteWithModificationConflict extends Conflict {
 
 	    		// 2. Redo changes by replacing with local files (move B => A)
 	    		File destination = new File(status.getPath());
-	    		try {
-	    			if (tempCopy.isFile()) {
-	    				FileUtils.copyFile(tempCopy, destination);
-	    				tempCopy.delete();
-	    			} else {
-	    				FileUtils.copyDirectory(tempCopy, destination);
-	    				FileUtils.deleteDirectory(tempCopy);
-	    			}
-	    		} catch (IOException e) {
-	    			log.error("Failed to move.");
-	    			e.printStackTrace();
-	    		}
+    			if (tempCopy.isFile()) {
+    				FileUtils.copyFile(tempCopy, destination);
+    				tempCopy.delete();
+    			} else {
+    				FileUtils.copyDirectory(tempCopy, destination);
+    				FileUtils.deleteDirectory(tempCopy);
+    			}
 
 	    		// 3. Re-add locally added files
 	    		// Cannot just add directories recursively since the copy

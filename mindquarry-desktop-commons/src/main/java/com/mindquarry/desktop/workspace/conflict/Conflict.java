@@ -70,8 +70,9 @@ public abstract class Conflict {
      * break that must be resolved.
      * @throws ClientException an implementation might need to access the svn
      * client to do it's work and that can cause this exception to be thrown
+     * @throws IOException 
      */
-    public void beforeRemoteStatus() throws ClientException {
+    public void beforeRemoteStatus() throws ClientException, IOException {
         
     }
     
@@ -80,8 +81,9 @@ public abstract class Conflict {
 	 * update must be resolved.
 	 * @throws ClientException an implementation might need to access the svn
 	 * client to do it's work and that can cause this exception to be thrown
+	 * @throws IOException 
 	 */
-    public void beforeUpdate() throws ClientException {
+    public void beforeUpdate() throws ClientException, IOException {
         
     }
     
@@ -90,8 +92,9 @@ public abstract class Conflict {
      * certain actions done in {@link beforeUpdate} or user actions that have
      * to be executed once the remote modifications are applied to the working
      * copy.
+     * @throws IOException 
      */
-	public void afterUpdate() throws ClientException {
+	public void afterUpdate() throws ClientException, IOException {
 	    
 	}
 
@@ -100,8 +103,9 @@ public abstract class Conflict {
      * the commit must be resolved.
      * @throws ClientException an implementation might need to access the svn
      * client to do it's work and that can cause this exception to be thrown
+     * @throws IOException 
      */
-    public void beforeCommit() throws ClientException {
+    public void beforeCommit() throws ClientException, IOException {
         
     }
     

@@ -22,7 +22,6 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.workspace.SVNSynchronizer;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -62,7 +61,7 @@ public class ReplaceConflict extends RenamingConflict {
 		this.folder = new File(status.getPath()).getParentFile();
 	}
 
-	public void beforeUpdate() throws ClientException {
+	public void beforeUpdate() throws ClientException, IOException {
 		File file = new File(status.getPath());
 		
 		switch (action) {
@@ -77,17 +76,12 @@ public class ReplaceConflict extends RenamingConflict {
             File source      = new File(status.getPath());
             File destination = new File(source.getParent(), newName);
             
-            try {
-                if(source.isDirectory()) {
-                    FileUtils.copyDirectory(source, destination);
+            if (source.isDirectory()) {
+                FileUtils.copyDirectory(source, destination);
 
-                    removeDotSVNDirectories(destination.getPath());
-                } else {
-                    FileUtils.copyFile(source, destination);
-                }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                removeDotSVNDirectories(destination.getPath());
+            } else {
+                FileUtils.copyFile(source, destination);
             }
 
             client.add(destination.getPath(), true, true);
@@ -101,13 +95,7 @@ public class ReplaceConflict extends RenamingConflict {
             client.revert(file.getPath(), true);
             
             if (status.getRepositoryTextStatus() == StatusKind.replaced) {
-                try {
-                    FileUtils.forceDelete(file);
-                } catch (IOException e) {
-                    log.error("deleting failed.");
-                    // TODO: callback for error handling
-                    System.exit(-1);
-                }
+                FileUtils.forceDelete(file);
             }
             
 			break;
@@ -122,11 +110,14 @@ public class ReplaceConflict extends RenamingConflict {
 		handler.handle(this);
 	}
 
+	/**
+	 * Make sure you have called isRenamePossible(newName) and it returned true
+	 * before calling doRename(newName).
+	 * 
+	 * @param newName the new name of the file to rename to. Must be just a
+	 *                filename but not a full path name.
+	 */
 	public void doRename(String newName) {
-	    // TODO: double check here? what if it fails? throw exception? return false?
-//	    if (!isRenamePossible(newName)) {
-//	        
-//	    }
 		this.action = Action.RENAME;
 		this.newName = newName;
 	}

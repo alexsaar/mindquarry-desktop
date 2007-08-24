@@ -104,8 +104,4 @@ public class AutomaticConflictHandler implements ConflictHandler {
         printer.printConflict(conflict);
         
     }
-
-    public String getCommitMessage(String repoURL) throws CancelException {
-        return "commit from automatic handler";
-    }
 }

@@ -97,7 +97,7 @@ public class PropertyConflict extends Conflict {
         return buffer.toString();
     }
 
-	public void afterUpdate() {
+	public void afterUpdate() throws ClientException {
         switch (action) {
         case UNKNOWN:
             // client did not set a conflict resolution
@@ -123,15 +123,10 @@ public class PropertyConflict extends Conflict {
             break;
         }
 
-        try {
-            client.propertySet(status.getPath(), localProp.getName(), value, false);
-            
-            if(status.getTextStatus() != StatusKind.conflicted) {
-                client.resolved(status.getPath(), false);
-            }
-        } catch (ClientException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        client.propertySet(status.getPath(), localProp.getName(), value, false);
+        
+        if(status.getTextStatus() != StatusKind.conflicted) {
+            client.resolved(status.getPath(), false);
         }
 	}
 
