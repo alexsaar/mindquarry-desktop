@@ -61,9 +61,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     // #########################################################################
 
     /**
-     * Runs task update in a separate thread, so that GUI can continue
-     * processing. Thus this method returns immediately. While updating tasks
-     * the Task Manager will show an update widget instead of the task table.
+     * not implemented
      */
     public void asyncRefresh() {
         throw new UnsupportedOperationException("not implemented");
@@ -114,6 +112,40 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
 
         refreshing = false;
+    }
+
+    public boolean isRefreshListEmpty() {
+        // FIXME: as ContentProvider does some filtering, this does
+        // not always reflect the status in the GUI
+        return localChanges.size() == 0 && remoteChanges.size() == 0;
+    }
+    
+    /**
+     * Return if at least one team workspace of the current profile has
+     * been checked out. Return false on e.g. first start-up.
+     */
+    public boolean hasCheckout() {
+        // TODO: check if there are actually team dirs and
+        //  .svn/.svnref dirs/files
+        PreferenceStore store = client.getPreferenceStore();
+        Profile selected = Profile.getSelectedProfile(store);
+        if (selected == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return false;
+        }
+        File wsFolder = new File(selected.getWorkspaceFolder());
+        if (!wsFolder.exists() || wsFolder.list() == null || 
+                wsFolder.list().length == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public void updateContainer(final boolean refreshing,
+            final String refreshMessage, final String errMessage, boolean empty) {
+        getDisplay().syncExec(
+                new WorkspaceUpdateContainerRunnable(client, this, empty,
+                        errMessage, refreshing, refreshMessage));
     }
 
     // #########################################################################
@@ -202,33 +234,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         }
     }
 
-    /**
-     * Return if at least one team workspace of the current profile has
-     * been checked out. Return false on e.g. first start-up.
-     */
-    public boolean hasCheckout() {
-        // TODO: check if there are actually team dirs and
-        //  .svn/.svnref dirs/files
-        PreferenceStore store = client.getPreferenceStore();
-        Profile selected = Profile.getSelectedProfile(store);
-        if (selected == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
-            return false;
-        }
-        File wsFolder = new File(selected.getWorkspaceFolder());
-        if (!wsFolder.exists() || wsFolder.list() == null || 
-                wsFolder.list().length == 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public void updateContainer(final boolean refreshing,
-            final String refreshMessage, final String errMessage, boolean empty) {
-        getDisplay().syncExec(
-                new WorkspaceUpdateContainerRunnable(client, this, empty,
-                        errMessage, refreshing, refreshMessage));
-    }
+    // #########################################################################
+    // ### INNER CLASSES
+    // #########################################################################
 
     class SetStatusFileFilter extends FileFileFilter {
         List<Status> subFiles = new ArrayList<Status>();

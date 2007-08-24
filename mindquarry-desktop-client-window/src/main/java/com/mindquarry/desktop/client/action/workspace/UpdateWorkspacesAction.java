@@ -65,7 +65,8 @@ public class UpdateWorkspacesAction extends ActionBase {
                         false);
                 workspaceWidget.refresh();
                 if (workspaceWidget.hasCheckout()) {
-                    workspaceWidget.updateContainer(false, null, null, false);
+                    workspaceWidget.updateContainer(false, null, null, 
+                            workspaceWidget.isRefreshListEmpty());
                 } else {
                     workspaceWidget.updateContainer(false, null, 
                             Messages.getString("You have not synchronized yet.\n" +
