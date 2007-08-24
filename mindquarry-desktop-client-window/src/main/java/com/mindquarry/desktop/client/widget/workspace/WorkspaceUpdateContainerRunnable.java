@@ -14,6 +14,8 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,13 +85,15 @@ public class WorkspaceUpdateContainerRunnable extends
                             "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
     
     private static final String EMPTY_MESSAGE = Messages
-        .getString("There are currently no workspace changes to synchronize."); //$NON-NLS-1$
+        .getString("There are currently no workspace changes to synchronize,\n" +
+        		"i.e. there are no local changes and there are no changes on the server.\n" +
+        		"Last refresh: "); //$NON-NLS-1$
 
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean empty,
             String errMessage, boolean refreshing, String refreshMessage) {
         super(containerWidget, empty, errMessage, refreshMessage,
-                EMPTY_MESSAGE, refreshing);
+                EMPTY_MESSAGE + new SimpleDateFormat().format(new Date()), refreshing);
     }
 
     /**
