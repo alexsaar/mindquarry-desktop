@@ -42,6 +42,8 @@ public class InteractiveConflictHandler implements ConflictHandler {
 
     private Shell shell;
     
+    private boolean cancelled = false;
+    
     public InteractiveConflictHandler(Shell shell) {
         this.shell = shell;
     }
@@ -61,10 +63,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public void handle(final DeleteWithModificationConflict conflict)
@@ -86,10 +91,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public void handle(final ReplaceConflict conflict) throws SynchronizeCancelException {
@@ -107,10 +115,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public void handle(final ContentConflict conflict) throws SynchronizeCancelException {
@@ -131,10 +142,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public void handle(final ObstructedConflict conflict)
@@ -154,10 +168,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public void handle(final PropertyConflict conflict) throws SynchronizeCancelException {
@@ -178,10 +195,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    throw new SynchronizeCancelException();
+                    cancelled = true;
                 }
             }
         });
+        if (cancelled) {
+            throw new SynchronizeCancelException();
+        }
     }
 
     public String getCommitMessage(String repoURL) throws CancelException {

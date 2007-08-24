@@ -110,17 +110,21 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             teams.addAll(client.getSelectedTeams());
                         }
                     });
-                    for (Team team : teams) {
-                        SVNSynchronizer sc = new SVNSynchronizer(team
-                                .getWorkspaceURL(), selected
-                                .getWorkspaceFolder()
-                                + "/" + team.getName(), selected.getLogin(),
-                                selected.getPassword(),
-                                new InteractiveConflictHandler(client
-                                        .getShell()));
-                        sc.synchronizeOrCheckout();
+                    try {
+                        for (Team team : teams) {
+                            SVNSynchronizer sc = new SVNSynchronizer(team
+                                    .getWorkspaceURL(), selected
+                                    .getWorkspaceFolder()
+                                    + "/" + team.getName(), selected.getLogin(),
+                                    selected.getPassword(),
+                                    new InteractiveConflictHandler(client
+                                            .getShell()));
+                            sc.synchronizeOrCheckout();
+                        }
+                        workspaceWidget.refresh();
+                    } catch (SynchronizeCancelException e) {
+                        log.info("synchronization cancelled");
                     }
-                    workspaceWidget.refresh();
                     client.stopAction(Messages
                             .getString("Synchronizing workspaces ..."));
                 }
