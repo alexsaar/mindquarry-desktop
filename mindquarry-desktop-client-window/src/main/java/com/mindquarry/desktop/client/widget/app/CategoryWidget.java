@@ -56,7 +56,7 @@ public class CategoryWidget extends WidgetBase {
     private static final String SPACE_HOLDER = "      ";
     private static final String TAB_TASKS_TEXT = Messages.getString("Tasks")
             + SPACE_HOLDER;
-    private static final String TAB_FILES_TEXT = Messages.getString("Files")
+    private static final String TAB_FILES_TEXT = Messages.getString("File Changes")
             + SPACE_HOLDER;
 
     private static Image tasksIcon = new Image(
