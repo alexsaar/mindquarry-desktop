@@ -15,8 +15,6 @@ package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.jface.viewers.Viewer;
 
-import com.mindquarry.desktop.client.Messages;
-
 /**
  * Add summary documentation here.
  * 
@@ -46,17 +44,21 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
 
     public void run() {
         if (refreshing) {
+            // an action is running, so we show a progress bar:
             destroyContent();
             containerWidget.refreshWidget = new UpdateWidget(containerWidget,
                     updateMessage);
         } else if (errMessage == null && !empty) {
+            // show the content itself:
             destroyContent();
             createContainerContent();
         } else if (errMessage == null && empty) {
+            // show a message that there is no content:
             destroyContent();
             containerWidget.noContentWidget = new NoContentWidget(
                     containerWidget, emptyMessage);
         } else {
+            // show an error message:
             destroyContent();
             containerWidget.errorWidget = new ErrorWidget(containerWidget,
                     errMessage);
