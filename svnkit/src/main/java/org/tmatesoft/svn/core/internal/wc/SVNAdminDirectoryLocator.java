@@ -170,7 +170,7 @@ public class SVNAdminDirectoryLocator {
         }
         
         // ensure the admin directory exists
-        if (!adminSubDir.exists()) {
+        if (create && !adminSubDir.exists()) {
             adminSubDir.mkdirs();
         }
         
