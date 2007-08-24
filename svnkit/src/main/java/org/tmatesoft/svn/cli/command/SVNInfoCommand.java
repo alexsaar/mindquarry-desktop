@@ -23,12 +23,15 @@ import java.util.Locale;
 
 import org.tmatesoft.svn.cli.SVNArgument;
 import org.tmatesoft.svn.cli.SVNCommand;
+import org.tmatesoft.svn.core.SVNErrorCode;
+import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNLock;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.util.SVNFormatUtil;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.wc.ISVNInfoHandler;
 import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNRevision;
@@ -93,7 +96,7 @@ public class SVNInfoCommand extends SVNCommand implements ISVNInfoHandler {
         out.println(str);
     }
 
-    public void handleInfo(SVNInfo info) {
+    public void handleInfo(SVNInfo info) throws SVNException {
         if (!info.isRemote()) {
             print("Path: " + SVNFormatUtil.formatPath(info.getFile()), myOut);
         } else if (info.getPath() != null) {
@@ -189,6 +192,16 @@ public class SVNInfoCommand extends SVNCommand implements ISVNInfoHandler {
                     myOut.print("(" + lineCount + " lines)");
                 }
                 myOut.print(":\n" + lock.getComment() + "\n");
+            }
+        }
+        File adminDir = SVNAdminDirectoryLocator.getAdminDirectory(info.getFile(), false);
+        if (adminDir == null) {
+            print("No admin area found (.svn)!!!", myOut);
+        } else {
+            try {
+                print("Admin area location: " + adminDir.getCanonicalPath(), myOut);
+            } catch (IOException e) {
+                throw new SVNException(SVNErrorMessage.create(SVNErrorCode.IO_ERROR), e);
             }
         }
         println(myOut);
