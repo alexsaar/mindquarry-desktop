@@ -14,6 +14,13 @@
 
 package com.mindquarry.desktop.client.action.workspace;
 
+/**
+ * Thrown when user cancels synchronizatin in a conflict dialog.
+ * Extends RuntimeException so it can be thrown n a thread's
+ * run() method.
+ * 
+ * @author dnaber
+ */
 public class SynchronizeCancelException extends RuntimeException {
     
     public SynchronizeCancelException() {
