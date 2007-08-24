@@ -1215,6 +1215,10 @@ public abstract class SVNAdminArea {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.WC_NOT_LOCKED, "Write-lock stolen in ''{0}''", getRoot());
             SVNErrorManager.error(err);
         }
+        
+        // destroying shallow working copies correctly
+        SVNAdminDirectoryLocator.cleanupDirDueToDeletion(myDirectory);
+        
         SVNFileUtil.deleteAll(getAdminDirectory(), getWCAccess());
         getWCAccess().closeAdminArea(getRoot());
     }
