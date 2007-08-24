@@ -38,6 +38,10 @@ public class ContentProvider implements ITreeContentProvider {
         File[] children = workspaceRoot.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
+                // ignore e.g. conflict files like <file>.r<rev>
+                if (workspaceBrowser.toIgnore.containsKey(f)) {
+                    return false;
+                }
                 // show only changed files, but within their directory
                 // structure:
                 if (f.isDirectory()) {

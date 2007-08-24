@@ -51,6 +51,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     protected Map<File, Integer> localChanges = new HashMap<File, Integer>();
     protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
+    // ignore files like "<filename>.r200" that are created in case of conflicts:
+    protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
@@ -186,6 +188,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                                 StatusKind.obstructed);
                     }
                 }
+                toIgnore = new HashMap<File, Integer>();
                 // we need to stop here in case of obstruction,
                 // as getRemoteAndLocalChanges() would throw a
                 // ClientException:
@@ -212,9 +215,17 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                                         StatusKind.unversioned);
                             }
                         }
-                        // TODO: get the two files (remote/local) from the
-                        // conflict,
-                        // e.g. conflict.txt.r172 etc -> hide them!
+                        // if there's a local conflict, ignore (i.e. don't display) files
+                        // like <file>.r<rev> or <file>.mine, because these will not be
+                        // uploaded to the server:
+                        if (status.getTextStatus() == StatusKind.conflicted) {
+                            // status.getConflictNew() etc return relative path names,
+                            // but we need absolute path names in the map:
+                            File dir = new File(status.getPath()).getParentFile();
+                            toIgnore.put(new File(dir, status.getConflictNew()), status.getTextStatus());
+                            toIgnore.put(new File(dir, status.getConflictOld()), status.getTextStatus());
+                            toIgnore.put(new File(dir, status.getConflictWorking()), status.getTextStatus());
+                        }
                     }
                 } else {
                     log
