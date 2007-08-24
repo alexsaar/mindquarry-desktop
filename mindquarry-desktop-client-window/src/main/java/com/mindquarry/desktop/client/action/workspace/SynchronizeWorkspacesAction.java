@@ -48,6 +48,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             SynchronizeWorkspacesAction.class
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
 
+    protected static final String SYNC_WORKSPACE_MESSAGE = Messages
+        .getString("Synchronizing workspaces\n" +
+        		"Please do not modify, copy, or move files\n" +
+        		"in your workspace during the synchronization");
+
     public SynchronizeWorkspacesAction(MindClient client) {
         super(client);
 
@@ -90,11 +95,9 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     client.stopAction(Messages
                             .getString("Refreshing workspaces changes ..."));
                 } else {
-                    workspaceWidget.updateContainer(true, Messages
-                            .getString("Synchronizing workspaces ..."), //$NON-NLS-1$
+                    workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE, //$NON-NLS-1$
                             null, false);
-                    client.startAction(Messages
-                            .getString("Synchronizing workspaces ..."));
+                    client.startAction(SYNC_WORKSPACE_MESSAGE);
 
                     // retrieve selected profile
                     PreferenceStore store = client.getPreferenceStore();
@@ -128,7 +131,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         cancelled = true;
                     }
                     client.stopAction(Messages
-                            .getString("Synchronizing workspaces ..."));
+                            .getString(SYNC_WORKSPACE_MESSAGE));
                 }
                 if (cancelled) {
                     workspaceWidget.updateContainer(false, null, null, false);
