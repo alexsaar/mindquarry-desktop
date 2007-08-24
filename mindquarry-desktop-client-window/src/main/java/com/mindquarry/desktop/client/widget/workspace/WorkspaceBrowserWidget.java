@@ -202,6 +202,27 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         }
     }
 
+    /**
+     * Return if at least one team workspace of the current profile has
+     * been checked out. Return false on e.g. first start-up.
+     */
+    public boolean hasCheckout() {
+        // TODO: check if there are actually team dirs and
+        //  .svn/.svnref dirs/files
+        PreferenceStore store = client.getPreferenceStore();
+        Profile selected = Profile.getSelectedProfile(store);
+        if (selected == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return false;
+        }
+        File wsFolder = new File(selected.getWorkspaceFolder());
+        if (!wsFolder.exists() || wsFolder.list() == null || 
+                wsFolder.list().length == 0) {
+            return false;
+        }
+        return true;
+    }
+
     public void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty) {
         getDisplay().syncExec(

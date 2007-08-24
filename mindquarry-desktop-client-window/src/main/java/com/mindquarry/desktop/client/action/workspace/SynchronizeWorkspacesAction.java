@@ -64,6 +64,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
     public void run() {
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
+                boolean cancelled = false;
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
                 workspaceWidget.updateContainer(true, Messages
                         .getString("Refreshing workspaces changes ..."), //$NON-NLS-1$
@@ -124,11 +125,16 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         workspaceWidget.refresh();
                     } catch (SynchronizeCancelException e) {
                         log.info("synchronization cancelled");
+                        cancelled = true;
                     }
                     client.stopAction(Messages
                             .getString("Synchronizing workspaces ..."));
                 }
-                workspaceWidget.updateContainer(false, null, null, false);
+                if (cancelled) {
+                    workspaceWidget.updateContainer(false, null, null, false);
+                } else {
+                    workspaceWidget.updateContainer(false, null, null, true);
+                }
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
         }, "workspace-changes-update");

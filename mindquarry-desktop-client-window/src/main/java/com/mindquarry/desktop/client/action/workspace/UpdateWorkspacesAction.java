@@ -64,7 +64,14 @@ public class UpdateWorkspacesAction extends ActionBase {
                 workspaceWidget.updateContainer(true, REFRESH_MESSAGE, null,
                         false);
                 workspaceWidget.refresh();
-                workspaceWidget.updateContainer(false, null, null, false);
+                if (workspaceWidget.hasCheckout()) {
+                    workspaceWidget.updateContainer(false, null, null, false);
+                } else {
+                    workspaceWidget.updateContainer(false, null, 
+                            Messages.getString("You have not synchronized yet.\n" +
+                            		"Click the 'Synchronize workspaces' button to " +
+                            		"download files from the server."), false);
+                }
 
                 client.stopAction(REFRESH_MESSAGE);
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
