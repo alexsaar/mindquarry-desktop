@@ -30,6 +30,7 @@
 		<module>mindquarry-desktop-client-window</module>
 		<module>mindquarry-mac-java</module>
 		<!--module>mindquarry-minutes-editor</module-->
+		<module>svnkit</module>
 	</modules>
 
 	<scm>
