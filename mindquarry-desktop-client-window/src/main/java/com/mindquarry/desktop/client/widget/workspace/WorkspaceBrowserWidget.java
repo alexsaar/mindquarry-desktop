@@ -42,6 +42,8 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
 
 /**
+ * Widget displaying incoming and outgoing file changes.
+ * 
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
@@ -76,7 +78,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         PreferenceStore store = client.getPreferenceStore();
         Profile selectedProfile = Profile.getSelectedProfile(store);
         if (selectedProfile == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
             return false;
         }
         Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
@@ -91,14 +92,16 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         return true;
     }
 
+    /**
+     * Refreshes the list of incoming and outgoing changes.
+     */
     public void refresh() {
         PreferenceStore store = client.getPreferenceStore();
         Profile selectedProfile = Profile.getSelectedProfile(store);
         if (selectedProfile == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
             return;
         }
-        log.info("Starting async workspace changes refresh."); //$NON-NLS-1$
+        log.info("Starting workspace changes refresh."); //$NON-NLS-1$
         if (refreshing) {
             log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
             return;
@@ -132,12 +135,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         PreferenceStore store = client.getPreferenceStore();
         Profile selected = Profile.getSelectedProfile(store);
         if (selected == null) {
-            log.debug("No profile selected."); //$NON-NLS-1$
             return false;
         }
         File wsFolder = new File(selected.getWorkspaceFolder());
         if (!wsFolder.exists() || wsFolder.list() == null || 
                 wsFolder.list().length == 0) {
+            log.debug("folder does not contain a checkout : " + 
+                    wsFolder.getAbsolutePath());
             return false;
         }
         return true;
@@ -181,6 +185,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 SVNSynchronizer sc = new SVNSynchronizer(url, folder, login,
                         password, new InteractiveConflictHandler(client
                                 .getShell()));
+                sc.cleanup();
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
@@ -249,10 +254,15 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     // ### INNER CLASSES
     // #########################################################################
 
+    /**
+     * Use the filter not as a filter, but to iterate over all files recursively.
+     */
     class SetStatusFileFilter extends FileFileFilter {
         List<Status> subFiles = new ArrayList<Status>();
 
         public boolean accept(File file) {
+            // make up a Status mostly with fake values, as only
+            // path and StatusKind will be used:
             Status status = new Status(file.getAbsolutePath(), null,
                     NodeKind.file, 0, 0, 0, null, StatusKind.unversioned, 0, 0,
                     0, false, false, null, null, null, null, 0, false, null,
