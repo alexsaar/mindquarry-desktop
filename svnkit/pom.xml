@@ -74,4 +74,69 @@
       </plugin>
     </plugins>
   </build>
+  
+  	<repositories>
+		<repository>
+			<id>mindquarry.releases</id>
+			<name>Mindquarry Repository</name>
+			<url>http://releases.mindquarry.org/</url>
+			<layout>default</layout>
+		</repository>
+		
+		<repository>
+			<id>mindquarry.snapshots</id>
+			<name>Mindquarry Snapshot Repository</name>
+			<url>http://snapshots.mindquarry.org/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mindquarry.snapshots</id>
+			<name>Mindquarry Snapshot Repository</name>
+			<url>http://snapshots.mindquarry.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>mindquarry.releases</id>
+			<name>Mindquarry Repository</name>
+			<url>http://releases.mindquarry.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>codehaus.mojo</id>
+			<name>Codehaus Repository</name>
+			<url>http://repository.codehaus.org/</url>
+			<layout>default</layout>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>codehaus.mojo.snapshots</id>
+			<name>Codehaus Repository</name>
+			<url>http://snapshots.repository.codehaus.org/</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+		
+		<pluginRepository>
+			<id>apache.plugin.snapshots</id>
+			<name>Apache Snapshots</name>
+			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+  
 </project>
