@@ -30,6 +30,7 @@ import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
+import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
 /**
  * Trigger workspace synchronization, i.e. SVN update + commit.
@@ -123,12 +124,33 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                     selected.getPassword(),
                                     new InteractiveConflictHandler(client
                                             .getShell()));
+                            sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
                             sc.synchronizeOrCheckout();
                         }
                         workspaceWidget.refresh();
                     } catch (SynchronizeCancelException e) {
-                        log.info("synchronization cancelled");
+                        log.info("synchronization cancelled (1)");
                         cancelled = true;
+                    } catch (final Exception e) {
+                        if (e.getCause() != null && e.getCause().getCause() != null &&
+                                e.getCause().getCause().getClass() == SynchronizeCancelException.class) {
+                            // cancel clicked in commit message dialog , don't show error:
+                            log.info("synchronization cancelled (2)");
+                            cancelled = true;
+                        } else {
+                            log.error(e.toString(), e);
+                            cancelled = true;
+                            Display.getDefault().syncExec(new Runnable() {
+                                public void run() {
+                                    MessageBox messageBox = new MessageBox(client
+                                            .getShell(), SWT.ICON_ERROR | SWT.OK);
+                                    messageBox.setMessage(Messages
+                                            .getString("An error occured during synchronization: ") +
+                                            e.getMessage());
+                                    messageBox.open();
+                                }
+                            });                        
+                        }
                     }
                     client.stopAction(Messages
                             .getString(SYNC_WORKSPACE_MESSAGE));

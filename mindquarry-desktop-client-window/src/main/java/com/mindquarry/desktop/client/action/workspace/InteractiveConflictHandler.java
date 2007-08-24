@@ -204,9 +204,4 @@ public class InteractiveConflictHandler implements ConflictHandler {
         }
     }
 
-    public String getCommitMessage(String repoURL) throws CancelException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }
