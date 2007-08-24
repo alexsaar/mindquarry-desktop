@@ -197,6 +197,10 @@ public class WorkspaceUpdateContainerRunnable extends
                         || localStatus == StatusKind.unversioned) {
                     // TODO: show upload icon with "+" sign
                     return uploadImage;
+                } else if (localStatus == StatusKind.modified && remoteStatus == StatusKind.modified) {
+                    // we cannot decide here if SVN can merge the changes for us,
+                    // so show a conflict:
+                    return conflictImage;
                 } else if (localStatus == StatusKind.modified) {
                     return uploadImage;
                 } else if (remoteStatus == StatusKind.modified) {
