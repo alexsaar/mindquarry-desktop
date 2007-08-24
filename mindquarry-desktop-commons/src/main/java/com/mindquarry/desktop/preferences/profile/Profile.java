@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 
 /**
@@ -28,6 +30,8 @@ import org.eclipse.jface.preference.PreferenceStore;
  *         Saar</a>
  */
 public class Profile {
+    private static Log log = LogFactory.getLog(Profile.class);
+
     public static final String PREF_WORKSPACES = "workspaces"; //$NON-NLS-1$
 
     public static final String PREF_SERVER_URL = "url"; //$NON-NLS-1$
@@ -290,6 +294,10 @@ public class Profile {
     public static Profile getSelectedProfile(PreferenceStore store) {
         Profile selected = getSelectedProfile(store, store
                 .getString(PROFILE_SELECTED));
+        if (selected == null) {
+            log.debug("No profile selected."); //$NON-NLS-1$
+            return null;
+        }
         return selected;
     }
 
