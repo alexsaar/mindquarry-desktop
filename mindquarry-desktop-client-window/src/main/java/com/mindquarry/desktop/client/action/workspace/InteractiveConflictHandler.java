@@ -46,118 +46,142 @@ public class InteractiveConflictHandler implements ConflictHandler {
         this.shell = shell;
     }
     
-    public void handle(AddConflict conflict) throws CancelException {
-        AddConflictDialog dlg = new AddConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == AddConflict.Action.RENAME) {
-                conflict.doRename(dlg.getNewName());
-            } else if (dlg.getResolveMethod() == AddConflict.Action.REPLACE) {
-                conflict.doReplace();
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+    public void handle(final AddConflict conflict) throws SynchronizeCancelException {
+        final AddConflictDialog dlg = new AddConflictDialog(conflict, shell);
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == AddConflict.Action.RENAME) {
+                        conflict.doRename(dlg.getNewName());
+                    } else if (dlg.getResolveMethod() == AddConflict.Action.REPLACE) {
+                        conflict.doReplace();
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
-    public void handle(DeleteWithModificationConflict conflict)
-            throws CancelException {
-        DeleteWithModificationConflictDialog dlg = 
+    public void handle(final DeleteWithModificationConflict conflict)
+            throws SynchronizeCancelException {
+        final DeleteWithModificationConflictDialog dlg = 
             new DeleteWithModificationConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.REVERTDELETE) {
-                conflict.doRevertDelete();
-            } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.DELETE) {
-                conflict.doDelete();
-            } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED) {
-                conflict.doOnlyKeepModified();
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.REVERTDELETE) {
+                        conflict.doRevertDelete();
+                    } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.DELETE) {
+                        conflict.doDelete();
+                    } else if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED) {
+                        conflict.doOnlyKeepModified();
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
-    public void handle(ReplaceConflict conflict) throws CancelException {
-        ReplaceConflictDialog dlg = new ReplaceConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == ReplaceConflict.Action.RENAME) {
-                conflict.doRename(dlg.getNewName());
-            } else if (dlg.getResolveMethod() == ReplaceConflict.Action.REPLACE) {
-                conflict.doReplace();
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+    public void handle(final ReplaceConflict conflict) throws SynchronizeCancelException {
+        final ReplaceConflictDialog dlg = new ReplaceConflictDialog(conflict, shell);
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == ReplaceConflict.Action.RENAME) {
+                        conflict.doRename(dlg.getNewName());
+                    } else if (dlg.getResolveMethod() == ReplaceConflict.Action.REPLACE) {
+                        conflict.doReplace();
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
-    public void handle(ContentConflict conflict) throws CancelException {
-        ContentConflictDialog dlg = 
+    public void handle(final ContentConflict conflict) throws SynchronizeCancelException {
+        final ContentConflictDialog dlg = 
             new ContentConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == ContentConflict.Action.USE_LOCAL) {
-                conflict.doUseLocal();
-            } else if (dlg.getResolveMethod() == ContentConflict.Action.USE_REMOTE) {
-                conflict.doUseRemote();
-            } else if (dlg.getResolveMethod() == ContentConflict.Action.MERGE) {
-                conflict.doMerge();
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == ContentConflict.Action.USE_LOCAL) {
+                        conflict.doUseLocal();
+                    } else if (dlg.getResolveMethod() == ContentConflict.Action.USE_REMOTE) {
+                        conflict.doUseRemote();
+                    } else if (dlg.getResolveMethod() == ContentConflict.Action.MERGE) {
+                        conflict.doMerge();
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
-    public void handle(ObstructedConflict conflict)
-            throws CancelException {
-        ObstructedConflictDialog dlg = 
+    public void handle(final ObstructedConflict conflict)
+            throws SynchronizeCancelException {
+        final ObstructedConflictDialog dlg = 
             new ObstructedConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == ObstructedConflict.Action.RENAME) {
-                conflict.doRename(dlg.getNewName());
-            } else if (dlg.getResolveMethod() == ObstructedConflict.Action.REVERT) {
-                conflict.doRevert();
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == ObstructedConflict.Action.RENAME) {
+                        conflict.doRename(dlg.getNewName());
+                    } else if (dlg.getResolveMethod() == ObstructedConflict.Action.REVERT) {
+                        conflict.doRevert();
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
-    public void handle(PropertyConflict conflict) throws CancelException {
-        PropertyConflictDialog dlg = 
+    public void handle(final PropertyConflict conflict) throws SynchronizeCancelException {
+        final PropertyConflictDialog dlg = 
             new PropertyConflictDialog(conflict, shell);
-        int resolution = dlg.open();
-        if (resolution == IDialogConstants.OK_ID) {
-            if (dlg.getResolveMethod() == PropertyConflict.Action.USE_LOCAL_VALUE) {
-                conflict.doUseLocalValue();
-            } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_REMOTE_VALUE) {
-                conflict.doUseRemoteValue();
-            } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_NEW_VALUE) {
-                conflict.doUseNewValue(dlg.getNewValue());
-            } else {
-                throw new IllegalArgumentException("Unexpected dialog resolution: " + 
-                        dlg.getResolveMethod());
+        shell.getDisplay().syncExec(new Runnable() {
+            public void run() {
+                int resolution = dlg.open();
+                if (resolution == IDialogConstants.OK_ID) {
+                    if (dlg.getResolveMethod() == PropertyConflict.Action.USE_LOCAL_VALUE) {
+                        conflict.doUseLocalValue();
+                    } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_REMOTE_VALUE) {
+                        conflict.doUseRemoteValue();
+                    } else if (dlg.getResolveMethod() == PropertyConflict.Action.USE_NEW_VALUE) {
+                        conflict.doUseNewValue(dlg.getNewValue());
+                    } else {
+                        throw new IllegalArgumentException("Unexpected dialog resolution: " + 
+                                dlg.getResolveMethod());
+                    }
+                } else {
+                    throw new SynchronizeCancelException();
+                }
             }
-        } else {
-            throw new CancelException();
-        }
+        });
     }
 
     public String getCommitMessage(String repoURL) throws CancelException {
