@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,8 +44,8 @@ import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
-import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
+import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -650,16 +652,23 @@ public class SVNSynchronizer {
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
         
+        // remember any deleted dirs we have already handled to
+        // avoid an endless recursion of the main while loop
+        Set<Status> handledDeletedDirs = new HashSet<Status>();
+        
         while (iter.hasNext()) {
             Status status = iter.next();
             
             // DELETED DIRECTORIES (locally)
-            if (status.getNodeKind() == NodeKind.dir &&
-                    status.getTextStatus() == StatusKind.deleted) {
+            if (status.getNodeKind() == NodeKind.dir
+                    && status.getTextStatus() == StatusKind.deleted
+                    && !handledDeletedDirs.contains(status)) {
                 
                 // conflict if there is a child that is added or removed remotely
                 
                 Status conflictParent = status;
+                handledDeletedDirs.add(conflictParent);
+                
                 List<Status> remoteModList = new ArrayList<Status>();
                 
                 // find all children
