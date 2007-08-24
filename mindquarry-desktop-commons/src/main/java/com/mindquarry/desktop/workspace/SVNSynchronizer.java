@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.workspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -200,18 +201,20 @@ public class SVNSynchronizer {
 			localConflicts = analyzeConflicted();
 			handleConflictsBeforeCommit(localConflicts);
 			
+			// TODO: we could use client.commitMessageHandler() along with the
+			// CommitMessage interface as callback
 			String message = handler.getCommitMessage(repositoryURL);
 			client.commit(new String[] { localPath }, message, true);
 
-		} catch (ClientException e) {
+        } catch (CancelException e) {
+            log.info("Canceled");
+		} catch (Exception e) {
 			// TODO think about exception handling
 			e.printStackTrace();
 			if (e.getCause() != null) {
 			    e.getCause().printStackTrace();
 			}
 			throw new RuntimeException("synchronize() failed", e);
-		} catch (CancelException e) {
-			log.info("Canceled");
 		} finally {
 			// try {
 			// client.unlock(new String[] {localPath}, false);
@@ -226,7 +229,7 @@ public class SVNSynchronizer {
 	 * automatically adds hidden files (such as Thumbs.db on Windows or
 	 * .something) to the ignore list.
      */
-    private void deleteMissingAndAddUnversioned(String path) throws ClientException {
+    private void deleteMissingAndAddUnversioned(String path) throws ClientException, IOException {
         for (Status s : getLocalChanges(path)) {
             log.debug("deleting/adding/ignoring " + SVNSynchronizer.textStatusDesc(s.getTextStatus()) +
                     " " + nodeKindDesc(s.getNodeKind()) +
@@ -236,11 +239,39 @@ public class SVNSynchronizer {
                     " '" + wcPath(s) + "'");
             
             if (s.getTextStatus() == StatusKind.missing) {
-                // if the first parameter would be an URL, it would do a commit
-                // (and use the second parameter as commit message) - but we
-                // use a local filesystem path here and thus we only schedule
-                // for a deletion
-                client.remove(new String[] { s.getPath() }, null, true);
+                // Note: a missing element could either be an already versioned
+                // element or something that was just added. The added variant
+                // cannot be diagnosed without asking the server for status
+                // information.
+                Status remoteStatus = client.singleStatus(s.getPath(), true);
+                if (remoteStatus.getReposLastCmtRevisionNumber() < 0) {
+                    // locally added -> undo add
+                    System.out.println("**** missing an added item: " + wcPath(s));
+                    client.revert(s.getPath(), true);
+                } else {
+                    // already versioned -> delete
+                    System.out.println("**** missing item: " + wcPath(s));
+                    
+                    if (s.getNodeKind() == NodeKind.dir) {
+                        // remove on a missing directory does not work;
+                        // simply recreate the directory and then delete it
+                        
+                        if (!new File(s.getPath()).mkdirs()) {
+                            throw new IOException("mkdirs failed: '" + s.getPath() + "'");
+                        }
+                        client.remove(new String[] { s.getPath() }, null, true);
+                        
+                    } else {
+                        // a file can be simply removed when it's not present anymore
+                        
+                        // if the first parameter would be an URL, it would do a commit
+                        // (and use the second parameter as commit message) - but we
+                        // use a local filesystem path here and thus we only schedule
+                        // for a deletion
+                        client.remove(new String[] { s.getPath() }, null, true);
+                    }
+                    
+                }
                 
             } else if (s.getTextStatus() == StatusKind.unversioned) {
                 // set standard to-be-ignored files
@@ -726,10 +757,9 @@ public class SVNSynchronizer {
         while (iter.hasNext()) {
             Status status = iter.next();
             
-            // local DELETE (as we deleted everything, missing shouldn't happen)
+            // local DELETE
             if (status.getNodeKind() == NodeKind.file &&
-                    (status.getTextStatus() == StatusKind.deleted ||
-                            status.getTextStatus() == StatusKind.missing)) {
+                    status.getTextStatus() == StatusKind.deleted) {
                 
                 // if remote MOD
                 if (status.getRepositoryTextStatus() == StatusKind.modified) {

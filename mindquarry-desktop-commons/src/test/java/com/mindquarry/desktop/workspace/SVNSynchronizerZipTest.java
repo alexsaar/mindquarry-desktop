@@ -25,6 +25,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
+import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
@@ -119,6 +120,18 @@ public class SVNSynchronizerZipTest implements Notify2 {
 		}
 	}
     
+    public void setupTestOnlyRepo(String name) throws IOException, ClientException {
+        System.out.println("Testing " + name + " (.svnref) ============================================================");
+        String zipPath = name + ".zip";
+        String targetPath = "target/" + name + "/";
+        this.repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
+        this.wcPath = targetPath + "wc";
+
+        extractZip(zipPath, targetPath);
+
+        client.checkout(repoUrl, wcPath, Revision.HEAD, true);
+    }
+    
     public SVNSynchronizer setupSynchronizer(AutomaticConflictHandler conflictHandler) {
         SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", conflictHandler);
         syncer.setNotifyListener(this);
@@ -205,7 +218,78 @@ public class SVNSynchronizerZipTest implements Notify2 {
         FileUtils.deleteDirectory(dir);
     }
 
-	@Test
+    /**
+     * Cleans up the test at the end. Analogous to {@link setupTestOnlyRepo()}.
+     * Will delete the directory created from the zip file.
+     * 
+     * @param testName the test directory name (w/o "target/" at the beginning)
+     * @throws IOException when the deletion failed
+     */
+    public void cleanupTestOnlyRepo(String testName) throws IOException {
+        File dir = new File("target/" + testName);
+        FileUtils.deleteDirectory(dir);
+    }
+    
+    @Test
+    public void testMove() throws IOException, ClientException {
+        setupTestOnlyRepo("move");
+
+        // first create the files/dirs
+        touch("file");
+        mkdir("dir");
+        touch("dir/file");
+        mkdir("dir/subdir");
+        touch("dir/subdir/file");
+        
+        // add the files
+        add("file");
+        add("dir");
+        
+        client.commit(new String[] { "target/move/wc" }, "initial add", true);
+        
+        // then move them
+        move("file", "moved_file");
+        move("dir", "moved_dir");
+        
+        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+
+        helper.synchronize();
+        
+        cleanupTestOnlyRepo("move");
+    }
+    
+    @Test
+    public void testMoveAdded() throws IOException, ClientException {
+        setupTestOnlyRepo("move");
+
+        // first create the files/dirs
+        touch("file");
+        mkdir("dir");
+        touch("dir/file");
+        mkdir("dir/subdir");
+        touch("dir/subdir/file");
+        
+        // add the files
+        add("file");
+        add("dir");
+        
+        // we don't commit but move the files immediately. this simulates a
+        // situation with the desktop client when it crashed or stopped after
+        // deleteMissingAndAddUnversioned() was done but before the added
+        // elements were committed and the added flag transformed into normal
+        
+        // then move them
+        move("file", "moved_file");
+        move("dir", "moved_dir");
+        
+        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+
+        helper.synchronize();
+        
+        cleanupTestOnlyRepo("move");
+    }
+    
+    @Test
 	public void testAddConflictDoRename() throws IOException {
 		setupTest("add_add_conflict");
 		SVNSynchronizer helper = setupSynchronizer(new AddConflictHandlerMock(wcPath, AddConflict.Action.RENAME));
@@ -395,7 +479,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
     
     private void add(String relativePath) throws ClientException {
         String path = wcPath + "/" + relativePath;
-        client.add(path, false);
+        client.add(path, true);
     }
     
     private void del(String relativePath) throws ClientException {
@@ -403,6 +487,21 @@ public class SVNSynchronizerZipTest implements Notify2 {
         client.remove(new String[] { path }, null, false);
     }
     
+    private void move(String from, String to) throws IOException {
+        File file = new File(wcPath, from);
+        File toFile = new File(wcPath, to);
+        if (!file.renameTo(toFile)) {
+            throw new IOException("Could not rename '" + from + "' to '" + to + "'");
+        }
+    }
+    
+    private void mkdir(String relativePath) throws IOException {
+        File file = new File(wcPath, relativePath);
+        if (!file.mkdirs()) {
+            throw new IOException("Could not mkdirs '" + file + "'");
+        }
+    }
+
     private void prepareReplaceConflict() throws ClientException, IOException {
         // (things are already deleted, but not added)
         
