@@ -85,6 +85,9 @@ public class SVNAdminDirectoryLocator {
      * Checks if the base paths contains an .svn directory
      */
     private static boolean hasEmbeddedAdminDirectory(File base) {
+        if (base == null) {
+            return false;
+        }
         File adminDir = new File(base, SVNAdminDirectoryLocator.getAdminDirectoryName());
         return (adminDir.exists() && adminDir.isDirectory());
     }
@@ -158,9 +161,8 @@ public class SVNAdminDirectoryLocator {
             // this can either be a checkout (then use the new .svnref)
             // or an add in the old .svn (we did not find a .svnref above)
             
-            // check if we have a .svn-based wc
-            File closest = findClosestEmbeddedAdminDir(dir);
-            if (closest != null) {
+            // check for a .svn-based wc (the parent would contain a .svn)
+            if (hasEmbeddedAdminDirectory(dir.getParentFile())) {
                 // add in an embedded .svn case
                 adminSubDir = new File(dir, getAdminDirectoryName());
             } else {
@@ -487,30 +489,6 @@ public class SVNAdminDirectoryLocator {
             dir = parent;
         }
         return dir;
-    }
-    
-    /**
-     * Looks for the first directory containing an embedded .svn directory in
-     * the parent axis. The given directory can be non-existent (ie. in a
-     * missing or deleted case).
-     * 
-     * @param dir the directory to start
-     * @return the parent directory that contains an .svn dir or null if none was found
-     */
-    private static File findClosestEmbeddedAdminDir(File dir) {
-        // walk up the parents
-        while (true) {
-            // Note: the directory might not exist yet, so we must avoid a check
-            // against exist() or any other call that relies on the existence
-            if (dir == null) {
-                return null;
-            }
-            if (hasEmbeddedAdminDirectory(dir)) {
-                return dir;
-            }
-            
-            dir = dir.getParentFile();
-        }
     }
     
     /**
