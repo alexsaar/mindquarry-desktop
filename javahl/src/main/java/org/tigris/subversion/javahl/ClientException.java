@@ -35,6 +35,12 @@ public class ClientException extends Exception
         this.source = source;
 		this.aprError = aprError;
     }
+    ClientException(String message, String source, int aprError, Throwable t)
+    {
+        super(message, t);
+        this.source = source;
+        this.aprError = aprError;
+    }
     /**
      * the exception message
      */

@@ -74,12 +74,8 @@ public class ReplaceConflict extends RenamingConflict {
 		case RENAME:
 			log.info("renaming to " + newName);
 			
-            for (Status s : getLocalChildren()) {
-                log.debug("****** " + SVNSynchronizer.textStatusDesc(s.getTextStatus())  + " " + s.getPath());
-            }
-            
             File source      = new File(status.getPath());
-            File destination = new File(source.getParent() + "/" + newName);
+            File destination = new File(source.getParent(), newName);
             
             try {
                 if(source.isDirectory()) {

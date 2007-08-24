@@ -79,7 +79,8 @@ public class AddConflict extends RenamingConflict {
     			client.revert(status.getPath(), true);
 			}
 			
-			if (!file.renameTo(new File(file.getParentFile(), newName))) {
+			File destination = new File(file.getParentFile(), newName);
+			if (!file.renameTo(destination)) {
 				log.error("rename to " + newName + " failed.");
 				// TODO: callback for error handling
 				// NOTE: this could fail if the file with newName already exists
@@ -89,6 +90,9 @@ public class AddConflict extends RenamingConflict {
 				// this is very seldom and can simply be given as error messages
 				System.exit(-1);
 			}
+			
+            client.add(destination.getPath(), true, true);
+            
 			break;
 			
 		case REPLACE:

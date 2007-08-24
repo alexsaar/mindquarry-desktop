@@ -130,7 +130,7 @@ public class SVNAdminDirectoryLocator {
         
         // some requests directly target the .svn sub directory
         // (SVNAdminArea.getVersion() implementations)
-        if (SVNAdminDirectoryLocator.isAdminResource(dir)) {
+        if (isAdminResource(dir)) {
             return dir;
         }
         
@@ -159,13 +159,11 @@ public class SVNAdminDirectoryLocator {
             // or an add in the old .svn (we did not find a .svnref above)
             
             // check if we have a .svn-based wc
-            File wcRoot = findClosestEmbeddedAdminDir(dir);
-            if (wcRoot != null) {
+            File closest = findClosestEmbeddedAdminDir(dir);
+            if (closest != null) {
                 // add in an embedded .svn case
-                System.out.println("***** found wc root with .svn " + wcRoot);
                 adminSubDir = new File(dir, getAdminDirectoryName());
             } else {
-                System.out.println("***** no wc root found, checkout " + wcRoot);
                 // new checkout, the shallow wc dir must be created
                 adminSubDir = new File(createShallowWorkingCopyBaseDir(dir), getAdminDirectoryName());
             }
@@ -483,7 +481,8 @@ public class SVNAdminDirectoryLocator {
     
     /**
      * Looks for the first directory containing an embedded .svn directory in
-     * the parent axis.
+     * the parent axis. The given directory can be non-existent (ie. in a
+     * missing or deleted case).
      * 
      * @param dir the directory to start
      * @return the parent directory that contains an .svn dir or null if none was found
@@ -491,7 +490,9 @@ public class SVNAdminDirectoryLocator {
     private static File findClosestEmbeddedAdminDir(File dir) {
         // walk up the parents
         while (true) {
-            if (dir == null || !dir.exists()) {
+            // Note: the directory might not exist yet, so we must avoid a check
+            // against exist() or any other call that relies on the existence
+            if (dir == null) {
                 return null;
             }
             if (hasEmbeddedAdminDirectory(dir)) {

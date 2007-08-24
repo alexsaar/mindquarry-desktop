@@ -12,11 +12,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.junit.Test;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
@@ -162,6 +165,46 @@ public class SVNSynchronizerZipTest implements Notify2 {
 		}
 	}
 
+	/**
+	 * Finds all files with a given pattern that can include wildcards. Will
+	 * recurse into subdirectories. Similar to 'find DIR -name "PATTERN"' on a
+	 * unix command line.
+	 * 
+	 * Example: findFiles(dir, "*.java")
+	 * 
+	 * @param dir the directory to search for (including all subdirectories)
+	 * @param pattern a pattern that can contain "?" (single-char-wildcard) and
+	 *                "*" (multi-char-wildcard) as wildcards
+	 * @return an Iterator containing File objects for all found files
+	 */
+    public Iterator findFiles(File dir, String pattern) {
+        return FileUtils.iterateFiles(dir, new WildcardFileFilter(pattern), TrueFileFilter.INSTANCE);
+    }
+    
+    /**
+     * Asserts that no .svnref file is present inside dir or its subfolders.
+     */
+    public void assertNoSVNRefFilePresent(File dir) {
+        Iterator iter = findFiles(dir, ".svnref");
+        if (iter.hasNext()) {
+            // failure
+            assertTrue("found at least one .svnref at '" + iter.next() + "'", false);
+        }
+    }
+    
+    /**
+     * Cleans up the test at the end. Analogous to {@link setupTest()}. Will do
+     * some sanity checks and delete the directory created from the zip file.
+     * 
+     * @param testName the test directory name (w/o "target/" at the beginning)
+     * @throws IOException when the deletion failed
+     */
+    public void cleanupTest(String testName) throws IOException {
+        File dir = new File("target/" + testName);
+        assertNoSVNRefFilePresent(dir);
+        FileUtils.deleteDirectory(dir);
+    }
+
 	@Test
 	public void testAddConflictDoRename() throws IOException {
 		setupTest("add_add_conflict");
@@ -196,7 +239,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 		// TODO: here we have to test if the remote/localAdded fields contain
 		// all files/folders of the test zip case
 
-		FileUtils.deleteDirectory(new File("target/add_add_conflict/"));
+        cleanupTest("add_add_conflict");
 	}
     
     @Test
@@ -225,7 +268,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         // TODO: here we have to test if the remote/localAdded fields contain
         // all files/folders of the test zip case
 
-        FileUtils.deleteDirectory(new File("target/add_add_conflict/"));
+        cleanupTest("add_add_conflict");
     }
 
 	@Test
@@ -262,7 +305,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 		
 		// TODO: check correct SVN state of all files
 
-		FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
+        cleanupTest("deleted_modified_conflict");
 	}
 
     @Test
@@ -299,7 +342,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 
 		// TODO: check correct SVN state of all files
 
-        FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
+        cleanupTest("deleted_modified_conflict");
     }
 
     @Test
@@ -330,7 +373,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 
 		// TODO: check correct SVN state of all files
 
-        FileUtils.deleteDirectory(new File("target/deleted_modified_conflict/"));
+        cleanupTest("deleted_modified_conflict");
     }
 	
 	private void touch(String relativePath) throws IOException {
@@ -413,12 +456,9 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
 
-        // TODO: can be removed when commit is implemented in synchronize()
-        client.commit(new String[] { wcPath }, "test commit", true);
-
-        FileUtils.deleteDirectory(new File("target/replaced_conflict/"));
+        cleanupTest("replaced_conflict");
     }
-
+    
     @Test
     public void testReplacedConflictsDoReplace() throws IOException, ClientException {
         setupTest("replaced_conflict");
@@ -428,10 +468,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
 
-        // TODO: can be removed when commit is implemented in synchronize()
-        client.commit(new String[] { wcPath }, "test commit", true);
-        
-        FileUtils.deleteDirectory(new File("target/replaced_conflict/"));
+        cleanupTest("replaced_conflict");
     }
     
     private void prepareObstructedAndConflicted() throws IOException {
@@ -450,7 +487,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
 
     @Test
@@ -462,7 +499,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
 
     /*
@@ -475,7 +512,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
     */
 
@@ -488,7 +525,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
 
     @Test
@@ -500,7 +537,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
 
     /*
@@ -513,7 +550,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         
         helper.synchronize();
         
-        FileUtils.deleteDirectory(new File("target/obstructed_and_conflicted/"));
+        cleanupTest("obstructed_and_conflicted");
     }
     */
 
@@ -532,7 +569,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         assertEquals("second_local_value", client.propertyGet(wcPath, "mq:second").getValue());
         assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
-        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+        cleanupTest("property_conflict");
     }
     
     @Test
@@ -547,7 +584,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         assertEquals("second_remote_value", client.propertyGet(wcPath, "mq:second").getValue());
         assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
-        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+        cleanupTest("property_conflict");
     }
     
     @Test
@@ -562,7 +599,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         assertTrue(client.propertyGet(wcPath, "mq:second").getValue().startsWith("shiny new value "));
         assertEquals("temp"+nl+"*.bak"+nl+"*.log"+nl+"tmp"+nl+"bin"+nl, client.propertyGet(wcPath, "svn:ignore").getValue());
         
-        FileUtils.deleteDirectory(new File("target/property_conflict/"));
+        cleanupTest("property_conflict");
     }
     
 	private class AddConflictHandlerMock extends AutomaticConflictHandler {

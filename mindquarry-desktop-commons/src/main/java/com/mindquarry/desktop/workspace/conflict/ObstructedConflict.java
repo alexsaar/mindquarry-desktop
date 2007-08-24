@@ -70,11 +70,15 @@ public class ObstructedConflict extends RenamingConflict {
         case RENAME:
             log.info("renaming to " + newName);
 
-            if (!file.renameTo(new File(file.getParentFile(), newName))) {
+            File destination = new File(file.getParentFile(), newName);
+            
+            if (!file.renameTo(destination)) {
                 log.error("rename to " + newName + " failed.");
                 // TODO: callback for error handling
                 System.exit(-1);
             }
+            
+            client.add(destination.getPath(), true, true);
             
             // restore file or folder (updating to working copy base revision)
             client.update(status.getPath(), Revision.BASE, true);
