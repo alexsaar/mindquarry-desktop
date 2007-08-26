@@ -186,18 +186,20 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                         password, new InteractiveConflictHandler(client
                                 .getShell()));
                 sc.cleanup();
+                boolean teamHasObstruction = false;
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
                         localChanges.put(new File(status.getPath()),
                                 StatusKind.obstructed);
+                        teamHasObstruction = true;
                     }
                 }
                 toIgnore = new HashMap<File, Integer>();
                 // we need to stop here in case of obstruction,
                 // as getRemoteAndLocalChanges() would throw a
                 // ClientException:
-                if (localChanges.size() == 0) {
+                if (!teamHasObstruction) {
                     List<Status> allChanges = sc.getRemoteAndLocalChanges();
                     for (Status status : allChanges) {
                         File f = new File(status.getPath());
