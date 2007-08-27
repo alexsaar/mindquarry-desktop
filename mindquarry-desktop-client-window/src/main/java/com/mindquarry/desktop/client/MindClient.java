@@ -555,9 +555,9 @@ public class MindClient extends ApplicationWindow {
 
         public void shellActivated(ShellEvent e) {
             if (first) {
+                first = false;
                 refreshOnStartup();
             }
-            first = false;
         }
 
         public void shellDeactivated(ShellEvent e) {
