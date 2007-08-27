@@ -79,10 +79,10 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
-						<index>true</index>
+						<index>false</index>
 						<manifest>
 							<mainClass>org.eclipse.swt.MindClient</mainClass>
-								<addClasspath>true</addClasspath>
+							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
 					</archive>
