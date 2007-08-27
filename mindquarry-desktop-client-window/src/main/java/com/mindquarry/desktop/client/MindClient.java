@@ -574,4 +574,9 @@ public class MindClient extends ApplicationWindow {
     public void setActions(List<ActionBase> actions) {
         this.actions = actions;
     }
+    
+    public boolean close() {
+        trayItem.dispose();
+        return super.close();
+    }
 }

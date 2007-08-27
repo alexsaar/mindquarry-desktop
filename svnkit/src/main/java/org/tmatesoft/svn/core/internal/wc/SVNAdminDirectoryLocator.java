@@ -336,6 +336,7 @@ public class SVNAdminDirectoryLocator {
             PrintStream p = new PrintStream(out);
             p.println(shallowWorkingCopyDir.getName());
             p.close();
+            SVNFileUtil.setHidden(shallowRefFile, true);
         } catch (FileNotFoundException e) {
             // TODO: throw svn exception
             e.printStackTrace();
