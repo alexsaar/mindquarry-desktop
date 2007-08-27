@@ -79,6 +79,7 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
+						<!-- generating an index breaks the jar classpath -->
 						<index>false</index>
 						<manifest>
 							<mainClass>org.eclipse.swt.MindClient</mainClass>
