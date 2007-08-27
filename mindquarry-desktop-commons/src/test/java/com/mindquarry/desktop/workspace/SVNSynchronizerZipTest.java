@@ -28,6 +28,7 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
@@ -124,7 +125,9 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	}
     
     public void setupTestOnlyRepo(String name) throws IOException, ClientException {
-        System.out.println("Testing " + name + " (.svnref) ============================================================");
+        System.out.println("Testing " + name + " ("
+        		+ SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME
+        		+ ") ============================================================");
         String zipPath = name + ".zip";
         String targetPath = "target/" + name + "/";
         this.repoUrl = "file://" + new File(targetPath + "/repo").toURI().getPath();
@@ -201,10 +204,13 @@ public class SVNSynchronizerZipTest implements Notify2 {
      * Asserts that no .svnref file is present inside dir or its subfolders.
      */
     public void assertNoSVNRefFilePresent(File dir) {
-        Iterator iter = findFiles(dir, ".svnref");
+        Iterator iter = findFiles(dir,
+        		SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME);
         if (iter.hasNext()) {
             // failure
-            assertTrue("found at least one .svnref at '" + iter.next() + "'", false);
+            assertTrue("found at least one "
+					+ SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME
+					+ " at '" + iter.next() + "'", false);
         }
     }
     

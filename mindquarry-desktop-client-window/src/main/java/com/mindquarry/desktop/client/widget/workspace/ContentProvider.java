@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.tigris.subversion.javahl.StatusKind;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 
 /**
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
@@ -57,7 +58,8 @@ public class ContentProvider implements ITreeContentProvider {
                         && !workspaceBrowser.remoteChanges.containsKey(f)) {
                     return false;
                 }
-                if (name.equals(".svn") || name.equals(".svnref")) {
+                if (name.equals(".svn")
+						|| name.equals(SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME)) {
                     return false;
                 }
                 return true;
