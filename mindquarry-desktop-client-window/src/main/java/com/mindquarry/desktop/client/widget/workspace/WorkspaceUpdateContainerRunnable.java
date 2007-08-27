@@ -252,30 +252,41 @@ public class WorkspaceUpdateContainerRunnable extends
                                 if (tip != null && !tip.isDisposed ()) { 
                                     tip.dispose();
                                 }
-                                tip = new Shell(treeViewer.getTree().getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
-                                tip.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                                FillLayout layout = new FillLayout();
-                                layout.marginWidth = 2;
-                                tip.setLayout(layout);
-                                label = new Label(tip, SWT.NONE);
-                                label.setForeground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
-                                label.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
-                                label.setData("_TABLEITEM", item);
+                                
                                 WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
-                                int localStatus = browserWidget.localChanges.get(item.getData());
-                                int remoteStatus = browserWidget.remoteChanges.get(item.getData());
+                                int localStatus = -1;
+                                int remoteStatus = -1;
+                                if (browserWidget.localChanges.containsKey(item.getData())) {
+                                    localStatus = browserWidget.localChanges.get(item.getData());
+                                }
+                                if (browserWidget.remoteChanges.containsKey(item.getData())) {
+                                	remoteStatus = browserWidget.remoteChanges.get(item.getData());
+                                }
                                 ModificationDescription modDescription = 
                                     ModificationDescription.getDescription(localStatus, remoteStatus);
-                                label.setText(modDescription.getDescription());
-                                //TODO: do we need these?
-                                //label.addListener (SWT.MouseExit, labelListener);
-                                //label.addListener (SWT.MouseDown, labelListener);
-                                Point size = tip.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                                Rectangle rect = item.getBounds(i);
-                                Point pt = treeViewer.getTree().toDisplay(rect.x, rect.y);
-                                tip.setBounds(pt.x, pt.y, size.x, size.y);
-                                tip.setVisible(true);
-                                break;
+                                
+                                String tooltip = modDescription.getDescription();
+                                if (tooltip != null && !tooltip.equals("")) {
+                                    tip = new Shell(treeViewer.getTree().getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
+                                    tip.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                                    FillLayout layout = new FillLayout();
+                                    layout.marginWidth = 2;
+                                    tip.setLayout(layout);
+                                    label = new Label(tip, SWT.NONE);
+                                    label.setForeground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+                                    label.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                                    label.setData("_TABLEITEM", item);
+                                    label.setText(tooltip);
+                                    //TODO: do we need these?
+                                    //label.addListener (SWT.MouseExit, labelListener);
+                                    //label.addListener (SWT.MouseDown, labelListener);
+                                    Point size = tip.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                                    Rectangle rect = item.getBounds(i);
+                                    Point pt = treeViewer.getTree().toDisplay(rect.x, rect.y);
+                                    tip.setBounds(pt.x, pt.y, size.x, size.y);
+                                    tip.setVisible(true);
+                                    break;
+                                }
                             }
                         }
                     }
