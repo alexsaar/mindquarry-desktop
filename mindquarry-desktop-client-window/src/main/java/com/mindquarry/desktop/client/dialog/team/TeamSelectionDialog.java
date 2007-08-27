@@ -50,6 +50,7 @@ public class TeamSelectionDialog extends DialogBase {
     public TeamSelectionDialog(Shell shell, List teams) {
         super(shell);
         setBlockOnOpen(true);
+        setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
         this.teams = teams;
     }
 
