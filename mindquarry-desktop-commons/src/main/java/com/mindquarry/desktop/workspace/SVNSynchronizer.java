@@ -39,6 +39,7 @@ import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
+import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.util.RelativePath;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
@@ -255,20 +256,19 @@ public class SVNSynchronizer {
                 // information.
                 Status remoteStatus = client.singleStatus(s.getPath(), true);
                 if (remoteStatus.getReposLastCmtRevisionNumber() < 0) {
+                    log.debug("missing item that was locally added: " + s.getPath());
+                    
                     // locally added -> undo add
-                    System.out.println("**** missing an added item: " + wcPath(s));
                     client.revert(s.getPath(), true);
                 } else {
-                    // already versioned -> delete
-                    System.out.println("**** missing item: " + wcPath(s));
+                    log.debug("missing item that is already versioned (delete now): " + s.getPath());
                     
+                    // already versioned -> delete
                     if (s.getNodeKind() == NodeKind.dir) {
                         // remove on a missing directory does not work;
                         // simply recreate the directory and then delete it
                         
-                        if (!new File(s.getPath()).mkdirs()) {
-                            throw new IOException("mkdirs failed: '" + s.getPath() + "'");
-                        }
+                        FileHelper.mkdirs(new File(s.getPath()));
                         client.remove(new String[] { s.getPath() }, null, true);
                         
                     } else {
@@ -287,11 +287,15 @@ public class SVNSynchronizer {
                 // set standard to-be-ignored files
                 File file = new File(s.getPath());
                 if (file.isHidden()) {
+                    log.debug("unversioned item is hidden (ignore now): " + s.getPath());
+                    
                     // update the svn:ignore property by appending a new line
                     // with the filename to be ignored (on the parent folder!)
                     PropertyData ignoreProp = client.propertyGet(file.getParent(), PropertyData.IGNORE);
                     ignoreProp.setValue(mergeIgnoreProperty(ignoreProp, file.getName()), false);
                 } else {
+                    log.debug("unversioned item (add now): " + s.getPath());
+                    
                     // TODO: check for new files that have the same name when
                     // looking at it case-insensitive (on unix systems) to avoid
                     // problems when checking out on Windows (eg. 'report' is
@@ -597,8 +601,8 @@ public class SVNSynchronizer {
 		// delete/modified conflicts
 		conflicts.addAll(findLocalContainerDeleteConflicts(remoteAndLocalChanges));
         conflicts.addAll(findRemoteContainerDeleteConflicts(remoteAndLocalChanges));
-        conflicts.addAll(findDeleteModifiedConflicts(remoteAndLocalChanges));
-        conflicts.addAll(findModifiedDeleteConflicts(remoteAndLocalChanges));
+        conflicts.addAll(findFileDeleteModifiedConflicts(remoteAndLocalChanges));
+        conflicts.addAll(findFileModifiedDeleteConflicts(remoteAndLocalChanges));
         
         // property conflicts
         // get up-to-date remote and local changes to get property conflicts of
@@ -696,9 +700,13 @@ public class SVNSynchronizer {
                 while (iter.hasNext()) {
                     status = iter.next();
                     if (isParent(conflictParent.getPath(), status.getPath())) {
-                        if (status.getRepositoryTextStatus() == StatusKind.added ||
-                                status.getRepositoryTextStatus() == StatusKind.replaced ||
-                                status.getRepositoryTextStatus() == StatusKind.modified) {
+                        // Note: if something is locally deleted or missing, the remote status
+                        // will always be 'added' - to detect things that were actually added
+                        // remotely we need to have a local status of 'none'
+                        if ((status.getTextStatus() == StatusKind.none
+                                && status.getRepositoryTextStatus() == StatusKind.added)
+                                || status.getRepositoryTextStatus() == StatusKind.replaced
+                                || status.getRepositoryTextStatus() == StatusKind.modified) {
                             remoteModList.add(status);
                         }
                         iter.remove();
@@ -786,7 +794,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a locally deleted file conflicts with a remote
      * file modification.
      */
-    private List<Conflict> findDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findFileDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -814,7 +822,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a locally modified file conflicts with a remote
      * file deletion.
      */
-    private List<Conflict> findModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findFileModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();

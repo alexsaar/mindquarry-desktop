@@ -46,4 +46,10 @@ public class FileHelper {
             throw new IOException("Could not create dir '" + dir.getCanonicalPath() + "'");
         }
     }
+
+    public static void mkdirs(File dir) throws IOException {
+        if (!dir.mkdirs()) {
+            throw new IOException("Could not create dirs '" + dir.getCanonicalPath() + "'");
+        }
+    }
 }
