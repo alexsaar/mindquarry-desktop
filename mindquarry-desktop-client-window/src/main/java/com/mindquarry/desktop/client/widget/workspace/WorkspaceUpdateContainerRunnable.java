@@ -26,12 +26,16 @@ import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
-import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -62,27 +66,6 @@ public class WorkspaceUpdateContainerRunnable extends
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
-
-    private static final Image downloadImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
-
-    private static final Image uploadImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
-
-    private static final Image deleteImage = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/status/user-trash-full.png")); //$NON-NLS-1$
-
-    private Image conflictImage = new Image(
-            Display.getCurrent(),
-            getClass()
-                    .getResourceAsStream(
-                            "/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
     
     private static final String EMPTY_MESSAGE = Messages
         .getString("There are currently no workspace changes to synchronize,\n" +
@@ -118,6 +101,14 @@ public class WorkspaceUpdateContainerRunnable extends
                 }
             }
         });
+        
+        // simulate tooltips:
+        Listener treeListener = new HoverForToolTipListener(containerWidget.getViewer());
+        containerWidget.getViewer().getTree().addListener (SWT.Dispose, treeListener);
+        containerWidget.getViewer().getTree().addListener (SWT.KeyDown, treeListener);
+        containerWidget.getViewer().getTree().addListener (SWT.MouseMove, treeListener);
+        containerWidget.getViewer().getTree().addListener (SWT.MouseHover, treeListener);
+        
         containerWidget.getViewer().getTree().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
         containerWidget.getViewer().getTree().setHeaderVisible(true);
@@ -191,35 +182,9 @@ public class WorkspaceUpdateContainerRunnable extends
                     remoteStatus = ((WorkspaceBrowserWidget) containerWidget).remoteChanges
                             .get(file).intValue();
                 }
-                if (localStatus == StatusKind.obstructed) {
-                    // FIXME: add question mark icon
-                } else if (localStatus == StatusKind.added
-                        || localStatus == StatusKind.unversioned) {
-                    // TODO: show upload icon with "+" sign
-                    return uploadImage;
-                } else if (localStatus == StatusKind.modified && remoteStatus == StatusKind.modified) {
-                    // we cannot decide here if SVN can merge the changes for us,
-                    // so show a conflict:
-                    return conflictImage;
-                } else if (localStatus == StatusKind.modified) {
-                    return uploadImage;
-                } else if (remoteStatus == StatusKind.modified) {
-                    return downloadImage;
-                } else if (remoteStatus == StatusKind.added) {
-                    return downloadImage;
-                } else if (localStatus == StatusKind.deleted || localStatus == StatusKind.missing) {
-                    return deleteImage;
-                } else if (remoteStatus == StatusKind.deleted) {
-                    return deleteImage;
-                } else if (localStatus == StatusKind.conflicted) {
-                    return conflictImage;
-                } else if (localStatus != -1 || remoteStatus != -1) {
-                    log.warn("No icon set for local/remote status "
-                            + localStatus + "/" + remoteStatus + " on file "
-                            + file.getAbsolutePath());
-                }
-                // TODO: which other cases do we need to display?
-                return null;
+                ModificationDescription descr = 
+                    ModificationDescription.getDescription(localStatus, remoteStatus);
+                return descr.getImage();
             }
 
             public String getText(Object element) {
@@ -247,4 +212,76 @@ public class WorkspaceUpdateContainerRunnable extends
             containerWidget.setViewer(null);
         }
     }
+    
+    class HoverForToolTipListener implements Listener {
+
+        private Shell tip;
+        private Label label;
+        private TreeViewer treeViewer;
+        
+        HoverForToolTipListener(TreeViewer treeViewer) {
+            this.treeViewer = treeViewer;
+        }
+        
+        /**
+         * TreeView doesn't directly support tooltips, so we need to simulate
+         * them. Also see https://bugs.eclipse.org/bugs/attachment.cgi?id=53988
+         */
+        public void handleEvent (Event event) {
+            if (!(containerWidget instanceof WorkspaceBrowserWidget)) {
+                return;
+            }
+            switch (event.type) {
+                case SWT.Dispose:
+                case SWT.KeyDown:
+                case SWT.MouseMove: {
+                    if (tip == null) break;
+                    tip.dispose ();
+                    tip = null;
+                    label = null;
+                    break;
+                }
+                case SWT.MouseHover: {
+                    Point coords = new Point(event.x, event.y);
+                    TreeItem item = treeViewer.getTree().getItem(coords);
+                    if (item != null) {
+                        int columns = treeViewer.getTree().getColumnCount();
+
+                        for (int i = 0; i < columns || i == 0; i++) {
+                            if (item.getBounds(i).contains(coords)) {
+                                if (tip != null && !tip.isDisposed ()) { 
+                                    tip.dispose();
+                                }
+                                tip = new Shell(treeViewer.getTree().getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
+                                tip.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                                FillLayout layout = new FillLayout();
+                                layout.marginWidth = 2;
+                                tip.setLayout(layout);
+                                label = new Label(tip, SWT.NONE);
+                                label.setForeground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+                                label.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+                                label.setData("_TABLEITEM", item);
+                                WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
+                                int localStatus = browserWidget.localChanges.get(item.getData());
+                                int remoteStatus = browserWidget.remoteChanges.get(item.getData());
+                                ModificationDescription modDescription = 
+                                    ModificationDescription.getDescription(localStatus, remoteStatus);
+                                label.setText(modDescription.getDescription());
+                                //TODO: do we need these?
+                                //label.addListener (SWT.MouseExit, labelListener);
+                                //label.addListener (SWT.MouseDown, labelListener);
+                                Point size = tip.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                                Rectangle rect = item.getBounds(i);
+                                Point pt = treeViewer.getTree().toDisplay(rect.x, rect.y);
+                                tip.setBounds(pt.x, pt.y, size.x, size.y);
+                                tip.setVisible(true);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
