@@ -341,7 +341,9 @@ public class ServerProfilesPage extends PreferencePage {
 		});
 		// init server URL section
 		CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
-		quarryEndpointLabel.setText(Messages.getString("URL of the Mindquarry Server")); //$NON-NLS-1$ //$NON-NLS-2$
+		quarryEndpointLabel.setText(
+                Messages.getString("URL of the Mindquarry Server") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
 		quarryEndpointLabel
 				.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
