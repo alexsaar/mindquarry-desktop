@@ -21,6 +21,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
 
@@ -97,7 +98,15 @@ public class SplashScreen {
 
     private static void initPosition(Display display, Shell splash) {
         Rectangle splashRect = splash.getBounds();
-        Rectangle displayRect = display.getBounds();
+//        System.err.println("splash rect: " + splashRect);
+//        int i=0;
+//        for (Monitor m : display.getMonitors()) {
+//            System.err.println("monitor[" + i + "] rect: " + m.getBounds());
+//            System.err.println("monitor[" + i + "] client area rect: " + m.getClientArea());
+//            i++;
+//        }
+        Monitor primaryMonitor = display.getPrimaryMonitor();
+        Rectangle displayRect = primaryMonitor.getClientArea();
         int x = (displayRect.width - splashRect.width) / 2;
         int y = (displayRect.height - splashRect.height) / 2;
         splash.setLocation(x, y);
