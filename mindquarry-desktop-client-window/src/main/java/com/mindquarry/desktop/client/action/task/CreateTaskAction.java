@@ -83,7 +83,7 @@ public class CreateTaskAction extends ActionBase {
 			return;
 		}
 
-		TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(SWT.ON_TOP),
+		TaskSettingsDialog dlg = new TaskSettingsDialog(client.getShell(),
 				task, true);
 		if (dlg.open() == Window.OK) {
 			boolean published = false;

@@ -62,8 +62,7 @@ public class DoubleClickListener implements IDoubleClickListener {
 
                 try {
                     // use a clone of the task so cancel works:
-                    TaskSettingsDialog dlg = new TaskSettingsDialog(new Shell(
-                            SWT.ON_TOP), task.clone(), false);
+                    TaskSettingsDialog dlg = new TaskSettingsDialog(client.getShell(), task.clone(), false);
 
                     if (dlg.open() == Window.OK) {
                         task = dlg.getChangedTask();
