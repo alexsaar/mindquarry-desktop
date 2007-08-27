@@ -26,7 +26,7 @@ import com.mindquarry.desktop.client.MindClient;
  *         Saar</a>
  */
 public abstract class ActionBase extends Action {
-	protected static final String ICON_SIZE = "16x16";
+	protected static final String ICON_SIZE = "32x32";
 	
 	public static final String TEAM_ACTION_GROUP = "team-actions";
 	public static final String TASK_ACTION_GROUP = "task-actions";
