@@ -32,11 +32,13 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AutomaticConflictHandler;
+import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
 public class SVNSynchronizerZipTest implements Notify2 {
@@ -133,7 +135,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         client.checkout(repoUrl, wcPath, Revision.HEAD, true);
     }
     
-    public SVNSynchronizer setupSynchronizer(AutomaticConflictHandler conflictHandler) {
+    public SVNSynchronizer setupSynchronizer(ConflictHandler conflictHandler) {
         SVNSynchronizer syncer = new SVNSynchronizer(repoUrl, wcPath, "", "", conflictHandler);
         syncer.setNotifyListener(this);
         
@@ -252,7 +254,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         move("file", "moved_file");
         move("dir", "moved_dir");
         
-        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+        SVNSynchronizer helper = setupSynchronizer(new EnsureNoConflictsConflictHandler());
 
         helper.synchronize();
         
@@ -283,7 +285,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
         move("file", "moved_file");
         move("dir", "moved_dir");
         
-        SVNSynchronizer helper = setupSynchronizer(new AutomaticConflictHandler(wcPath));
+        SVNSynchronizer helper = setupSynchronizer(new EnsureNoConflictsConflictHandler());
 
         helper.synchronize();
         
@@ -853,4 +855,36 @@ public class SVNSynchronizerZipTest implements Notify2 {
             }
         }
     }
+    
+    private class EnsureNoConflictsConflictHandler implements ConflictHandler {
+
+        public void handle(ContentConflict conflict)
+                throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+
+        public void handle(AddConflict conflict) throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+
+        public void handle(DeleteWithModificationConflict conflict)
+                throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+
+        public void handle(ReplaceConflict conflict) throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+
+        public void handle(PropertyConflict conflict) throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+
+        public void handle(ObstructedConflict conflict)
+                throws CancelException {
+            fail("detected conflict that should not be there: " + conflict);
+        }
+        
+    }
+
 }
