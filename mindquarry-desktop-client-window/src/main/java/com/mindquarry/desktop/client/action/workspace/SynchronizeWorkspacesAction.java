@@ -93,6 +93,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         }
                     });
                     workspaceWidget.refresh();
+                    workspaceWidget.updateContainer(false, null, null, 
+                            workspaceWidget.isRefreshListEmpty());
                     client.stopAction(Messages
                             .getString("Refreshing workspaces changes ..."));
                 } else {
@@ -154,11 +156,12 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     }
                     client.stopAction(Messages
                             .getString(SYNC_WORKSPACE_MESSAGE));
-                }
-                if (cancelled) {
-                    workspaceWidget.updateContainer(false, null, null, false);
-                } else {
-                    workspaceWidget.updateContainer(false, null, null, true);
+
+                    if (cancelled) {
+                        workspaceWidget.updateContainer(false, null, null, false);
+                    } else {
+                        workspaceWidget.updateContainer(false, null, null, true);
+                    }
                 }
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
