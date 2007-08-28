@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.NodeKind;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
@@ -60,8 +61,13 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
 
     @Override
     protected String getMessage() {
-        // FIXME maybe we could get the exact cause of the replace conflict and show a adequate message
-        return Messages.getString("One of the local files/directories obstructs ...");
+        if (conflict.getStatus().getNodeKind() == NodeKind.dir) {
+            return Messages.getString("One of the local directories was deleted and replaced with a file of the same name." +
+            		"This structural change must be resolved before synchronization.");
+        } else {
+            return Messages.getString("One of the local files was deleted and replaced with a directory of the same name." +
+                    "This structural change must be resolved before synchronization.");
+        }
     }
 
     @Override

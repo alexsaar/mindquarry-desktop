@@ -247,8 +247,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         } catch (ClientException e) {
             // TODO: handle exception
             // may happen on very first checkout (before checkout, actually)
+            // may happen on network timeout
+            // may happen on wrong credentials
             // log.error(e.toString(), e);
-            log.error(e.toString());
+            log.error(e.toString() + " (apr error " + e.getAprError() + ")");
         }
     }
 

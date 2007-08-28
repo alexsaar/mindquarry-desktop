@@ -192,12 +192,14 @@ public class TeamlistWidget extends WidgetBase {
         } catch (NotAuthorizedException e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"), //$NON-NLS-1$
                     e.getLocalizedMessage());
+            // FIXME: open profile to change username/password after auth error
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
             return null;
         } catch (Exception e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"),
                     Messages.getString("Could not update team list.")); //$NON-NLS-1$
+            // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
             return null;

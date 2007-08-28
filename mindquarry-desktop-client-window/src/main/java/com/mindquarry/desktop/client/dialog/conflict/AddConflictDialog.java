@@ -102,9 +102,8 @@ public class AddConflictDialog extends AbstractConflictDialog {
             }
         });
         newNameField.setFocus();
+        // no replace available because it is a dangerous, unrecoverable action
         /*Button button2 = makeRadioButton(subComposite,
-                // FIXME: passt nicht zusammen, sollen wir wirklich replace anbieten?!?!
-                // das würde lokale Änderungen überschreiben
                 //Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
                 //Action.REPLACE);
                 Messages.getString("Overwrite your local file with the one from the server"),  //$NON-NLS-1$

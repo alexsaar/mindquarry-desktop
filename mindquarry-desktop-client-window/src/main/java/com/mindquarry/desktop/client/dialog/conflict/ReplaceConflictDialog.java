@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
@@ -60,8 +61,17 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
 
     @Override
     protected String getMessage() {
-        // FIXME no text so far
-        return Messages.getString("Add text here.");
+        if (conflict.getStatus().getTextStatus() == StatusKind.replaced
+                && conflict.getStatus().getRepositoryTextStatus() == StatusKind.replaced) {
+            return Messages.getString("A locally replaced file or directory (svn delete + svn add) " +
+            "was also replaced by someone else on the server.");
+        } else if (conflict.getStatus().getTextStatus() == StatusKind.replaced) {
+            return Messages.getString("A locally replaced file or directory (svn delete + svn add) " +
+            		"was modified by someone else on the server.");
+        } else {
+            return Messages.getString("A locally modified file was replaced (svn delete + svn add) " +
+            		"by someone else on the server.");
+        }
     }
 
     @Override
@@ -99,9 +109,8 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
             }
         });
         newNameField.setFocus();
+        // no replace available because it is a dangerous, unrecoverable action
         /*Button button2 = makeRadioButton(subComposite,
-                // FIXME: passt nicht zusammen, sollen wir wirklich replace anbieten?!?!
-                // das w??rde lokale ??nderungen ??berschreiben
                 //Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
                 //Action.REPLACE);
                 Messages.getString("Overwrite your local file with the one from the server"),  //$NON-NLS-1$

@@ -50,7 +50,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
     @Override
     protected String getMessage() {
-        return Messages.getString("Somebody else modified the file your are trying to synchronize. " +
+        return Messages.getString("Somebody else modified the file you are trying to synchronize. " +
                 "Please select the version that should be treated as the current version.");
     }
 
