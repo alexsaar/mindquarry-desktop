@@ -69,4 +69,17 @@ public class TaskList extends ModelBase {
 			return;
 		}
 	}
+    
+    /**
+     * Replace a task by another one.
+     * @param oldTask Task to be replaced.
+     * @param newTask Task to replace with.
+     */
+    public void replace(Task oldTask, Task newTask) {
+        int pos = tasks.indexOf(oldTask);
+        if (pos >= 0) {
+            tasks.remove(pos);
+            tasks.add(pos, newTask);
+        }
+    }
 }

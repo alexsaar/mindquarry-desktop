@@ -29,6 +29,7 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
 import com.mindquarry.desktop.model.task.Task;
+import com.mindquarry.desktop.model.task.TaskList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.HttpUtilities;
 
@@ -65,10 +66,11 @@ public class DoubleClickListener implements IDoubleClickListener {
                     TaskSettingsDialog dlg = new TaskSettingsDialog(client.getShell(), task.clone(), false);
 
                     if (dlg.open() == Window.OK) {
-                        task = dlg.getChangedTask();
+                        Task newTask = dlg.getChangedTask();
                         HttpUtilities.putAsXML(prof.getLogin(), prof
-                                .getPassword(), task.getId(), task
+                                .getPassword(), newTask.getId(), newTask
                                 .getContentAsXML().asXML().getBytes("utf-8"));
+                        updateTask(viewer, task, newTask);
                     }
                 } catch (Exception e) {
                     MessageDialog.openError(new Shell(SWT.ON_TOP), Messages
@@ -86,6 +88,15 @@ public class DoubleClickListener implements IDoubleClickListener {
                 // refresh)
                 viewer.refresh();
             }
+        }
+    }
+
+    private static void updateTask(TableViewer viewer, Task oldTask, Task newTask) {
+        if (viewer != null) {
+            TaskList content = (TaskList) viewer.getInput();
+            content.replace(oldTask, newTask);
+            viewer.setInput(content);
+            viewer.refresh();
         }
     }
 }
