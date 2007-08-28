@@ -411,7 +411,7 @@ public class MindClient extends ApplicationWindow {
 
         FontRegistry fReg = JFaceResources.getFontRegistry();
         fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
-                12, SWT.ITALIC) });
+                12, SWT.NONE) });
         fReg.put(TEAM_NAME_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
                 10, SWT.NONE) });
     }
