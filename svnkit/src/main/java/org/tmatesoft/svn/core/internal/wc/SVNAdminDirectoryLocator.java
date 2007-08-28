@@ -199,20 +199,22 @@ public class SVNAdminDirectoryLocator {
         // a corresponding shallow working copy dir
         SVNAdminDirectoryLocator.WCRootInfo wcRoot = findWCRoot(base);
         if (wcRoot.found) {
-            final File shallowAdminBaseDir = new File(
+            // eg. /home/peter/.svndata/foobar
+            final File shallowWCBaseDir = new File(
                     getShallowWorkingCopyBaseDir() + "/" +
                     wcRoot.shallowWorkingCopyDir
                 );
             
+            // wcRelativePath always points to a directory
+            // eg. /home/peter/.svndata/foobar/folder/
             File fullAdminSubDir = new File(
-                    shallowAdminBaseDir,
+                    shallowWCBaseDir,
                     wcRoot.wcRelativePath
                 );
             // record the relative path as we go up
             String relativePath = "";
             
-            // stop when we are at the root of the working copy
-            while (!fullAdminSubDir.equals(shallowAdminBaseDir)) {
+            do {
                 // if the directory exists in the shallow working copy
                 // (including an admin directory), we have reached the
                 // "closest versioned dir" and calculate the relative path to it
@@ -224,7 +226,9 @@ public class SVNAdminDirectoryLocator {
                 // go upwards
                 relativePath = fullAdminSubDir.getName() + "/" + relativePath;
                 fullAdminSubDir = fullAdminSubDir.getParentFile();
-            }
+                
+            // stop when we are at the root of the working copy
+            } while (!fullAdminSubDir.equals(shallowWCBaseDir));
             
             // ok, there seems to be only a trunk present
             return wcRoot.wcRelativePath;
