@@ -95,67 +95,66 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     workspaceWidget.refresh();
                     client.stopAction(Messages
                             .getString("Refreshing workspaces changes ..."));
-                }
-                
-                workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE, //$NON-NLS-1$
-                        null, false);
-                client.startAction(SYNC_WORKSPACE_MESSAGE);
+                } else {
+                    workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE, //$NON-NLS-1$
+                            null, false);
+                    client.startAction(SYNC_WORKSPACE_MESSAGE);
 
-                // retrieve selected profile
-                PreferenceStore store = client.getPreferenceStore();
-                Profile selected = Profile.getSelectedProfile(store);
-                if (selected == null) {
-                    log.debug("No profile selected."); //$NON-NLS-1$
-                    return;
-                }
+                    // retrieve selected profile
+                    PreferenceStore store = client.getPreferenceStore();
+                    Profile selected = Profile.getSelectedProfile(store);
+                    if (selected == null) {
+                        log.debug("No profile selected."); //$NON-NLS-1$
+                        return;
+                    }
 
-                // retrieve selected teams
-                final List<Team> teams = new ArrayList<Team>();
-                Display.getDefault().syncExec(new Runnable() {
-                    public void run() {
-                        teams.addAll(client.getSelectedTeams());
-                    }
-                });
-                try {
-                    for (Team team : teams) {
-                        SVNSynchronizer sc = new SVNSynchronizer(team
-                                .getWorkspaceURL(), selected
-                                .getWorkspaceFolder()
-                                + "/" + team.getName(), selected.getLogin(),
-                                selected.getPassword(),
-                                new InteractiveConflictHandler(client
-                                        .getShell()));
-                        sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
-                        sc.synchronizeOrCheckout();
-                    }
-                    workspaceWidget.refresh();
-                } catch (SynchronizeCancelException e) {
-                    log.info("synchronization cancelled (1)");
-                    cancelled = true;
-                } catch (final Exception e) {
-                    if (e.getCause() != null && e.getCause().getCause() != null &&
-                            e.getCause().getCause().getClass() == SynchronizeCancelException.class) {
-                        // cancel clicked in commit message dialog , don't show error:
-                        log.info("synchronization cancelled (2)");
+                    // retrieve selected teams
+                    final List<Team> teams = new ArrayList<Team>();
+                    Display.getDefault().syncExec(new Runnable() {
+                        public void run() {
+                            teams.addAll(client.getSelectedTeams());
+                        }
+                    });
+                    try {
+                        for (Team team : teams) {
+                            SVNSynchronizer sc = new SVNSynchronizer(team
+                                    .getWorkspaceURL(), selected
+                                    .getWorkspaceFolder()
+                                    + "/" + team.getName(), selected.getLogin(),
+                                    selected.getPassword(),
+                                    new InteractiveConflictHandler(client
+                                            .getShell()));
+                            sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
+                            sc.synchronizeOrCheckout();
+                        }
+                        workspaceWidget.refresh();
+                    } catch (SynchronizeCancelException e) {
+                        log.info("synchronization cancelled (1)");
                         cancelled = true;
-                    } else {
-                        log.error(e.toString(), e);
-                        cancelled = true;
-                        Display.getDefault().syncExec(new Runnable() {
-                            public void run() {
-                                MessageBox messageBox = new MessageBox(client
-                                        .getShell(), SWT.ICON_ERROR | SWT.OK);
-                                messageBox.setMessage(Messages
-                                        .getString("An error occured during synchronization: ") +
-                                        e.getMessage());
-                                messageBox.open();
-                            }
-                        });                        
+                    } catch (final Exception e) {
+                        if (e.getCause() != null && e.getCause().getCause() != null &&
+                                e.getCause().getCause().getClass() == SynchronizeCancelException.class) {
+                            // cancel clicked in commit message dialog , don't show error:
+                            log.info("synchronization cancelled (2)");
+                            cancelled = true;
+                        } else {
+                            log.error(e.toString(), e);
+                            cancelled = true;
+                            Display.getDefault().syncExec(new Runnable() {
+                                public void run() {
+                                    MessageBox messageBox = new MessageBox(client
+                                            .getShell(), SWT.ICON_ERROR | SWT.OK);
+                                    messageBox.setMessage(Messages
+                                            .getString("An error occured during synchronization: ") +
+                                            e.getMessage());
+                                    messageBox.open();
+                                }
+                            });                        
+                        }
                     }
+                    client.stopAction(Messages
+                            .getString(SYNC_WORKSPACE_MESSAGE));
                 }
-                client.stopAction(Messages
-                        .getString(SYNC_WORKSPACE_MESSAGE));
-
                 if (cancelled) {
                     workspaceWidget.updateContainer(false, null, null, false);
                 } else {
