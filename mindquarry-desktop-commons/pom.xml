@@ -29,11 +29,6 @@
 
 		<!-- SVN libs -->
 		<dependency>
-			<groupId>org.tigris.subversion</groupId>
-			<artifactId>javahl</artifactId>
-			<version>1.4.2-Mindquarry_2</version>
-		</dependency>
-		<dependency>
 			<groupId>com.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
 			<version>1.1.0-Mindquarry_5</version>
