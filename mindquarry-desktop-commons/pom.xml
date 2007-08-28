@@ -30,8 +30,8 @@
 		<!-- SVN libs -->
 		<dependency>
 			<groupId>org.tigris.subversion</groupId>
-			<artifactId>javahl-api</artifactId>
-			<version>1.4.2</version>
+			<artifactId>javahl</artifactId>
+			<version>1.4.2-Mindquarry_2</version>
 		</dependency>
 		<dependency>
 			<groupId>com.svnkit</groupId>
