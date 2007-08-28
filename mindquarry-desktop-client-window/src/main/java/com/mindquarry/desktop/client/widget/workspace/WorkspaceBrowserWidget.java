@@ -175,6 +175,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             });
             for (Team team : selectedTeams) {
                 String url = team.getWorkspaceURL();
+                log.info("Refreshing for SVN URL: " + url);
                 String folder = selected.getWorkspaceFolder() + "/"
                         + team.getName();
                 String login = selected.getLogin();
@@ -209,6 +210,15 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                     List<Status> allChanges = sc.getRemoteAndLocalChanges();
                     for (Status status : allChanges) {
                         File f = new File(status.getPath());
+                        // we don't know why yet, but files may sometimes be
+                        // set to "normal". We ignore these files, i.e. treat
+                        // them as non-modified:
+                        if ((status.getTextStatus() == StatusKind.none ||
+                                status.getTextStatus() == StatusKind.normal) &&
+                                (status.getRepositoryTextStatus() == StatusKind.none || 
+                                status.getRepositoryTextStatus() == StatusKind.normal)) {
+                            continue;
+                        }
                         localChanges.put(new File(status.getPath()),
                                 new Integer(status.getTextStatus()));
                         remoteChanges.put(new File(status.getPath()),
@@ -241,12 +251,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                         }
                     }
                 } else {
-                    log
-                            .info("obstructed status, not calling getRemoteAndLocalChanges()");
+                    log.info("obstructed status, not calling getRemoteAndLocalChanges()");
                 }
-                // FIXME:
-                System.err.println("local " + localChanges);
-                System.err.println("remote " + remoteChanges);
+                log.debug("local changes: " + localChanges);
+                log.debug("remote changes: " + remoteChanges);
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
             refreshing = false;
@@ -255,8 +263,11 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             // may happen on very first checkout (before checkout, actually)
             // may happen on network timeout
             // may happen on wrong credentials
-            // log.error(e.toString(), e);
-            log.error(e.toString() + " (apr error " + e.getAprError() + ")");
+            
+            // list of seen apr errors:
+            // 175002: connection refused
+            
+            log.error(e.toString() + " (apr error " + e.getAprError() + ")", e);
         }
     }
 
