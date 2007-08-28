@@ -83,22 +83,22 @@ public class ModificationDescription {
                     CONFLICT_TEXT);
         } else if (localStatus == StatusKind.modified) {
             return new ModificationDescription(uploadImage,
-                    Messages.getString("Your changes of this file will be uploaded to the server."));
+                    Messages.getString("Your changes of this item will be uploaded to the server."));
         } else if (remoteStatus == StatusKind.modified) {
             return new ModificationDescription(downloadImage,
-                    Messages.getString("This file has been modified on the server. " +
-                    		"The new version will be downloaded."));
+                    Messages.getString("This item has been modified on the server, " +
+                    		"the new version will be downloaded."));
         } else if (remoteStatus == StatusKind.added) {
             return new ModificationDescription(downloadImage,
-                    Messages.getString("This file is new on the server. " +
-                    		"The file will be downloaded."));
+                    Messages.getString("This item is new on the server, " +
+                    		"it will be downloaded."));
         } else if (localStatus == StatusKind.deleted || localStatus == StatusKind.missing) {
             return new ModificationDescription(deleteImage,
-                    Messages.getString("This file has been deleted locally. " +
+                    Messages.getString("This item has been deleted or moved locally. " +
                     		"It will be deleted on the server."));
         } else if (remoteStatus == StatusKind.deleted) {
             return new ModificationDescription(deleteImage,
-                    Messages.getString("This file has been deleted on the server. " +
+                    Messages.getString("This item has been deleted or moved on the server. " +
                     		"It will be deleted locally."));
         } else if (localStatus == StatusKind.conflicted) {
             return new ModificationDescription(conflictImage, CONFLICT_TEXT);
