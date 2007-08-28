@@ -135,16 +135,28 @@ public class PropertyConflict extends Conflict {
             handler.handle(this);
 	}
 	
+	/**
+	 * Resolves the conflict by using the local property value and throwing away
+	 * the remote value.
+	 */
 	public void doUseLocalValue() {
 		this.action = Action.USE_LOCAL_VALUE;
         this.value = localProp.getValue();
 	}
 	
+    /**
+     * Resolves the conflict by using the remote property value and throwing
+     * away the local value.
+     */
     public void doUseRemoteValue() {
         this.action = Action.USE_REMOTE_VALUE;
         this.value = remoteProp.getValue();
     }
     
+    /**
+     * Resolves the conflict by setting a new value (eg. given by the user).
+     * @param value the new value for the property to use
+     */
     public void doUseNewValue(String value) {
         this.action = Action.USE_NEW_VALUE;
         this.value = value;

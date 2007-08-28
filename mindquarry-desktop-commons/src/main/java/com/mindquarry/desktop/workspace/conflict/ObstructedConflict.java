@@ -97,11 +97,25 @@ public class ObstructedConflict extends RenamingConflict {
         return "Obstructed Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
     }
 
+    /**
+     * Resolve the conflict by renaming the new file or dir and restoring the
+     * old one.
+     * 
+     * Make sure you have called isRenamePossible(newName) and it returned true
+     * before calling doRename(newName).
+     * 
+     * @param newName the new name of the file to rename to. Must be just a
+     *                filename but not a full path name.
+     */
     public void doRename(String newName) {
         this.newName = newName;
         this.action = Action.RENAME;
     }
     
+    /**
+     * Resolve the conflict by reverting the new file or folder to the older
+     * variant. Note that the new content will be lost!
+     */
     public void doRevert() {
         this.action = Action.REVERT;
     }

@@ -117,14 +117,28 @@ public class ContentConflict extends Conflict {
         return "Content Conflict: " + status.getPath() + (action == Action.UNKNOWN ? "" : " " + action.name());
     }
     
+    /**
+     * Resolves the conflict by using the local content of the file. Note that
+     * the local modifications will be lost!
+     */
     public void doUseLocal() {
         this.action = Action.USE_LOCAL;
     }
 
+    /**
+     * Resolves the conflict by using the remote content of the file. The remote
+     * modifications are not lost, they are already part of a version on the
+     * server.
+     */
     public void doUseRemote() {
         this.action = Action.USE_REMOTE;
     }
 
+    /**
+     * Resolves the conflict by merging - this actually does nothing except for
+     * resolving the conflict for svn. This expects the file to contain the new
+     * merged content - how this happens is up to the client code or user.
+     */
     public void doMerge() {
         this.action = Action.MERGE;
     }

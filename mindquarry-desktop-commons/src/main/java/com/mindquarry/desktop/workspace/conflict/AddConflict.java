@@ -115,15 +115,24 @@ public class AddConflict extends RenamingConflict {
 		handler.handle(this);
 	}
 	
+    /**
+     * Resolve the conflict by renaming the local file or dir before updating.
+     * 
+     * Make sure you have called isRenamePossible(newName) and it returned true
+     * before calling doRename(newName).
+     * 
+     * @param newName the new name of the file to rename to. Must be just a
+     *                filename but not a full path name.
+     */
 	public void doRename(String newName) {
-	    // TODO: double check here? what if it fails? throw exception? return false?
-//	    if (!isRenamePossible(newName)) {
-//	        
-//	    }
 		this.action = Action.RENAME;
 		this.newName = newName;
 	}
 	
+	/**
+	 * Resolve the conflict by replacing the local content with the one from the
+	 * server. Note that the local file or directory content will be lost!
+	 */
 	public void doReplace() {
 		this.action = Action.REPLACE;
 	}

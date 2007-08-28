@@ -270,14 +270,30 @@ public class DeleteWithModificationConflict extends Conflict {
 		handler.handle(this);
 	}
 
+	/**
+	 * Resolve the conflict by deleting the resource and throwing away the
+	 * modifications, whether the modifications were made locally and the
+	 * deletion was done remotely or vice-versa. Note that the modifications
+	 * will be lost!
+	 */
 	public void doDelete() {
 		this.action = Action.DELETE;
 	}
-	
+
+	/**
+	 * Resolve the conflict by deleting only the parts of the affected directory
+	 * that were not modified and by keeping the modified stuff. None of the
+	 * modifications will be lost but the directory might look quite empty now.
+	 */
     public void doOnlyKeepModified() {
         this.action = Action.ONLYKEEPMODIFIED;
     }
     
+    /**
+     * Resolve the conflict by reverting the delete completely. The
+     * modifications will be kept and all other files and directories that were
+     * already deleted are restored.
+     */
     public void doRevertDelete() {
         this.action = Action.REVERTDELETE;
     }
