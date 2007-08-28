@@ -95,7 +95,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     workspaceWidget.refresh();
                     client.stopAction(Messages
                             .getString("Refreshing workspaces changes ..."));
-                } else {
+                }
+                
                     workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE, //$NON-NLS-1$
                             null, false);
                     client.startAction(SYNC_WORKSPACE_MESSAGE);
@@ -154,7 +155,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     }
                     client.stopAction(Messages
                             .getString(SYNC_WORKSPACE_MESSAGE));
-                }
+
                 if (cancelled) {
                     workspaceWidget.updateContainer(false, null, null, false);
                 } else {
