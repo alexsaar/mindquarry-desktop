@@ -74,7 +74,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     /**
      * Checks if a refresh of the changes list itself is needed.
      */
-    public boolean refreshNeeded() {
+    public boolean refreshNeeded(Boolean applyNewChanges) {
         PreferenceStore store = client.getPreferenceStore();
         Profile selectedProfile = Profile.getSelectedProfile(store);
         if (selectedProfile == null) {
@@ -89,6 +89,11 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             return false;
         }
         log.debug("Changes list needs update");
+        if(applyNewChanges) {
+            localChanges = newLocalChanges;
+            remoteChanges = newRemoteChanges;
+            workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
+        }
         return true;
     }
 
@@ -161,6 +166,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     private void getAllChanges(Profile selected,
             Map<File, Integer> localChanges, Map<File, Integer> remoteChanges) {
         try {
+            System.err.println(">>> getAllChanges"); // TODO
             final List<Team> selectedTeams = new ArrayList<Team>();
             Display.getDefault().syncExec(new Runnable() {
                 public void run() {

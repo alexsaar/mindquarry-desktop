@@ -76,7 +76,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         .getString("Refreshing workspaces changes ..."), //$NON-NLS-1$
                         null, false);
 
-                if (workspaceWidget.refreshNeeded()) {
+                if (workspaceWidget.refreshNeeded(true)) {
                     client.startAction(Messages
                             .getString("Refreshing workspaces changes ..."));
 
@@ -92,7 +92,6 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             messageBox.open();
                         }
                     });
-                    workspaceWidget.refresh();
                     workspaceWidget.updateContainer(false, null, null, 
                             workspaceWidget.isRefreshListEmpty());
                     client.stopAction(Messages
