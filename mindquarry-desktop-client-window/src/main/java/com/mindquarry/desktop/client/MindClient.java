@@ -105,7 +105,7 @@ public class MindClient extends ApplicationWindow {
     static {
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
 
-        INITIAL_TOOLBAR_GROUPS.add(ActionBase.TASK_ACTION_GROUP);
+        INITIAL_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_ACTION_GROUP);
         INITIAL_TOOLBAR_GROUPS.addAll(DEFAULT_TOOLBAR_GROUPS);
     }
 
