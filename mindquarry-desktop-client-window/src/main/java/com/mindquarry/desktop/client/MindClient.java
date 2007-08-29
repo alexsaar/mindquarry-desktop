@@ -455,7 +455,7 @@ public class MindClient extends ApplicationWindow {
             img = new Image(
                     Display.getCurrent(),
                     MindClient.class
-                            .getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+                            .getResourceAsStream("/com/mindquarry/icons/32x32/logo/mindquarry-icon.png")); //$NON-NLS-1$
         }
         reg.put(CLIENT_IMG_KEY, img);
         
