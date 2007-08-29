@@ -13,8 +13,6 @@ package org.tmatesoft.svn.core.internal.wc;
 
 import java.io.File;
 
-import sun.text.Normalizer;
-
 
 /**
  * @version 1.0
@@ -38,8 +36,13 @@ public class SVNFileListUtil {
 
         final String[] composedFileNames = new String[fileNames.length];
         for (int i = 0; i < composedFileNames.length; i++) {
-            composedFileNames[i] = Normalizer.normalize(fileNames[i], Normalizer.COMPOSE, 0);
-//            composedFileNames[i] = compose(fileNames[i]);
+            // Note: Normalizer class would be better than manually implemented
+            // compose() method, but unfortunately it was sun.text.Normalizer in
+            // Java 1.5 and became java.text.Normalizer in 1.6 along with API
+            // changes - so it cannot be used cross-platform and with all Java
+            // versions >= 1.5
+//            composedFileNames[i] = Normalizer.normalize(fileNames[i], Normalizer.COMPOSE, 0);
+            composedFileNames[i] = compose(fileNames[i]);
 //            System.out.println("File [" + i + "]: '" + fileNames[i] + "' => '" + composedFileNames[i] + "'");
         }
         return composedFileNames;
@@ -64,9 +67,6 @@ public class SVNFileListUtil {
         return files;
     }
 
-    // manual implementation of normalization from svnkit guys - not needed
-    // since we use the java built-in java.text.Normalizer
-    /*
     private static String compose(String decomposedString) {
         if (decomposedString == null) {
             return null;
@@ -132,5 +132,4 @@ public class SVNFileListUtil {
         }
         return buffer;
     }
-    */
 }
