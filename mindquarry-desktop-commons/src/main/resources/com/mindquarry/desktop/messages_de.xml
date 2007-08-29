@@ -2,132 +2,136 @@
 <context>
     <name>java</name>
     <message>
-        <source>Common Settings</source>
-        <translation>Allgemein</translation>
-    </message>
-    <message>
-        <source>Manage common settings of the application.</source>
-        <translation>Verwalten Sie allgemeine Anwendungseinstellungen.</translation>
-    </message>
-    <message>
-        <source>Run at system startup (Windows only)</source>
-        <translation>Starte Desktop-Client wenn Computer startet (nur Windows)</translation>
-    </message>
-    <message>
-        <source>Notification Message Delay (in seconds)</source>
-        <translation>Anzeigedauer für Nachrichten (in Sekunden)</translation>
-    </message>
-    <message>
-        <source>Server Profiles</source>
-        <translation>Server Profile</translation>
-    </message>
-    <message>
-        <source>Manage different Mindquarry installations by using Mindquarry server profiles.</source>
-        <translation>Verwalten Sie verschiedene Mindquarry Server-Profile.</translation>
-    </message>
-    <message>
-        <source>Add Profile</source>
-        <translation>Profil hinzufügen</translation>
-    </message>
-    <message>
-        <source>Create new server profile</source>
-        <translation>Neues Server Profil anlegen</translation>
-    </message>
-    <message>
-        <source>Please enter your profile name</source>
-        <translation>Bitte geben Sie einen Namen für das Profil ein</translation>
-    </message>
-    <message>
-        <source>My Mindquarry Server Profile</source>
-        <translation>Mein Mindquarry Server Profil</translation>
-    </message>
-    <message>
         <source>Delete Profile</source>
         <translation>Profil entfernen</translation>
     </message>
     <message>
-        <source>Rename server profile</source>
-        <translation>Server-Profil umbenennen</translation>
-    </message>
-    <message>
-        <source>Please enter the new profile name</source>
-        <translation>Bitte geben Sie einen neuen Namen für das Profil ein</translation>
-    </message>
-    <message>
-        <source>Profile Settings</source>
-        <translation>Profil-Einstellungen</translation>
-    </message>
-    <message>
-        <source>Your Login ID</source>
-        <translation>Ihre Login-ID</translation>
-    </message>
-    <message>
-        <source>Your Password</source>
-        <translation>Ihr Passwort</translation>
+        <source>Folder for Workspaces</source>
+        <translation>Ordner für Arbeitsbereiche</translation>
     </message>
     <message>
         <source>URL of the Mindquarry Server</source>
         <translation>URL des Mindquarry-Servers</translation>
     </message>
     <message>
-        <source>Folder for Workspaces</source>
-        <translation>Ordner für Arbeitplätze</translation>
+        <source>Please enter the new profile name</source>
+        <translation>Bitte geben Sie einen neuen Namen für das Profil ein</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation>Tastaturkürzel</translation>
     </message>
     <message>
         <source>Browse</source>
         <translation>Durchsuchen</translation>
     </message>
     <message>
+        <source>My Mindquarry Server Profile</source>
+        <translation>Mein Mindquarry Server-Profil</translation>
+    </message>
+    <message>
+        <source>Task Settings</source>
+        <translation>Einstellungen zu Aufgaben</translation>
+    </message>
+    <message>
+        <source>Category</source>
+        <translation>Kategorie</translation>
+    </message>
+    <message>
+        <source>Manage shortcuts of the application.</source>
+        <translation>Tastaturkürzel einstellen.</translation>
+    </message>
+    <message>
+        <source>Authorization has been refused. Please check your login name and password.</source>
+        <translation>Zugriff verweigert. Bitte prüfen Sie Ihren Benutzernamen und Ihr Passwort.</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation>Aktion</translation>
+    </message>
+    <message>
+        <source>Your Login ID</source>
+        <translation>Ihre Login-ID</translation>
+    </message>
+    <message>
         <source>Select folder for workspaces.</source>
         <translation>Bitte wählen Sie einen Ordner für Arbeitsplätze aus.</translation>
     </message>
     <message>
-        <source>Profile name must contain at least one character.</source>
-        <translation>Profil-Name muss mindestens ein Zeichen enthalten.</translation>
+        <source>Manage common settings of the application.</source>
+        <translation>Verwalten Sie allgemeine Anwendungseinstellungen.</translation>
+    </message>
+    <message>
+        <source>Shortcut</source>
+        <translation>Tastaturkürzel</translation>
+    </message>
+    <message>
+        <source>Common Settings</source>
+        <translation>Allgemein</translation>
+    </message>
+    <message>
+        <source>Profile Settings</source>
+        <translation>Profil-Einstellungen</translation>
+    </message>
+    <message>
+        <source>Create new server profile</source>
+        <translation>Neues Server Profil anlegen</translation>
+    </message>
+    <message>
+        <source>Rename server profile</source>
+        <translation>Server-Profil umbenennen</translation>
+    </message>
+    <message>
+        <source>Manage your task settings.</source>
+        <translation>Einstellungen zu Aufgaben.</translation>
+    </message>
+    <message>
+        <source>List finished tasks</source>
+        <translation>Auch beendete Aufgaben anzeigen</translation>
     </message>
     <message>
         <source>A profile with the same name already exists. Each profile must have a unique name.</source>
         <translation>Ein Profil mit demselben Namen existiert bereits. Jedes Profil muss einen eindeutigen Namen haben.</translation>
     </message>
     <message>
-        <source>Task Settings</source>
-        <translation type="unfinished"></translation>
+        <source>Server Profiles</source>
+        <translation>Server Profile</translation>
     </message>
     <message>
-        <source>Manage your task settings.</source>
-        <translation type="unfinished"></translation>
+        <source>Username and/or password not correct for \&quot;</source>
+        <translation>Benutzername und/oder Passwort nicht korrekt für \&quot;</translation>
     </message>
     <message>
-        <source>List finished tasks</source>
-        <translation type="unfinished"></translation>
+        <source>Run at system startup (Windows only)</source>
+        <translation>Starte Desktop-Client wenn Computer startet (nur Windows)</translation>
     </message>
     <message>
-        <source>Shortcuts</source>
-        <translation type="unfinished"></translation>
+        <source>Add Profile</source>
+        <translation>Profil hinzufügen</translation>
     </message>
     <message>
-        <source>Manage shortcuts of the application.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Category</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Authorization has been refused. Please check your login name and password.</source>
-        <translation type="unfinished"></translation>
+        <source>Manage different Mindquarry installations by using Mindquarry server profiles.</source>
+        <translation>Verwalten Sie verschiedene Mindquarry Server-Profile.</translation>
     </message>
     <message>
         <source>Unknown connection error. Status code </source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindungsfehler. Fehlernummer </translation>
+    </message>
+    <message>
+        <source>Profile name must contain at least one character.</source>
+        <translation>Profil-Name muss mindestens ein Zeichen enthalten.</translation>
+    </message>
+    <message>
+        <source>Your Password</source>
+        <translation>Ihr Passwort</translation>
+    </message>
+    <message>
+        <source>Please enter your profile name</source>
+        <translation>Bitte geben Sie einen Namen für das Profil ein</translation>
+    </message>
+    <message>
+        <source>Notification Message Delay (in seconds)</source>
+        <translation type="obsolete">Anzeigedauer für Nachrichten (in Sekunden)</translation>
     </message>
 </context>
 </TS>
