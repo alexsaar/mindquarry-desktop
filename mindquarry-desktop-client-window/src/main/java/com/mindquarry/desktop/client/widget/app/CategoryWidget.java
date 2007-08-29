@@ -96,8 +96,8 @@ public class CategoryWidget extends WidgetBase {
                 }
             }
         });
-        createTasksCategory(tabFolder);
         createWorkspaceCategory(tabFolder);
+        createTasksCategory(tabFolder);
     }
 
     private void createTasksCategory(final CTabFolder tabFolder) {
@@ -105,7 +105,6 @@ public class CategoryWidget extends WidgetBase {
         tabItem.setText(TAB_TASKS_TEXT);
         tabItem.setImage(tasksIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-        tabFolder.setSelection(tabItem);
 
         Composite taskComposite = new Composite(tabFolder, SWT.NONE);
         taskComposite.setLayout(new GridLayout(7, false));
@@ -185,6 +184,7 @@ public class CategoryWidget extends WidgetBase {
         tabItem.setText(TAB_FILES_TEXT);
         tabItem.setImage(docsIcon);
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+        tabFolder.setSelection(tabItem);
 
         WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
                 tabFolder, client);

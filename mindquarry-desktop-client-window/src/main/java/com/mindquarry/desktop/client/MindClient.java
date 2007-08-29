@@ -606,8 +606,8 @@ public class MindClient extends ApplicationWindow {
 
     private void refreshOnStartup() {
         teamList.refresh();
-        getAction(SynchronizeTasksAction.class.getName()).run();
         getAction(UpdateWorkspacesAction.class.getName()).run();
+        getAction(SynchronizeTasksAction.class.getName()).run();
     }
 
     // #########################################################################
@@ -644,7 +644,9 @@ public class MindClient extends ApplicationWindow {
     public boolean close() {
         getShell().setVisible(false);
         return false;
-//        trayItem.dispose();
-//        return super.close();
+    }
+
+    public TrayItem getTrayItem() {
+        return this.trayItem;
     }
 }

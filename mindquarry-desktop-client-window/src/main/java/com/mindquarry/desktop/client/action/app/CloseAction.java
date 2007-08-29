@@ -50,7 +50,8 @@ public class CloseAction extends ActionBase {
 	}
 
 	public void run() {
-		System.exit(1);
+	    client.getTrayItem().dispose();
+	    System.exit(1);
 	}
 	
 	public String getGroup() {
