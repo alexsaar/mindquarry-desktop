@@ -23,9 +23,6 @@ package com.mindquarry.desktop.client.mac;
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.eclipse.swt.internal.Callback;
 import org.eclipse.swt.internal.carbon.HICommand;
 import org.eclipse.swt.internal.carbon.OS;
@@ -78,10 +75,11 @@ public class CarbonUIEnhancer {
                OS.GetEventParameter(theEvent, OS.kEventParamDirectObject, OS.typeHICommand, null, HICommand.sizeof, null, command);
                switch (command.commandID) {
                case kHICommandPreferences:
-                  client.showPreferenceDialog(false);
+                  client.showPreferenceDialog(true);
                   return OS.noErr;
                case kHICommandAbout:
-                  return runAction("about"); //$NON-NLS-1$
+                  // FIXME: implement about dialog
+                  //return runAction("about"); //$NON-NLS-1$
                default:
                   break;
                }
@@ -113,7 +111,8 @@ public class CarbonUIEnhancer {
          char buffer[]= new char[l];
          fgAboutActionName.getChars(0, l, buffer, 0);
          int str= OS.CFStringCreateWithCharacters(OS.kCFAllocatorDefault, buffer, l);
-         OS.InsertMenuItemTextWithCFString(menu, str, (short) 0, 0, kHICommandAbout);
+         // FIXME: implement about dialog
+         //OS.InsertMenuItemTextWithCFString(menu, str, (short) 0, 0, kHICommandAbout);
          OS.CFRelease(str);
                   // add separator between About & Preferences
          OS.InsertMenuItemTextWithCFString(menu, 0, (short) 1, OS.kMenuItemAttrSeparator, 0);
@@ -132,12 +131,5 @@ public class CarbonUIEnhancer {
             }
          }
       );
-   }
-      /**
-    * Locate and run an action in the current menubar by name.
-    */
-   private int runAction(String name) {
-      //return OS.noErr;
-      return OS.eventNotHandledErr;
    }
 }

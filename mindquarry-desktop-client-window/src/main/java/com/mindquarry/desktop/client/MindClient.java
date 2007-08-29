@@ -346,13 +346,6 @@ public class MindClient extends ApplicationWindow {
     private void initMacIfAvailable() {
         if (SVNFileUtil.isOSX) {
             CarbonUIEnhancer mac = new CarbonUIEnhancer(this);
-//            try {
-//                Class c = ClassLoader.getSystemClassLoader().loadClass("com.mindquarry.desktop.client.mac.MacApplication");
-//                Method m = c.getMethod("init");
-//                m.invoke(null);
-//            } catch (Exception e) {
-//                log.warn("Could not initialize Mac specific features", e);
-//            }
         }
     }
 
