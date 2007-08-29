@@ -110,7 +110,7 @@ public class TeamlistWidget extends WidgetBase {
         // create selection buttons
         Button button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.setText("Select All");
+        button.setText(Messages.getString("Select All"));
         button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -119,7 +119,7 @@ public class TeamlistWidget extends WidgetBase {
         });
         button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.setText("Deselect All");
+        button.setText(Messages.getString("Deselect All"));
         button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
