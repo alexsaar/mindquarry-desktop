@@ -666,7 +666,10 @@ public class MindClient extends ApplicationWindow {
         }
 
         public void shellIconified(ShellEvent e) {
-            hideMainWindow();
+            // on mac hiding the window after iconifying leads to an awkward behaviour
+            if (!SVNFileUtil.isOSX) {
+                hideMainWindow();
+            }
         }
     }
 
