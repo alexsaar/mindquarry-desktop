@@ -195,7 +195,6 @@ public class TeamlistWidget extends WidgetBase {
             
             Boolean retry = client.handleNotAuthorizedException(e);
             if(retry) {
-                System.err.println("retrying ...");
                 return queryTeams();
             }
             
