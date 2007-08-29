@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
+import org.tigris.subversion.javahl.NodeKind;
+import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -149,6 +151,28 @@ public class WorkspaceUpdateContainerRunnable extends
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
+                WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
+                if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
+                    Status status = widget.localChanges.get(file);
+                    // first check for a NodeKind set as local property
+                    if (status.getNodeKind() == NodeKind.dir || status.getNodeKind() == NodeKind.file) {
+                        if (status.getNodeKind() == NodeKind.dir) {
+                            return folderImage;
+                        } else {
+                            return fileImage;
+                        }
+                    } else {
+                        // otherwise look for the remote variant (ie. newly added file or folder remotely)
+                        if (status.getReposKind() == NodeKind.dir) {
+                            return folderImage;
+                        } else if (status.getReposKind() == NodeKind.file) {
+                            return fileImage;
+                        } else {
+                            return unknownFileImage;
+                        }
+                    }
+                }
+                // fallback: simply lookup the local file
                 if (file.isDirectory()) {
                     return folderImage;
                 } else if (file.isFile()) {
@@ -170,17 +194,13 @@ public class WorkspaceUpdateContainerRunnable extends
                 File file = (File) element;
                 int localStatus = -1;
                 int remoteStatus = -1;
-                if (((WorkspaceBrowserWidget) containerWidget).localChanges != null
-                        && ((WorkspaceBrowserWidget) containerWidget).localChanges
-                                .containsKey(file)) {
-                    localStatus = ((WorkspaceBrowserWidget) containerWidget).localChanges
-                            .get(file).intValue();
+                // lookup the status via the File -> Status maps
+                WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
+                if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
+                    localStatus = widget.localChanges.get(file).getTextStatus();
                 }
-                if (((WorkspaceBrowserWidget) containerWidget).remoteChanges != null
-                        && ((WorkspaceBrowserWidget) containerWidget).remoteChanges
-                                .containsKey(file)) {
-                    remoteStatus = ((WorkspaceBrowserWidget) containerWidget).remoteChanges
-                            .get(file).intValue();
+                if (widget.remoteChanges != null && widget.remoteChanges.containsKey(file)) {
+                    remoteStatus = widget.remoteChanges.get(file).getRepositoryTextStatus();
                 }
                 ModificationDescription descr = 
                     ModificationDescription.getDescription(localStatus, remoteStatus);
@@ -257,10 +277,10 @@ public class WorkspaceUpdateContainerRunnable extends
                                 int localStatus = -1;
                                 int remoteStatus = -1;
                                 if (browserWidget.localChanges.containsKey(item.getData())) {
-                                    localStatus = browserWidget.localChanges.get(item.getData());
+                                    localStatus = browserWidget.localChanges.get(item.getData()).getTextStatus();
                                 }
                                 if (browserWidget.remoteChanges.containsKey(item.getData())) {
-                                	remoteStatus = browserWidget.remoteChanges.get(item.getData());
+                                	remoteStatus = browserWidget.remoteChanges.get(item.getData()).getRepositoryTextStatus();
                                 }
                                 ModificationDescription modDescription = 
                                     ModificationDescription.getDescription(localStatus, remoteStatus);

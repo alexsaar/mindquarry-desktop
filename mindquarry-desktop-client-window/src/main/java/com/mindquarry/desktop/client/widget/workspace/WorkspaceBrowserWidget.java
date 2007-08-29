@@ -51,8 +51,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     protected File workspaceRoot;
 
-    protected Map<File, Integer> localChanges = new HashMap<File, Integer>();
-    protected Map<File, Integer> remoteChanges = new HashMap<File, Integer>();
+    protected Map<File, Status> localChanges = new HashMap<File, Status>();
+    protected Map<File, Status> remoteChanges = new HashMap<File, Status>();
     // ignore files like "<filename>.r200" that are created in case of conflicts:
     protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
 
@@ -80,8 +80,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         if (selectedProfile == null) {
             return false;
         }
-        Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
-        Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
+        Map<File, Status> newLocalChanges = new HashMap<File, Status>();
+        Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
         if (newLocalChanges.equals(localChanges)
                 && newRemoteChanges.equals(remoteChanges)) {
@@ -114,8 +114,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         refreshing = true;
 
         // update tree
-        Map<File, Integer> newLocalChanges = new HashMap<File, Integer>();
-        Map<File, Integer> newRemoteChanges = new HashMap<File, Integer>();
+        Map<File, Status> newLocalChanges = new HashMap<File, Status>();
+        Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
         localChanges = newLocalChanges;
         remoteChanges = newRemoteChanges;
@@ -164,7 +164,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     // #########################################################################
 
     private void getAllChanges(Profile selected,
-            Map<File, Integer> localChanges, Map<File, Integer> remoteChanges) {
+            Map<File, Status> localChanges, Map<File, Status> remoteChanges) {
         try {
             log.debug("getting all changes");
             final List<Team> selectedTeams = new ArrayList<Team>();
@@ -197,8 +197,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
-                        localChanges.put(new File(status.getPath()),
-                                StatusKind.obstructed);
+                        localChanges.put(new File(status.getPath()), status);
                         teamHasObstruction = true;
                     }
                 }
@@ -219,10 +218,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                                 status.getRepositoryTextStatus() == StatusKind.normal)) {
                             continue;
                         }
-                        localChanges.put(new File(status.getPath()),
-                                new Integer(status.getTextStatus()));
-                        remoteChanges.put(new File(status.getPath()),
-                                new Integer(status.getRepositoryTextStatus()));
+                        localChanges.put(new File(status.getPath()), status);
+                        remoteChanges.put(new File(status.getPath()), status);
                         // If we add a directory with contents, SVN will only
                         // report the directory as unversioned, not the files
                         // inside the directory, so we add the files (= all
@@ -234,8 +231,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                             SetStatusDirFilter dirFilter = new SetStatusDirFilter();
                             FileUtils.iterateFiles(f, fileFilter, dirFilter);
                             for (Status tmpStatus : fileFilter.getSubFiles()) {
-                                localChanges.put(new File(tmpStatus.getPath()),
-                                        StatusKind.unversioned);
+                                localChanges.put(new File(tmpStatus.getPath()), status);
                             }
                         }
                         // if there's a local conflict, ignore (i.e. don't display) files

@@ -93,7 +93,7 @@ public class ContentProvider implements ITreeContentProvider {
             for (File remoteFile : workspaceBrowser.remoteChanges.keySet()) {
                 int remoteStatus = -1;
                 if (workspaceBrowser.remoteChanges.containsKey(remoteFile)) {
-                    remoteStatus = workspaceBrowser.remoteChanges.get(remoteFile); 
+                    remoteStatus = workspaceBrowser.remoteChanges.get(remoteFile).getRepositoryTextStatus(); 
                 }
                 if (remoteStatus == StatusKind.added &&
                         remoteFile.getParentFile().equals(workspaceRoot)) {
@@ -106,7 +106,7 @@ public class ContentProvider implements ITreeContentProvider {
             for (File localFile : workspaceBrowser.localChanges.keySet()) {
                 int localStatus = -1;
                 if (workspaceBrowser.localChanges.containsKey(localFile)) {
-                    localStatus = workspaceBrowser.localChanges.get(localFile);
+                    localStatus = workspaceBrowser.localChanges.get(localFile).getTextStatus();
                 }
                 if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
                         && localFile.getParentFile().equals(workspaceRoot)) {
