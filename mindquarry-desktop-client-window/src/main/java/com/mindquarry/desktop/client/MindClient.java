@@ -55,11 +55,13 @@ import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
+import com.mindquarry.desktop.client.action.app.ShowMainWindowAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.app.CategoryWidget;
@@ -464,28 +466,53 @@ public class MindClient extends ApplicationWindow {
         trayItem.setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
 
         trayMenu = new Menu(shell, SWT.POP_UP);
-        // right-click / context menu => menu
-        trayItem.addListener(SWT.MenuDetect, new Listener() {
-            public void handleEvent(Event event) {
-                trayMenu.setVisible(true);
-            }
-        });
-        trayItem.addSelectionListener(new SelectionListener() {
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // double click: nothing to do here
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                // single left click => show window
-                if (getShell().isVisible()) {
-                    getShell().setVisible(false);
-                } else {
-                    getShell().open();
+        
+        if (SVNFileUtil.isOSX) {
+            // no right click on tray icons in OSX, do the menu on left click
+            trayItem.addSelectionListener(new SelectionListener() {
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // double click: nothing to do here
                 }
-            }
-        });
+
+                public void widgetSelected(SelectionEvent e) {
+                    // single left click => show menu
+                    trayMenu.setVisible(true);
+                }
+            });
+            
+        } else {
+            // left-click
+            trayItem.addSelectionListener(new SelectionListener() {
+                public void widgetDefaultSelected(SelectionEvent e) {
+                    // double click: nothing to do here
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    // single left click => show window
+                    if (getShell().isVisible()) {
+                        getShell().setVisible(false);
+                    } else {
+                        getShell().open();
+                    }
+                }
+            });
+            
+            // right-click / context menu => show menu
+            trayItem.addListener(SWT.MenuDetect, new Listener() {
+                public void handleEvent(Event event) {
+                    trayMenu.setVisible(true);
+                }
+            });
+        }
+        
+        ActionContributionItem showMainWindowAction =
+            new ActionContributionItem(new ShowMainWindowAction(this));
+        showMainWindowAction.fill(trayMenu, trayMenu.getItemCount());
+        
+        MenuItem menuItem = new MenuItem(trayMenu, SWT.SEPARATOR);
+        
         // profiles sub menu
-        MenuItem menuItem = new MenuItem(trayMenu, SWT.CASCADE);
+        menuItem = new MenuItem(trayMenu, SWT.CASCADE);
         menuItem.setText(Messages.getString("Server Profiles")); //$NON-NLS-1$
 
         profilesMenu = new Menu(shell, SWT.DROP_DOWN);
@@ -615,7 +642,9 @@ public class MindClient extends ApplicationWindow {
     }
     
     public boolean close() {
-        trayItem.dispose();
-        return super.close();
+        getShell().setVisible(false);
+        return false;
+//        trayItem.dispose();
+//        return super.close();
     }
 }
