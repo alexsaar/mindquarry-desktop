@@ -190,11 +190,15 @@ public class TeamlistWidget extends WidgetBase {
                     selected.getLogin(), selected.getPassword());
             return teamList;
         } catch (NotAuthorizedException e) {
-            MessageDialog.openError(getShell(), Messages.getString("Error"), //$NON-NLS-1$
-                    e.getLocalizedMessage());
-            // FIXME: open profile to change username/password after auth error
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
+            
+            Boolean retry = client.handleNotAuthorizedException(e);
+            if(retry) {
+                System.err.println("retrying ...");
+                return queryTeams();
+            }
+            
             return null;
         } catch (Exception e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"),

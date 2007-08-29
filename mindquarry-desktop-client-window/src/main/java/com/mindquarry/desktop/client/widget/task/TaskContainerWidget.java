@@ -190,46 +190,64 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                 items.addAll(client.getSelectedTeams());
             }
         });
-        for (Object item : items) {
-            String url = profile.getServerURL();
-            String login = profile.getLogin();
-            String password = profile.getPassword();
+        try {
+            for (Object item : items) {
+                String url = profile.getServerURL();
+                String login = profile.getLogin();
+                String password = profile.getPassword();
 
-            Team team = (Team) item;
-            try {
+                Team team = (Team) item;
                 tasks.getTasks().addAll(new TaskList(url + "/tasks/" //$NON-NLS-1$
                         + team.getId() + "/", login, password).getTasks());
-            } catch (final NotAuthorizedException e) {
-                log.error("Could not update list of tasks for "
-                        + profile.getServerURL(), e); //$NON-NLS-1$
 
-                getDisplay().syncExec(new Runnable() {
-                    public void run() {
-                        MessageDialog.openError(getShell(), Messages
-                                .getString("Error"), //$NON-NLS-1$
-                                e.getLocalizedMessage());
-                    }
-                });
-                updateContainer(false, e.getLocalizedMessage(), false);
-                refreshing = false;
-                return;
-            } catch (Exception e) {
-                log.error("Could not update list of tasks for "
-                        + profile.getServerURL(), e); //$NON-NLS-1$
-
-                String errMessage = Messages
-                        .getString("List of tasks could not be updated"); //$NON-NLS-1$
-                errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
-
-                MessageDialog.openError(getShell(),
-                        Messages.getString("Error"), errMessage);
-
-                updateContainer(false, errMessage, false);
-                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
-                refreshing = false;
-                return;
             }
+        } catch (final NotAuthorizedException e) {
+            log.error("Could not update list of tasks for "
+                    + profile.getServerURL(), e); //$NON-NLS-1$
+            
+            getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    Boolean retry = client.handleNotAuthorizedException(e);
+                    refreshing = retry;
+                }
+            });
+
+            if (refreshing) {
+                refresh();
+            } else {
+                updateContainer(false, e.getLocalizedMessage(), false);
+                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+            }
+            
+            return;
+            
+//            getDisplay().syncExec(new Runnable() {
+//                public void run() {
+//                    MessageDialog.openError(getShell(), Messages
+//                            .getString("Error"), //$NON-NLS-1$
+//                            e.getLocalizedMessage());
+//                }
+//            });
+//            updateContainer(false, e.getLocalizedMessage(), false);
+//            refreshing = false;
+//            return;
+        } catch (Exception e) {
+            log.error("Could not update list of tasks for "
+                    + profile.getServerURL(), e); //$NON-NLS-1$
+
+            String errMessage = Messages
+                    .getString("List of tasks could not be updated"); //$NON-NLS-1$
+            errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+
+            MessageDialog.openError(getShell(),
+                    Messages.getString("Error"), errMessage);
+
+            updateContainer(false, errMessage, false);
+            client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+            refreshing = false;
+            return;
         }
+
         if (tasks.getTasks().isEmpty()) {
             updateContainer(false, null, true);
         } else {

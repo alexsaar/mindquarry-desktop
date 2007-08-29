@@ -73,6 +73,7 @@ import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * Main class for the Mindquarry Desktop Client.
@@ -244,6 +245,44 @@ public class MindClient extends ApplicationWindow {
 
     public CategoryWidget getCategoryWidget() {
         return categoryWidget;
+    }
+    
+    /**
+     * Displays an error message and prompts the user to check their credentials
+     * in the preferences dialog, or to cancel.
+     * 
+     * @param exception Contains the error message to be displayed.
+     * @return True if and only if preferences dialog was shown to user which
+     *         means that the credentials were potentially updated.
+     */
+    public Boolean handleNotAuthorizedException(NotAuthorizedException exception) {
+        // create custom error message with the option to open the preferences dialog
+        MessageDialog messageDialog = new MessageDialog(
+                getShell(),
+                Messages.getString("Error"), //$NON-NLS-1$
+                null,
+                (exception.getLocalizedMessage()
+                        + "\n\n" //$NON-NLS-1$
+                        + Messages.getString("Please check your username and password settings in the preferences dialog.")), //$NON-NLS-1$
+                MessageDialog.ERROR,
+                new String[] {
+                        Messages.getString("Go to preferences"), //$NON-NLS-1$
+                        Messages.getString("Cancel") //$NON-NLS-1$
+                },
+                0);
+        
+        int buttonClicked = messageDialog.open();
+        switch(buttonClicked) {
+        case 0: // go to preferences
+            showPreferenceDialog(true);
+            return true;
+            
+        case 1: // cancel
+            // TODO: need to disable all features in the client that are
+            // dependent on a correctly working connection
+            return false;
+        }
+        return false;
     }
 
     // #########################################################################
