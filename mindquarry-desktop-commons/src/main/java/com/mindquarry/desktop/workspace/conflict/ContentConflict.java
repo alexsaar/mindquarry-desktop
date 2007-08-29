@@ -84,20 +84,12 @@ public class ContentConflict extends Conflict {
             break;
             
         case USE_LOCAL:
-            // copy local changes to main file
-            parent = new File(status.getPath()).getParentFile();
-            File localFile = new File(parent, status.getConflictWorking());
-            
-            conflictFile = new File(status.getPath());
-            FileHelper.delete(conflictFile);
-            FileHelper.renameTo(localFile, conflictFile);
-            
+            // just keep the local file
             break;
             
         case MERGE:
-            // TODO: GUI callback ??
-            log.error("content conflict merge not implemented yet");
-            return;
+            // all work (except resolving) is done in the GUI class
+        	break;
         }
         
         client.resolved(status.getPath(), false);
