@@ -83,8 +83,12 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
     @Override
     protected String getMessage() {
-        return Messages.getString("Somebody else modified the file you are trying to synchronize. " +
-                "Please select the version that should be treated as the current version.");
+    	// TODO: move the information about which user made the change to
+    	// AbstractConflictDialog so (almost) all other dialogs can show it, too: 
+        return Messages.getString("The file you are trying to synchronize was modified on the server. " +
+                "Please select the version that should be treated as the current version. ")
+                + Messages.getString("Latest change on the server was done by user: ") +
+                conflict.getStatus().getLastCommitAuthor();
     }
 
     @Override
