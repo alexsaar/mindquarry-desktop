@@ -69,42 +69,64 @@ public class ModificationDescription {
     }
     
     public static ModificationDescription getDescription(int localStatus, int remoteStatus) {
-        if (localStatus == StatusKind.obstructed) {
+        // checking local status first
+        switch (localStatus) {
+        case StatusKind.obstructed:
             // FIXME: add question mark icon
-        } else if (localStatus == StatusKind.added
-                || localStatus == StatusKind.unversioned) {
+            break;
+
+        case StatusKind.added:
+        case StatusKind.unversioned:
+            if (remoteStatus == StatusKind.added) {
+                // TODO: show upload icon with "+" sign
+                return new ModificationDescription(conflictImage,
+                        Messages.getString("This new file/directory has also been added on the server."));
+            }
+
             // TODO: show upload icon with "+" sign
-            return new ModificationDescription(uploadImage, 
+            return new ModificationDescription(uploadImage,
                     Messages.getString("This new file/directory will be uploaded to the server."));
-        } else if (localStatus == StatusKind.modified && remoteStatus == StatusKind.modified) {
-            // we cannot decide here if SVN can merge the changes for us,
-            // so show a conflict:
-            return new ModificationDescription(conflictImage,
-                    CONFLICT_TEXT);
-        } else if (localStatus == StatusKind.modified) {
+
+        case StatusKind.modified:
+            if (remoteStatus == StatusKind.modified) {
+                // we cannot decide here if SVN can merge the changes for us,
+                // so show a conflict:
+                return new ModificationDescription(conflictImage, CONFLICT_TEXT);
+            }
             return new ModificationDescription(uploadImage,
                     Messages.getString("Your changes of this item will be uploaded to the server."));
-        } else if (remoteStatus == StatusKind.modified) {
-            return new ModificationDescription(downloadImage,
-                    Messages.getString("This item has been modified on the server, " +
-                    		"the new version will be downloaded."));
-        } else if (remoteStatus == StatusKind.added) {
-            return new ModificationDescription(downloadImage,
-                    Messages.getString("This item is new on the server, " +
-                    		"it will be downloaded."));
-        } else if (localStatus == StatusKind.deleted || localStatus == StatusKind.missing) {
+            
+        case StatusKind.deleted:
+        case StatusKind.missing:
             return new ModificationDescription(deleteImage,
                     Messages.getString("This item has been deleted or moved locally. " +
                     		"It will be deleted on the server."));
-        } else if (remoteStatus == StatusKind.deleted) {
+
+        case StatusKind.conflicted:
+            return new ModificationDescription(conflictImage, CONFLICT_TEXT);
+        }
+        
+        // checking remote status
+        switch (remoteStatus) {
+        case StatusKind.modified:
+            return new ModificationDescription(downloadImage,
+                    Messages.getString("This item has been modified on the server, " +
+                    "the new version will be downloaded."));
+
+        case StatusKind.added:
+            return new ModificationDescription(downloadImage,
+                    Messages.getString("This item is new on the server, " +
+                    "it will be downloaded."));
+            
+        case StatusKind.deleted:
             return new ModificationDescription(deleteImage,
                     Messages.getString("This item has been deleted or moved on the server. " +
-                    		"It will be deleted locally."));
-        } else if (localStatus == StatusKind.conflicted) {
-            return new ModificationDescription(conflictImage, CONFLICT_TEXT);
-        } else if (localStatus != -1 || remoteStatus != -1) {
-            log.warn("No icon set for local/remote status " + localStatus 
-                    + "/" + remoteStatus);
+                    "It will be deleted locally."));
+        }
+
+        if (localStatus != -1 || remoteStatus != -1) {
+            log.warn("Unhandled case for local/remote status "
+                    + localStatus + "/" + remoteStatus);
         }
         return new ModificationDescription(null, "");
     }
