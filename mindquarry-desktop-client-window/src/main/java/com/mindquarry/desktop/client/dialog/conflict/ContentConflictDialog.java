@@ -25,6 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,11 +62,13 @@ public class ContentConflictDialog extends AbstractConflictDialog {
     
 	private File mergedVersion = null;
 	private File mergedVersionTarget = null;
-	private Button mergeButton;
+	private Button startMergeButton;
 
 	// files used when merging versions with MS Word, will 
 	// may be deleted at the end:
 	private List<File> tempFiles = new ArrayList<File>();
+
+	private Button mergeButton;
 
     public ContentConflictDialog(ContentConflict conflict, Shell shell) {
         super(shell);
@@ -118,7 +121,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 okButton.setEnabled(true);
-                mergeButton.setEnabled(false);
+                startMergeButton.setEnabled(false);
             }
         });
                 
@@ -128,29 +131,29 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 okButton.setEnabled(true);
-                mergeButton.setEnabled(false);
+                startMergeButton.setEnabled(false);
             }
         });
 
         if (offerMSWordMerge) {
-            final Button button3 = makeRadioButton(subComposite,
+            mergeButton = makeRadioButton(subComposite,
                     MANUALLY_MERGE_TEXT,  //$NON-NLS-1$
                     ContentConflict.Action.MERGE);
-			button3.setText(MANUALLY_MERGE_TEXT);
-            button3.addListener(SWT.Selection, new Listener() {
+			mergeButton.setText(MANUALLY_MERGE_TEXT);
+            mergeButton.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     okButton.setEnabled(false);
-                    mergeButton.setEnabled(true);
+                    startMergeButton.setEnabled(true);
                 }
             });
             
             Label mergeHelp = new Label(subComposite, SWT.NONE);
             mergeHelp.setText(MANUALLY_MERGE_HELP);
 
-            mergeButton = new Button(subComposite, SWT.BUTTON1);
-			mergeButton.setText(Messages.getString("Start MS Word"));  //$NON-NLS-1$
-            mergeButton.setEnabled(false);
-            mergeButton.addListener(SWT.Selection, new MergeButtonListener());
+            startMergeButton = new Button(subComposite, SWT.BUTTON1);
+			startMergeButton.setText(Messages.getString("Start MS Word"));  //$NON-NLS-1$
+            startMergeButton.setEnabled(false);
+            startMergeButton.addListener(SWT.Selection, new MergeButtonListener());
         }
     }
 
@@ -191,7 +194,24 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         log.debug("Calling merge script: " + Arrays.toString(cmdArray));
 
     	Runtime rt = Runtime.getRuntime();
-    	rt.exec(cmdArray);
+    	Process proc = rt.exec(cmdArray);
+    	int exitValue = -1;
+		try {
+			exitValue = proc.waitFor();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e.toString(), e);
+		}
+    	log.debug("Exit value " + exitValue);
+		if (exitValue != 0) {
+			mergeButton.setEnabled(false);
+			startMergeButton.setEnabled(false);
+			okButton.setEnabled(true);	// let user continue with other option
+			MessageDialog.openError(getShell(), 
+					Messages.getString("Error executing MS Word"),
+					Messages.getString("The script used to merge documents " +
+							"using MS Word could not be started. The exit " +
+							"code was ") + exitValue);
+		}
     }
     
     public static String loadInputStream(InputStream inputStream) throws IOException {
@@ -236,7 +256,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 		public void handleEvent(Event event) {
         	if (buttonStatusDone) {
         		okButton.setEnabled(true);
-        		mergeButton.setEnabled(false);
+        		startMergeButton.setEnabled(false);
             	try {
 					FileUtils.copyFile(mergedVersion, mergedVersionTarget);
 					for (File tempFile : tempFiles) {
@@ -249,7 +269,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         	} else {
         		okButton.setEnabled(false);
         		buttonStatusDone = true;
-            	mergeButton.setText(Messages.getString("Done"));  //$NON-NLS-1$
+            	startMergeButton.setText(Messages.getString("Done"));  //$NON-NLS-1$
             	Status status = conflict.getStatus();
             	String parentDir = new File(status.getPath()).getParent();
 				try {
