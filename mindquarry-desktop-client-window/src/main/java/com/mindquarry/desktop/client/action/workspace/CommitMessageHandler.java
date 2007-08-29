@@ -38,6 +38,7 @@ public class CommitMessageHandler implements CommitMessage {
 
     public String getLogMessage(CommitItem[] elementsToBeCommited) {
         // TODO: show all elements to be commited
+    	// TODO: show multiline dialog
         final InputDialog dlg = new InputDialog(shell,
                 Messages.getString("Commit message"),
                 // TODO: add argument to i18n class:
