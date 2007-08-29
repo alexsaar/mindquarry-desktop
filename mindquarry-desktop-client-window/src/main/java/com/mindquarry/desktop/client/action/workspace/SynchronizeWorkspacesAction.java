@@ -138,6 +138,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             // cancel clicked in commit message dialog , don't show error:
                             log.info("synchronization cancelled (2)");
                             cancelled = true;
+                        } else if (e.getCause() != null
+                                && e.getCause().getClass() == SynchronizeCancelException.class) {
+                            // cancel clicked in content conflict dialog, don't show error:
+                            log.info("synchronization cancelled (3)");
+                            cancelled = true;
                         } else {
                             log.error(e.toString(), e);
                             cancelled = true;
