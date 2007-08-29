@@ -42,8 +42,8 @@ public class PreferencesAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Options"));//$NON-NLS-1$
-		setToolTipText(Messages.getString("Open settings dialog of the desktop client."));//$NON-NLS-1$
+		setText(Messages.getString("Preferences"));//$NON-NLS-1$
+		setToolTipText(Messages.getString("Open preferences dialog including server profile settings"));//$NON-NLS-1$
 		setAccelerator(SWT.CTRL + 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

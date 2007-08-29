@@ -59,7 +59,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Synchronize workspaces"));
+        setText(Messages.getString("Synchronize"));
         setToolTipText(Messages
                 .getString("Synchronize workspaces with your desktop."));
         setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');

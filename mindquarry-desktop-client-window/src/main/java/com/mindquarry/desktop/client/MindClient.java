@@ -60,6 +60,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.action.ImageAndTextToolbarManager;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
@@ -298,7 +299,7 @@ public class MindClient extends ApplicationWindow {
     // ### PROTECTED METHODS
     // #########################################################################
     protected ToolBarManager createToolBarManager(int style) {
-        ToolBarManager manager = super.createToolBarManager(style);
+        ToolBarManager manager = new ImageAndTextToolbarManager(style);
 
         // create toolbar groups
         manager.add(new GroupMarker(ActionBase.WORKSPACE_ACTION_GROUP));

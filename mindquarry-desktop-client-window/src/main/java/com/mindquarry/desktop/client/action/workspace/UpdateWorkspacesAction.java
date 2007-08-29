@@ -46,8 +46,8 @@ public class UpdateWorkspacesAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Update changes"));
-        setToolTipText(Messages.getString("Update the list of changes"));
+        setText(Messages.getString("Refresh"));
+        setToolTipText(Messages.getString("Refresh the list of file changes"));
         setAccelerator(SWT.CTRL + +SWT.SHIFT + 'U');
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }

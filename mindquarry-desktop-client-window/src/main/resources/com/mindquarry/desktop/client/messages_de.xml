@@ -98,8 +98,8 @@
         <translation>Dieses Objekt wurde auf dem Server geändert, die neue Version wird heruntergeladen.</translation>
     </message>
     <message>
-        <source>Update changes</source>
-        <translation>Änderungsliste aktualisieren</translation>
+        <source>Refresh</source>
+        <translation>Aktualisieren</translation>
     </message>
     <message>
         <source>Rename file and upload it under the new name</source>
@@ -146,7 +146,7 @@
         <translation>Aufgabe bearbeiten</translation>
     </message>
     <message>
-        <source>Refresh task list</source>
+        <source>Refreshes the task list</source>
         <translation>Aufgabenliste aktualisieren</translation>
     </message>
     <message>
@@ -238,16 +238,16 @@
         <translation>Dateiänderungen</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Optionen</translation>
+        <source>Preferences</source>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <source>Updating task list</source>
         <translation>Aktualisiere Aufgabenliste</translation>
     </message>
     <message>
-        <source>Synchronize workspaces</source>
-        <translation>Arbeitsbereiche synchronisieren</translation>
+        <source>Synchronize</source>
+        <translation>Synchronisieren</translation>
     </message>
     <message>
         <source>Remove obstructing file and download original from server</source>
@@ -326,8 +326,8 @@
         <translation>Die Datei, die Sie auf den Server hochladen wollen, wurde auf dem Server geändert. Bitte wählen Sie die Version, die ab jetzt benutzt werden soll. </translation>
     </message>
     <message>
-        <source>Update the list of changes</source>
-        <translation>Liste der Änderungen aktualisieren</translation>
+        <source>Refresh the list of file changes</source>
+        <translation>Liste der Dateiänderungen aktualisieren</translation>
     </message>
     <message>
         <source>Use your local version of the file</source>
@@ -342,8 +342,8 @@
         <translation>Liste der Teams konnte nicht aktualisiert werden.</translation>
     </message>
     <message>
-        <source>Open settings dialog of the desktop client.</source>
-        <translation>Öffne den Dialog zum Verändern der Desktop-Client Einstellungen.</translation>
+        <source>Open preferences dialog including server profile settings</source>
+        <translation>Öffnet den Einstellungsdialog inklusive der Konfiguration von Serverprofilen</translation>
     </message>
     <message>
         <source>One of the local files you want to upload already exists on the server. This case can occur if you created a file or renamed an existing file and someone else created the file in between (by creating it or renaming an existing file).</source>

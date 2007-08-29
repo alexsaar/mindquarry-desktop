@@ -45,8 +45,8 @@ public class SynchronizeTasksAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Refresh task list"));
-		setToolTipText(Messages.getString("Refresh the list of tasks."));
+		setText(Messages.getString("Refresh"));
+		setToolTipText(Messages.getString("Refreshes the task list"));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
