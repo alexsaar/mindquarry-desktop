@@ -95,6 +95,7 @@ public class MindClient extends ApplicationWindow {
             + "/mindclient.settings"; //$NON-NLS-1$
 
     public static final String CLIENT_IMG_KEY = "client-icon";
+    public static final String CLIENT_TRAY_IMG_KEY = "client-tray-icon";
 
     public static final String TASK_TITLE_FONT_KEY = "task-title";
     public static final String TEAM_NAME_FONT_KEY = "team-name";
@@ -444,11 +445,25 @@ public class MindClient extends ApplicationWindow {
     private void initRegistries() {
         ImageRegistry reg = JFaceResources.getImageRegistry();
 
-        Image img = new Image(
+        Image img;
+        if (SVNFileUtil.isOSX) {
+            img = new Image(
+                    Display.getCurrent(),
+                    MindClient.class
+                            .getResourceAsStream("/com/mindquarry/icons/128x128/logo/mindquarry-icon.png")); //$NON-NLS-1$
+        } else {
+            img = new Image(
+                    Display.getCurrent(),
+                    MindClient.class
+                            .getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
+        }
+        reg.put(CLIENT_IMG_KEY, img);
+        
+        Image trayImg = new Image(
                 Display.getCurrent(),
                 MindClient.class
                         .getResourceAsStream("/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
-        reg.put(CLIENT_IMG_KEY, img);
+        reg.put(CLIENT_TRAY_IMG_KEY, trayImg);
 
         FontRegistry fReg = JFaceResources.getFontRegistry();
         fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
@@ -463,7 +478,7 @@ public class MindClient extends ApplicationWindow {
         Shell shell = new Shell(display);
 
         trayItem = new TrayItem(tray, SWT.NONE);
-        trayItem.setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
+        trayItem.setImage(JFaceResources.getImage(CLIENT_TRAY_IMG_KEY));
 
         trayMenu = new Menu(shell, SWT.POP_UP);
         
