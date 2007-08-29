@@ -226,7 +226,7 @@
         <translation>Eine lokal ersetzte Datei/Verzeichnis (svn delete + svn add) wurde von jemand anderem auf dem Server geändert.</translation>
     </message>
     <message>
-        <source>Somebody else modified the property you are trying to synchronize.Please select the version that should be treated as the current version.</source>
+        <source>Somebody else modified the property you are trying to synchronize. Please select the version that should be treated as the current version.</source>
         <translation>Jemand hat die Datei-Eigenschaften der Datei, die Sie hochladen wollen, auf dem Server geändert. Bitte wählen Sie die Version, mit der weitergearbeitet werden soll.</translation>
     </message>
     <message>
@@ -459,7 +459,7 @@
     </message>
     <message>
         <source>Deselect All</source>
-        <translation>Nichts auswählen</translation>
+        <translation>Keine auswählen</translation>
     </message>
 </context>
 </TS>
