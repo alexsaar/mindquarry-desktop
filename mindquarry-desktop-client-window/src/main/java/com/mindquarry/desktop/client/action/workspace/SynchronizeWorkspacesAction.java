@@ -30,7 +30,6 @@ import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
-import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
 /**
  * Trigger workspace synchronization, i.e. SVN update + commit.
@@ -158,8 +157,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             });                        
                         }
                     }
-                    client.stopAction(Messages
-                            .getString(SYNC_WORKSPACE_MESSAGE));
+                    client.stopAction(SYNC_WORKSPACE_MESSAGE);
 
                     if (cancelled) {
                         workspaceWidget.updateContainer(false, null, null, false);
