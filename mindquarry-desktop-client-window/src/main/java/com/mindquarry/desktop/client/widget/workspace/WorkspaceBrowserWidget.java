@@ -166,7 +166,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     private void getAllChanges(Profile selected,
             Map<File, Integer> localChanges, Map<File, Integer> remoteChanges) {
         try {
-            System.err.println(">>> getAllChanges"); // TODO
+            log.debug("getting all changes");
             final List<Team> selectedTeams = new ArrayList<Team>();
             Display.getDefault().syncExec(new Runnable() {
                 public void run() {
