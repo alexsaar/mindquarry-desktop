@@ -23,8 +23,8 @@ sTheirDoc = objArgs(1);  // eg. file.doc.rXXX
 try {
 	word = WScript.CreateObject("Word.Application");
 } catch(e) {
-	Wscript.Echo("You must have Microsoft Word installed to perform this operation.");
-	Wscript.Quit(2);
+	WScript.Echo("You must have Microsoft Word installed to perform this operation.");
+	WScript.Quit(2);
 }
 
 word.visible = true
