@@ -14,7 +14,6 @@
 package com.mindquarry.desktop.client;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -67,7 +66,6 @@ import com.mindquarry.desktop.client.action.app.PreferencesAction;
 import com.mindquarry.desktop.client.action.app.ShowMainWindowAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
-import com.mindquarry.desktop.client.mac.CarbonUIEnhancer;
 import com.mindquarry.desktop.client.widget.app.CategoryWidget;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
@@ -340,13 +338,10 @@ public class MindClient extends ApplicationWindow {
         return parent;
     }
 
-    /**
-     * 
-     */
     private void initMacIfAvailable() {
-        if (SVNFileUtil.isOSX) {
-            CarbonUIEnhancer mac = new CarbonUIEnhancer(this);
-        }
+//        if (SVNFileUtil.isOSX) {
+//            CarbonUIEnhancer mac = new CarbonUIEnhancer(this);
+//        }
     }
 
     public void enableActions(boolean enabled, String group) {
