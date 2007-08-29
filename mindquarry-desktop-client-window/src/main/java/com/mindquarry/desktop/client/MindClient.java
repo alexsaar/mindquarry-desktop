@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import java.util.List;
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
@@ -64,6 +67,7 @@ import com.mindquarry.desktop.client.action.app.PreferencesAction;
 import com.mindquarry.desktop.client.action.app.ShowMainWindowAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
 import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
+import com.mindquarry.desktop.client.mac.CarbonUIEnhancer;
 import com.mindquarry.desktop.client.widget.app.CategoryWidget;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
@@ -86,6 +90,8 @@ public class MindClient extends ApplicationWindow {
     // #########################################################################
     // ### CONSTANTS & STATIC MEMBERS
     // #########################################################################
+    private static final Log log = LogFactory.getLog(MindClient.class);
+    
     public static final String ID = MindClient.class.getSimpleName();
     public static final String APPLICATION_NAME = "Mindquarry Desktop Client";
     public static final String CONTEXT_FILE = "/com/mindquarry/desktop/client/client-context.xml";
@@ -150,6 +156,7 @@ public class MindClient extends ApplicationWindow {
      *            the command line arguments
      */
     public static void main(String[] args) {
+        
         // show splash
         SplashScreen splash = SplashScreen.newInstance(5);
         splash.show();
@@ -174,6 +181,7 @@ public class MindClient extends ApplicationWindow {
         client.checkArguments(args);
         splash.step();
 
+        client.initMacIfAvailable();
         client.open();
     }
 
@@ -328,7 +336,24 @@ public class MindClient extends ApplicationWindow {
         getShell().setSize(800, 600);
 
         createTrayIconAndMenu(Display.getDefault());
+        
         return parent;
+    }
+
+    /**
+     * 
+     */
+    private void initMacIfAvailable() {
+        if (SVNFileUtil.isOSX) {
+            CarbonUIEnhancer mac = new CarbonUIEnhancer(this);
+//            try {
+//                Class c = ClassLoader.getSystemClassLoader().loadClass("com.mindquarry.desktop.client.mac.MacApplication");
+//                Method m = c.getMethod("init");
+//                m.invoke(null);
+//            } catch (Exception e) {
+//                log.warn("Could not initialize Mac specific features", e);
+//            }
+        }
     }
 
     public void enableActions(boolean enabled, String group) {
