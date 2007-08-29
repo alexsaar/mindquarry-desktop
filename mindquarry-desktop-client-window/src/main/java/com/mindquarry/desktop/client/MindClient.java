@@ -327,6 +327,11 @@ public class MindClient extends ApplicationWindow {
         categoryWidget = new CategoryWidget(sashForm, SWT.NONE, this);
         sashForm.setWeights(new int[] { 1, 3 });
 
+        ((UpdateWorkspacesAction) getAction(UpdateWorkspacesAction.class
+                .getName())).setTeamList(teamList);
+        ((SynchronizeTasksAction) getAction(SynchronizeTasksAction.class
+                .getName())).setTeamList(teamList);
+        
         // initialize window shell
         Window.setDefaultImage(JFaceResources.getImage(CLIENT_IMG_KEY));
         getShell().addShellListener(new IconifyingShellListener());

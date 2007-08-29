@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.team;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,12 +200,18 @@ public class TeamlistWidget extends WidgetBase {
             }
             
             return null;
-        } catch (Exception e) {
+        } catch (UnknownHostException uhe) {
+            log.error("Error while updating team list at " //$NON-NLS-1$
+                    + selected.getServerURL(), uhe);
             MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Could not update team list.")); //$NON-NLS-1$
+                    Messages.getString("Unknown server: ") + uhe.getLocalizedMessage()); //$NON-NLS-1$
+            return null;
+        } catch (Exception e) {
             // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
+            MessageDialog.openError(getShell(), Messages.getString("Error"),
+                    Messages.getString("Could not update team list: ") + e.getLocalizedMessage()); //$NON-NLS-1$
             return null;
         }
     }

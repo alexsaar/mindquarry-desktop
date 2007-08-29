@@ -338,8 +338,8 @@
         <translation>MindClient-Einstellungen konnten nicht gespeichert werden</translation>
     </message>
     <message>
-        <source>Could not update team list.</source>
-        <translation>Liste der Teams konnte nicht aktualisiert werden.</translation>
+        <source>Could not update team list: </source>
+        <translation>Liste der Teams konnte nicht aktualisiert werden: </translation>
     </message>
     <message>
         <source>Open preferences dialog including server profile settings</source>
@@ -460,6 +460,10 @@
     <message>
         <source>Deselect All</source>
         <translation>Keine auswählen</translation>
+    </message>
+    <message>
+        <source>Unknown server: </source>
+        <translation>Unbekannter server: </translation>
     </message>
 </context>
 </TS>

@@ -22,6 +22,7 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
+import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 
 /**
  * Add summary documentation here.
@@ -31,6 +32,8 @@ import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
  */
 public class SynchronizeTasksAction extends ActionBase {
     public static final String ID = SynchronizeTasksAction.class.getSimpleName();
+
+    private TeamlistWidget teamList;
 
 	private TaskContainerWidget taskContainer;
 
@@ -52,12 +55,17 @@ public class SynchronizeTasksAction extends ActionBase {
 	}
 
 	public void run() {
+	    teamList.refresh();
 	    taskContainer.asyncRefresh();
 	}
 
 	public void setTaskContainer(TaskContainerWidget taskContainer) {
 		this.taskContainer = taskContainer;
 	}
+
+    public void setTeamList(TeamlistWidget teamList) {
+        this.teamList = teamList;
+    }
 
     public String getGroup() {
         return ActionBase.TASK_ACTION_GROUP;

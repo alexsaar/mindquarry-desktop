@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 
 /**
@@ -34,6 +35,8 @@ public class UpdateWorkspacesAction extends ActionBase {
             .getSimpleName();
 
     private WorkspaceBrowserWidget workspaceWidget;
+
+    private TeamlistWidget teamList;
 
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
@@ -56,6 +59,7 @@ public class UpdateWorkspacesAction extends ActionBase {
             .getString("Refreshing workspaces changes ...");
 
     public void run() {
+        teamList.refresh();
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
@@ -88,6 +92,10 @@ public class UpdateWorkspacesAction extends ActionBase {
 
     public boolean isToolbarAction() {
         return true;
+    }
+
+    public void setTeamList(TeamlistWidget teamList) {
+        this.teamList = teamList;
     }
 
     public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {

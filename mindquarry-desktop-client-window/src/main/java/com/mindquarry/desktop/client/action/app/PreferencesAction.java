@@ -49,7 +49,7 @@ public class PreferencesAction extends ActionBase {
 	}
 
 	public void run() {
-		client.showPreferenceDialog(false);
+		client.showPreferenceDialog(true);
 	}
 	
 	public String getGroup() {
