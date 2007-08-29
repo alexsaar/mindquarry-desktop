@@ -38,7 +38,7 @@ public class TranslationMessageParser extends DefaultHandler {
         if ("source".equals(qName)) {
             inSource = false;
         } else if ("translation".equals(qName)) {
-            translationMap.put(sourceSB.toString().trim(), translationSB.toString().trim());
+            translationMap.put(sourceSB.toString(), translationSB.toString());
             sourceSB = new StringBuilder();
             translationSB = new StringBuilder();
             inSource = false;

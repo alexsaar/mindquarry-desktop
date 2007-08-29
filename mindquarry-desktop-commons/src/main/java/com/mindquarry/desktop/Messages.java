@@ -13,18 +13,17 @@
  */
 package com.mindquarry.desktop;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 import com.mindquarry.desktop.util.TranslationMessageParser;
@@ -36,6 +35,8 @@ import com.mindquarry.desktop.util.TranslationMessageParser;
  * @author dnaber
  */
 public class Messages {
+
+    private static Log log = LogFactory.getLog(Messages.class);
 
     private static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/messages_"; //$NON-NLS-1$
     private static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
@@ -50,11 +51,7 @@ public class Messages {
         if (translationMap == null) {
             translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
-        String translation = translationMap.get(key);
-        if (translation == null) {
-            return key;
-        }
-        return translation;
+        return getTranslation(key, translationMap);
     }
     
     protected static Map<String, String> initTranslationMap(String fileBase, String fileSuffix) {
@@ -79,5 +76,21 @@ public class Messages {
             throw new RuntimeException(e.toString(), e);
         }
     }
-        
+     
+    protected static String getTranslation(String key,
+            Map<String, String> translationMap) {
+        String translation = translationMap.get(key);
+        if (translation == null) {
+            // line breaks are entered as "\n" (literally) but we get them as a line
+            // break form the parser:
+            translation = translationMap.get(key.replace("\n", "\\n"));
+            if (translation == null) {
+                log.debug("No translation found for '" +key+ "'");
+                return key;
+            }
+            return translation.replace("\\n", "\n");
+        }
+        return translation;
+    }
+
 }
