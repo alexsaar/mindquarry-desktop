@@ -147,7 +147,8 @@ public class WorkspaceUpdateContainerRunnable extends
         TreeViewerColumn col = new TreeViewerColumn(
                 containerWidget.getViewer(), SWT.LEFT);
         col.getColumn().setText("Name");
-        col.getColumn().setWidth(containerWidget.getClientArea().width - 34);
+        System.out.println("width = " + containerWidget.getClientArea().width);
+        col.getColumn().setWidth(400);
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
