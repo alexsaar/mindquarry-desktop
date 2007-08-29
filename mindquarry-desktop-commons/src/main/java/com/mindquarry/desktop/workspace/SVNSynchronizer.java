@@ -301,7 +301,12 @@ public class SVNSynchronizer {
                     // update the svn:ignore property by appending a new line
                     // with the filename to be ignored (on the parent folder!)
                     PropertyData ignoreProp = client.propertyGet(file.getParent(), PropertyData.IGNORE);
-                    ignoreProp.setValue(mergeIgnoreProperty(ignoreProp, file.getName()), false);
+
+                    if (ignoreProp == null) { // create ignore property
+                        client.propertyCreate(file.getParent(), PropertyData.IGNORE, file.getName(), false);
+                    } else { // merge ignore property
+                        ignoreProp.setValue(mergeIgnoreProperty(ignoreProp, file.getName()), false);
+                    }
                 } else {
                     log.debug("unversioned item (add now): " + s.getPath());
                     
@@ -337,11 +342,21 @@ public class SVNSynchronizer {
     }
     
     /**
-     * Merge a new value with an existing property value.
+     * Merge a new value with an existing or non-existing property value.
      */
     private String mergeIgnoreProperty(PropertyData property, String newValue) {
         List<String> mergedValues = new ArrayList<String>();
-        mergedValues.addAll(Arrays.asList(property.getValue().split("\\n|\\r\\n")));
+        
+        // Note: property might be null, as well as property.getValue()
+        if (property == null) {
+            return newValue;
+        }
+        String propVal = property.getValue();
+        if (propVal == null) {
+            return newValue;
+        } else {
+            mergedValues.addAll(Arrays.asList(propVal.split("\\n|\\r\\n")));
+        }
         
         if(!mergedValues.contains(newValue)) {
             mergedValues.add(newValue);
