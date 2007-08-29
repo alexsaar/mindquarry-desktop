@@ -264,7 +264,15 @@ public class SVNSynchronizer {
                 // cannot be diagnosed without asking the server for status
                 // information.
                 Status remoteStatus = client.singleStatus(s.getPath(), true);
-                if (remoteStatus.getReposLastCmtRevisionNumber() < 0) {
+                long remoteRev = -1;
+                if (s.getNodeKind() == NodeKind.dir) {
+                    // getReposLastCmtRevisionNumber() does not properly work with files:
+                    remoteRev = remoteStatus.getReposLastCmtRevisionNumber();
+                } else {
+                    // getLastChangedRevisionNumber() does not properly work with directories:
+                    remoteRev = remoteStatus.getLastChangedRevisionNumber();
+                }
+                if (remoteRev < 0) {
                     log.debug("missing item that was locally added: " + s.getPath());
                     
                     // locally added -> undo add
