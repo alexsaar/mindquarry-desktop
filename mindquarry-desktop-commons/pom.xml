@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>com.svnkit</groupId>
 			<artifactId>svnkit</artifactId>
-			<version>1.1.0-Mindquarry_5</version>
+			<version>1.1.0-Mindquarry_6</version>
 		</dependency>
 	</dependencies>
 
