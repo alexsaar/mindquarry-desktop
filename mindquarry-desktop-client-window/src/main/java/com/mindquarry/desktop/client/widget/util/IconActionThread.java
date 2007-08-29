@@ -74,7 +74,12 @@ public class IconActionThread extends Thread {
                 final Image icon = getImage(count);
                 shell.getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        item.setImage(icon);
+                        // check if still running, otherwise reset icon
+                        if (running) {
+                            item.setImage(icon);
+                        } else {
+                            item.setImage(getImage(10));
+                        }
                     }
                 });
                 // check next modus and switch, if necessary
