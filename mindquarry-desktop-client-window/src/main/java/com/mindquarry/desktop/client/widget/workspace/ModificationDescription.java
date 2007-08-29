@@ -78,7 +78,7 @@ public class ModificationDescription {
         case StatusKind.added:
         case StatusKind.unversioned:
             if (remoteStatus == StatusKind.added) {
-                // TODO: show upload icon with "+" sign
+                // TODO: show conflict icon with "+" sign
                 return new ModificationDescription(conflictImage,
                         Messages.getString("This new item has also been added on the server. "
                                 +"You will nee to resolve the conflict."));

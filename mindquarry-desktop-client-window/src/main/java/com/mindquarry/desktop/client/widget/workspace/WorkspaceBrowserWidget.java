@@ -259,6 +259,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             // may happen on very first checkout (before checkout, actually)
             // may happen on network timeout
             // may happen on wrong credentials
+            // may happen on wrong server url
             
             // list of seen apr errors:
             // 175002: connection refused
