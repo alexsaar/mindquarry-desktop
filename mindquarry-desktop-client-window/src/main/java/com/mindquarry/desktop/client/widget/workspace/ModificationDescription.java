@@ -80,12 +80,13 @@ public class ModificationDescription {
             if (remoteStatus == StatusKind.added) {
                 // TODO: show upload icon with "+" sign
                 return new ModificationDescription(conflictImage,
-                        Messages.getString("This new file/directory has also been added on the server."));
+                        Messages.getString("This new item has also been added on the server. "
+                                +"You will nee to resolve the conflict."));
             }
 
             // TODO: show upload icon with "+" sign
             return new ModificationDescription(uploadImage,
-                    Messages.getString("This new file/directory will be uploaded to the server."));
+                    Messages.getString("This new item will be uploaded to the server."));
 
         case StatusKind.modified:
             if (remoteStatus == StatusKind.modified) {
