@@ -50,7 +50,7 @@ public abstract class AbstractConflictDialog extends TitleAreaDialog {
     public AbstractConflictDialog(Shell shell) {
         super(shell);
         setBlockOnOpen(true);
-        setShellStyle(SWT.RESIZE);
+        setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
     }
 
     // other methods
