@@ -22,4 +22,8 @@ public class SynchronizeException extends Exception {
         super(msg, cause);
     }
 
+    public SynchronizeException(String msg) {
+        super(msg);
+    }
+
 }

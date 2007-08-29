@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
@@ -154,15 +156,22 @@ public class SVNSynchronizer {
         if (isCheckout) {
             synchronize();
         } else {
-            // TODO: check if the directories are empty,
-            // othwise we'd try to check out into a directory
+            // check if the directories are empty,
+            // otherwise we'd try to check out into a directory
             // that contains local files already which causes
             // confusion.
-            try {
-                client.checkout(repositoryURL, localPath, Revision.HEAD, true);
-            } catch (ClientException e) {
-                throw new RuntimeException("Checkout of " +repositoryURL +
-                        " to " +localPath+ " failed", e);
+            Iterator iter = FileUtils.iterateFiles(localPathFile,
+                    TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+            if (iter.hasNext()) {
+                throw new SynchronizeException("Cannot initially checkout into '" +
+                        localPath + "' because it seems not empty.");
+            } else {
+                try {
+                    client.checkout(repositoryURL, localPath, Revision.HEAD, true);
+                } catch (ClientException e) {
+                    throw new RuntimeException("Checkout of " +repositoryURL +
+                            " to " +localPath+ " failed", e);
+                }
             }
         }
 	}
@@ -192,7 +201,7 @@ public class SVNSynchronizer {
 		try {
 		    cleanup();
 			
-			// TODO: local checks only: conflicted and obstructed
+			// local checks only: conflicted and obstructed
 			List<Conflict> localConflicts = analyzeConflictedAndObstructed();
 			handleConflictsBeforeRemoteStatus(localConflicts);
 			
