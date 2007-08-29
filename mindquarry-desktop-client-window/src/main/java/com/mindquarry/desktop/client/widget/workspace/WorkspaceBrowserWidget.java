@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -51,6 +52,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     protected File workspaceRoot;
 
+    // FIXME: these maps currently contain all files of all teams - split this
     protected Map<File, Status> localChanges = new HashMap<File, Status>();
     protected Map<File, Status> remoteChanges = new HashMap<File, Status>();
     // ignore files like "<filename>.r200" that are created in case of conflicts:
@@ -83,8 +85,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         Map<File, Status> newLocalChanges = new HashMap<File, Status>();
         Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
-        if (newLocalChanges.equals(localChanges)
-                && newRemoteChanges.equals(remoteChanges)) {
+        
+        if (changesEqual(newLocalChanges, localChanges, false)
+                && changesEqual(newRemoteChanges, remoteChanges, true)) {
             log.debug("Changes list does not need update");
             return false;
         }
@@ -94,6 +97,38 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             remoteChanges = newRemoteChanges;
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
+        return true;
+    }
+    
+    public boolean changesEqual(Map<File, Status> first, Map<File, Status> second, boolean remote) {
+        if (first == null && second == null) {
+            return true;
+        }
+        if (first == null || second == null) {
+            return false;
+        }
+        if (first.size() != second.size()) {
+            return false;
+        }
+        Set<File> firstKeys = first.keySet();
+        Set<File> secondKeys = second.keySet();
+        if (!firstKeys.equals(secondKeys)) {
+            return false;
+        }
+        for (File file : firstKeys) {
+            Status firstStatus = first.get(file);
+            Status secondStatus = second.get(file);
+            if (remote) {
+                if (firstStatus.getRepositoryTextStatus() != secondStatus.getRepositoryTextStatus()) {
+                    return false;
+                }
+            } else {
+                if (firstStatus.getTextStatus() != secondStatus.getTextStatus()) {
+                    return false;
+                }
+            }
+        }
+        
         return true;
     }
 
