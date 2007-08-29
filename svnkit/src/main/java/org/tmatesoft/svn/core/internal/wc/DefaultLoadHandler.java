@@ -14,6 +14,7 @@ package org.tmatesoft.svn.core.internal.wc;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.CharsetDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,14 +58,16 @@ public class DefaultLoadHandler implements ISVNLoadHandler {
     private SVNDeltaReader myDeltaReader;
     private SVNDeltaGenerator myDeltaGenerator;
     private ISVNDumpHandler myProgressHandler;
+    private CharsetDecoder myDecoder;
     
-    public DefaultLoadHandler(boolean usePreCommitHook, boolean usePostCommitHook, SVNUUIDAction uuidAction, String parentDir, ISVNDumpHandler progressHandler) {
+    public DefaultLoadHandler(boolean usePreCommitHook, boolean usePostCommitHook, SVNUUIDAction uuidAction, String parentDir, ISVNDumpHandler progressHandler, CharsetDecoder decoder) {
         myProgressHandler = progressHandler;
         myIsUsePreCommitHook = usePreCommitHook;
         myIsUsePostCommitHook = usePostCommitHook;
         myUUIDAction = uuidAction;
         myParentDir = SVNPathUtil.canonicalizeAbsPath(parentDir);
         myRevisionsMap = new HashMap();
+        myDecoder = decoder;
     }
     
     public void setFSFS(FSFS fsfs) {
@@ -269,7 +272,7 @@ public class DefaultLoadHandler implements ISVNLoadHandler {
         try {
             while (contentLength != actualLength) {
                 buffer.setLength(0);
-                line = SVNFileUtil.readLineFromStream(dumpStream, buffer);
+                line = SVNFileUtil.readLineFromStream(dumpStream, buffer, myDecoder);
                 
                 if (line == null) {
                     SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.STREAM_MALFORMED_DATA, "Incomplete or unterminated property block");
@@ -294,7 +297,7 @@ public class DefaultLoadHandler implements ISVNLoadHandler {
                     String propName = new String(buff, "UTF-8");
                     
                     buffer.setLength(0);
-                    line = SVNFileUtil.readLineFromStream(dumpStream, buffer);
+                    line = SVNFileUtil.readLineFromStream(dumpStream, buffer, myDecoder);
                     if (line == null) {
                         SVNAdminHelper.generateIncompleteDataError();
                     }
