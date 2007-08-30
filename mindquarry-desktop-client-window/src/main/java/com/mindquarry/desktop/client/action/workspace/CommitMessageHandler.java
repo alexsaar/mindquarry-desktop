@@ -40,9 +40,10 @@ public class CommitMessageHandler implements CommitMessage {
         // TODO: show all elements to be commited
     	// TODO: show multiline dialog
         final InputDialog dlg = new InputDialog(shell,
-                Messages.getString("Commit message"),
+                Messages.getString("Commit message"), //$NON-NLS-1$
                 // TODO: add argument to i18n class:
-                Messages.getString("Please describe your changes for team ") + team + ":",
+                Messages.getString("Please describe your changes for team ") //$NON-NLS-1$
+                    + team.getName() + ":",
                 "",     // the default commit message
                 null);
 
