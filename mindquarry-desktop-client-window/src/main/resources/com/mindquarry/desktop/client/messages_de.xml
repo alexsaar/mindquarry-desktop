@@ -186,8 +186,8 @@
         <translation>Neue Aufgabe</translation>
     </message>
     <message>
-        <source>You have not synchronized yet.\nClick the &apos;Synchronize workspaces&apos; button to download files from the server.</source>
-        <translation>Sie haben noch nicht synchronisiert.\nKlicken Sie &quot;Arbeitsbereiche synchronisieren&quot; um die Dateien erstmalig vom Server herunterzuladen.</translation>
+        <source>You have not synchronized yet.\nClick the &apos;Synchronize&apos; button to download files from the server.</source>
+        <translation>Sie haben noch nicht synchronisiert.\nKlicken Sie &quot;Synchronisieren&quot; um die Dateien erstmalig vom Server herunterzuladen.</translation>
     </message>
     <message>
         <source>Cancel</source>

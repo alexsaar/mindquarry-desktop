@@ -74,7 +74,7 @@ public class UpdateWorkspacesAction extends ActionBase {
                 } else {
                     workspaceWidget.updateContainer(false, null, 
                             Messages.getString("You have not synchronized yet.\n" +
-                            		"Click the 'Synchronize workspaces' button to " +
+                            		"Click the 'Synchronize' button to " +
                             		"download files from the server."), false);
                 }
 
