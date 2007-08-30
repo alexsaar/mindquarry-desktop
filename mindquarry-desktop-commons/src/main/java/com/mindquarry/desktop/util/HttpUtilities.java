@@ -43,6 +43,9 @@ public class HttpUtilities {
     private static final String CONNECTION_ERROR = Messages
             .getString("Unknown connection error. Status code ");
 
+    private static final int SOCKET_TIMEOUT = 30 * 1000;    // milliseconds
+    private static final int CONNECTION_TIMEOUT = 60 * 1000;    // milliseconds
+
     public static InputStream getContentAsXML(String login, String pwd,
             String address) throws NotAuthorizedException, Exception {
         HttpClient client = createHttpClient(login, pwd, address);
@@ -118,6 +121,8 @@ public class HttpUtilities {
         URL url = new URL(address);
 
         HttpClient client = new HttpClient();
+        client.getParams().setSoTimeout(SOCKET_TIMEOUT);
+        client.getParams().setParameter("http.connection.timeout", CONNECTION_TIMEOUT);
         client.getParams().setAuthenticationPreemptive(true);
         client.getState()
                 .setCredentials(
