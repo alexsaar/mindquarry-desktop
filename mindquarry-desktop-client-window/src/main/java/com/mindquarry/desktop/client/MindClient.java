@@ -527,6 +527,7 @@ public class MindClient extends ApplicationWindow {
                         getShell().setVisible(false);
                     } else {
                         getShell().open();
+                        getShell().forceActive();
                     }
                 }
             });
