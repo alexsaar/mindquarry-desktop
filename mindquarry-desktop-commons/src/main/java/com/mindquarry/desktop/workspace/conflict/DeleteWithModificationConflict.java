@@ -96,6 +96,9 @@ public class DeleteWithModificationConflict extends Conflict {
 	 */
 	public static File createTempDir(String prefix, String suffix, File directory)
 	throws IOException {
+        // prefix must be at least 3 characters
+        prefix = "backup_"+prefix;
+
 		// create and immediately delete temporary file using library function
 		File file = File.createTempFile(prefix, suffix, directory);
 		FileHelper.delete(file);
