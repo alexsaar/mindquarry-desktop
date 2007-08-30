@@ -31,9 +31,11 @@ public class AutostartUtilities {
     public static void setAutostart(boolean autostart, String targetPattern) {
         // check if we are on a Windows platform, otherwise skip processing
         String os = System.getProperty("os.name"); //$NON-NLS-1$
-        if (!os.toLowerCase().contains("windows")) { //$NON-NLS-1$ 
+        if (!os.toLowerCase().contains("windows")) { //$NON-NLS-1$
+        	log.debug("not setting autostart, os is not windows: " + os);
             return;
         }
+        log.debug("setting autostart, os: " + os);
         // registry variables
         final int KEY_ALL_ACCESS = 0xf003f;
         final String AUTOSTART_KEY = "Software\\Microsoft\\Windows\\CurrentVersion\\Run"; //$NON-NLS-1$
