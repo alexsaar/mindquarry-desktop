@@ -150,10 +150,16 @@ public class TeamlistWidget extends WidgetBase {
     }
 
     public void refresh() {
+        refresh(false);
+    }
+    
+    public void refresh(boolean selectAll) {
         client.startAction("Updating list of teams");
         viewer.setInput(queryTeams());
 
-        selectAll();
+        if (selectAll) {
+            selectAll();
+        }
         client.stopAction("Updating list of teams");
     }
 

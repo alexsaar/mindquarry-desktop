@@ -640,7 +640,7 @@ public class MindClient extends ApplicationWindow {
     }
 
     private void refreshOnStartup() {
-        teamList.refresh();
+        teamList.refresh(true);
         getAction(UpdateWorkspacesAction.class.getName()).run();
         getAction(SynchronizeTasksAction.class.getName()).run();
     }
