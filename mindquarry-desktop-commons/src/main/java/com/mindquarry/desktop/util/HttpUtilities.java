@@ -52,8 +52,7 @@ public class HttpUtilities {
         if (get.getStatusCode() == 200) {
             result = get.getResponseBodyAsStream();
         } else if (get.getStatusCode() == 401) {
-            throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
-                    address, login, pwd);
+            throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
         } else {
             throw new HttpException(Messages
                     .getString("Unknown connection error. Status code ") //$NON-NLS-1$
@@ -71,8 +70,7 @@ public class HttpUtilities {
         if (get.getStatusCode() == 200) {
             result = get.getResponseBodyAsString();
         } else if (get.getStatusCode() == 401) {
-            throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
-                    address, login, pwd);
+            throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
         } else {
             throw new Exception(CONNECTION_ERROR + get.getStatusCode());
         }
@@ -96,8 +94,7 @@ public class HttpUtilities {
 
 		String id = null;
 		if (put.getStatusCode() == 401) {
-		    throw new NotAuthorizedException(Messages.getString(AUTH_REFUSED),
-                    address, login, pwd);
+		    throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
 		} else if (put.getStatusCode() == 302) {
 			Header locationHeader = put.getResponseHeader("location");
 			if (locationHeader != null) {

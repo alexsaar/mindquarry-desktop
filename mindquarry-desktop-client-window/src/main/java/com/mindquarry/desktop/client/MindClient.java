@@ -161,23 +161,23 @@ public class MindClient extends ApplicationWindow {
         File lockFile = new File(LOCK_FILE);
         if (lockFile.exists()) {
             MessageDialog dlg = new MessageDialog(getShell(),
-                    Messages.getString("Mindquarry Client already running"), null,
-                    Messages.getString("The Mindquarry Desktop Client seems to be running " +
-                    		"already. Only one instance of the Desktop Client can be " +
-                    		"running at a time. If you are sure that the Desktop Client " +
-                    		"isn't running, select 'Start anyway'."), MessageDialog.ERROR, 
-                    new String[]{Messages.getString("Exit"),
-                    Messages.getString("Start anyway")}, 0);
+                    Messages.getString("Mindquarry Client already running"), null, //$NON-NLS-1$
+                    Messages.getString("The Mindquarry Desktop Client seems to be running " + //$NON-NLS-1$
+                    		"already. Only one instance of the Desktop Client can be " + //$NON-NLS-1$
+                    		"running at a time. If you are sure that the Desktop Client " + //$NON-NLS-1$
+                    		"isn't running, select 'Start anyway'."), MessageDialog.ERROR, //$NON-NLS-1$
+                    new String[]{Messages.getString("Exit"), //$NON-NLS-1$
+                    Messages.getString("Start anyway")}, 0); //$NON-NLS-1$
             int result = dlg.open();
             if (result == 0) {
                 System.exit(1);
             } else {
-                log.warn("Starting despite lock file");
+                log.warn("Starting despite lock file"); //$NON-NLS-1$
             }
         } else {
             boolean created = lockFile.createNewFile();
             if (!created) {
-                throw new IOException("Could not create " + lockFile.getAbsolutePath());
+                throw new IOException("Could not create " + lockFile.getAbsolutePath()); //$NON-NLS-1$
             }
         }
         // delete the lockfile, even when it already existed

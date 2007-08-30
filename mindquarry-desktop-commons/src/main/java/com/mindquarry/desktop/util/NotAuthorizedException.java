@@ -48,6 +48,7 @@ public class NotAuthorizedException extends Exception {
     }
     
     public String getLocalizedMessage() {
-        return Messages.getString("Username and/or password not correct for \"") + url + "\".";
+        return Messages.getString("Username and/or password not correct for") //$NON-NLS-1$
+            + " \"" + url + "\"."; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

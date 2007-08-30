@@ -66,8 +66,8 @@
         <translation>Fertig</translation>
     </message>
     <message>
-        <source>Refreshing workspaces changes ...</source>
-        <translation>Aktualisiere Änderungsliste ...</translation>
+        <source>Refreshing workspaces changes</source>
+        <translation>Aktualisiere Änderungsliste</translation>
     </message>
     <message>
         <source>Priority</source>
@@ -107,7 +107,7 @@
     </message>
     <message>
         <source>Filename(s)</source>
-        <translation>Dateinamen</translation>
+        <translation>Dateiname(n)</translation>
     </message>
     <message>
         <source>You are trying to delete a file or directory which someone else modified on the server.</source>
@@ -228,10 +228,6 @@
     <message>
         <source>Somebody else modified the property you are trying to synchronize. Please select the version that should be treated as the current version.</source>
         <translation>Jemand hat die Datei-Eigenschaften der Datei, die Sie hochladen wollen, auf dem Server geändert. Bitte wählen Sie die Version, mit der weitergearbeitet werden soll.</translation>
-    </message>
-    <message>
-        <source>Synchronizing tasks</source>
-        <translation>Synchronisiere Aufgaben</translation>
     </message>
     <message>
         <source>File Changes</source>
@@ -464,6 +460,35 @@
     <message>
         <source>Unknown server: </source>
         <translation>Unbekannter server: </translation>
+    </message>
+    <message>
+        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to reconnect.</source>
+        <translation>Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um erneut zu verbinden.</translation>
+    </message>
+    <message>
+        <source>Running actions:</source>
+        <translation>Laufende Aktionen:</translation>
+    </message>
+    <message>
+        <source>Synchronizing tasks</source>
+        <translation>Synchronisiere Aufgaben</translation>
+    </message>
+    <message>
+        <source>Updating list of teams</source>
+        <translation>Aktualisiere Teamliste</translation>
+    </message>
+    
+    <message>
+        <source>Mindquarry Client already running</source>
+        <translation>Mindquarry-Client läuft bereits</translation>
+    </message>
+    <message>
+        <source>The Mindquarry Desktop Client seems to be running already. Only one instance of the Desktop Client can be running at a time. If you are sure that the Desktop Client isn&apos;t running, select &apos;Start anyway&apos;.</source>
+        <translation>Der Mindquarry Desktop-CLient scheint bereits zu laufen. Es kann jedoch nur eine Instanz des Desktop-Clients gleichzeitig laufen. Wenn Sie sicher sind, dass der Desktop-Client nicht läuft, wählen Sie bitte &apos;Trotzdem starten&apos;</translation>
+    </message>
+    <message>
+        <source>Start anyway</source>
+        <translation>Trotzdem starten</translation>
     </message>
 </context>
 </TS>

@@ -14,8 +14,12 @@
         <translation>URL des Mindquarry-Servers</translation>
     </message>
     <message>
-        <source>Please enter the new profile name</source>
-        <translation>Bitte geben Sie einen neuen Namen für das Profil ein</translation>
+        <source>Please enter the profile name:</source>
+        <translation>Bitte geben Sie einen Namen für das Profil ein:</translation>
+    </message>
+    <message>
+        <source>Please enter the new profile name:</source>
+        <translation>Bitte geben Sie einen neuen Namen für das Profil ein:</translation>
     </message>
     <message>
         <source>Shortcuts</source>
@@ -110,6 +114,10 @@
         <translation>Profil hinzufügen</translation>
     </message>
     <message>
+        <source>Rename Profile</source>
+        <translation>Profil umbenennen</translation>
+    </message>
+    <message>
         <source>Manage different Mindquarry installations by using Mindquarry server profiles.</source>
         <translation>Verwalten Sie verschiedene Mindquarry Server-Profile.</translation>
     </message>
@@ -132,6 +140,10 @@
     <message>
         <source>Notification Message Delay (in seconds)</source>
         <translation type="obsolete">Anzeigedauer für Nachrichten (in Sekunden)</translation>
+    </message>
+    <message>
+        <source>Username and/or password not correct for</source>
+        <translation>Benutzername und/oder Passwort nicht korrekt für</translation>
     </message>
 </context>
 </TS>

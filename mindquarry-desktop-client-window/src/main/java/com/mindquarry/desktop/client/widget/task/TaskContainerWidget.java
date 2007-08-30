@@ -90,9 +90,9 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         refreshing = true;
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
-                client.startAction(Messages.getString("Synchronizing tasks"));
+                client.startAction(Messages.getString("Synchronizing tasks")); //$NON-NLS-1$
                 refresh();
-                client.stopAction(Messages.getString("Synchronizing tasks"));
+                client.stopAction(Messages.getString("Synchronizing tasks")); //$NON-NLS-1$
             }
         }, "task-update");
         updateThread.setDaemon(true);

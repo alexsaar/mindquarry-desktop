@@ -201,7 +201,7 @@ public class ServerProfilesPage extends PreferencePage {
 			public void handleEvent(Event event) {
 				InputDialog dlg = new InputDialog(getShell(), Messages
 						.getString("Create new server profile"), //$NON-NLS-1$
-						Messages.getString("Please enter your profile name"), //$NON-NLS-1$
+						Messages.getString("Please enter the profile name:"), //$NON-NLS-1$
 						Messages.getString("My Mindquarry Server Profile"), //$NON-NLS-1$
 						new AddProfileInputValidator());
 

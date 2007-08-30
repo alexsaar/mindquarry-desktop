@@ -42,7 +42,7 @@ public class UpdateWorkspacesAction extends ActionBase {
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
             UpdateWorkspacesAction.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/" + ICON_SIZE + "/actions/view-refresh.png")); //$NON-NLS-1$ //$NON-NLS-2$
 
     public UpdateWorkspacesAction(MindClient client) {
         super(client);
@@ -50,21 +50,21 @@ public class UpdateWorkspacesAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Refresh"));
-        setToolTipText(Messages.getString("Refresh the list of file changes"));
+        setText(Messages.getString("Refresh")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("Refresh the list of file changes")); //$NON-NLS-1$
         setAccelerator(SWT.CTRL + +SWT.SHIFT + 'U');
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }
 
     private static final String REFRESH_MESSAGE = Messages
-            .getString("Refreshing workspaces changes ...");
+            .getString("Refreshing workspaces changes"); //$NON-NLS-1$
 
     public void run() {
         try {
             teamList.refresh();
         } catch (CancelException e) {
             // TODO: better exception handling
-            log.warn("Refreshing team list before updating workspaces cancelled.", e);
+            log.warn("Refreshing team list before updating workspaces cancelled.", e); //$NON-NLS-1$
             return;
         }
         Thread updateThread = new Thread(new Runnable() {
@@ -72,23 +72,23 @@ public class UpdateWorkspacesAction extends ActionBase {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
                 client.startAction(REFRESH_MESSAGE);
 
-                workspaceWidget.updateContainer(true, REFRESH_MESSAGE, null,
-                        false);
+                workspaceWidget.updateContainer(true, REFRESH_MESSAGE + " ...", //$NON-NLS-1$
+                        null, false);
                 workspaceWidget.refresh();
                 if (workspaceWidget.hasCheckout()) {
                     workspaceWidget.updateContainer(false, null, null, 
                             workspaceWidget.isRefreshListEmpty());
                 } else {
                     workspaceWidget.updateContainer(false, null, 
-                            Messages.getString("You have not synchronized yet.\n" +
-                            		"Click the 'Synchronize' button to " +
-                            		"download files from the server."), false);
+                            Messages.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
+                            		"Click the 'Synchronize' button to " + //$NON-NLS-1$
+                            		"download files from the server."), false); //$NON-NLS-1$
                 }
 
                 client.stopAction(REFRESH_MESSAGE);
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             }
-        }, "workspace-changes-update");
+        }, "workspace-changes-update"); //$NON-NLS-1$
         updateThread.setDaemon(true);
         updateThread.start();
     }

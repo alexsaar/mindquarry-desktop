@@ -42,7 +42,7 @@ public class TaskUpdateContainerRunnable extends
             ContainerWidget<TableViewer> containerWidget, boolean empty,
             String errMessage, boolean refreshing) {
         super(containerWidget, empty, errMessage, 
-                UPDATE_MESSAGE, EMPTY_MESSAGE, refreshing);
+                UPDATE_MESSAGE + " ...", EMPTY_MESSAGE, refreshing); //$NON-NLS-1$
         this.client = client;
     }
 

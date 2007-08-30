@@ -151,11 +151,11 @@ public class TeamlistWidget extends WidgetBase {
     }
 
     public void refresh() throws CancelException {
-        client.startAction("Updating list of teams");
+        client.startAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
         try {
             viewer.setInput(queryTeams());
         } finally {
-            client.stopAction("Updating list of teams");
+            client.stopAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
         }
     }
 
