@@ -277,7 +277,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         }
     }
 
-    private void updateContainer(final boolean refreshing,
+    public void updateContainer(final boolean refreshing,
             final String errMessage, final boolean empty) {
         getDisplay().syncExec(
                 new TaskUpdateContainerRunnable(client, this, empty,

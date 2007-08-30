@@ -43,6 +43,7 @@ import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.model.team.TeamList;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.NotAuthorizedException;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Simple table listing the teams with checkboxes.
@@ -149,26 +150,25 @@ public class TeamlistWidget extends WidgetBase {
         return teams;
     }
 
-    public void refresh() {
-        refresh(false);
-    }
-    
-    public void refresh(boolean selectAll) {
+    public void refresh() throws CancelException {
         client.startAction("Updating list of teams");
-        viewer.setInput(queryTeams());
-
-        if (selectAll) {
-            selectAll();
+        try {
+            viewer.setInput(queryTeams());
+        } finally {
+            client.stopAction("Updating list of teams");
         }
-        client.stopAction("Updating list of teams");
     }
 
-    private void selectAll() {
+    public void selectAll() {
         setChecked(true);
     }
 
-    private void deselectAll() {
+    public void deselectAll() {
         setChecked(false);
+    }
+
+    public void clear() {
+        viewer.setInput(null);
     }
 
     private void setChecked(boolean checked) {
@@ -178,7 +178,7 @@ public class TeamlistWidget extends WidgetBase {
         }
     }
 
-    private TeamList queryTeams() {
+    private TeamList queryTeams() throws CancelException {
         Profile selected = Profile.getSelectedProfile(client
                 .getPreferenceStore());
         if (selected == null) {
@@ -205,7 +205,7 @@ public class TeamlistWidget extends WidgetBase {
                 return queryTeams();
             }
             
-            return null;
+            throw new CancelException("Updating team list cancelled due to wrong credentials.", e);
         } catch (UnknownHostException uhe) {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), uhe);

@@ -80,6 +80,7 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Main class for the Mindquarry Desktop Client.
@@ -325,8 +326,15 @@ public class MindClient extends ApplicationWindow {
             return true;
             
         case 1: // cancel
-            // TODO: need to disable all features in the client that are
+            // disable all features in the client that are
             // dependent on a correctly working connection
+            teamList.clear();
+            categoryWidget.getWorkspaceBrowser().updateContainer(false, null, 
+                    Messages.getString("Not connected.\n" + //$NON-NLS-1$
+                            "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
+            categoryWidget.getTaskContainer().updateContainer(false, 
+                    Messages.getString("Not connected.\n" + //$NON-NLS-1$
+                            "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
             return false;
         }
         return false;
@@ -477,8 +485,7 @@ public class MindClient extends ApplicationWindow {
             loadOptions();
         }
         // Create the preferences dialog
-        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(
-                SWT.ON_TOP), PreferenceUtilities.getDefaultPreferenceManager());
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(new Shell(), PreferenceUtilities.getDefaultPreferenceManager());
         dlg.setPreferenceStore(store);
         if (showProfiles) {
             dlg.setSelectedNode(ServerProfilesPage.NAME);
@@ -652,7 +659,12 @@ public class MindClient extends ApplicationWindow {
                         Profile.selectProfile(getPreferenceStore(), menuItem
                                 .getText());
                         saveOptions();
-                        teamList.refresh();
+                        try {
+                            teamList.refresh();
+                        } catch (CancelException e) {
+                            // TODO: better exception handling
+                            log.warn("Refreshing team list after profile change cancelled.", e);
+                        }
                     }
                 }
             });
@@ -677,9 +689,15 @@ public class MindClient extends ApplicationWindow {
     }
 
     private void refreshOnStartup() {
-        teamList.refresh(true);
-        getAction(UpdateWorkspacesAction.class.getName()).run();
-        getAction(SynchronizeTasksAction.class.getName()).run();
+        try {
+            teamList.refresh();
+            teamList.selectAll();
+            getAction(UpdateWorkspacesAction.class.getName()).run();
+            getAction(SynchronizeTasksAction.class.getName()).run();
+        } catch (CancelException e) {
+            // TODO: better exception handling
+            log.error("Refresh on startup cancelled.", e);
+        }
     }
 
     // #########################################################################

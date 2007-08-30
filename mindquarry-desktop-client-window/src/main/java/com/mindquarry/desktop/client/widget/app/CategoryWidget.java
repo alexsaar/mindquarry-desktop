@@ -69,6 +69,10 @@ public class CategoryWidget extends WidgetBase {
             CategoryWidget.class
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/apps/mindquarry-documents.png")); //$NON-NLS-1$
 
+    private TaskContainerWidget taskContainer;
+
+    private WorkspaceBrowserWidget workspaceBrowser;
+
     public CategoryWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
     }
@@ -163,9 +167,7 @@ public class CategoryWidget extends WidgetBase {
         reset.setText(Messages.getString("Reset"));
         reset.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        final TaskContainerWidget taskContainer = new TaskContainerWidget(
-                taskComposite, client);
-
+        taskContainer = new TaskContainerWidget(taskComposite, client);
         FacetSelectionListener listener = new FacetSelectionListener(
                 taskContainer, status, priority, search);
         priority.addSelectionListener(listener);
@@ -186,8 +188,7 @@ public class CategoryWidget extends WidgetBase {
         tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         tabFolder.setSelection(tabItem);
 
-        WorkspaceBrowserWidget workspaceBrowser = new WorkspaceBrowserWidget(
-                tabFolder, client);
+        workspaceBrowser = new WorkspaceBrowserWidget(tabFolder, client);
         tabItem.setControl(workspaceBrowser);
 
         ((SynchronizeWorkspacesAction) client
@@ -236,5 +237,13 @@ public class CategoryWidget extends WidgetBase {
             taskContainer.applyFacets(statusString, priorityString,
                     searchString);
         }
+    }
+
+    public TaskContainerWidget getTaskContainer() {
+        return taskContainer;
+    }
+
+    public WorkspaceBrowserWidget getWorkspaceBrowser() {
+        return workspaceBrowser;
     }
 }

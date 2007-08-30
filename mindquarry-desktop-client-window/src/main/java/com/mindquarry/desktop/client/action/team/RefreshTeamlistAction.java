@@ -22,6 +22,7 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Add summary documentation here.
@@ -52,7 +53,12 @@ public class RefreshTeamlistAction extends ActionBase {
 	}
 
 	public void run() {
-		teamList.refresh();
+		try {
+            teamList.refresh();
+        } catch (CancelException e) {
+            // TODO: better exception handling
+            log.warn("Refreshing team list cancelled.", e);
+        }
 	}
 
 	public void setTeamList(TeamlistWidget teamList) {

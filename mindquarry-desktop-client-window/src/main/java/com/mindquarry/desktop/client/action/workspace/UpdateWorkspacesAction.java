@@ -23,6 +23,7 @@ import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
+import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Update list of SVN changes.
@@ -59,7 +60,13 @@ public class UpdateWorkspacesAction extends ActionBase {
             .getString("Refreshing workspaces changes ...");
 
     public void run() {
-        teamList.refresh();
+        try {
+            teamList.refresh();
+        } catch (CancelException e) {
+            // TODO: better exception handling
+            log.warn("Refreshing team list before updating workspaces cancelled.", e);
+            return;
+        }
         Thread updateThread = new Thread(new Runnable() {
             public void run() {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
