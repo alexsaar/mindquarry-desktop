@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -99,6 +100,9 @@ public class MindClient extends ApplicationWindow {
     public static final String PREF_FILE = PreferenceUtilities.SETTINGS_FOLDER
             + "/mindclient.settings"; //$NON-NLS-1$
 
+    private static final String LOCK_FILE = PreferenceUtilities.SETTINGS_FOLDER
+            + "/mindclient.lock"; //$NON-NLS-1$
+
     public static final String CLIENT_IMG_KEY = "client-icon";
     public static final String CLIENT_TRAY_IMG_KEY = "client-tray-icon";
 
@@ -140,12 +144,42 @@ public class MindClient extends ApplicationWindow {
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
     // #########################################################################
-    public MindClient() {
+    public MindClient() throws IOException {
         super(null);
-
+        createLock();
         // initialize preferences
         prefFile = new File(PREF_FILE);
         store = new PreferenceStore(prefFile.getAbsolutePath());
+    }
+
+    private void createLock() throws IOException {
+        // The Java documentation advises against using
+        // File as a lock file and suggests FileLock. Too bad
+        // FileLock just doesn't work across JVMs and is thus
+        // useless for this, so we use File anyway.
+        File lockFile = new File(LOCK_FILE);
+        if (lockFile.exists()) {
+            MessageDialog dlg = new MessageDialog(getShell(),
+                    Messages.getString("Mindquarry Client already running"), null,
+                    Messages.getString("The Mindquarry Desktop Client seems to be running " +
+                    		"already. Only one instance of the Desktop Client can be " +
+                    		"running at a time. If you are sure that the Desktop Client " +
+                    		"isn't running, select 'Start anyway'."), MessageDialog.ERROR, 
+                    new String[]{Messages.getString("Exit"),
+                    Messages.getString("Start anyway")}, 0);
+            int result = dlg.open();
+            if (result == 0) {
+                System.exit(1);
+            } else {
+                log.warn("Starting despite lock file");
+            }
+        } else {
+            boolean created = lockFile.createNewFile();
+            if (!created) {
+                throw new IOException("Could not create " + lockFile.getAbsolutePath());
+            }
+            lockFile.deleteOnExit();
+        }
     }
 
     /**
