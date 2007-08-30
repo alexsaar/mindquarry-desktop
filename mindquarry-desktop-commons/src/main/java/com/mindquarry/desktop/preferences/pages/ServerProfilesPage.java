@@ -196,7 +196,7 @@ public class ServerProfilesPage extends PreferencePage {
 		Button addButton = new Button(buttonArea, SWT.PUSH);
 		addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		addButton.setText(Messages.getString("Add Profile") //$NON-NLS-1$
-				+ "..."); //$NON-NLS-1$
+				+ " ..."); //$NON-NLS-1$
 		addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event event) {
 				InputDialog dlg = new InputDialog(getShell(), Messages
@@ -219,6 +219,17 @@ public class ServerProfilesPage extends PreferencePage {
 				}
 			}
 		});
+
+        Button renameButton = new Button(buttonArea, SWT.PUSH);
+        renameButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        renameButton.setText(Messages.getString("Rename Profile") //$NON-NLS-1$
+                + " ..."); //$NON-NLS-1$
+        renameButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                renameProfile();
+            }
+        });
+        
 		delButton = new Button(buttonArea, SWT.PUSH);
 		delButton.setEnabled(false);
 		delButton.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -255,7 +266,7 @@ public class ServerProfilesPage extends PreferencePage {
 			Profile profile = findByName(selection[0]);
 			InputDialog dlg = new InputDialog(getShell(),
 			        Messages.getString("Rename server profile"), //$NON-NLS-1$
-					Messages.getString("Please enter the new profile name"), //$NON-NLS-1$
+					Messages.getString("Please enter the new profile name:"), //$NON-NLS-1$
 					selection[0], new AddProfileInputValidator());
 			if (dlg.open() == Window.OK) {
 				profile.setName(dlg.getValue());
