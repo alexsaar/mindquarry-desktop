@@ -14,9 +14,12 @@
 package com.mindquarry.desktop.client;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -142,6 +145,8 @@ public class MindClient extends ApplicationWindow {
     private FileTypeMap mimeMap = MimetypesFileTypeMap.getDefaultFileTypeMap();
     private CategoryWidget categoryWidget;
 
+    private FileLock fileLock;
+
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
     // #########################################################################
@@ -154,12 +159,14 @@ public class MindClient extends ApplicationWindow {
     }
 
     private void createLock() throws IOException {
-        // The Java documentation advises against using
-        // File as a lock file and suggests FileLock. Too bad
-        // FileLock just doesn't work across JVMs and is thus
-        // useless for this, so we use File anyway.
-        File lockFile = new File(LOCK_FILE);
-        if (lockFile.exists()) {
+        File f = new File(LOCK_FILE);
+
+        if (!f.exists()) {
+            f.createNewFile();
+        }
+        FileChannel fileChannel = (new FileOutputStream(f)).getChannel();
+        fileLock = fileChannel.tryLock();
+        if (fileLock == null) {
             MessageDialog dlg = new MessageDialog(getShell(),
                     Messages.getString("Mindquarry Client already running"), null, //$NON-NLS-1$
                     Messages.getString("The Mindquarry Desktop Client seems to be running " + //$NON-NLS-1$
@@ -175,15 +182,9 @@ public class MindClient extends ApplicationWindow {
                 log.warn("Starting despite lock file"); //$NON-NLS-1$
             }
         } else {
-            boolean created = lockFile.createNewFile();
-            if (!created) {
-                throw new IOException("Could not create " + lockFile.getAbsolutePath()); //$NON-NLS-1$
-            }
+            log.info("Aquired lock: " + fileLock);
         }
-        // delete the lockfile, even when it already existed
-        // (assuming the old instance crashed an the user thus
-        // selected "start anyway"):
-        lockFile.deleteOnExit();
+        // Note: no need to delete the lock, the JVM will care about that
     }
 
     /**
