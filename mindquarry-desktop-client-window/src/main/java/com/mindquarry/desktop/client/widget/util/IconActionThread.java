@@ -129,7 +129,7 @@ public class IconActionThread extends Thread {
     private void updateToolTip() {
         String tooltip = ""; //$NON-NLS-1$
         if (actions.size() > 0) {
-            tooltip += "Running actions:" + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
+            tooltip += Messages.getString("Running actions:") + "\n"; //$NON-NLS-1$ //$NON-NLS-2$
 
             Iterator<String> aIt = actions.iterator();
             while (aIt.hasNext()) {
