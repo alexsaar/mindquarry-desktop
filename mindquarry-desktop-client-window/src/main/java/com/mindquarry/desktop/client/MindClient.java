@@ -178,8 +178,11 @@ public class MindClient extends ApplicationWindow {
             if (!created) {
                 throw new IOException("Could not create " + lockFile.getAbsolutePath());
             }
-            lockFile.deleteOnExit();
         }
+        // delete the lockfile, even when it already existed
+        // (assuming the old instance crashed an the user thus
+        // selected "start anyway"):
+        lockFile.deleteOnExit();
     }
 
     /**
