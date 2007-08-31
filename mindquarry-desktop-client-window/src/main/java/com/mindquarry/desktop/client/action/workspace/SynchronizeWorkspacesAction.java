@@ -25,6 +25,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.tigris.subversion.javahl.Notify2;
+import org.tigris.subversion.javahl.NotifyInformation;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -54,8 +56,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
     protected static final String SYNC_WORKSPACE_MESSAGE =
         Messages.getString("Synchronizing workspaces"); //$NON-NLS-1$
     protected static final String SYNC_WORKSPACE_NOTE = Messages.getString(
-            "Please do not modify, copy, or move files\n" + //$NON-NLS-1$
+            "Please do not modify, copy, or move files " + //$NON-NLS-1$
             "in your workspace during the synchronization."); //$NON-NLS-1$
+
+    protected static final String SYNC_WORKSPACE_NOTE2 = Messages.getString(
+            "Currently working on: ");  //$NON-NLS-1$
 
     public SynchronizeWorkspacesAction(MindClient client) {
         super(client);
@@ -128,6 +133,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                     selected.getPassword(),
                                     new InteractiveConflictHandler(client
                                             .getShell()));
+                            sc.setNotifyListener(new NotifyListener());
                             sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
                             sc.synchronizeOrCheckout();
                         }
@@ -190,5 +196,14 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
     public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {
         this.workspaceWidget = workspaceWidget;
+    }
+    
+    class NotifyListener implements Notify2 {
+
+        public void onNotify(NotifyInformation info) {
+            workspaceWidget.setUpdateMessage(SYNC_WORKSPACE_NOTE2 +
+                    "\n" + info.getPath()); //$NON-NLS-1$
+        }
+        
     }
 }
