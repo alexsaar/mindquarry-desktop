@@ -69,7 +69,7 @@ public class TaskLabelProvider extends ColumnLabelProvider {
 
 	private Image createOverlayIcon(Task task, Image image, String status) {
 		Image overlay = image;
-		if (task.getPriority() != null) {
+		if (task.getPriority() != null && !"".equals(task.getPriority())) {
 			overlay = new Image(Display.getCurrent(),
 					TaskLabelProvider.class
 							.getResourceAsStream("/com/mindquarry/icons/"
