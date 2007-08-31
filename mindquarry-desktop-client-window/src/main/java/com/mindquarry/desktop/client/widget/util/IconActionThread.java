@@ -134,7 +134,7 @@ public class IconActionThread extends Thread {
             Iterator<String> aIt = actions.iterator();
             while (aIt.hasNext()) {
                 String action = aIt.next();
-                tooltip += "– " + action; //$NON-NLS-1$
+                tooltip += "- " + action; //$NON-NLS-1$
                 if (aIt.hasNext()) {
                     tooltip += "\n"; //$NON-NLS-1$
                 }
