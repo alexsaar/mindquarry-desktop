@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
+import org.tmatesoft.svn.core.internal.wc.SVNFileListUtil;
 
 /**
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
@@ -36,7 +37,7 @@ public class ContentProvider implements ITreeContentProvider {
 
     public Object[] getChildren(Object parentElement) {
         File workspaceRoot = (File) parentElement;
-        File[] children = workspaceRoot.listFiles(new FilenameFilter() {
+        File[] children = SVNFileListUtil.listFiles(workspaceRoot, new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
                 // ignore e.g. conflict files like <file>.r<rev>

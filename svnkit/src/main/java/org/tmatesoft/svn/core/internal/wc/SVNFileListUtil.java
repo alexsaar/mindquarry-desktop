@@ -12,6 +12,7 @@
 package org.tmatesoft.svn.core.internal.wc;
 
 import java.io.File;
+import java.io.FilenameFilter;
 
 
 /**
@@ -21,35 +22,8 @@ import java.io.File;
 public class SVNFileListUtil {
 
     /**
-     * This method is a replacement for file.list(), which composes decomposed file names (e.g. umlauts in file names on the Mac).
-     */
-    public static String[] list(File directory) {
-        if (!SVNFileUtil.isOSX) {
-            return directory.list();
-        }
-        final String[] fileNames = directory.list();
-        if (fileNames == null) {
-            return null;
-        }
-        
-//        System.out.println("Listing directory '" + directory + "'");
-
-        final String[] composedFileNames = new String[fileNames.length];
-        for (int i = 0; i < composedFileNames.length; i++) {
-            // Note: Normalizer class would be better than manually implemented
-            // compose() method, but unfortunately it was sun.text.Normalizer in
-            // Java 1.5 and became java.text.Normalizer in 1.6 along with API
-            // changes - so it cannot be used cross-platform and with all Java
-            // versions >= 1.5
-//            composedFileNames[i] = Normalizer.normalize(fileNames[i], Normalizer.COMPOSE, 0);
-            composedFileNames[i] = compose(fileNames[i]);
-//            System.out.println("File [" + i + "]: '" + fileNames[i] + "' => '" + composedFileNames[i] + "'");
-        }
-        return composedFileNames;
-    }
-
-    /**
-     * This method is a replacement for file.listFiles(), which composes decomposed file names (e.g. umlauts in file names on the Mac).
+     * This method is a replacement for file.listFiles(), which composes
+     * decomposed file names (e.g. umlauts in file names on the Mac).
      */
     public static File[] listFiles(File directory) {
         if (!SVNFileUtil.isOSX) {
@@ -60,11 +34,78 @@ public class SVNFileListUtil {
             return null;
         }
 
+        return updateFiles(directory, fileNames);
+    }
+
+    /**
+     * This method is a replacement for file.listFiles(), which composes
+     * decomposed file names (e.g. umlauts in file names on the Mac).
+     */
+    public static File[] listFiles(File directory, FilenameFilter filter) {
+        if (!SVNFileUtil.isOSX) {
+            return directory.listFiles(filter);
+        }
+        final String[] fileNames = list(directory, filter);
+        if (fileNames == null) {
+            return null;
+        }
+
+        return updateFiles(directory, fileNames);
+    }
+    
+    private static File[] updateFiles(File parent, final String[] fileNames) {
         File[] files = new File[fileNames.length];
         for (int i = 0; i < files.length; i++) {
-            files[i] = new File(directory.getPath(), fileNames[i]);
+            files[i] = new File(parent.getPath(), fileNames[i]);
         }
         return files;
+    }
+    
+    /**
+     * This method is a replacement for file.list(), which composes decomposed 
+     * file names (e.g. umlauts in file names on the Mac).
+     */
+    public static String[] list(File directory) {
+        if (!SVNFileUtil.isOSX) {
+            return directory.list();
+        }
+        final String[] fileNames = directory.list();
+        if (fileNames == null) {
+            return null;
+        }
+        
+        return compose(fileNames);
+    }
+
+    /**
+     * This method is a replacement for file.list(FilenameFilter), which
+     * composes decomposed file names (e.g. umlauts in file names on the Mac).
+     */
+    public static String[] list(File directory, FilenameFilter filter) {
+        if (!SVNFileUtil.isOSX) {
+            return directory.list(filter);
+        }
+        final String[] fileNames = directory.list(new ComposingFilenameFilter(filter));
+        if (fileNames == null) {
+            return null;
+        }
+        
+        return compose(fileNames);
+    }
+    
+    private static String[] compose(String[] decomposedStrings) {
+        final String[] composedStrings = new String[decomposedStrings.length];
+        for (int i = 0; i < composedStrings.length; i++) {
+            // Note: Normalizer class would be better than manually implemented
+            // compose() method, but unfortunately it was sun.text.Normalizer in
+            // Java 1.5 and became java.text.Normalizer in 1.6 along with API
+            // changes - so it cannot be used cross-platform and with all Java
+            // versions >= 1.5
+//            composedFileNames[i] = Normalizer.normalize(fileNames[i], Normalizer.COMPOSE, 0);
+            composedStrings[i] = compose(decomposedStrings[i]);
+//            System.out.println("File [" + i + "]: '" + fileNames[i] + "' => '" + composedFileNames[i] + "'");
+        }
+        return composedStrings;
     }
 
     private static String compose(String decomposedString) {
@@ -132,4 +173,25 @@ public class SVNFileListUtil {
         }
         return buffer;
     }
+
+    /**
+     * Helper class for composing filenames in a FilenameFilter. Wraps around
+     * another (user-given) filename filter and ensures to pass composed file
+     * names in the accept method.
+     *
+     */
+    public static class ComposingFilenameFilter implements FilenameFilter {
+        
+        FilenameFilter filter;
+
+        public ComposingFilenameFilter(FilenameFilter filter) {
+            this.filter = filter;
+        }
+
+        public boolean accept(File dir, String name) {
+            return filter.accept(dir, compose(name));
+        }
+
+    }
+
 }
