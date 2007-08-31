@@ -466,6 +466,10 @@
         <translation>Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um erneut zu verbinden.</translation>
     </message>
     <message>
+        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to connect.</source>
+        <translation>Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um eine Verbindung herzustellen.</translation>
+    </message>
+    <message>
         <source>Running actions:</source>
         <translation>Laufende Aktionen:</translation>
     </message>

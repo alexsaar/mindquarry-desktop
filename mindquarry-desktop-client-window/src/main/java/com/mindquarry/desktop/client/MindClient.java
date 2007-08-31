@@ -302,13 +302,12 @@ public class MindClient extends ApplicationWindow {
      * working connection.
      */
     private void displayNotConnected() {
+        String message = Messages.getString("Not connected.\n" //$NON-NLS-1$
+                + "Please click the 'Refresh' button to connect."); //$NON-NLS-1$
+
         teamList.clear();
-        categoryWidget.getWorkspaceBrowser().updateContainer(false, null, 
-                Messages.getString("Not connected.\n" + //$NON-NLS-1$
-                        "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
-        categoryWidget.getTaskContainer().updateContainer(false, 
-                Messages.getString("Not connected.\n" + //$NON-NLS-1$
-                        "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
+        categoryWidget.getWorkspaceBrowser().updateContainer(false, null, message, false); //$NON-NLS-1$
+        categoryWidget.getTaskContainer().updateContainer(false, message, false); //$NON-NLS-1$
     }
 
     /**
