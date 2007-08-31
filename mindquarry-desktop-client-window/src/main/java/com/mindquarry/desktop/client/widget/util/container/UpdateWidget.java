@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.ProgressBar;
  */
 public class UpdateWidget extends Composite {
 	private String message;
+    private Composite internalComp;
+    private Label updateLabel;
 	
     public UpdateWidget(Composite parent, String message) {
     	super(parent, SWT.NONE);
@@ -44,7 +46,7 @@ public class UpdateWidget extends Composite {
         ((GridData) getLayoutData()).heightHint = ((GridData) parent
                 .getLayoutData()).heightHint;
 
-        Composite internalComp = new Composite(this, SWT.NONE);
+        internalComp = new Composite(this, SWT.NONE);
         internalComp.setBackground(internalComp.getParent().getBackground());
         internalComp.setLayout(new GridLayout(1, true));
         internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
@@ -55,9 +57,31 @@ public class UpdateWidget extends Composite {
         bar.setSize(200, 16);
         bar.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-        Label label = new Label(internalComp, SWT.CENTER);
+        Label label = new Label(internalComp, SWT.CENTER|SWT.WRAP);
         label.setText(message);
         label.setBackground(label.getParent().getBackground());
         label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+        // Another label to show more detailed progress information (e.g.
+        // which file is currently being downloaded):
+        updateLabel = new Label(internalComp, SWT.CENTER|SWT.WRAP);
+        // TODO: how to make the label resize properly without using "\n\n"
+        // and manual internalComp.layout()?
+        updateLabel.setText("\n\n");
 	}
+
+	/**
+	 * Set an additional message showing more detailed progress information.
+	 */
+    protected void setUpdateMessage(final String message) {
+        getDisplay().syncExec(new Runnable() {
+            public void run() {
+                updateLabel.setText(message);
+                updateLabel.setBackground(updateLabel.getParent().getBackground());
+                updateLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+                internalComp.layout();
+            }
+        });
+    }
+    
 }

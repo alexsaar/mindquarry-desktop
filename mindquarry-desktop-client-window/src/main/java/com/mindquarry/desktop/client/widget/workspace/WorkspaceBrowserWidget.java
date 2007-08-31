@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
+import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
@@ -60,6 +61,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     protected Map<File, Status> remoteChanges = new HashMap<File, Status>();
     // ignore files like "<filename>.r200" that are created in case of conflicts:
     protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
+
+    private WorkspaceUpdateContainerRunnable containerRunnable;
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
@@ -168,6 +171,12 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         return localChanges.size() == 0 && remoteChanges.size() == 0;
     }
     
+    public void setUpdateMessage(String message) {
+        if (containerRunnable != null) {
+            containerRunnable.setUpdateMessage(message);
+        }
+    }
+
     /**
      * Return if at least one team workspace of the current profile has
      * been checked out. Return false on e.g. first start-up.
@@ -226,9 +235,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     private void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
-        getDisplay().syncExec(
-                new WorkspaceUpdateContainerRunnable(client, this, empty,
-                        emptyMessage, errMessage, refreshing, refreshMessage));
+        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, empty,
+            emptyMessage, errMessage, refreshing, refreshMessage);
+        getDisplay().syncExec(containerRunnable);
     }
 
     // #########################################################################
@@ -382,4 +391,5 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             return subFiles;
         }
     }
+
 }
