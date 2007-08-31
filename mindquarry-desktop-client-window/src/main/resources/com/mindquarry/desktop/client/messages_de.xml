@@ -459,7 +459,7 @@
     </message>
     <message>
         <source>Unknown server: </source>
-        <translation>Unbekannter server: </translation>
+        <translation>Unbekannter Server: </translation>
     </message>
     <message>
         <source>Not connected.\nPlease click the &apos;Refresh&apos; button to reconnect.</source>
@@ -489,6 +489,10 @@
     <message>
         <source>Start anyway</source>
         <translation>Trotzdem starten</translation>
+    </message>
+    <message>
+        <source>Please check your Mindquarry server URL in the preferences dialog.</source>
+        <translation>Bitte überprüfen Sie die URL des Mindquarry-Server im Einstellungs-Dialog.</translation>
     </message>
 </context>
 </TS>

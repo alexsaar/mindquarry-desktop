@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -94,7 +95,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                 refresh();
                 client.stopAction(Messages.getString("Synchronizing tasks")); //$NON-NLS-1$
             }
-        }, "task-update");
+        }, "task-update"); //$NON-NLS-1$
         updateThread.setDaemon(true);
         updateThread.start();
     }
@@ -202,8 +203,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
 
             }
         } catch (final NotAuthorizedException e) {
-            log.error("Could not update list of tasks for "
-                    + profile.getServerURL(), e); //$NON-NLS-1$
+            log.error("Could not update list of tasks for " //$NON-NLS-1$
+                    + profile.getServerURL(), e);
             
             getDisplay().syncExec(new Runnable() {
                 public void run() {
@@ -215,22 +216,28 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             if (refreshing) {
                 refresh();
             } else {
-                updateContainer(false, e.getLocalizedMessage(), false);
                 client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
             }
             
             return;
+        } catch (final UnknownHostException e) {
+            log.error("Could not update list of tasks for " //$NON-NLS-1$
+                    + profile.getServerURL(), e);
             
-//            getDisplay().syncExec(new Runnable() {
-//                public void run() {
-//                    MessageDialog.openError(getShell(), Messages
-//                            .getString("Error"), //$NON-NLS-1$
-//                            e.getLocalizedMessage());
-//                }
-//            });
-//            updateContainer(false, e.getLocalizedMessage(), false);
-//            refreshing = false;
-//            return;
+            getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    Boolean retry = client.handleUnknownHostException(e);
+                    refreshing = retry;
+                }
+            });
+
+            if (refreshing) {
+                refresh();
+            } else {
+                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+            }
+            
+            return;
         } catch (Exception e) {
             log.error("Could not update list of tasks for "
                     + profile.getServerURL(), e); //$NON-NLS-1$

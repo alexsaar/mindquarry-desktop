@@ -154,6 +154,7 @@ public class TeamlistWidget extends WidgetBase {
         client.startAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
         try {
             viewer.setInput(queryTeams());
+            selectAllIfAllDeselected();
         } finally {
             client.stopAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
         }
@@ -169,6 +170,19 @@ public class TeamlistWidget extends WidgetBase {
 
     public void clear() {
         viewer.setInput(null);
+    }
+
+    /**
+     * Selects all teams if all teams are deselected, e.g. after a team list
+     * refresh.
+     */
+    private void selectAllIfAllDeselected() {
+        TableItem[] tis = viewer.getTable().getItems();
+        for (TableItem item : tis) {
+            if(item.getChecked())
+                return;
+        }
+        selectAll();
     }
 
     private void setChecked(boolean checked) {
@@ -209,9 +223,13 @@ public class TeamlistWidget extends WidgetBase {
         } catch (UnknownHostException uhe) {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), uhe);
-            MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Unknown server: ") + uhe.getLocalizedMessage()); //$NON-NLS-1$
-            return null;
+
+            Boolean retry = client.handleUnknownHostException(uhe);
+            if(retry) {
+                return queryTeams();
+            }
+
+            throw new CancelException("Updating team list cancelled due to unknown server.", uhe);
         } catch (Exception e) {
             // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$

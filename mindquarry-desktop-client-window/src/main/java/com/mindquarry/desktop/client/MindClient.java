@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
@@ -295,7 +296,21 @@ public class MindClient extends ApplicationWindow {
     public CategoryWidget getCategoryWidget() {
         return categoryWidget;
     }
-    
+
+    /**
+     * Disable all features in the client that are dependent on a correctly
+     * working connection.
+     */
+    private void displayNotConnected() {
+        teamList.clear();
+        categoryWidget.getWorkspaceBrowser().updateContainer(false, null, 
+                Messages.getString("Not connected.\n" + //$NON-NLS-1$
+                        "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
+        categoryWidget.getTaskContainer().updateContainer(false, 
+                Messages.getString("Not connected.\n" + //$NON-NLS-1$
+                        "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
+    }
+
     /**
      * Displays an error message and prompts the user to check their credentials
      * in the preferences dialog, or to cancel.
@@ -327,15 +342,45 @@ public class MindClient extends ApplicationWindow {
             return true;
             
         case 1: // cancel
-            // disable all features in the client that are
-            // dependent on a correctly working connection
-            teamList.clear();
-            categoryWidget.getWorkspaceBrowser().updateContainer(false, null, 
-                    Messages.getString("Not connected.\n" + //$NON-NLS-1$
-                            "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
-            categoryWidget.getTaskContainer().updateContainer(false, 
-                    Messages.getString("Not connected.\n" + //$NON-NLS-1$
-                            "Please click the 'Refresh' button to reconnect."), false); //$NON-NLS-1$
+            displayNotConnected();
+            return false;
+        }
+        return false;
+    }
+    
+    /**
+     * Displays an error message and prompts the user to check their server
+     * settings in the preferences dialog, or to cancel.
+     * 
+     * @param exception Contains the unknown host.
+     * @return True if and only if preferences dialog was shown to user which
+     *         means that the server details were potentially updated.
+     */
+    public Boolean handleUnknownHostException(UnknownHostException exception) {
+        // create custom error message with the option to open the preferences dialog
+        MessageDialog messageDialog = new MessageDialog(
+                getShell(),
+                Messages.getString("Error"), //$NON-NLS-1$
+                null,
+                (Messages.getString("Unknown server: ") + "\"" //$NON-NLS-1$ //$NON-NLS-2$
+                        + exception.getLocalizedMessage()
+                        + "\".\n\n" //$NON-NLS-1$
+                        + Messages.getString("Please check your Mindquarry server URL in the preferences dialog.")), //$NON-NLS-1$
+                MessageDialog.ERROR,
+                new String[] {
+                        Messages.getString("Go to preferences"), //$NON-NLS-1$
+                        Messages.getString("Cancel") //$NON-NLS-1$
+                },
+                0);
+        
+        int buttonClicked = messageDialog.open();
+        switch(buttonClicked) {
+        case 0: // go to preferences
+            showPreferenceDialog(true);
+            return true;
+            
+        case 1: // cancel
+            displayNotConnected();
             return false;
         }
         return false;
@@ -661,7 +706,8 @@ public class MindClient extends ApplicationWindow {
                                 .getText());
                         saveOptions();
                         try {
-                            refreshAll();
+                            displayNotConnected();
+                            teamList.refresh();                            
                         } catch (CancelException e) {
                             // TODO: better exception handling
                             log.warn("Refreshing after profile change cancelled.", e);
@@ -691,7 +737,8 @@ public class MindClient extends ApplicationWindow {
 
     private void refreshOnStartup() {
         try {
-            refreshAll();
+            displayNotConnected();
+            teamList.refresh();
         } catch (CancelException e) {
             // TODO: better exception handling
             log.error("Refresh on startup cancelled.", e);
@@ -700,7 +747,6 @@ public class MindClient extends ApplicationWindow {
 
     private void refreshAll() throws CancelException {
         teamList.refresh();
-        teamList.selectAll();
         getAction(UpdateWorkspacesAction.class.getName()).run();
         getAction(SynchronizeTasksAction.class.getName()).run();
     }
