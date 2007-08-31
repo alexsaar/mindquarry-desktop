@@ -18,8 +18,8 @@
         <translation>Synchronisierung abbrechen</translation>
     </message>
     <message>
-        <source>Could not load MindClient settings</source>
-        <translation>MindClient-Einstellungen konnten nicht geladen werden</translation>
+        <source>Could not load Desktop Client settings</source>
+        <translation>Desktop-Client-Einstellungen konnten nicht geladen werden</translation>
     </message>
     <message>
         <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
@@ -330,8 +330,8 @@
         <translation>Ihre lokale Version der Datei benutzen</translation>
     </message>
     <message>
-        <source>Could not save MindClient settings</source>
-        <translation>MindClient-Einstellungen konnten nicht gespeichert werden</translation>
+        <source>Could not save Desktop Client settings</source>
+        <translation>Desktop-Client-Einstellungen konnten nicht gespeichert werden</translation>
     </message>
     <message>
         <source>Could not update team list: </source>
@@ -484,7 +484,7 @@
     </message>
     <message>
         <source>The Mindquarry Desktop Client seems to be running already. Only one instance of the Desktop Client can be running at a time. If you are sure that the Desktop Client isn&apos;t running, select &apos;Start anyway&apos;.</source>
-        <translation>Der Mindquarry Desktop-CLient scheint bereits zu laufen. Es kann jedoch nur eine Instanz des Desktop-Clients gleichzeitig laufen. Wenn Sie sicher sind, dass der Desktop-Client nicht läuft, wählen Sie bitte &apos;Trotzdem starten&apos;</translation>
+        <translation>Der Mindquarry Desktop-Client scheint bereits zu laufen. Es kann jedoch nur eine Instanz des Desktop-Clients gleichzeitig laufen. Wenn Sie sicher sind, dass der Desktop-Client nicht läuft, wählen Sie bitte &apos;Trotzdem starten&apos;</translation>
     </message>
     <message>
         <source>Start anyway</source>

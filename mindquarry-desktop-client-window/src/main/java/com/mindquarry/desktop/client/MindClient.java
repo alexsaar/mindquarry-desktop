@@ -235,7 +235,7 @@ public class MindClient extends ApplicationWindow {
             store.save();
         } catch (Exception e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Could not save MindClient settings")
+                    Messages.getString("Could not save Desktop Client settings")
                             + ": " + e.toString());
         }
         AutostartUtilities.setAutostart(store
@@ -501,7 +501,7 @@ public class MindClient extends ApplicationWindow {
             store.load();
         } catch (Exception e) {
             MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Could not load MindClient settings")
+                    Messages.getString("Could not load Desktop Client settings")
                             + ": " + e.toString());
         }
     }
