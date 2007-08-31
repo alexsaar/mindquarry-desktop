@@ -310,8 +310,12 @@
         <translation>Beide Dateien manuell zusammenführen</translation>
     </message>
     <message>
-        <source>Synchronizing workspaces\nPlease do not modify, copy, or move files\nin your workspace during the synchronization</source>
-        <translation>Synchronisiere Arbeitsbereich\nBitte verschieben, kopieren und ändern Sie keine Dateien\nim Arbeitsbereich während der Synchronisierung</translation>
+        <source>Synchronizing workspaces</source>
+        <translation>Synchronisiere Arbeitsbereich</translation>
+    </message>
+    <message>
+        <source>Please do not modify, copy, or move files\nin your workspace during the synchronization.</source>
+        <translation>Bitte verschieben, kopieren und ändern Sie keine Dateien\nim Arbeitsbereich während der Synchronisierung.</translation>
     </message>
     <message>
         <source>Specify a new value for this property</source>

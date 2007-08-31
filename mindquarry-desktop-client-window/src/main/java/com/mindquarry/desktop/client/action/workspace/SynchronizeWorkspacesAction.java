@@ -48,10 +48,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             SynchronizeWorkspacesAction.class
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
 
-    protected static final String SYNC_WORKSPACE_MESSAGE = Messages
-        .getString("Synchronizing workspaces\n" + //$NON-NLS-1$
-        		"Please do not modify, copy, or move files\n" + //$NON-NLS-1$
-        		"in your workspace during the synchronization"); //$NON-NLS-1$
+    protected static final String SYNC_WORKSPACE_MESSAGE =
+        Messages.getString("Synchronizing workspaces"); //$NON-NLS-1$
+    protected static final String SYNC_WORKSPACE_NOTE = Messages.getString(
+            "Please do not modify, copy, or move files\n" + //$NON-NLS-1$
+            "in your workspace during the synchronization."); //$NON-NLS-1$
 
     public SynchronizeWorkspacesAction(MindClient client) {
         super(client);
@@ -71,14 +72,20 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             public void run() {
                 boolean cancelled = false;
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+
                 workspaceWidget.updateContainer(true, Messages
                         .getString("Refreshing workspaces changes")+" ...", //$NON-NLS-1$ //$NON-NLS-2
                         null, false);
 
-                if (workspaceWidget.refreshNeeded(true)) {
-                    client.startAction(Messages
-                            .getString("Refreshing workspaces changes")); //$NON-NLS-1$
+                client.startAction(Messages
+                        .getString("Refreshing workspaces changes")); //$NON-NLS-1$
+                boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
+                client.stopAction(Messages
+                        .getString("Refreshing workspaces changes")); //$NON-NLS-1$
+                workspaceWidget.updateContainer(false, null, null, 
+                        workspaceWidget.isRefreshListEmpty());
 
+                if (refreshNeeded) {
                     Display.getDefault().syncExec(new Runnable() {
                         public void run() {
                             MessageBox messageBox = new MessageBox(client
@@ -91,13 +98,9 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             messageBox.open();
                         }
                     });
-                    workspaceWidget.updateContainer(false, null, null, 
-                            workspaceWidget.isRefreshListEmpty());
-                    client.stopAction(Messages
-                            .getString("Refreshing workspaces changes")); //$NON-NLS-1$
                 } else {
-                    workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE, //$NON-NLS-1$
-                            null, false);
+                    workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE
+                            + " ...\n" + SYNC_WORKSPACE_NOTE, null, false); //$NON-NLS-1$
                     client.startAction(SYNC_WORKSPACE_MESSAGE);
 
                     // retrieve selected profile
