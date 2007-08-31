@@ -62,10 +62,10 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
     @Override
     protected String getMessage() {
         if (conflict.getStatus().getNodeKind() == NodeKind.dir) {
-            return Messages.getString("One of the local directories was deleted and replaced with a file of the same name." +
+            return Messages.getString("One of the local directories was deleted and replaced with a file of the same name. " +
             		"This structural change must be resolved before synchronization.");
         } else {
-            return Messages.getString("One of the local files was deleted and replaced with a directory of the same name." +
+            return Messages.getString("One of the local files was deleted and replaced with a directory of the same name. " +
                     "This structural change must be resolved before synchronization.");
         }
     }
