@@ -77,12 +77,15 @@ import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 import com.mindquarry.desktop.client.widget.app.CategoryWidget;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
+import com.mindquarry.desktop.event.EventBus;
+import com.mindquarry.desktop.event.EventListener;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.preferences.profile.ProfileActivatedEvent;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
@@ -93,7 +96,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * 
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class MindClient extends ApplicationWindow {
+public class MindClient extends ApplicationWindow implements EventListener {
     // #########################################################################
     // ### CONSTANTS & STATIC MEMBERS
     // #########################################################################
@@ -160,6 +163,8 @@ public class MindClient extends ApplicationWindow {
     private CategoryWidget categoryWidget;
 
     private FileLock fileLock;
+
+    private EventBus eventBus;
 
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
@@ -437,6 +442,20 @@ public class MindClient extends ApplicationWindow {
         
         // initialize window shell
         Window.setDefaultImage(JFaceResources.getImage(CLIENT_IMG_KEY));
+        getShell().addListener(SWT.Show, new Listener() {
+            private boolean first = true;
+
+            public void handleEvent(Event event) {
+                if (first) {
+                    first = false;
+                    // TODO: send start event
+                    //eventBus.sendEvent(new ProfileActivatedEvent(this, new Profile("test", "user", "pw", "http://server", "folder")));
+                    refreshOnStartup();
+                }
+                getShell().setActive();
+            }
+            
+        });
         getShell().addShellListener(new IconifyingShellListener());
         getShell().setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
         getShell().setText(APPLICATION_NAME);
@@ -773,10 +792,6 @@ public class MindClient extends ApplicationWindow {
         }
 
         public void shellActivated(ShellEvent e) {
-            if (first) {
-                first = false;
-                refreshOnStartup();
-            }
         }
 
         public void shellDeactivated(ShellEvent e) {
@@ -797,6 +812,15 @@ public class MindClient extends ApplicationWindow {
         this.actions = actions;
     }
     
+    public void setEventBus(EventBus eventBus) {
+        this.eventBus = eventBus;
+        this.eventBus.registerEventListener(this);
+    }
+    
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+    
     public boolean close() {
         getShell().setVisible(false);
         return false;
@@ -804,5 +828,10 @@ public class MindClient extends ApplicationWindow {
 
     public TrayItem getTrayItem() {
         return this.trayItem;
+    }
+
+    public void onEvent(com.mindquarry.desktop.event.Event event) {
+        // TODO Auto-generated method stub
+        
     }
 }
