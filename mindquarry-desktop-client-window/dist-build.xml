@@ -101,20 +101,23 @@
 	<target name="jar-dist" depends="jar-dist-windows, jar-dist-linux, jar-dist-macosx" />
 	
 	<!-- Note: this only works on a Mac!
-	     to use this, download http://informagen.com/JarBundler/ and place the
-	     jarbundler-1.9.jar into ~/.ant/lib (per user) or /Developer/Java/Ant/lib (system-wide) -->
+	     to use this, download http://releases.mindquarry.org/jarbundler-1.9.1.jar
+	     (patched to add 'swt' attribute, original from http://informagen.com/JarBundler/
+	     and place jarbundler-1.9.1.jar into ~/.ant/lib (per user) or
+	     /Developer/Java/Ant/lib (system-wide) -->
 	<target name="mac" depends="jar-dist-macosx">
 		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler" />
 		
-        <!--mainclass="org.eclipse.swt.MindClient"-->
 		<jarbundler dir="target" verbose="true" showPlist="true"
+					shortname="Mindquarry"
 	                name="Mindquarry Desktop Client"
 					bundleid="com.mindquarry.desktop"
-	                mainclass="com.mindquarry.desktop.client.MindClientMac"
+					mainclass="org.eclipse.swt.MindClient"
 	                icon="../mindquarry-mac/Resources/DesktopClientAppIcon.icns"
 	                version="${version}"
-					vmoptions="-XstartOnFirstThread"
+					vmoptions=""
 					jvmversion="1.5+"
+					swt="true"
 					workingdirectory="$APP_PACKAGE/Contents/Resources/Java">
 			
 			<jarfileset dir="${standalone.dist.target}/macosx/">
