@@ -220,6 +220,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         updateContainer(false, null, null, isEmpty, emptyMessage);
     }
 
+    public void showEmptyMessage(String emptyMessage) {
+        updateContainer(false, null, null, true, emptyMessage);
+    }
+
     private void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
         getDisplay().syncExec(

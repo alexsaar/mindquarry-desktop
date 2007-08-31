@@ -72,11 +72,10 @@ public class UpdateWorkspacesAction extends ActionBase {
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
                 client.startAction(REFRESH_MESSAGE);
 
-                workspaceWidget.updateContainer(true, REFRESH_MESSAGE + " ...", //$NON-NLS-1$
-                        null, false);
+                workspaceWidget.showRefreshMessage(REFRESH_MESSAGE + " ..."); //$NON-NLS-1$
                 workspaceWidget.refresh();
                 if (workspaceWidget.hasCheckout()) {
-                    workspaceWidget.updateContainer(false, null, null, 
+                    workspaceWidget.showEmptyMessage( 
                             workspaceWidget.isRefreshListEmpty());
                 } else {
                     workspaceWidget.showErrorMessage(

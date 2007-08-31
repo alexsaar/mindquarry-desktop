@@ -502,5 +502,9 @@
         <source>Please check your Mindquarry server URL in the preferences dialog.</source>
         <translation>Bitte überprüfen Sie die URL des Mindquarry-Server im Einstellungs-Dialog.</translation>
     </message>
+    <message>
+        <source>Synchronized successfully at </source>
+        <translation>Erfolgreich synchronisiert um </translation>
+    </message>
 </context>
 </TS>

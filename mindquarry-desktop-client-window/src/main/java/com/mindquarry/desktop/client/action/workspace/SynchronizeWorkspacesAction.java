@@ -13,7 +13,10 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.preference.PreferenceStore;
@@ -162,12 +165,12 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
                     if (cancelled) {
                         // show list of file changes
-//                        workspaceWidget.updateContainer(false, null, null, false);
                         workspaceWidget.showEmptyMessage(false);
                     } else {
-//                        workspaceWidget.updateContainer(false, null, null, true);
                         // show "sucessfully synchronized"
-                        workspaceWidget.updateContainer(false, "msg", null, true);
+                        workspaceWidget.showEmptyMessage(Messages.getString(
+                                "Synchronized successfully at ") //$NON-NLS-1$
+                                + DateFormat.getTimeInstance().format(new Date()) + "."); //$NON-NLS-1$
                     }
                 }
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
