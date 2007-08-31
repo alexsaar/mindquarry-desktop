@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.util;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.logging.Log;
@@ -28,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 public class AutostartUtilities {
     private static Log log = LogFactory.getLog(AutostartUtilities.class);
 
-    public static void setAutostart(boolean autostart, String targetPattern) {
+    public static void setAutostart(boolean autostart, Set<String> targetPatterns) {
         // check if we are on a Windows platform, otherwise skip processing
         String os = System.getProperty("os.name"); //$NON-NLS-1$
         if (!os.toLowerCase().contains("windows")) { //$NON-NLS-1$
@@ -79,8 +80,11 @@ public class AutostartUtilities {
                 String[] cpEntries = System
                         .getProperty("java.class.path").split(";"); //$NON-NLS-1$ //$NON-NLS-2$
                 for (String cpEntry : cpEntries) {
-                    if (cpEntry.contains(targetPattern)) {
-                        path = cpEntry;
+                    for (String targetPattern : targetPatterns) {
+                        if (cpEntry.contains(targetPattern)) {
+                            path = cpEntry;
+                            break;
+                        }
                     }
                 }
                 if (path != null) {

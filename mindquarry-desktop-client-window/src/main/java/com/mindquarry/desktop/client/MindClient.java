@@ -22,8 +22,10 @@ import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.activation.FileTypeMap;
 import javax.activation.MimetypesFileTypeMap;
@@ -116,6 +118,17 @@ public class MindClient extends ApplicationWindow {
 
     public static final List<String> INITIAL_TOOLBAR_GROUPS = new ArrayList<String>();
     public static final List<String> DEFAULT_TOOLBAR_GROUPS = new ArrayList<String>();
+
+    // The Windows autostart feature works by setting a value (the path
+    // to the desktop client JAR) in the registry. For this it needs to
+    // know its own installation path. It looks through the classpath
+    // searching for one of the following JARs:
+    private static final Set<String> JAR_NAMES = new HashSet<String>();
+    static {
+        JAR_NAMES.add("mindquarry-desktop-client.jar");
+        JAR_NAMES.add("mindquarry-desktop-client-windows.jar");
+        JAR_NAMES.add("mindquarry-desktop-client-win32.jar");
+    }
 
     static {
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
@@ -241,7 +254,7 @@ public class MindClient extends ApplicationWindow {
         }
         AutostartUtilities.setAutostart(store
                 .getBoolean(GeneralSettingsPage.AUTOSTART),
-                "mindquarry-desktop-client.jar"); //$NON-NLS-1$
+                JAR_NAMES); //$NON-NLS-1$
     }
 
     public void showPreferenceDialog(boolean showProfiles) {
