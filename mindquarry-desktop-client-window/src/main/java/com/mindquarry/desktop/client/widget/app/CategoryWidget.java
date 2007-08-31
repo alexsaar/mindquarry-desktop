@@ -15,7 +15,6 @@ package com.mindquarry.desktop.client.widget.app;
 
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.ModifyEvent;
@@ -27,6 +26,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -122,7 +122,7 @@ public class CategoryWidget extends WidgetBase {
         label.setText(Messages.getString("Priority"));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        CCombo priority = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+        Combo priority = new Combo(taskComposite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
         priority.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
@@ -140,7 +140,7 @@ public class CategoryWidget extends WidgetBase {
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         label.setText(Messages.getString("Status"));
 
-        CCombo status = new CCombo(taskComposite, SWT.BORDER | SWT.READ_ONLY
+        Combo status = new Combo(taskComposite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
         status.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
@@ -202,13 +202,13 @@ public class CategoryWidget extends WidgetBase {
             ModifyListener {
         private TaskContainerWidget taskContainer;
 
-        private CCombo status;
-        private CCombo priority;
+        private Combo status;
+        private Combo priority;
 
         private Text search;
 
         public FacetSelectionListener(TaskContainerWidget taskContainer,
-                CCombo status, CCombo priority, Text search) {
+                Combo status, Combo priority, Text search) {
             this.taskContainer = taskContainer;
             this.status = status;
             this.priority = priority;
