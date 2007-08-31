@@ -79,10 +79,10 @@ public class UpdateWorkspacesAction extends ActionBase {
                     workspaceWidget.updateContainer(false, null, null, 
                             workspaceWidget.isRefreshListEmpty());
                 } else {
-                    workspaceWidget.updateContainer(false, null, 
+                    workspaceWidget.showErrorMessage(
                             Messages.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
                             		"Click the 'Synchronize' button to " + //$NON-NLS-1$
-                            		"download files from the server."), false); //$NON-NLS-1$
+                            		"download files from the server.")); //$NON-NLS-1$
                 }
 
                 client.stopAction(REFRESH_MESSAGE);

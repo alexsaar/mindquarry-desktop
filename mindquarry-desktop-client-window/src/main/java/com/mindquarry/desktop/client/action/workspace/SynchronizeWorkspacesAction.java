@@ -73,17 +73,15 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                 boolean cancelled = false;
                 client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
 
-                workspaceWidget.updateContainer(true, Messages
-                        .getString("Refreshing workspaces changes")+" ...", //$NON-NLS-1$ //$NON-NLS-2
-                        null, false);
+                workspaceWidget.showRefreshMessage(
+                        Messages.getString("Refreshing workspaces changes") + " ..."); //$NON-NLS-1$ //$NON-NLS-2
 
                 client.startAction(Messages
                         .getString("Refreshing workspaces changes")); //$NON-NLS-1$
                 boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
                 client.stopAction(Messages
                         .getString("Refreshing workspaces changes")); //$NON-NLS-1$
-                workspaceWidget.updateContainer(false, null, null, 
-                        workspaceWidget.isRefreshListEmpty());
+                workspaceWidget.showEmptyMessage(workspaceWidget.isRefreshListEmpty());
 
                 if (refreshNeeded) {
                     Display.getDefault().syncExec(new Runnable() {
@@ -99,8 +97,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         }
                     });
                 } else {
-                    workspaceWidget.updateContainer(true, SYNC_WORKSPACE_MESSAGE
-                            + " ...\n" + SYNC_WORKSPACE_NOTE, null, false); //$NON-NLS-1$
+                    workspaceWidget.showRefreshMessage(SYNC_WORKSPACE_MESSAGE
+                            + " ...\n" + SYNC_WORKSPACE_NOTE); //$NON-NLS-1$
                     client.startAction(SYNC_WORKSPACE_MESSAGE);
 
                     // retrieve selected profile
@@ -163,9 +161,13 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     client.stopAction(SYNC_WORKSPACE_MESSAGE);
 
                     if (cancelled) {
-                        workspaceWidget.updateContainer(false, null, null, false);
+                        // show list of file changes
+//                        workspaceWidget.updateContainer(false, null, null, false);
+                        workspaceWidget.showEmptyMessage(false);
                     } else {
-                        workspaceWidget.updateContainer(false, null, null, true);
+//                        workspaceWidget.updateContainer(false, null, null, true);
+                        // show "sucessfully synchronized"
+                        workspaceWidget.updateContainer(false, "msg", null, true);
                     }
                 }
                 client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);

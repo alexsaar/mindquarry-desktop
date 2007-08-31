@@ -14,7 +14,9 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +37,7 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
@@ -187,11 +190,41 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         return true;
     }
 
+    @Deprecated
     public void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty) {
+        String emptyMessage = Messages.getString(
+                "There are currently no workspace changes to synchronize,\n" +
+                "i.e. there are no local changes and there are no changes on the server.\n" +
+                "Last refresh: ")
+                + new SimpleDateFormat().format(new Date()); //$NON-NLS-1$
+
+        updateContainer(refreshing, refreshMessage, errMessage, empty, emptyMessage);
+    }
+    
+    public void showErrorMessage(String message) {
+        updateContainer(false, null, message, false, null);
+    }
+    
+    public void showRefreshMessage(String message) {
+        updateContainer(true, message, null, false, null);
+    }
+
+    public void showEmptyMessage(boolean isEmpty) {
+        String emptyMessage = Messages.getString(
+                "There are currently no workspace changes to synchronize,\n" +
+                "i.e. there are no local changes and there are no changes on the server.\n" +
+                "Last refresh: ")
+                + new SimpleDateFormat().format(new Date()); //$NON-NLS-1$
+
+        updateContainer(false, null, null, isEmpty, emptyMessage);
+    }
+
+    private void updateContainer(final boolean refreshing,
+            final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
         getDisplay().syncExec(
                 new WorkspaceUpdateContainerRunnable(client, this, empty,
-                        errMessage, refreshing, refreshMessage));
+                        emptyMessage, errMessage, refreshing, refreshMessage));
     }
 
     // #########################################################################

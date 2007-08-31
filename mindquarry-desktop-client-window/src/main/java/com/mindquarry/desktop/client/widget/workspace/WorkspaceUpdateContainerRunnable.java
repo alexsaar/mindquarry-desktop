@@ -68,17 +68,13 @@ public class WorkspaceUpdateContainerRunnable extends
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
-    
-    private static final String EMPTY_MESSAGE = Messages
-        .getString("There are currently no workspace changes to synchronize,\n" +
-        		"i.e. there are no local changes and there are no changes on the server.\n" +
-        		"Last refresh: "); //$NON-NLS-1$
 
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean empty,
-            String errMessage, boolean refreshing, String refreshMessage) {
+            String emptyMessage, String errMessage, boolean refreshing,
+            String refreshMessage) {
         super(containerWidget, empty, errMessage, refreshMessage,
-                EMPTY_MESSAGE + new SimpleDateFormat().format(new Date()), refreshing);
+                emptyMessage, refreshing);
     }
 
     /**

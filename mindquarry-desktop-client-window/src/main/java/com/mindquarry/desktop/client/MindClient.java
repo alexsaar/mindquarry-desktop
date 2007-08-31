@@ -306,7 +306,7 @@ public class MindClient extends ApplicationWindow {
                 + "Please click the 'Refresh' button to connect."); //$NON-NLS-1$
 
         teamList.clear();
-        categoryWidget.getWorkspaceBrowser().updateContainer(false, null, message, false); //$NON-NLS-1$
+        categoryWidget.getWorkspaceBrowser().showErrorMessage(message);
         categoryWidget.getTaskContainer().updateContainer(false, message, false); //$NON-NLS-1$
     }
 
