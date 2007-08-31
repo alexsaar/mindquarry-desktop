@@ -661,10 +661,10 @@ public class MindClient extends ApplicationWindow {
                                 .getText());
                         saveOptions();
                         try {
-                            teamList.refresh();
+                            refreshAll();
                         } catch (CancelException e) {
                             // TODO: better exception handling
-                            log.warn("Refreshing team list after profile change cancelled.", e);
+                            log.warn("Refreshing after profile change cancelled.", e);
                         }
                     }
                 }
@@ -691,14 +691,18 @@ public class MindClient extends ApplicationWindow {
 
     private void refreshOnStartup() {
         try {
-            teamList.refresh();
-            teamList.selectAll();
-            getAction(UpdateWorkspacesAction.class.getName()).run();
-            getAction(SynchronizeTasksAction.class.getName()).run();
+            refreshAll();
         } catch (CancelException e) {
             // TODO: better exception handling
             log.error("Refresh on startup cancelled.", e);
         }
+    }
+
+    private void refreshAll() throws CancelException {
+        teamList.refresh();
+        teamList.selectAll();
+        getAction(UpdateWorkspacesAction.class.getName()).run();
+        getAction(SynchronizeTasksAction.class.getName()).run();
     }
 
     // #########################################################################
