@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Add summary documentation here.
@@ -29,6 +30,9 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     private final boolean refreshing;
     private final String updateMessage;
     private final String emptyMessage;
+
+    private static Image networkErrorIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
+            "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
 
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
             boolean empty, String errMessage, String updateMessage, 
@@ -60,8 +64,8 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
         } else {
             // show an error message:
             destroyContent();
-            containerWidget.errorWidget = new ErrorWidget(containerWidget,
-                    errMessage);
+            containerWidget.errorWidget = new IconTextWidget(containerWidget,
+                    networkErrorIcon, errMessage);
         }
         containerWidget.layout(true);
     }
