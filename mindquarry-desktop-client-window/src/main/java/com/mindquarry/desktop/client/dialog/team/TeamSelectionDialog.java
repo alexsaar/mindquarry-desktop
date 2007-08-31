@@ -19,11 +19,11 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -41,7 +41,7 @@ import com.mindquarry.desktop.model.team.Team;
  *         Saar</a>
  */
 public class TeamSelectionDialog extends DialogBase {
-    private CCombo teamWidget = null;
+    private Combo teamWidget = null;
 
     private List teams;
 
@@ -73,8 +73,7 @@ public class TeamSelectionDialog extends DialogBase {
         label.setText(Messages.getString("Select a Team") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
-        teamWidget = new CCombo(composite, SWT.BORDER | SWT.READ_ONLY
-                | SWT.FLAT);
+        teamWidget = new Combo(composite, SWT.READ_ONLY);
         teamWidget.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         teamWidget.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
