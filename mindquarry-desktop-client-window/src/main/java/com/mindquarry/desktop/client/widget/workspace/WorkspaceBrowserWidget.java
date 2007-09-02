@@ -299,6 +299,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                                 status.getRepositoryTextStatus() == StatusKind.normal)) {
                             continue;
                         }
+                        if (status.getTextStatus() == StatusKind.external && (status.getRepositoryTextStatus() == StatusKind.none || status.getRepositoryTextStatus() == StatusKind.external )) {
+                        	continue;
+                        }
                         localChanges.put(new File(status.getPath()), status);
                         remoteChanges.put(new File(status.getPath()), status);
                         // If we add a directory with contents, SVN will only
