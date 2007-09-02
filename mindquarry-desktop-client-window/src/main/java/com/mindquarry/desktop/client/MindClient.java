@@ -606,11 +606,29 @@ public class MindClient extends ApplicationWindow implements EventListener {
         reg.put(CLIENT_TRAY_IMG_KEY, trayImg);
 
         FontRegistry fReg = JFaceResources.getFontRegistry();
-        fReg.put(TASK_TITLE_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
-                12, SWT.NONE) });
-        fReg.put(TEAM_NAME_FONT_KEY, new FontData[] { new FontData("Arial", //$NON-NLS-1$
-                10, SWT.NONE) });
+        fReg.put(TASK_TITLE_FONT_KEY, getSystemFont());
+        fReg.put(TEAM_NAME_FONT_KEY, getSmallSystemFont());
     }
+
+	private FontData[] getSmallSystemFont() {
+		if (SVNFileUtil.isOSX) {
+			// see http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
+			return new FontData[] { new FontData("Lucida Grande", //$NON-NLS-1$
+	                11, SWT.NONE) };
+		}
+		return new FontData[] { new FontData("Arial", //$NON-NLS-1$
+                10, SWT.NONE) };
+	}
+
+	private FontData[] getSystemFont() {
+		if (SVNFileUtil.isOSX) {
+			//see http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
+			return new FontData[] { new FontData("Lucida Grande", //$NON-NLS-1$
+	                13, SWT.NONE) };
+		}
+		return new FontData[] { new FontData("Arial", //$NON-NLS-1$
+                12, SWT.NONE) };
+	}
 
     private void createTrayIconAndMenu(Display display) {
         // create tray item
