@@ -77,29 +77,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         }
     }
 
-    /**
-     * Runs task update in a separate thread, so that GUI can continue
-     * processing. Thus this method returns immediately. While updating tasks
-     * the Task Manager will show an update widget instead of the task table.
-     */
-    public void asyncRefresh() {
-        log.info("Starting async task list refresh."); //$NON-NLS-1$
-        if (refreshing) {
-            log.info("Already refreshing, nothing to do."); //$NON-NLS-1$
-            return;
-        }
-        refreshing = true;
-        Thread updateThread = new Thread(new Runnable() {
-            public void run() {
-                client.startAction(Messages.getString("Synchronizing tasks")); //$NON-NLS-1$
-                refresh();
-                client.stopAction(Messages.getString("Synchronizing tasks")); //$NON-NLS-1$
-            }
-        }, "task-update"); //$NON-NLS-1$
-        updateThread.setDaemon(true);
-        updateThread.start();
-    }
-
     public void applyFacets(String status, String priority, String search) {
         statusFacet = status;
         priorityFacet = priority;
@@ -160,9 +137,9 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
-    protected void refresh() {
+    public void refresh() {
         log.info("Starting task list refresh."); //$NON-NLS-1$
-        client.enableActions(false, ActionBase.TASK_ACTION_GROUP);
+        enableAction(false);
         refreshing = true;
 
         PreferenceStore store = client.getPreferenceStore();
@@ -171,7 +148,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         // check profile
         if (profile == null) {
             log.debug("No profile selected."); //$NON-NLS-1$
-            client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+            enableAction(true);
             refreshing = false;
             return;
         }
@@ -185,19 +162,18 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         tasks.getTasks().clear();
 
         // retrieve tasks for all selected teams
-        final List<Team> items = new ArrayList<Team>();
+        final List<Team> teams = new ArrayList<Team>();
         Display.getDefault().syncExec(new Runnable() {
             public void run() {
-                items.addAll(client.getSelectedTeams());
+                teams.addAll(client.getSelectedTeams());
             }
         });
         try {
-            for (Object item : items) {
+            for (Team team : teams) {
                 String url = profile.getServerURL();
                 String login = profile.getLogin();
                 String password = profile.getPassword();
 
-                Team team = (Team) item;
                 tasks.getTasks().addAll(new TaskList(url + "/tasks/" //$NON-NLS-1$
                         + team.getId() + "/", login, password).getTasks());
 
@@ -216,7 +192,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             if (refreshing) {
                 refresh();
             } else {
-                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+                enableAction(true);
             }
             
             return;
@@ -234,7 +210,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             if (refreshing) {
                 refresh();
             } else {
-                client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+                enableAction(true);
             }
             
             return;
@@ -242,15 +218,20 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             log.error("Could not update list of tasks for "
                     + profile.getServerURL(), e); //$NON-NLS-1$
 
-            String errMessage = Messages
-                    .getString("List of tasks could not be updated"); //$NON-NLS-1$
-            errMessage += " " + e.getLocalizedMessage(); //$NON-NLS-1$
+            final String errMessage = Messages
+                    .getString("List of tasks could not be updated") //$NON-NLS-1$
+                    + " " + e.getLocalizedMessage();
 
-            MessageDialog.openError(getShell(),
-                    Messages.getString("Error"), errMessage);
+            getDisplay().syncExec(new Runnable() {
+                public void run() {
+                    MessageDialog.openError(getShell(),
+                            Messages.getString("Error"), errMessage);
+                }
+            });
+            
 
             updateContainer(false, errMessage, false);
-            client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+            enableAction(true);
             refreshing = false;
             return;
         }
@@ -270,9 +251,14 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             });
         }
         refreshing = false;
-        client.enableActions(true, ActionBase.TASK_ACTION_GROUP);
+        enableAction(true);
     }
 
+    private void enableAction(boolean enable) {
+        client.enableActions(enable, ActionBase.TASK_ACTION_GROUP);
+        client.enableActions(!enable, ActionBase.STOP_ACTION_GROUP);
+    }
+    
     private void markColumns() {
         // set background color for every second table item
         TableItem[] items = viewer.getTable().getItems();

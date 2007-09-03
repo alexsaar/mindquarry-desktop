@@ -14,8 +14,6 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +37,6 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
@@ -69,12 +66,15 @@ public class WorkspaceUpdateContainerRunnable extends
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
 
+    private MindClient client;
+    
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean empty,
             String emptyMessage, String errMessage, boolean refreshing,
             String refreshMessage) {
         super(containerWidget, empty, errMessage, refreshMessage,
                 emptyMessage, refreshing);
+        this.client = client;
     }
 
     /**

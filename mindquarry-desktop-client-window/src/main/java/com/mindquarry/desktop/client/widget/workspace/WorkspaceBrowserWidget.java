@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.NodeKind;
-import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
@@ -71,13 +70,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
     // #########################################################################
     // ### PUBLIC METHODS
     // #########################################################################
-
-    /**
-     * not implemented
-     */
-    public void asyncRefresh() {
-        throw new UnsupportedOperationException("not implemented");
-    }
 
     /**
      * Checks if a refresh of the changes list itself is needed.
@@ -153,16 +145,17 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             return;
         }
         refreshing = true;
-
-        // update tree
-        Map<File, Status> newLocalChanges = new HashMap<File, Status>();
-        Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
-        getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
-        localChanges = newLocalChanges;
-        remoteChanges = newRemoteChanges;
-        workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
-
-        refreshing = false;
+        try {
+            // update tree
+            Map<File, Status> newLocalChanges = new HashMap<File, Status>();
+            Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
+            getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
+            localChanges = newLocalChanges;
+            remoteChanges = newRemoteChanges;
+            workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
+        } finally {
+            refreshing = false;
+        }
     }
 
     public boolean isRefreshListEmpty() {
@@ -199,18 +192,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         return true;
     }
 
-    @Deprecated
-    public void updateContainer(final boolean refreshing,
-            final String refreshMessage, final String errMessage, boolean empty) {
-        String emptyMessage = Messages.getString(
-                "There are currently no workspace changes to synchronize,\n" +
-                "i.e. there are no local changes and there are no changes on the server.\n" +
-                "Last refresh: ")
-                + new SimpleDateFormat().format(new Date()); //$NON-NLS-1$
-
-        updateContainer(refreshing, refreshMessage, errMessage, empty, emptyMessage);
-    }
-    
     public void showErrorMessage(String message) {
         updateContainer(false, null, message, false, null);
     }
@@ -233,16 +214,16 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         updateContainer(false, null, null, true, emptyMessage);
     }
 
+    // #########################################################################
+    // ### PRIVATE METHODS
+    // #########################################################################
+
     private void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
         containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, empty,
             emptyMessage, errMessage, refreshing, refreshMessage);
         getDisplay().syncExec(containerRunnable);
     }
-
-    // #########################################################################
-    // ### PRIVATE METHODS
-    // #########################################################################
 
     private void getAllChanges(Profile selected,
             Map<File, Status> localChanges, Map<File, Status> remoteChanges) {
@@ -337,7 +318,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
                 log.debug("remote changes: " + remoteChanges);
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
-            refreshing = false;
         } catch (ClientException e) {
             // TODO: handle exception
             // may happen on very first checkout (before checkout, actually)

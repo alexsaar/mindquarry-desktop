@@ -85,7 +85,6 @@ import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
-import com.mindquarry.desktop.preferences.profile.ProfileActivatedEvent;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
@@ -135,6 +134,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     static {
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
+        DEFAULT_TOOLBAR_GROUPS.add(ActionBase.STOP_ACTION_GROUP);
 
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_ACTION_GROUP);
         INITIAL_TOOLBAR_GROUPS.addAll(DEFAULT_TOOLBAR_GROUPS);
@@ -183,6 +183,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
         if (!f.exists()) {
             f.createNewFile();
         }
+        // this is the recommended way to implement locking, it doesn't leave
+        // a lock file, not even if the app crashes:
         FileChannel fileChannel = (new FileOutputStream(f)).getChannel();
         fileLock = fileChannel.tryLock();
         if (fileLock == null) {
@@ -412,6 +414,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
         // create toolbar groups
         manager.add(new GroupMarker(ActionBase.WORKSPACE_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.TASK_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.STOP_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.MANAGEMENT_ACTION_GROUP));
         manager.appendToGroup(ActionBase.MANAGEMENT_ACTION_GROUP,
                 new Separator());
@@ -420,6 +423,11 @@ public class MindClient extends ApplicationWindow implements EventListener {
             if ((action.isToolbarAction())
                     && (INITIAL_TOOLBAR_GROUPS.contains(action.getGroup()))) {
                 manager.appendToGroup(action.getGroup(), action);
+                if (action.isEnabledByDefault()) {
+                    action.setEnabled(true);
+                } else {
+                    action.setEnabled(false);
+                }
             }
         }
         return manager;

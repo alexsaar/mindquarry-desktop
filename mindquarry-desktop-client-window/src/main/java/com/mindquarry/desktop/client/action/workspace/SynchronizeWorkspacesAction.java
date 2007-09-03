@@ -14,7 +14,6 @@
 package com.mindquarry.desktop.client.action.workspace;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,6 +61,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
     protected static final String SYNC_WORKSPACE_NOTE2 = Messages.getString(
             "Currently working on: ");  //$NON-NLS-1$
 
+    private static final String REFRESHING_MESSAGE = Messages
+            .getString("Refreshing workspaces changes");
+
+    private Thread updateThread;
+
     public SynchronizeWorkspacesAction(MindClient client) {
         super(client);
 
@@ -76,112 +80,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
     }
 
     public void run() {
-        Thread updateThread = new Thread(new Runnable() {
-            public void run() {
-                boolean cancelled = false;
-                client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
-
-                workspaceWidget.showRefreshMessage(
-                        Messages.getString("Refreshing workspaces changes") + " ..."); //$NON-NLS-1$ //$NON-NLS-2
-
-                client.startAction(Messages
-                        .getString("Refreshing workspaces changes")); //$NON-NLS-1$
-                boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
-                client.stopAction(Messages
-                        .getString("Refreshing workspaces changes")); //$NON-NLS-1$
-                workspaceWidget.showEmptyMessage(workspaceWidget.isRefreshListEmpty());
-
-                if (refreshNeeded) {
-                    Display.getDefault().syncExec(new Runnable() {
-                        public void run() {
-                            MessageBox messageBox = new MessageBox(client
-                                    .getShell(), SWT.ICON_INFORMATION | SWT.OK);
-                            messageBox
-                                    .setMessage(Messages
-                                            .getString("The list of changes is not up to date. It will be updated now. " //$NON-NLS-1$
-                                                    + "\n" //$NON-NLS-1$
-                                                    + "Please check the list of changes and press synchronize again.")); //$NON-NLS-1$
-                            messageBox.open();
-                        }
-                    });
-                } else {
-                    workspaceWidget.showRefreshMessage(SYNC_WORKSPACE_MESSAGE
-                            + " ...\n" + SYNC_WORKSPACE_NOTE); //$NON-NLS-1$
-                    client.startAction(SYNC_WORKSPACE_MESSAGE);
-
-                    // retrieve selected profile
-                    PreferenceStore store = client.getPreferenceStore();
-                    Profile selected = Profile.getSelectedProfile(store);
-                    if (selected == null) {
-                        log.debug("No profile selected."); //$NON-NLS-1$
-                        return;
-                    }
-
-                    // retrieve selected teams
-                    final List<Team> teams = new ArrayList<Team>();
-                    Display.getDefault().syncExec(new Runnable() {
-                        public void run() {
-                            teams.addAll(client.getSelectedTeams());
-                        }
-                    });
-                    try {
-                        for (Team team : teams) {
-                            SVNSynchronizer sc = new SVNSynchronizer(team
-                                    .getWorkspaceURL(), selected
-                                    .getWorkspaceFolder()
-                                    + "/" + team.getName(), selected.getLogin(), //$NON-NLS-1$
-                                    selected.getPassword(),
-                                    new InteractiveConflictHandler(client
-                                            .getShell()));
-                            sc.setNotifyListener(new NotifyListener());
-                            sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
-                            sc.synchronizeOrCheckout();
-                        }
-                        workspaceWidget.refresh();
-                    } catch (SynchronizeCancelException e) {
-                        log.info("synchronization cancelled (1)"); //$NON-NLS-1$
-                        cancelled = true;
-                    } catch (final Exception e) {
-                        if (e.getCause() != null && e.getCause().getCause() != null &&
-                                e.getCause().getCause().getClass() == SynchronizeCancelException.class) {
-                            // cancel clicked in commit message dialog , don't show error:
-                            log.info("synchronization cancelled (2)"); //$NON-NLS-1$
-                            cancelled = true;
-                        } else if (e.getCause() != null
-                                && e.getCause().getClass() == SynchronizeCancelException.class) {
-                            // cancel clicked in content conflict dialog, don't show error:
-                            log.info("synchronization cancelled (3)"); //$NON-NLS-1$
-                            cancelled = true;
-                        } else {
-                            log.error(e.toString(), e);
-                            cancelled = true;
-                            Display.getDefault().syncExec(new Runnable() {
-                                public void run() {
-                                    MessageBox messageBox = new MessageBox(client
-                                            .getShell(), SWT.ICON_ERROR | SWT.OK);
-                                    messageBox.setMessage(Messages
-                                            .getString("An error occured during synchronization: ") + //$NON-NLS-1$
-                                            e.getMessage());
-                                    messageBox.open();
-                                }
-                            });                        
-                        }
-                    }
-                    client.stopAction(SYNC_WORKSPACE_MESSAGE);
-
-                    if (cancelled) {
-                        // show list of file changes
-                        workspaceWidget.showEmptyMessage(false);
-                    } else {
-                        // show "sucessfully synchronized"
-                        workspaceWidget.showEmptyMessage(Messages.getString(
-                                "Synchronized successfully at ") //$NON-NLS-1$
-                                + DateFormat.getTimeInstance().format(new Date()) + "."); //$NON-NLS-1$
-                    }
-                }
-                client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
-            }
-        }, "workspace-changes-update"); //$NON-NLS-1$
+        updateThread = new Thread(new SyncThread(), "workspace-synchronise");
         updateThread.setDaemon(true);
         updateThread.start();
     }
@@ -198,6 +97,19 @@ public class SynchronizeWorkspacesAction extends ActionBase {
         this.workspaceWidget = workspaceWidget;
     }
     
+    void stop() {
+        if (updateThread != null && updateThread.isAlive()) {
+            log.debug("Killing synchronize thread");
+            // TODO: use non-deprecated way to stop threads: interrupt(); 
+            updateThread.stop();
+            workspaceWidget.showErrorMessage(Messages.getString("Synchronisation stopped."));
+            client.stopAction(REFRESHING_MESSAGE);
+            client.stopAction(SYNC_WORKSPACE_MESSAGE);
+            client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(false, ActionBase.STOP_ACTION_GROUP);
+        }
+    }
+
     class NotifyListener implements Notify2 {
 
         public void onNotify(NotifyInformation info) {
@@ -205,5 +117,113 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     "\n" + info.getPath()); //$NON-NLS-1$
         }
         
+    }
+
+    class SyncThread implements Runnable {
+
+        public void run() {
+            boolean cancelled = false;
+            client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(true, ActionBase.STOP_ACTION_GROUP);
+
+            workspaceWidget.showRefreshMessage(
+                    Messages.getString("Refreshing workspaces changes") + " ..."); //$NON-NLS-1$ //$NON-NLS-2
+
+            client.startAction(REFRESHING_MESSAGE); //$NON-NLS-1$
+            boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
+            client.stopAction(REFRESHING_MESSAGE); //$NON-NLS-1$
+            workspaceWidget.showEmptyMessage(workspaceWidget.isRefreshListEmpty());
+
+            if (refreshNeeded) {
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        MessageBox messageBox = new MessageBox(client
+                                .getShell(), SWT.ICON_INFORMATION | SWT.OK);
+                        messageBox
+                                .setMessage(Messages
+                                        .getString("The list of changes is not up to date. It will be updated now. " //$NON-NLS-1$
+                                                + "\n" //$NON-NLS-1$
+                                                + "Please check the list of changes and press synchronize again.")); //$NON-NLS-1$
+                        messageBox.open();
+                    }
+                });
+            } else {
+                workspaceWidget.showRefreshMessage(SYNC_WORKSPACE_MESSAGE
+                        + " ...\n" + SYNC_WORKSPACE_NOTE); //$NON-NLS-1$
+                client.startAction(SYNC_WORKSPACE_MESSAGE);
+
+                // retrieve selected profile
+                PreferenceStore store = client.getPreferenceStore();
+                Profile selected = Profile.getSelectedProfile(store);
+                if (selected == null) {
+                    log.debug("No profile selected."); //$NON-NLS-1$
+                    return;
+                }
+
+                // retrieve selected teams
+                final List<Team> teams = new ArrayList<Team>();
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        teams.addAll(client.getSelectedTeams());
+                    }
+                });
+                try {
+                    for (Team team : teams) {
+                        SVNSynchronizer sc = new SVNSynchronizer(team
+                                .getWorkspaceURL(), selected
+                                .getWorkspaceFolder()
+                                + "/" + team.getName(), selected.getLogin(), //$NON-NLS-1$
+                                selected.getPassword(),
+                                new InteractiveConflictHandler(client
+                                        .getShell()));
+                        sc.setNotifyListener(new NotifyListener());
+                        sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
+                        sc.synchronizeOrCheckout();
+                    }
+                    workspaceWidget.refresh();
+                } catch (SynchronizeCancelException e) {
+                    log.info("synchronization cancelled (1)"); //$NON-NLS-1$
+                    cancelled = true;
+                } catch (final Exception e) {
+                    if (e.getCause() != null && e.getCause().getCause() != null &&
+                            e.getCause().getCause().getClass() == SynchronizeCancelException.class) {
+                        // cancel clicked in commit message dialog , don't show error:
+                        log.info("synchronization cancelled (2)"); //$NON-NLS-1$
+                        cancelled = true;
+                    } else if (e.getCause() != null
+                            && e.getCause().getClass() == SynchronizeCancelException.class) {
+                        // cancel clicked in content conflict dialog, don't show error:
+                        log.info("synchronization cancelled (3)"); //$NON-NLS-1$
+                        cancelled = true;
+                    } else {
+                        log.error(e.toString(), e);
+                        cancelled = true;
+                        Display.getDefault().syncExec(new Runnable() {
+                            public void run() {
+                                MessageBox messageBox = new MessageBox(client
+                                        .getShell(), SWT.ICON_ERROR | SWT.OK);
+                                messageBox.setMessage(Messages
+                                        .getString("An error occured during synchronization: ") + //$NON-NLS-1$
+                                        e.getMessage());
+                                messageBox.open();
+                            }
+                        });                        
+                    }
+                }
+                client.stopAction(SYNC_WORKSPACE_MESSAGE);
+
+                if (cancelled) {
+                    // show list of file changes
+                    workspaceWidget.showEmptyMessage(false);
+                } else {
+                    // show "sucessfully synchronized"
+                    workspaceWidget.showEmptyMessage(Messages.getString(
+                            "Synchronized successfully at ") //$NON-NLS-1$
+                            + DateFormat.getTimeInstance().format(new Date()) + "."); //$NON-NLS-1$
+                }
+            }
+            client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(false, ActionBase.STOP_ACTION_GROUP);
+        }
     }
 }

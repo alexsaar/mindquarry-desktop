@@ -52,14 +52,8 @@ public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     }
 
     // #########################################################################
-    // ### PUBLIC METHODS
+    // ### PUBLIC AND PROTECTED METHODS
     // #########################################################################
-
-    /**
-     * Runs an update in a separate thread, so that GUI can continue
-     * processing. Thus this method returns immediately.
-     */
-    public abstract void asyncRefresh();
 
     protected abstract void refresh();
 

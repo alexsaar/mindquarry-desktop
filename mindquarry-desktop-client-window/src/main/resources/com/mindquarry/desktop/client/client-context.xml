@@ -24,6 +24,7 @@
                 <ref bean="UpdateWorkspacesAction"/>
                 <ref bean="SynchronizeWorkspacesAction"/>
                 <ref bean="SynchronizeTasksAction"/>
+                <ref bean="StopAction"/>
                 <ref bean="CreateTaskAction"/>
                 <ref bean="PreferencesAction"/>
                 <ref bean="OpenWebpageAction"/>

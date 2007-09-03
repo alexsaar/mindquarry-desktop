@@ -33,6 +33,10 @@
         class="com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction">
     </bean>
 
+    <bean id="StopAction" parent="ActionBase"
+        class="com.mindquarry.desktop.client.action.workspace.StopAction"/>
+        
+
     <!-- task actions -->
     <bean id="SynchronizeTasksAction" parent="ActionBase"
         class="com.mindquarry.desktop.client.action.task.SynchronizeTasksAction"/>
@@ -49,7 +53,7 @@
 
     <bean id="CloseAction" parent="ActionBase"
         class="com.mindquarry.desktop.client.action.app.CloseAction"/>
-        
+
     <!-- widgets 
     <bean id="TeamlistWidget" parent="WidgetBase"
         class="com.mindquarry.desktop.client.widget.team.TeamlistWidget"/>

@@ -34,10 +34,14 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 public class SynchronizeTasksAction extends ActionBase {
     public static final String ID = SynchronizeTasksAction.class.getSimpleName();
 
+    private static final String SYNC_MESSAGE = Messages.getString("Synchronizing tasks");
+
     private TeamlistWidget teamList;
 
 	private TaskContainerWidget taskContainer;
 
+	private Thread updateThread;
+	
 	private static final Image IMAGE = new Image(
 			Display.getCurrent(),
 			SynchronizeTasksAction.class
@@ -58,13 +62,24 @@ public class SynchronizeTasksAction extends ActionBase {
 	public void run() {
 	    try {
             teamList.refresh();
-            taskContainer.asyncRefresh();
+	        updateThread = new Thread(new UpdateThread(), "task-update");
+	        updateThread.setDaemon(true);
+	        updateThread.start();
         } catch (CancelException e) {
             // TODO: better exception handling
             log.warn("Synchronizing tasks cancelled.", e);
         }
 	}
 
+	public void stop() {
+	    if (updateThread != null) {
+	        log.debug("Killing task update thread");
+	        updateThread.stop();
+	        client.stopAction(SYNC_MESSAGE);
+	        taskContainer.updateContainer(false, Messages.getString("Task refresh cancelled"), false);
+	    }
+	}
+	
 	public void setTaskContainer(TaskContainerWidget taskContainer) {
 		this.taskContainer = taskContainer;
 	}
@@ -79,5 +94,13 @@ public class SynchronizeTasksAction extends ActionBase {
     
     public boolean isToolbarAction() {
         return true;
+    }
+    
+    class UpdateThread implements Runnable {
+        public void run() {
+            client.startAction(SYNC_MESSAGE);
+            taskContainer.refresh();
+            client.stopAction(SYNC_MESSAGE);
+        }
     }
 }

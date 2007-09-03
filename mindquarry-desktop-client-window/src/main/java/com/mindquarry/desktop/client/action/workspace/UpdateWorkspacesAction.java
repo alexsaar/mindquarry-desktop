@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction.SyncThread;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.workspace.exception.CancelException;
@@ -38,6 +39,8 @@ public class UpdateWorkspacesAction extends ActionBase {
     private WorkspaceBrowserWidget workspaceWidget;
 
     private TeamlistWidget teamList;
+    
+    private Thread updateThread;
 
     private static final Image IMAGE = new Image(
             Display.getCurrent(),
@@ -67,29 +70,33 @@ public class UpdateWorkspacesAction extends ActionBase {
             log.warn("Refreshing team list before updating workspaces cancelled.", e); //$NON-NLS-1$
             return;
         }
-        Thread updateThread = new Thread(new Runnable() {
-            public void run() {
-                client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
-                client.startAction(REFRESH_MESSAGE);
-
-                workspaceWidget.showRefreshMessage(REFRESH_MESSAGE + " ..."); //$NON-NLS-1$
-                workspaceWidget.refresh();
-                if (workspaceWidget.hasCheckout()) {
-                    workspaceWidget.showEmptyMessage( 
-                            workspaceWidget.isRefreshListEmpty());
-                } else {
-                    workspaceWidget.showErrorMessage(
-                            Messages.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
-                            		"Click the 'Synchronize' button to " + //$NON-NLS-1$
-                            		"download files from the server.")); //$NON-NLS-1$
-                }
-
-                client.stopAction(REFRESH_MESSAGE);
-                client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
-            }
-        }, "workspace-changes-update"); //$NON-NLS-1$
+        updateThread = new Thread(new UpdateThread(), "workspace-changes-update");
         updateThread.setDaemon(true);
         updateThread.start();
+    }
+    
+    class UpdateThread implements Runnable {
+        public void run() {
+            client.enableActions(false, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(true, ActionBase.STOP_ACTION_GROUP);
+            client.startAction(REFRESH_MESSAGE);
+
+            workspaceWidget.showRefreshMessage(REFRESH_MESSAGE + " ..."); //$NON-NLS-1$
+            workspaceWidget.refresh();
+            if (workspaceWidget.hasCheckout()) {
+                workspaceWidget.showEmptyMessage( 
+                        workspaceWidget.isRefreshListEmpty());
+            } else {
+                workspaceWidget.showErrorMessage(
+                        Messages.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
+                                "Click the 'Synchronize' button to " + //$NON-NLS-1$
+                                "download files from the server.")); //$NON-NLS-1$
+            }
+
+            client.stopAction(REFRESH_MESSAGE);
+            client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(false, ActionBase.STOP_ACTION_GROUP);
+        }
     }
 
     public String getGroup() {
@@ -106,5 +113,17 @@ public class UpdateWorkspacesAction extends ActionBase {
 
     public void setWorkspaceWidget(WorkspaceBrowserWidget workspaceWidget) {
         this.workspaceWidget = workspaceWidget;
+    }
+    
+    void stop() {
+        if (updateThread != null && updateThread.isAlive()) {
+            log.debug("Killing synchronize thread");
+            // TODO: use non-deprecated way to stop threads: interrupt(); 
+            updateThread.stop();
+            workspaceWidget.showErrorMessage(Messages.getString("Refresh stopped."));
+            client.stopAction(REFRESH_MESSAGE);
+            client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
+            client.enableActions(false, ActionBase.STOP_ACTION_GROUP);
+        }
     }
 }
