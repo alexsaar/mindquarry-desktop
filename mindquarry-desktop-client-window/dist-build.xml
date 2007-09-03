@@ -14,7 +14,7 @@
 	<patternset id="generic-jars-in-local-maven-repo">
 		<include name="com/mindquarry/tools/mindquarry-desktop-commons/${version}/mindquarry-desktop-commons-${version}.jar" />
 		
-		<include name="com/svnkit/svnkit/1.1.0-Mindquarry_6/svnkit-1.1.0-Mindquarry_6.jar" />
+		<include name="com/svnkit/svnkit/1.1.0-Mindquarry_7/svnkit-1.1.0-Mindquarry_7.jar" />
 		<include name="org/tigris/subversion/javahl/1.4.2-Mindquarry_2/javahl-1.4.2-Mindquarry_2.jar" />
 		<include name="ch/ethz/ganymed/ganymed-ssh2/build210/ganymed-ssh2-build210.jar" />
 				
@@ -155,7 +155,7 @@
 		
 		<copy file="${maven.repo.local}/ch/ethz/ganymed/ganymed-ssh2/build210/ganymed-ssh2-build210.jar" tofile="${web.dist.target}/javasvn/ganymed-ssh2__Vbuild210.jar" />
 		<copy file="${maven.repo.local}/org/tigris/subversion/javahl/1.4.2-Mindquarry_2/javahl-1.4.2-Mindquarry_2.jar" tofile="${web.dist.target}/javasvn/javahl__V1.4.2-Mindquarry_2.jar" />
-		<copy file="${maven.repo.local}/com/svnkit/svnkit/1.1.0-Mindquarry_6/svnkit-1.1.0-Mindquarry_6.jar" tofile="${web.dist.target}/javasvn/svnkit__V1.1.0-Mindquarry_6.jar" />
+		<copy file="${maven.repo.local}/com/svnkit/svnkit/1.1.0-Mindquarry_7/svnkit-1.1.0-Mindquarry_7.jar" tofile="${web.dist.target}/javasvn/svnkit__V1.1.0-Mindquarry_7.jar" />
 				
 		<copy file="${maven.repo.local}/commons-i18n/commons-i18n/0.5/commons-i18n-0.5.jar" tofile="${web.dist.target}/commons/commons-i18n__V0.5.jar" />
 		<copy file="${maven.repo.local}/commons-logging/commons-logging/1.1/commons-logging-1.1.jar" tofile="${web.dist.target}/commons/commons-logging__V1.1.jar" />
