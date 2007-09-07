@@ -75,6 +75,26 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>maven-buildnumber-plugin</artifactId>
+				<version>0.9.4</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>        
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<format>{0,date,yyyy-MM-dd HH:mm:ss}</format>
+					<items>
+						<item>timestamp</item>
+					</items>
+				</configuration>
+			</plugin>
+			
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -86,6 +106,10 @@
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
 						</manifest>
+						<manifestEntries>
+							<Version>${version}</Version>
+							<BuildDate>${buildNumber}</BuildDate>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
