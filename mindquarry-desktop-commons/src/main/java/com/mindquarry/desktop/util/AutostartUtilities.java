@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.util;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.prefs.Preferences;
@@ -77,8 +78,8 @@ public class AutostartUtilities {
                 // find classpath entry for mindquarry-desktop-client.jar
                 String path = null;
 
-                String[] cpEntries = System
-                        .getProperty("java.class.path").split(";"); //$NON-NLS-1$ //$NON-NLS-2$
+                String classpath = System.getProperty("java.class.path");
+                String[] cpEntries = classpath.split(";"); //$NON-NLS-1$ //$NON-NLS-2$
                 for (String cpEntry : cpEntries) {
                     for (String targetPattern : targetPatterns) {
                         if (cpEntry.contains(targetPattern)) {
@@ -91,6 +92,10 @@ public class AutostartUtilities {
                     // write autostart value
                     mWinRegSetValue.invoke(userRoot, new Object[] { hSettings,
                             toByteArray(AUTOSTART_ENTRY), toByteArray(path) });
+                } else {
+                    throw new IOException("Could not find JAR in classpath. " +
+                        "Expected one of these JARs: " + targetPatterns +
+                        ", Classpath: " + classpath);
                 }
             } else {
                 // delete autostart entry
@@ -101,6 +106,7 @@ public class AutostartUtilities {
             mCloseKey
                     .invoke(Preferences.userRoot(), new Object[] { hSettings });
         } catch (Exception e) {
+            // TODO: throw exception and catch it outside to display an error dialog
             log.error("Error while writing registry entries.", e); //$NON-NLS-1$
         }
     }
