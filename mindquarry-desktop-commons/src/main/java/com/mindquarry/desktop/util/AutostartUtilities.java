@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.util;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.prefs.Preferences;
@@ -22,7 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Set autostatr registry entries on Windows platforms.
+ * Set autostart registry entries on Windows platforms.
  * 
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
@@ -30,6 +29,14 @@ import org.apache.commons.logging.LogFactory;
 public class AutostartUtilities {
     private static Log log = LogFactory.getLog(AutostartUtilities.class);
 
+    private final static int KEY_ALL_ACCESS = 0xf003f;
+    private final static String AUTOSTART_KEY = "Software\\Microsoft\\Windows\\CurrentVersion\\Run"; //$NON-NLS-1$
+    private final static String AUTOSTART_ENTRY = "MQDESKTOPCLIENT"; //$NON-NLS-1$
+
+    private AutostartUtilities() {
+      // static methods only, no public constructor
+    }
+    
     public static void setAutostart(boolean autostart, Set<String> targetPatterns) {
         // check if we are on a Windows platform, otherwise skip processing
         String os = System.getProperty("os.name"); //$NON-NLS-1$
@@ -39,9 +46,6 @@ public class AutostartUtilities {
         }
         log.debug("setting autostart, os: " + os);
         // registry variables
-        final int KEY_ALL_ACCESS = 0xf003f;
-        final String AUTOSTART_KEY = "Software\\Microsoft\\Windows\\CurrentVersion\\Run"; //$NON-NLS-1$
-        final String AUTOSTART_ENTRY = "MQDESKTOPCLIENT"; //$NON-NLS-1$
 
         // create registry method objects
         final Preferences userRoot = Preferences.userRoot();
@@ -75,34 +79,17 @@ public class AutostartUtilities {
 
             // check autostart settings
             if (autostart) {
-                // find classpath entry for mindquarry-desktop-client.jar
-                String path = null;
-
-                String classpath = System.getProperty("java.class.path");
-                String[] cpEntries = classpath.split(";"); //$NON-NLS-1$ //$NON-NLS-2$
-                for (String cpEntry : cpEntries) {
-                    for (String targetPattern : targetPatterns) {
-                        if (cpEntry.contains(targetPattern)) {
-                            path = cpEntry;
-                            break;
-                        }
-                    }
-                }
-                if (path != null) {
-                    // write autostart value
-                    mWinRegSetValue.invoke(userRoot, new Object[] { hSettings,
-                            toByteArray(AUTOSTART_ENTRY), toByteArray(path) });
-                } else {
-                    throw new IOException("Could not find JAR in classpath. " +
-                        "Expected one of these JARs: " + targetPatterns +
-                        ", Classpath: " + classpath);
-                }
+                // find classpath entry for desktop client JAR:
+                String path = JarUtilities.getJar(targetPatterns);
+                // write autostart value
+                mWinRegSetValue.invoke(userRoot, new Object[] { hSettings,
+                        toByteArray(AUTOSTART_ENTRY), toByteArray(path) });
             } else {
                 // delete autostart entry
                 mWinRegDeleteValue.invoke(userRoot, new Object[] { hSettings,
                         toByteArray(AUTOSTART_ENTRY) });
             }
-            // close registray key
+            // close registry key
             mCloseKey
                     .invoke(Preferences.userRoot(), new Object[] { hSettings });
         } catch (Exception e) {
@@ -111,9 +98,6 @@ public class AutostartUtilities {
         }
     }
 
-    /**
-     * Helper function for working with Windows registry.
-     */
     private static byte[] toByteArray(String str) {
         byte[] result = new byte[str.length() + 1];
         for (int i = 0; i < str.length(); i++) {
