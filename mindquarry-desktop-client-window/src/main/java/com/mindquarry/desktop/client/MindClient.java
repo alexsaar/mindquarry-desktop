@@ -125,12 +125,16 @@ public class MindClient extends ApplicationWindow implements EventListener {
     // The Windows autostart feature works by setting a value (the path
     // to the desktop client JAR) in the registry. For this it needs to
     // know its own installation path. It looks through the classpath
-    // searching for one of the following JARs:
+    // searching for one of the following JARs (this is also used for
+    // getting the version number from the JAR):
+    // TODO: isn't there a better solution that doesn't rely on hardcoded names?
     public static final Set<String> JAR_NAMES = new HashSet<String>();
     static {
         JAR_NAMES.add("mindquarry-desktop-client.jar");
         JAR_NAMES.add("mindquarry-desktop-client-windows.jar");
         JAR_NAMES.add("mindquarry-desktop-client-win32.jar");
+        JAR_NAMES.add("mindquarry-desktop-client-macosx.jar");
+        JAR_NAMES.add("mindquarry-desktop-client-linux.jar");
         // for the JNLP distribution:
         JAR_NAMES.add("MindClient.jar");
     }
