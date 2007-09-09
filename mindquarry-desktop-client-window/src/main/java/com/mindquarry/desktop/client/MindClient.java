@@ -68,6 +68,7 @@ import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.ImageAndTextToolbarManager;
+import com.mindquarry.desktop.client.action.app.AboutAction;
 import com.mindquarry.desktop.client.action.app.CloseAction;
 import com.mindquarry.desktop.client.action.app.OpenWebpageAction;
 import com.mindquarry.desktop.client.action.app.PreferencesAction;
@@ -125,11 +126,13 @@ public class MindClient extends ApplicationWindow implements EventListener {
     // to the desktop client JAR) in the registry. For this it needs to
     // know its own installation path. It looks through the classpath
     // searching for one of the following JARs:
-    private static final Set<String> JAR_NAMES = new HashSet<String>();
+    public static final Set<String> JAR_NAMES = new HashSet<String>();
     static {
         JAR_NAMES.add("mindquarry-desktop-client.jar");
         JAR_NAMES.add("mindquarry-desktop-client-windows.jar");
         JAR_NAMES.add("mindquarry-desktop-client-win32.jar");
+        // for the JNLP distribution:
+        JAR_NAMES.add("MindClient.jar");
     }
 
     static {
@@ -690,7 +693,11 @@ public class MindClient extends ApplicationWindow implements EventListener {
         ActionContributionItem showMainWindowAction =
             new ActionContributionItem(new ShowMainWindowAction(this));
         showMainWindowAction.fill(trayMenu, trayMenu.getItemCount());
-        
+
+        ActionContributionItem aboutAction =
+          new ActionContributionItem(new AboutAction(this));
+        aboutAction.fill(trayMenu, trayMenu.getItemCount());
+
         MenuItem menuItem = new MenuItem(trayMenu, SWT.SEPARATOR);
         
         // profiles sub menu
