@@ -231,9 +231,10 @@ public class TeamlistWidget extends WidgetBase {
             // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
-            MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Could not update team list at ") +
-                        selected.getServerURL() + ": " + e.getLocalizedMessage()); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openError(getShell(), Messages.getString("Error"),  //$NON-NLS-1$
+                    Messages.getString("Could not update team list from {0}: ",  //$NON-NLS-1$
+                        selected.getServerURL()) +
+                        e.getLocalizedMessage());
             return null;
         }
     }
