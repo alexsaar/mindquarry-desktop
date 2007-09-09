@@ -58,9 +58,6 @@ public class TeamlistWidget extends WidgetBase {
     
     private Table table;
 
-    /**
-     * {@inheritDoc}
-     */
     public TeamlistWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
     }
