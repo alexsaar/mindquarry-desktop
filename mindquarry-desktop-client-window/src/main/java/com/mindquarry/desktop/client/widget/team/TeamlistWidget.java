@@ -235,7 +235,8 @@ public class TeamlistWidget extends WidgetBase {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
             MessageDialog.openError(getShell(), Messages.getString("Error"),
-                    Messages.getString("Could not update team list: ") + e.getLocalizedMessage()); //$NON-NLS-1$
+                    Messages.getString("Could not update team list at ") +
+                        selected.getServerURL() + ": " + e.getLocalizedMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
     }
