@@ -265,10 +265,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         enableAction(true);
     }
 
-    public void showErrorMessage(String message) {
-        updateContainer(false, null, false, null, message);
-    }
-    
     public void showRefreshMessage(String message) {
         updateContainer(true, message, false, null, null);
     }
@@ -278,11 +274,11 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                 "Currently no tasks are active."), null); //$NON-NLS-1$
     }
 
-    public void showEmptyMessage(String emptyMessage) {
-        updateContainer(false, null, true, emptyMessage, null);
+    public void showMessage(String message, String icon) {
+        containerRunnable = new TaskUpdateContainerRunnable(client, this, false, true, icon, message);
+            getDisplay().syncExec(containerRunnable);
     }
 
-    
     public void setMessage(String message) {
         if (containerRunnable != null) {
             containerRunnable.setMessage(message);

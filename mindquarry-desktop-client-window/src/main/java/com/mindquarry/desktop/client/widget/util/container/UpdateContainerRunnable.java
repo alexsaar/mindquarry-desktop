@@ -31,12 +31,19 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     private final String refreshMessage;
     private final String emptyMessage;
 
+    private Image icon;
+    private String message;
+    
     private static Image networkErrorIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
         "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
 
-    private static Image informationIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
+    private static Image infoIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
         "/org/tango-project/tango-icon-theme/22x22/status/dialog-information.png")); //$NON-NLS-1$
+
+    private static Image warningIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
+        "/org/tango-project/tango-icon-theme/22x22/status/dialog-warning.png")); //$NON-NLS-1$
     
+    @Deprecated
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
             boolean refreshing, String refreshMessage, boolean empty, 
             String emptyMessage, String errorMessage) {
@@ -47,6 +54,45 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
         this.empty = empty;
         this.emptyMessage = emptyMessage;
         this.errorMessage = errorMessage;
+
+        // replicated structure of the if statement in run()
+        if (refreshing) {
+            // show a progress bar
+            message = refreshMessage;
+        } else if (errorMessage == null && !empty) {
+            // show the content itself
+        } else if (errorMessage == null && empty) {
+            // show a message that there is no content
+            icon = infoIcon;
+            message = emptyMessage;
+        } else {
+            // show an error message
+            icon = networkErrorIcon;
+            message = errorMessage;
+        }
+    }
+
+    public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
+            boolean refreshing, boolean empty, String icon, String message) {
+        this.containerWidget = containerWidget;
+
+        this.refreshing = refreshing;
+        this.icon = null;
+        this.empty = empty;
+        this.message = message;
+
+        if ("info".equals(icon)) {
+            this.icon = infoIcon;
+        } else if ("warn".equals(icon)) {
+            this.icon = warningIcon;
+        } else if ("networkerror".equals(icon)) {
+            this.icon = networkErrorIcon;
+        }
+        
+        // TODO: deprecated ...
+        this.emptyMessage = null;
+        this.errorMessage = null;
+        this.refreshMessage = null;
     }
 
     public void run() {
@@ -54,21 +100,16 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
             // an action is running, so we show a progress bar:
             destroyContent();
             containerWidget.refreshWidget = new UpdateWidget(containerWidget,
-                    refreshMessage);
+                    message);
         } else if (errorMessage == null && !empty) {
             // show the content itself:
             destroyContent();
             createContainerContent();
-        } else if (errorMessage == null && empty) {
-            // show a message that there is no content:
-            destroyContent();
-            containerWidget.noContentWidget = new IconTextWidget(containerWidget,
-                    informationIcon, emptyMessage);
         } else {
-            // show an error message:
+            // show a message with icon (e.g. empty or error)
             destroyContent();
-            containerWidget.errorWidget = new IconTextWidget(containerWidget,
-                    networkErrorIcon, errorMessage);
+            containerWidget.messageWidget = new IconTextWidget(containerWidget,
+                    icon, message);
         }
         containerWidget.layout(true);
     }
@@ -101,13 +142,9 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
             containerWidget.refreshWidget.dispose();
             containerWidget.refreshWidget = null;
         }
-        if (containerWidget.errorWidget != null) {
-            containerWidget.errorWidget.dispose();
-            containerWidget.errorWidget = null;
-        }
-        if (containerWidget.noContentWidget != null) {
-            containerWidget.noContentWidget.dispose();
-            containerWidget.noContentWidget = null;
+        if (containerWidget.messageWidget != null) {
+            containerWidget.messageWidget.dispose();
+            containerWidget.messageWidget = null;
         }
     }
 

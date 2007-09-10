@@ -197,10 +197,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         }
         return true;
     }
-
-    public void showErrorMessage(String message) {
-        updateContainer(false, null, message, false, null);
-    }
     
     public void showRefreshMessage(String message) {
         updateContainer(true, message, null, false, null);
@@ -216,8 +212,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         updateContainer(false, null, null, isEmpty, emptyMessage);
     }
 
-    public void showEmptyMessage(String emptyMessage) {
-        updateContainer(false, null, null, true, emptyMessage);
+    public void showMessage(String message, String icon) {
+        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, false, true, icon, message);
+            getDisplay().syncExec(containerRunnable);
     }
 
     // #########################################################################

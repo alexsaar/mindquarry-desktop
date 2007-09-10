@@ -26,8 +26,7 @@ import com.mindquarry.desktop.client.widget.WidgetBase;
  */
 public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     protected Composite refreshWidget;
-    protected Composite noContentWidget;
-    protected Composite errorWidget;
+    protected Composite messageWidget;
     
     protected V viewer;
 
@@ -65,8 +64,15 @@ public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
         this.viewer = viewer;
     }
 
-    public abstract void showErrorMessage(String message);
+    public void showErrorMessage(String message) {
+        showMessage(message, "networkerror");
+    }
+    
+    public void showEmptyMessage(String message) {
+        showMessage(message, "info");
+    }
+
     public abstract void showRefreshMessage(String message);
     public abstract void showEmptyMessage(boolean isEmpty);
-    public abstract void showEmptyMessage(String message);
+    public abstract void showMessage(String message, String icon);
 }

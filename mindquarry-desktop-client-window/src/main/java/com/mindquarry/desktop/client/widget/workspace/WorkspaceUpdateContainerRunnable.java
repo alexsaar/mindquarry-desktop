@@ -76,6 +76,13 @@ public class WorkspaceUpdateContainerRunnable extends
                 emptyMessage, errorMessage);
         this.client = client;
     }
+    
+    public WorkspaceUpdateContainerRunnable(MindClient client,
+            ContainerWidget<TreeViewer> containerWidget, boolean refreshing,
+            boolean empty, String icon, String message) {
+        super(containerWidget, refreshing, empty, icon, message);
+        this.client = client;
+    }
 
     /**
      * @see com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable#createContainerContent()

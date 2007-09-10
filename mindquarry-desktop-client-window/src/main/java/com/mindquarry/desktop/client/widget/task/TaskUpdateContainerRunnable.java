@@ -35,12 +35,20 @@ public class TaskUpdateContainerRunnable extends
         UpdateContainerRunnable<TableViewer> {
     private MindClient client;
 
+    @Deprecated
     public TaskUpdateContainerRunnable(MindClient client,
             ContainerWidget<TableViewer> containerWidget, boolean refreshing,
             String refreshMessage, boolean empty, String emptyMessage,
             String errorMessage) {
         super(containerWidget, refreshing, refreshMessage, 
                 empty, emptyMessage, errorMessage); //$NON-NLS-1$
+        this.client = client;
+    }
+
+    public TaskUpdateContainerRunnable(MindClient client,
+            ContainerWidget<TableViewer> containerWidget, boolean refreshing,
+            boolean empty, String icon, String message) {
+        super(containerWidget, refreshing, empty, icon, message); //$NON-NLS-1$
         this.client = client;
     }
 
