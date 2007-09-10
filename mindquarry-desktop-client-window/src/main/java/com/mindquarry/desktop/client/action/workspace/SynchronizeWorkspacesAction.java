@@ -217,7 +217,6 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     workspaceWidget.showEmptyMessage(false);
                 } else {
                     // show "sucessfully synchronized"
-                    // TODO: add a green tick icon
                     workspaceWidget.showEmptyMessage(Messages.getString(
                             "Synchronized successfully at ") //$NON-NLS-1$
                             + DateFormat.getTimeInstance().format(new Date()) + "."); //$NON-NLS-1$
