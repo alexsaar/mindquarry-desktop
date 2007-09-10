@@ -149,6 +149,7 @@ public class TeamlistWidget extends WidgetBase {
 
     public void refresh() throws CancelException {
         client.startAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
+        // TODO: show progress bar in the widget itself
         try {
             viewer.setInput(queryTeams());
             selectAllIfAllDeselected();
