@@ -32,8 +32,11 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     private final String emptyMessage;
 
     private static Image networkErrorIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
-            "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
+        "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
 
+    private static Image informationIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
+        "/org/tango-project/tango-icon-theme/22x22/status/dialog-information.png")); //$NON-NLS-1$
+    
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
             boolean refreshing, String refreshMessage, boolean empty, 
             String emptyMessage, String errorMessage) {
@@ -59,8 +62,8 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
         } else if (errorMessage == null && empty) {
             // show a message that there is no content:
             destroyContent();
-            containerWidget.noContentWidget = new NoContentWidget(
-                    containerWidget, emptyMessage);
+            containerWidget.noContentWidget = new IconTextWidget(containerWidget,
+                    informationIcon, emptyMessage);
         } else {
             // show an error message:
             destroyContent();
