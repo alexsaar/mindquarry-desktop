@@ -14,8 +14,6 @@
 package com.mindquarry.desktop.client;
 
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Loads the translation for the current default locale from an XML
@@ -38,19 +36,7 @@ public class Messages extends com.mindquarry.desktop.Messages {
         if (translationMap == null) {
             translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
-        String translation = getTranslation(key, translationMap);
-        int i = 0;
-        // "{n}" can be used as a placeholder in the message, it refers
-        // to the n-th argument (n starts at 0):
-        while (true) {
-          Pattern p = Pattern.compile("\\{"+i+"\\}");
-          Matcher m = p.matcher(translation);
-          if (!m.find()) {
-            break;
-          }
-          translation = m.replaceAll(args[i]);
-          i++;
-        }
+        String translation = getTranslation(key, translationMap, args);
         return translation;
     }
             

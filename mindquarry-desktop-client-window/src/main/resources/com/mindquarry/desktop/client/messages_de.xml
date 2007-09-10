@@ -466,8 +466,8 @@
         <translation>Keine auswählen</translation>
     </message>
     <message>
-        <source>Unknown server: </source>
-        <translation>Unbekannter Server: </translation>
+        <source>Unknown server: "{0}"</source>
+        <translation>Unbekannter Server: "{0}"</translation>
     </message>
     <message>
         <source>Not connected.\nPlease click the &apos;Refresh&apos; button to reconnect.</source>

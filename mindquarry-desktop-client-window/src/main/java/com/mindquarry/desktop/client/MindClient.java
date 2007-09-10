@@ -388,9 +388,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 getShell(),
                 Messages.getString("Error"), //$NON-NLS-1$
                 null,
-                (Messages.getString("Unknown server: ") + "\"" //$NON-NLS-1$ //$NON-NLS-2$
-                        + exception.getLocalizedMessage()
-                        + "\".\n\n" //$NON-NLS-1$
+                (Messages.getString("Unknown server: \"{0}\"", exception.getLocalizedMessage()) //$NON-NLS-1$
+                        + "\n\n" //$NON-NLS-1$
                         + Messages.getString("Please check your Mindquarry server URL in the preferences dialog.")), //$NON-NLS-1$
                 MessageDialog.ERROR,
                 new String[] {

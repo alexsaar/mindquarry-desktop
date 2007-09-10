@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -44,14 +46,14 @@ public class Messages {
     private static Map<String, String> translationMap = null;
 
     public static String getString(String key) {
-        return getString(key, null);
+        return getString(key, new String[]{});
     }
     
-    private static String getString(String key, String[] args) {
+    public static String getString(String key, String... args) {
         if (translationMap == null) {
             translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
-        return getTranslation(key, translationMap);
+        return getTranslation(key, translationMap, args);
     }
     
     protected static Map<String, String> initTranslationMap(String fileBase, String fileSuffix) {
@@ -78,7 +80,7 @@ public class Messages {
     }
      
     protected static String getTranslation(String key,
-            Map<String, String> translationMap) {
+            Map<String, String> translationMap, String... args) {
         String translation = translationMap.get(key);
         if (translation == null) {
             // line breaks are entered as "\n" (literally) but we get them as a line
@@ -89,9 +91,21 @@ public class Messages {
                     // don't log if GUI is English
                     log.debug("No translation found for '" +key+ "'");
                 }
-                return key;
+                translation = key;
             }
-            return translation.replace("\\n", "\n");
+            translation = translation.replace("\\n", "\n");
+        }
+        int i = 0;
+        // "{n}" can be used as a placeholder in the message, it refers
+        // to the n-th argument (n starts at 0):
+        while (true) {
+          Pattern p = Pattern.compile("\\{"+i+"\\}");
+          Matcher m = p.matcher(translation);
+          if (!m.find()) {
+            break;
+          }
+          translation = m.replaceAll(args[i]);
+          i++;
         }
         return translation;
     }
