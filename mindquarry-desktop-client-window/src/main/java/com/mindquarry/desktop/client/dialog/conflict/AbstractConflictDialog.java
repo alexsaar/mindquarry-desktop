@@ -15,7 +15,6 @@ package com.mindquarry.desktop.client.dialog.conflict;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -26,13 +25,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.dialog.DialogBase;
 
 /**
  * Abstract dialog for resolving several kinds of working copy conflicts.
  * 
  * @author dnaber
  */
-public abstract class AbstractConflictDialog extends TitleAreaDialog {
+public abstract class AbstractConflictDialog extends DialogBase {
 
     protected Button okButton;
     protected Button cancelButton;
