@@ -72,7 +72,7 @@ public class SynchronizeTasksAction extends ActionBase {
 	}
 
 	public void stop() {
-	    if (updateThread != null) {
+	    if (updateThread != null && updateThread.isAlive()) {
 	        log.debug("Killing task update thread");
 	        updateThread.stop();
 	        client.stopAction(SYNC_MESSAGE);
