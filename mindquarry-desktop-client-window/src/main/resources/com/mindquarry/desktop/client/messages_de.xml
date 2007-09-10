@@ -70,6 +70,10 @@
         <translation>Aktualisiere Änderungsliste</translation>
     </message>
     <message>
+        <source>Refreshing workspaces changes for team &quot;{0}&quot; (team {1} of {2}) ...</source>
+        <translation>Aktualisiere Änderungsliste für Team &quot;{0}&quot; (Team {1} von {2}) ...</translation>
+    </message>
+    <message>
         <source>Priority</source>
         <translation>Priorität</translation>
     </message>

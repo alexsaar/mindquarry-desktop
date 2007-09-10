@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.ProgressBar;
 public class UpdateWidget extends Composite {
 	private String message;
     private Composite internalComp;
+    private Label mainLabel;
     private Label updateLabel;
 	
     public UpdateWidget(Composite parent, String message) {
@@ -57,10 +58,10 @@ public class UpdateWidget extends Composite {
         bar.setSize(200, 16);
         bar.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-        Label label = new Label(internalComp, SWT.CENTER|SWT.WRAP);
-        label.setText(message);
-        label.setBackground(label.getParent().getBackground());
-        label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+        mainLabel = new Label(internalComp, SWT.CENTER|SWT.WRAP);
+        mainLabel.setText(message);
+        mainLabel.setBackground(mainLabel.getParent().getBackground());
+        mainLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
         // Another label to show more detailed progress information (e.g.
         // which file is currently being downloaded):
@@ -70,9 +71,23 @@ public class UpdateWidget extends Composite {
         updateLabel.setText("\n\n");
 	}
 
-	/**
-	 * Set an additional message showing more detailed progress information.
-	 */
+    /**
+     * Set the progress message.
+     */
+    protected void setMessage(final String message) {
+        getDisplay().syncExec(new Runnable() {
+            public void run() {
+                mainLabel.setText(message);
+                mainLabel.setBackground(mainLabel.getParent().getBackground());
+                mainLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+                internalComp.layout();
+            }
+        });
+    }
+
+    /**
+     * Set an additional message showing more detailed progress information.
+     */
     protected void setUpdateMessage(final String message) {
         getDisplay().syncExec(new Runnable() {
             public void run() {

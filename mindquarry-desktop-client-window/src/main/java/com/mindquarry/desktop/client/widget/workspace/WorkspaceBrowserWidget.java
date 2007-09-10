@@ -41,6 +41,7 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.client.widget.util.container.ProgressListener;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -164,6 +165,12 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
         return localChanges.size() == 0 && remoteChanges.size() == 0;
     }
     
+    public void setMessage(String message) {
+        if (containerRunnable != null) {
+            containerRunnable.setMessage(message);
+        }
+    }
+    
     public void setUpdateMessage(String message) {
         if (containerRunnable != null) {
             containerRunnable.setUpdateMessage(message);
@@ -238,6 +245,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             for (Team team : selectedTeams) {
                 String url = team.getWorkspaceURL();
                 log.info("Refreshing for SVN URL: " + url);
+
+                setMessage(Messages.getString(
+                        "Refreshing workspaces changes for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
+                        team.getName(),
+                        Integer.toString(selectedTeams.indexOf(team)+1),
+                        Integer.toString(selectedTeams.size())));
+                
                 String folder = selected.getWorkspaceFolder() + "/"
                         + team.getName();
                 String login = selected.getLogin();
@@ -374,5 +388,16 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             return subFiles;
         }
     }
+    
+    class WorkspaceProgressListener implements ProgressListener {
+        WorkspaceBrowserWidget widget; 
 
+        public WorkspaceProgressListener(WorkspaceBrowserWidget widget) {
+            this.widget = widget;
+        }
+
+        public void setDescription(String description) {
+            widget.showRefreshMessage(description);
+        }
+    }
 }

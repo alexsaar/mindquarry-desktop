@@ -71,6 +71,15 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     }
 
     /**
+     * Sets the refresh message if the refresh widget is visible.
+     */
+    public void setMessage(String message) {
+        if (containerWidget.refreshWidget != null) {
+            ((UpdateWidget)containerWidget.refreshWidget).setMessage(message);
+        }
+    }
+
+    /**
      * Sets an additional text if the refresh widget is visible.
      * TODO: change it so that any type of widget supports setting
      * an update message
