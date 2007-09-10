@@ -41,7 +41,6 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
-import com.mindquarry.desktop.client.widget.util.container.ProgressListener;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -386,18 +385,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
         List<Status> getSubFiles() {
             return subFiles;
-        }
-    }
-    
-    class WorkspaceProgressListener implements ProgressListener {
-        WorkspaceBrowserWidget widget; 
-
-        public WorkspaceProgressListener(WorkspaceBrowserWidget widget) {
-            this.widget = widget;
-        }
-
-        public void setDescription(String description) {
-            widget.showRefreshMessage(description);
         }
     }
 }
