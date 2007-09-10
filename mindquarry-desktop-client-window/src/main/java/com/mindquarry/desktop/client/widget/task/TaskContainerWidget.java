@@ -45,12 +45,14 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public class TaskContainerWidget extends ContainerWidget<TableViewer> {
+    private static final String FACET_ALL = "all";
+
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
     private TaskList tasks;
 
-    private String statusFacet = "all";
-    private String priorityFacet = "all";
+    private String statusFacet = FACET_ALL;
+    private String priorityFacet = FACET_ALL;
     private String searchFacet = "";
 
     public TaskContainerWidget(Composite parent, MindClient client) {
@@ -90,7 +92,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             TaskList content = new TaskList();
             content.getTasks().addAll(tasks.getTasks());
 
-            if ((statusFacet.equals("all")) && (priorityFacet.equals("all"))
+            if ((statusFacet.equals(FACET_ALL)) && (priorityFacet.equals(FACET_ALL))
                     && searchFacet.equals("")) {
                 viewer.setInput(tasks);
                 viewer.refresh();
@@ -101,15 +103,15 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                     boolean hide = false;
 
                     // check status facet
-                    if ((!statusFacet.equals("all"))
+                    if ((!statusFacet.equals(FACET_ALL))
                             && (!task.getStatus().equals(statusFacet))) {
                         hide = true;
                     }
                     // check priority facet
                     if ((task.getPriority() == null)
-                            && (!priorityFacet.equals("all"))) {
+                            && (!priorityFacet.equals(FACET_ALL))) {
                         hide = true;
-                    } else if ((!priorityFacet.equals("all"))
+                    } else if ((!priorityFacet.equals(FACET_ALL))
                             && (!task.getPriority().equals(priorityFacet))) {
                         hide = true;
                     }
