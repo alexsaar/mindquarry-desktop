@@ -55,6 +55,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
     private String priorityFacet = FACET_ALL;
     private String searchFacet = "";
 
+    private TaskUpdateContainerRunnable containerRunnable;
+
     public TaskContainerWidget(Composite parent, MindClient client) {
         super(parent, SWT.BORDER, client);
     }
@@ -155,7 +157,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             refreshing = false;
             return;
         }
-        showRefreshMessage(null);
+        showRefreshMessage(Messages.getString("Updating task list") + " ..."); //$NON-NLS-1$ //$NON-NLS-2$
         log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
         // cleanup current task list
@@ -176,6 +178,12 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                 String url = profile.getServerURL();
                 String login = profile.getLogin();
                 String password = profile.getPassword();
+
+                setMessage(Messages.getString(
+                        "Updating task list for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
+                        team.getName(),
+                        Integer.toString(teams.indexOf(team)+1),
+                        Integer.toString(teams.size())));
 
                 tasks.getTasks().addAll(new TaskList(url + "/tasks/" //$NON-NLS-1$
                         + team.getId() + "/", login, password).getTasks());
@@ -221,8 +229,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             if (ExceptionUtilities.hasCause(e, ThreadDeath.class)) {
                 // task update was cancelled by user
             } else {
-                log.error("Could not update list of tasks for "
-                        + profile.getServerURL(), e); //$NON-NLS-1$
+                log.error("Could not update list of tasks for " //$NON-NLS-1$
+                        + profile.getServerURL(), e);
 
                 final String errMessage = Messages
                         .getString("List of tasks could not be updated") //$NON-NLS-1$
@@ -262,8 +270,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
     }
     
     public void showRefreshMessage(String message) {
-        updateContainer(true, Messages.getString("Updating task list") + " ...", //$NON-NLS-1$ //$NON-NLS-2$  
-        false, null, null);
+        updateContainer(true, message, false, null, null);
     }
 
     public void showEmptyMessage(boolean isEmpty) {
@@ -273,6 +280,19 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
 
     public void showEmptyMessage(String emptyMessage) {
         updateContainer(false, null, true, emptyMessage, null);
+    }
+
+    
+    public void setMessage(String message) {
+        if (containerRunnable != null) {
+            containerRunnable.setMessage(message);
+        }
+    }
+    
+    public void setUpdateMessage(String message) {
+        if (containerRunnable != null) {
+            containerRunnable.setUpdateMessage(message);
+        }
     }
 
     private void enableAction(boolean enable) {
@@ -292,10 +312,10 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
     }
 
     
-    private void updateContainer(final boolean refreshing,
-            String refreshMessage, final boolean empty, String emptyMessage, final String errorMessage) {
-        getDisplay().syncExec(
-                new TaskUpdateContainerRunnable(client, this, refreshing,
-                        refreshMessage, empty, emptyMessage, errorMessage));
+    private void updateContainer(final boolean refreshing, String refreshMessage,
+            final boolean empty, String emptyMessage, final String errorMessage) {
+        containerRunnable = new TaskUpdateContainerRunnable(client, this,
+                refreshing, refreshMessage, empty, emptyMessage, errorMessage);
+        getDisplay().syncExec(containerRunnable);
     }
 }
