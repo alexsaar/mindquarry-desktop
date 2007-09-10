@@ -515,6 +515,10 @@
         <translation>Aktuell laufende Aktionen abbrechen</translation>
     </message>
     <message>
+        <source>About</source>
+        <translation>Über</translation>
+    </message>
+    <message>
         <source>About ...</source>
         <translation>Über ...</translation>
     </message>
@@ -523,8 +527,12 @@
         <translation>Aktuell bearbeitet: </translation>
     </message>
     <message>
-        <source>Currently working on: </source>
-        <translation>Aktuell bearbeitet: </translation>
+        <source>About Mindquarry Desktop Client</source>
+        <translation>Über Mindquarry Desktop Client</translation>
+    </message>
+    <message>
+        <source>Information about the Mindquarry desktop client.</source>
+        <translation>Informationen über den Mindquarry Desktop Client.</translation>
     </message>
 </context>
 </TS>

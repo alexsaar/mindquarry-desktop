@@ -68,6 +68,7 @@ public class AboutAction extends Action {
 
     protected Control createContents(Composite parent) {
       Control contents = super.createContents(parent);
+      getShell().setText(Messages.getString("About Mindquarry Desktop Client")); //$NON-NLS-1$
       setTitle(Messages.getString("About")); //$NON-NLS-1$
       setMessage(Messages.getString("Information about the Mindquarry desktop client."), //$NON-NLS-1$
           IMessageProvider.INFORMATION);
