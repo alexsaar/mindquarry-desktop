@@ -84,8 +84,11 @@ public class Messages {
             // line breaks are entered as "\n" (literally) but we get them as a line
             // break form the parser:
             translation = translationMap.get(key.replace("\n", "\\n"));
-            if (translation == null) {
-                log.debug("No translation found for '" +key+ "'");
+            if (translation == null) { 
+                if (!"en".equals(Locale.getDefault().getLanguage())) {
+                    // don't log if GUI is English
+                    log.debug("No translation found for '" +key+ "'");
+                }
                 return key;
             }
             return translation.replace("\\n", "\n");
