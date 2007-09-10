@@ -314,8 +314,8 @@
         <translation>Synchronisiere Arbeitsbereich</translation>
     </message>
     <message>
-        <source>Please do not modify, copy, or move files\nin your workspace during the synchronization.</source>
-        <translation>Bitte verschieben, kopieren und ändern Sie keine Dateien\nim Arbeitsbereich während der Synchronisierung.</translation>
+        <source>Please do not modify, copy, or move files in your workspace during the synchronization.</source>
+        <translation>Bitte verschieben, kopieren und ändern Sie keine Dateien im Arbeitsbereich während der Synchronisierung.</translation>
     </message>
     <message>
         <source>Specify a new value for this property</source>
@@ -505,6 +505,26 @@
     <message>
         <source>Synchronized successfully at </source>
         <translation>Erfolgreich synchronisiert um </translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Stop the currently running actions</source>
+        <translation>Aktuell laufende Aktionen abbrechen</translation>
+    </message>
+    <message>
+        <source>About ...</source>
+        <translation>Über ...</translation>
+    </message>
+    <message>
+        <source>Currently working on: </source>
+        <translation>Aktuell bearbeitet: </translation>
+    </message>
+    <message>
+        <source>Currently working on: </source>
+        <translation>Aktuell bearbeitet: </translation>
     </message>
 </context>
 </TS>

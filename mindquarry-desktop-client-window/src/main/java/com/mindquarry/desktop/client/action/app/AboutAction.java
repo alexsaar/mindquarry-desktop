@@ -50,7 +50,7 @@ public class AboutAction extends Action {
     this.client = client;
     setId(ID);
     setActionDefinitionId(ID);
-    setText(Messages.getString("About..."));  //$NON-NLS-1$
+    setText(Messages.getString("About ..."));  //$NON-NLS-1$
   }
 
   public void run() {
