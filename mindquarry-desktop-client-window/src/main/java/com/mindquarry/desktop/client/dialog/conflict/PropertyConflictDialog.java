@@ -37,12 +37,12 @@ import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 public class PropertyConflictDialog extends AbstractConflictDialog {
     private PropertyConflict conflict;
     private PropertyConflict.Action resolveMethod;
-    
+
     private Text newPropText;
     private String newValue = new String("");
 
     private static final PropertyConflict.Action DEFAULT_RESOLUTION = PropertyConflict.Action.USE_LOCAL_VALUE;
-    
+
     public PropertyConflictDialog(PropertyConflict conflict, Shell shell) {
         super(shell);
         this.conflict = conflict;
@@ -51,13 +51,15 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Property") + ": " + conflict.getLocalProperty().getName());
+        name.setText(Messages.getString("Property") + ": "
+                + conflict.getLocalProperty().getName());
     }
 
     @Override
     protected String getMessage() {
-        return Messages.getString("Somebody else modified the property you are trying to synchronize. " +
-                "Please select the version that should be treated as the current version.");
+        return Messages
+                .getString("Somebody else modified the property you are trying to synchronize. "
+                        + "Please select the version that should be treated as the current version.");
     }
 
     @Override
@@ -66,45 +68,56 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         subComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         subComposite.setLayout(new GridLayout(2, false));
 
-        GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+        GridData gridData = new GridData(GridData.FILL_BOTH
+                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
         gridData.minimumHeight = 35;
 
-        Button button1 = makeRadioButton(subComposite,
-                Messages.getString("Use your local version of the property"),  //$NON-NLS-1$
+        Button button1 = makeRadioButton(subComposite, Messages
+                .getString("Use your local version of the property"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_LOCAL_VALUE);
         button1.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-        
-        Text localPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
+
+        Text localPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI
+                | SWT.READ_ONLY | SWT.V_SCROLL);
         localPropText.setLayoutData(gridData);
         localPropText.setText(conflict.getLocalProperty().getValue());
-        
-        Button button2 = makeRadioButton(subComposite,
-                Messages.getString("Use the property from the server"),  //$NON-NLS-1$
+
+        Button button2 = makeRadioButton(subComposite, Messages
+                .getString("Use the property from the server"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_REMOTE_VALUE);
         button2.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-        
-        Text remotePropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL);
+
+        Text remotePropText = new Text(subComposite, SWT.BORDER | SWT.MULTI
+                | SWT.READ_ONLY | SWT.V_SCROLL);
         remotePropText.setLayoutData(gridData);
         remotePropText.setText(conflict.getRemoteProperty().getValue());
-        
-        Button button3 = makeRadioButton(subComposite,
-                Messages.getString("Specify a new value for this property"),  //$NON-NLS-1$
+
+        Button button3 = makeRadioButton(subComposite, Messages
+                .getString("Specify a new value for this property"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_NEW_VALUE);
         button3.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-        
-        newPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+
+        newPropText = new Text(subComposite, SWT.BORDER | SWT.MULTI
+                | SWT.V_SCROLL);
         newPropText.setLayoutData(gridData);
         newPropText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent event) {
                 newValue = newPropText.getText();
-            }});
+            }
+        });
     }
-    
+
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
+    }
+
     public String getNewValue() {
         return newValue;
     }
 
-    protected Button makeRadioButton(Composite composite, String text, final PropertyConflict.Action action) {
+    protected Button makeRadioButton(Composite composite, String text,
+            final PropertyConflict.Action action) {
         Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (action == DEFAULT_RESOLUTION) {

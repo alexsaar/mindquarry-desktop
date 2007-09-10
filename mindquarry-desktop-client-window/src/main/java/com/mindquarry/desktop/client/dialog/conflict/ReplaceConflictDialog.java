@@ -47,7 +47,7 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
     private ReplaceConflict.Action resolveMethod;
 
     private static final ReplaceConflict.Action DEFAULT_RESOLUTION = ReplaceConflict.Action.RENAME;
-    
+
     public ReplaceConflictDialog(ReplaceConflict conflict, Shell shell) {
         super(shell);
         this.conflict = conflict;
@@ -56,21 +56,25 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+        name.setText(Messages.getString("Filename(s)") + ": "
+                + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
         if (conflict.getStatus().getTextStatus() == StatusKind.replaced
                 && conflict.getStatus().getRepositoryTextStatus() == StatusKind.replaced) {
-            return Messages.getString("A locally replaced file or directory (svn delete + svn add) " +
-            "was also replaced by someone else on the server.");
+            return Messages
+                    .getString("A locally replaced file or directory (svn delete + svn add) "
+                            + "was also replaced by someone else on the server.");
         } else if (conflict.getStatus().getTextStatus() == StatusKind.replaced) {
-            return Messages.getString("A locally replaced file or directory (svn delete + svn add) " +
-            		"was modified by someone else on the server.");
+            return Messages
+                    .getString("A locally replaced file or directory (svn delete + svn add) "
+                            + "was modified by someone else on the server.");
         } else {
-            return Messages.getString("A locally modified file was replaced (svn delete + svn add) " +
-            		"by someone else on the server.");
+            return Messages
+                    .getString("A locally modified file was replaced (svn delete + svn add) "
+                            + "by someone else on the server.");
         }
     }
 
@@ -78,15 +82,15 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite,
-                Messages.getString("Rename file and upload it under the new name"),  //$NON-NLS-1$
+        Button button1 = makeRadioButton(subComposite, Messages
+                .getString("Rename file and upload it under the new name"), //$NON-NLS-1$
                 ReplaceConflict.Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 newNameField.setEnabled(true);
             }
         });
-                
+
         newNameField = new Text(subComposite, SWT.BORDER | SWT.SINGLE);
         // TODO: make field wider
         String oldName = FilenameUtils.getName(conflict.getStatus().getPath());
@@ -98,29 +102,35 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
             public void focusGained(FocusEvent arg0) {
                 newNameField.selectAll();
             }
+
             public void focusLost(FocusEvent arg0) {
             }
         });
         newNameField.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent arg0) {
             }
+
             public void keyReleased(KeyEvent arg0) {
                 newNameChanged(newNameField.getText());
             }
         });
         newNameField.setFocus();
         // no replace available because it is a dangerous, unrecoverable action
-        /*Button button2 = makeRadioButton(subComposite,
-                //Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
-                //Action.REPLACE);
-                Messages.getString("Overwrite your local file with the one from the server"),  //$NON-NLS-1$
-                Action.REPLACE);
-        button2.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                newNameField.setEnabled(false);
-                okButton.setEnabled(true);
-            }
-        });*/
+        /*
+         * Button button2 = makeRadioButton(subComposite,
+         * //Messages.getString("Overwrite the file on the server with your
+         * local version"), //$NON-NLS-1$ //Action.REPLACE);
+         * Messages.getString("Overwrite your local file with the one from the
+         * server"), //$NON-NLS-1$ Action.REPLACE);
+         * button2.addListener(SWT.Selection, new Listener() { public void
+         * handleEvent(Event event) { newNameField.setEnabled(false);
+         * okButton.setEnabled(true); } });
+         */
+    }
+
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
     }
 
     private void newNameChanged(String name) {
@@ -142,22 +152,24 @@ public class ReplaceConflictDialog extends AbstractConflictDialog {
             throw new RuntimeException(e.toString(), e);
         }
     }
-    
+
     private String getNameSuggestion(String existingName) {
         int pos = existingName.lastIndexOf('.');
         // TODO: avoid suggesting a name that exists
         if (pos == -1) {
             return existingName + "_1";
         } else {
-            return existingName.substring(0, pos) + "_1" + existingName.substring(pos);
+            return existingName.substring(0, pos) + "_1"
+                    + existingName.substring(pos);
         }
     }
 
     public String getNewName() {
         return newName;
     }
-    
-    protected Button makeRadioButton(Composite composite, String text, final ReplaceConflict.Action action) {
+
+    protected Button makeRadioButton(Composite composite, String text,
+            final ReplaceConflict.Action action) {
         Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (action == DEFAULT_RESOLUTION) {

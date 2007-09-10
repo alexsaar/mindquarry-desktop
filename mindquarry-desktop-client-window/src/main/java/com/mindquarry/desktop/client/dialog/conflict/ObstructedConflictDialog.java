@@ -47,7 +47,7 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
     private ObstructedConflict.Action resolveMethod;
 
     private static final ObstructedConflict.Action DEFAULT_RESOLUTION = ObstructedConflict.Action.RENAME;
-    
+
     public ObstructedConflictDialog(ObstructedConflict conflict, Shell shell) {
         super(shell);
         this.conflict = conflict;
@@ -56,17 +56,20 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+        name.setText(Messages.getString("Filename(s)") + ": "
+                + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
         if (conflict.getStatus().getNodeKind() == NodeKind.dir) {
-            return Messages.getString("One of the local directories was deleted and replaced with a file of the same name. " +
-            		"This structural change must be resolved before synchronization.");
+            return Messages
+                    .getString("One of the local directories was deleted and replaced with a file of the same name. "
+                            + "This structural change must be resolved before synchronization.");
         } else {
-            return Messages.getString("One of the local files was deleted and replaced with a directory of the same name. " +
-                    "This structural change must be resolved before synchronization.");
+            return Messages
+                    .getString("One of the local files was deleted and replaced with a directory of the same name. "
+                            + "This structural change must be resolved before synchronization.");
         }
     }
 
@@ -74,15 +77,15 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite,
-                Messages.getString("Rename file and upload it under the new name"),  //$NON-NLS-1$
+        Button button1 = makeRadioButton(subComposite, Messages
+                .getString("Rename file and upload it under the new name"), //$NON-NLS-1$
                 ObstructedConflict.Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 newNameField.setEnabled(true);
             }
         });
-                
+
         newNameField = new Text(subComposite, SWT.BORDER | SWT.SINGLE);
         // TODO: make field wider
         String oldName = FilenameUtils.getName(conflict.getStatus().getPath());
@@ -94,19 +97,23 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
             public void focusGained(FocusEvent arg0) {
                 newNameField.selectAll();
             }
+
             public void focusLost(FocusEvent arg0) {
             }
         });
         newNameField.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent arg0) {
             }
+
             public void keyReleased(KeyEvent arg0) {
                 newNameChanged(newNameField.getText());
             }
         });
         newNameField.setFocus();
-        Button button2 = makeRadioButton(subComposite,
-                Messages.getString("Remove obstructing file and download original from server"),  //$NON-NLS-1$
+        Button button2 = makeRadioButton(
+                subComposite,
+                Messages
+                        .getString("Remove obstructing file and download original from server"), //$NON-NLS-1$
                 ObstructedConflict.Action.REVERT);
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -114,6 +121,11 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
                 okButton.setEnabled(true);
             }
         });
+    }
+
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
     }
 
     private void newNameChanged(String name) {
@@ -135,22 +147,24 @@ public class ObstructedConflictDialog extends AbstractConflictDialog {
             throw new RuntimeException(e.toString(), e);
         }
     }
-    
+
     private String getNameSuggestion(String existingName) {
         int pos = existingName.lastIndexOf('.');
         // TODO: avoid suggesting a name that exists
         if (pos == -1) {
             return existingName + "_1";
         } else {
-            return existingName.substring(0, pos) + "_1" + existingName.substring(pos);
+            return existingName.substring(0, pos) + "_1"
+                    + existingName.substring(pos);
         }
     }
 
     public String getNewName() {
         return newName;
     }
-    
-    protected Button makeRadioButton(Composite composite, String text, final ObstructedConflict.Action action) {
+
+    protected Button makeRadioButton(Composite composite, String text,
+            final ObstructedConflict.Action action) {
         Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (action == DEFAULT_RESOLUTION) {

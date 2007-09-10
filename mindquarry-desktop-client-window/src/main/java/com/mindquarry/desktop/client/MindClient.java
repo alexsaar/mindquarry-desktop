@@ -36,6 +36,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.FontRegistry;
@@ -612,6 +613,12 @@ public class MindClient extends ApplicationWindow implements EventListener {
                             .getResourceAsStream("/com/mindquarry/icons/32x32/logo/mindquarry-icon.png")); //$NON-NLS-1$
         }
         reg.put(CLIENT_IMG_KEY, img);
+        
+        img = new Image(
+                Display.getCurrent(),
+                MindClient.class
+                        .getResourceAsStream("/org/tango-project/tango-icon-theme/16x16/apps/help-browser.png")); //$NON-NLS-1$
+        reg.put(Dialog.DLG_IMG_HELP, img);
         
         Image trayImg = new Image(
                 Display.getCurrent(),

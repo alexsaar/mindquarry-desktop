@@ -106,6 +106,11 @@ public class TeamSelectionDialog extends DialogBase {
         createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
                 true);
     }
+    
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
+    }
 
     /**
      * Getter for selected.

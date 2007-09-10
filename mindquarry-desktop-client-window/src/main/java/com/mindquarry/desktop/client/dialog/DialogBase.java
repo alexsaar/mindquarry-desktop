@@ -15,6 +15,9 @@ package com.mindquarry.desktop.client.dialog;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -26,7 +29,19 @@ import org.eclipse.swt.widgets.Shell;
 public abstract class DialogBase extends TitleAreaDialog {
     public DialogBase(Shell shell) {
         super(shell);
+        
+        shell.addHelpListener(new HelpListener() {
+            public void helpRequested(HelpEvent e) {
+                Program.launch(getHelpURL());
+            }
+        });
+        // TODO uncomment this once detailed help is available
+//        setHelpAvailable(true);
+//        setDialogHelpAvailable(true);
+        
         setShellStyle(SWT.RESIZE);
         setBlockOnOpen(true);
     }
+    
+    protected abstract String getHelpURL();
 }

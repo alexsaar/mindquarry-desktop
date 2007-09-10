@@ -77,7 +77,7 @@ public class TaskSettingsDialog extends DialogBase {
 	public Task getChangedTask() {
 		return task;
 	}
-
+	
 	/**
 	 * @see org.eclipse.jface.dialogs.TitleAreaDialog#createContents(org.eclipse.swt.widgets.Composite)
 	 */
@@ -215,6 +215,11 @@ public class TaskSettingsDialog extends DialogBase {
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
 	}
+	
+	protected String getHelpURL() {
+	 // TODO fix help URL
+        return "http://www.mindquarry.com/";
+    }
 
 	private void initTask() {
 		if (task.getTitle() != null) {

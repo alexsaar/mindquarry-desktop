@@ -46,29 +46,28 @@ import com.mindquarry.desktop.workspace.conflict.ContentConflict;
  * @author <a href="mailto:victor(dot)saar(at)mindquarry(dot)com">Victor Saar</a>
  */
 public class ContentConflictDialog extends AbstractConflictDialog {
-    private static Log log = LogFactory
-    	.getLog(ContentConflictDialog.class);
+    private static Log log = LogFactory.getLog(ContentConflictDialog.class);
 
     private ContentConflict conflict;
     private ContentConflict.Action resolveMethod;
 
     private static final ContentConflict.Action DEFAULT_RESOLUTION = ContentConflict.Action.USE_LOCAL;
-	private static final String MANUALLY_MERGE_TEXT = 
-		Messages.getString("Manually merge both files");
-	private static final String MANUALLY_MERGE_HELP = 
-		Messages.getString("After starting MS Word, merge both versions " +
-				"and save the result.\nThen click the 'Done' button that " +
-				"will appear and click 'OK'.");
-    
-	private File mergedVersion = null;
-	private File mergedVersionTarget = null;
-	private Button startMergeButton;
+    private static final String MANUALLY_MERGE_TEXT = Messages
+            .getString("Manually merge both files");
+    private static final String MANUALLY_MERGE_HELP = Messages
+            .getString("After starting MS Word, merge both versions "
+                    + "and save the result.\nThen click the 'Done' button that "
+                    + "will appear and click 'OK'.");
 
-	// files used when merging versions with MS Word, will 
-	// may be deleted at the end:
-	private List<File> tempFiles = new ArrayList<File>();
+    private File mergedVersion = null;
+    private File mergedVersionTarget = null;
+    private Button startMergeButton;
 
-	private Button mergeButton;
+    // files used when merging versions with MS Word, will
+    // may be deleted at the end:
+    private List<File> tempFiles = new ArrayList<File>();
+
+    private Button mergeButton;
 
     public ContentConflictDialog(ContentConflict conflict, Shell shell) {
         super(shell);
@@ -78,17 +77,21 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+        name.setText(Messages.getString("Filename(s)") + ": "
+                + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
-    	// TODO: move the information about which user made the change to
-    	// AbstractConflictDialog so (almost) all other dialogs can show it, too: 
-        return Messages.getString("The file you are trying to synchronize was modified on the server. " +
-                "Please select the version that should be treated as the current version. ")
-                + Messages.getString("Latest change on the server was done by user: ") +
-                conflict.getStatus().getLastCommitAuthor();
+        // TODO: move the information about which user made the change to
+        // AbstractConflictDialog so (almost) all other dialogs can show it,
+        // too:
+        return Messages
+                .getString("The file you are trying to synchronize was modified on the server. "
+                        + "Please select the version that should be treated as the current version. ")
+                + Messages
+                        .getString("Latest change on the server was done by user: ")
+                + conflict.getStatus().getLastCommitAuthor();
     }
 
     @Override
@@ -97,17 +100,17 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         subComposite.setLayout(new RowLayout(SWT.VERTICAL));
 
         // TODO:
-        //Composite mergeComposite = new Composite(subComposite, SWT.NONE);
-        //mergeComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+        // Composite mergeComposite = new Composite(subComposite, SWT.NONE);
+        // mergeComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-    	// TODO: make this use the mimetype and make it extensible
+        // TODO: make this use the mimetype and make it extensible
         // to other file types:
         boolean isWordDocument = false;
         String lcFilename = conflict.getStatus().getPath();
         if (lcFilename != null) {
-        	lcFilename = lcFilename.toLowerCase();
+            lcFilename = lcFilename.toLowerCase();
             if (lcFilename.endsWith(".doc") || lcFilename.endsWith(".docx")) {
-            	isWordDocument = true;
+                isWordDocument = true;
             }
         }
         String system = System.getProperty("os.name");
@@ -115,12 +118,12 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         // works only on Windows:
         boolean isWindows = true;
         if (system != null) {
-        	isWindows = system.startsWith("Windows");
+            isWindows = system.startsWith("Windows");
         }
         boolean offerMSWordMerge = isWordDocument && isWindows;
-        
-        Button button1 = makeRadioButton(subComposite,
-                Messages.getString("Use your local version of the file"),  //$NON-NLS-1$
+
+        Button button1 = makeRadioButton(subComposite, Messages
+                .getString("Use your local version of the file"), //$NON-NLS-1$
                 ContentConflict.Action.USE_LOCAL);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -128,9 +131,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
                 startMergeButton.setEnabled(false);
             }
         });
-                
-        Button button2 = makeRadioButton(subComposite,
-                Messages.getString("Use the file from the server"),  //$NON-NLS-1$
+
+        Button button2 = makeRadioButton(subComposite, Messages
+                .getString("Use the file from the server"), //$NON-NLS-1$
                 ContentConflict.Action.USE_REMOTE);
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
@@ -140,28 +143,34 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         });
 
         if (offerMSWordMerge) {
-            mergeButton = makeRadioButton(subComposite,
-                    MANUALLY_MERGE_TEXT,  //$NON-NLS-1$
+            mergeButton = makeRadioButton(subComposite, MANUALLY_MERGE_TEXT, //$NON-NLS-1$
                     ContentConflict.Action.MERGE);
-			mergeButton.setText(MANUALLY_MERGE_TEXT);
+            mergeButton.setText(MANUALLY_MERGE_TEXT);
             mergeButton.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     okButton.setEnabled(false);
                     startMergeButton.setEnabled(true);
                 }
             });
-            
+
             Label mergeHelp = new Label(subComposite, SWT.NONE);
             mergeHelp.setText(MANUALLY_MERGE_HELP);
 
             startMergeButton = new Button(subComposite, SWT.BUTTON1);
-			startMergeButton.setText(Messages.getString("Start MS Word"));  //$NON-NLS-1$
+            startMergeButton.setText(Messages.getString("Start MS Word")); //$NON-NLS-1$
             startMergeButton.setEnabled(false);
-            startMergeButton.addListener(SWT.Selection, new MergeButtonListener());
+            startMergeButton.addListener(SWT.Selection,
+                    new MergeButtonListener());
         }
     }
 
-    private void mergeManually(Status status, String basePath) throws IOException {
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
+    }
+
+    private void mergeManually(Status status, String basePath)
+            throws IOException {
         File localVersion = new File(status.getPath());
         File serverVersion = new File(basePath, status.getConflictNew());
         log.debug("merge: serverVersion: " + serverVersion);
@@ -169,56 +178,62 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
         // use the correct filename suffix:
         String suffix = FilenameUtils.getExtension(localVersion.getName());
-    	File tmpServerVersion = File.createTempFile("mindquarry-merge-server", "." + suffix);
-    	FileUtils.copyFile(serverVersion, tmpServerVersion);
-    	tempFiles.add(tmpServerVersion);
+        File tmpServerVersion = File.createTempFile("mindquarry-merge-server",
+                "." + suffix);
+        FileUtils.copyFile(serverVersion, tmpServerVersion);
+        tempFiles.add(tmpServerVersion);
 
-    	mergedVersion = File.createTempFile("mindquarry-merge-local", "." + suffix);
-    	FileUtils.copyFile(localVersion, mergedVersion);
-    	tempFiles.add(mergedVersion);
+        mergedVersion = File.createTempFile("mindquarry-merge-local", "."
+                + suffix);
+        FileUtils.copyFile(localVersion, mergedVersion);
+        tempFiles.add(mergedVersion);
 
-        File tmpScriptFile = File.createTempFile("mindquarry-merge-script", ".js");
+        File tmpScriptFile = File.createTempFile("mindquarry-merge-script",
+                ".js");
         tempFiles.add(tmpScriptFile);
-        
+
         //
         // FIXME: delete temp files also in case of 'cancel'
         //
-        
-		// load script from JAR and save as temp file to avoid path problems: 
-    	InputStream is = getClass().getResourceAsStream("/scripts/merge-doc.js");
-    	String script = loadInputStream(is);
-    	FileWriter fw = new FileWriter(tmpScriptFile);
-    	fw.write(script);
-    	fw.close();
+
+        // load script from JAR and save as temp file to avoid path problems:
+        InputStream is = getClass()
+                .getResourceAsStream("/scripts/merge-doc.js");
+        String script = loadInputStream(is);
+        FileWriter fw = new FileWriter(tmpScriptFile);
+        fw.write(script);
+        fw.close();
         String mergeScript = tmpScriptFile.getAbsolutePath();
 
-        String[] cmdArray = new String[]{"wscript", mergeScript,
-        		mergedVersion.getAbsolutePath(),
-    			tmpServerVersion.getAbsolutePath()};
+        String[] cmdArray = new String[] { "wscript", mergeScript,
+                mergedVersion.getAbsolutePath(),
+                tmpServerVersion.getAbsolutePath() };
         log.debug("Calling merge script: " + Arrays.toString(cmdArray));
 
-    	Runtime rt = Runtime.getRuntime();
-    	Process proc = rt.exec(cmdArray);
-    	int exitValue = -1;
-		try {
-			exitValue = proc.waitFor();
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e.toString(), e);
-		}
-    	log.debug("Exit value " + exitValue);
-		if (exitValue != 0) {
-			mergeButton.setEnabled(false);
-			startMergeButton.setEnabled(false);
-			okButton.setEnabled(true);	// let user continue with other option
-			MessageDialog.openError(getShell(), 
-					Messages.getString("Error executing MS Word"),
-					Messages.getString("The script used to merge documents " +
-							"using MS Word could not be started. The exit " +
-							"code was ") + exitValue);
-		}
+        Runtime rt = Runtime.getRuntime();
+        Process proc = rt.exec(cmdArray);
+        int exitValue = -1;
+        try {
+            exitValue = proc.waitFor();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.toString(), e);
+        }
+        log.debug("Exit value " + exitValue);
+        if (exitValue != 0) {
+            mergeButton.setEnabled(false);
+            startMergeButton.setEnabled(false);
+            okButton.setEnabled(true); // let user continue with other option
+            MessageDialog.openError(getShell(), Messages
+                    .getString("Error executing MS Word"), Messages
+                    .getString("The script used to merge documents "
+                            + "using MS Word could not be started. The exit "
+                            + "code was ")
+                    + exitValue);
+        }
     }
-    
-    public static String loadInputStream(InputStream inputStream) throws IOException {
+
+    public static String loadInputStream(InputStream inputStream)
+            throws IOException {
         byte[] buffer = new byte[0];
         byte[] tmpbuf = new byte[9];
         while (true) {
@@ -233,8 +248,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         }
         return new String(buffer);
     }
-    
-    protected Button makeRadioButton(Composite composite, String text, final ContentConflict.Action action) {
+
+    protected Button makeRadioButton(Composite composite, String text,
+            final ContentConflict.Action action) {
         final Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (action == DEFAULT_RESOLUTION) {
@@ -242,10 +258,11 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         }
         button.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-            	// we get two events on click, so only react on the real selection:
-            	if (button.getSelection()) {
+                // we get two events on click, so only react on the real
+                // selection:
+                if (button.getSelection()) {
                     resolveMethod = action;
-            	}
+                }
             }
         });
         return button;
@@ -257,32 +274,33 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
     class MergeButtonListener implements Listener {
         private boolean buttonStatusDone = false;
-		public void handleEvent(Event event) {
-        	if (buttonStatusDone) {
-        		okButton.setEnabled(true);
-        		startMergeButton.setEnabled(false);
-            	try {
-					FileUtils.copyFile(mergedVersion, mergedVersionTarget);
-					for (File tempFile : tempFiles) {
-						FileHelper.delete(tempFile);
-					}
-					tempFiles = new ArrayList<File>();
-				} catch (IOException e) {
-					throw new RuntimeException(e.toString(), e);
-				}
-        	} else {
-        		okButton.setEnabled(false);
-        		buttonStatusDone = true;
-            	startMergeButton.setText(Messages.getString("Done"));  //$NON-NLS-1$
-            	Status status = conflict.getStatus();
-            	String parentDir = new File(status.getPath()).getParent();
-				try {
-					mergeManually(status, parentDir);
-					mergedVersionTarget = new File(status.getPath());
-				} catch (IOException e) {
-					throw new RuntimeException(e.toString(), e);
-				}
-        	}
+
+        public void handleEvent(Event event) {
+            if (buttonStatusDone) {
+                okButton.setEnabled(true);
+                startMergeButton.setEnabled(false);
+                try {
+                    FileUtils.copyFile(mergedVersion, mergedVersionTarget);
+                    for (File tempFile : tempFiles) {
+                        FileHelper.delete(tempFile);
+                    }
+                    tempFiles = new ArrayList<File>();
+                } catch (IOException e) {
+                    throw new RuntimeException(e.toString(), e);
+                }
+            } else {
+                okButton.setEnabled(false);
+                buttonStatusDone = true;
+                startMergeButton.setText(Messages.getString("Done")); //$NON-NLS-1$
+                Status status = conflict.getStatus();
+                String parentDir = new File(status.getPath()).getParent();
+                try {
+                    mergeManually(status, parentDir);
+                    mergedVersionTarget = new File(status.getPath());
+                } catch (IOException e) {
+                    throw new RuntimeException(e.toString(), e);
+                }
+            }
         }
     }
 }

@@ -47,7 +47,7 @@ public class AddConflictDialog extends AbstractConflictDialog {
     private Action resolveMethod;
 
     private static final Action DEFAULT_RESOLUTION = Action.RENAME;
-    
+
     public AddConflictDialog(AddConflict conflict, Shell shell) {
         super(shell);
         this.conflict = conflict;
@@ -56,30 +56,32 @@ public class AddConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": " + conflict.getStatus().getPath());
+        name.setText(Messages.getString("Filename(s)") + ": "
+                + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
-        return Messages.getString("One of the local files you want to upload " +
-                "already exists on the server. This case can occur if " +
-                "you created a file or renamed an existing file and someone else created " +
-                "the file in between (by creating it or renaming an existing file).");
+        return Messages
+                .getString("One of the local files you want to upload "
+                        + "already exists on the server. This case can occur if "
+                        + "you created a file or renamed an existing file and someone else created "
+                        + "the file in between (by creating it or renaming an existing file).");
     }
 
     @Override
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite,
-                Messages.getString("Rename file and upload it under the new name"),  //$NON-NLS-1$
+        Button button1 = makeRadioButton(subComposite, Messages
+                .getString("Rename file and upload it under the new name"), //$NON-NLS-1$
                 Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 newNameField.setEnabled(true);
             }
         });
-                
+
         newNameField = new Text(subComposite, SWT.BORDER | SWT.SINGLE);
         // TODO: make field wider
         String oldName = FilenameUtils.getName(conflict.getStatus().getPath());
@@ -91,29 +93,35 @@ public class AddConflictDialog extends AbstractConflictDialog {
             public void focusGained(FocusEvent arg0) {
                 newNameField.selectAll();
             }
+
             public void focusLost(FocusEvent arg0) {
             }
         });
         newNameField.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent arg0) {
             }
+
             public void keyReleased(KeyEvent arg0) {
                 newNameChanged(newNameField.getText());
             }
         });
         newNameField.setFocus();
         // no replace available because it is a dangerous, unrecoverable action
-        /*Button button2 = makeRadioButton(subComposite,
-                //Messages.getString("Overwrite the file on the server with your local version"),  //$NON-NLS-1$
-                //Action.REPLACE);
-                Messages.getString("Overwrite your local file with the one from the server"),  //$NON-NLS-1$
-                Action.REPLACE);
-        button2.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                newNameField.setEnabled(false);
-                okButton.setEnabled(true);
-            }
-        });*/
+        /*
+         * Button button2 = makeRadioButton(subComposite,
+         * //Messages.getString("Overwrite the file on the server with your
+         * local version"), //$NON-NLS-1$ //Action.REPLACE);
+         * Messages.getString("Overwrite your local file with the one from the
+         * server"), //$NON-NLS-1$ Action.REPLACE);
+         * button2.addListener(SWT.Selection, new Listener() { public void
+         * handleEvent(Event event) { newNameField.setEnabled(false);
+         * okButton.setEnabled(true); } });
+         */
+    }
+
+    protected String getHelpURL() {
+        // TODO fix help URL
+        return "http://www.mindquarry.com/";
     }
 
     private void newNameChanged(String name) {
@@ -135,22 +143,24 @@ public class AddConflictDialog extends AbstractConflictDialog {
             throw new RuntimeException(e.toString(), e);
         }
     }
-    
+
     private String getNameSuggestion(String existingName) {
         int pos = existingName.lastIndexOf('.');
         // TODO: avoid suggesting a name that exists
         if (pos == -1) {
             return existingName + "_1";
         } else {
-            return existingName.substring(0, pos) + "_1" + existingName.substring(pos);
+            return existingName.substring(0, pos) + "_1"
+                    + existingName.substring(pos);
         }
     }
 
     public String getNewName() {
         return newName;
     }
-    
-    protected Button makeRadioButton(Composite composite, String text, final Action action) {
+
+    protected Button makeRadioButton(Composite composite, String text,
+            final Action action) {
         Button button = new Button(composite, SWT.RADIO);
         button.setText(text);
         if (action == DEFAULT_RESOLUTION) {
