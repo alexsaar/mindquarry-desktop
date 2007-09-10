@@ -34,10 +34,7 @@ public class IconTextWidget extends Composite {
         internalComp.setBackground(internalComp.getParent().getBackground());
         internalComp.setLayout(new GridLayout(1, true));
         internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-    
-        Image icon = new Image(null, getClass().getResourceAsStream(
-                "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
-        
+
         Label label = new Label(internalComp, SWT.CENTER);
         label.setImage(icon);
         label.setBackground(label.getParent().getBackground());

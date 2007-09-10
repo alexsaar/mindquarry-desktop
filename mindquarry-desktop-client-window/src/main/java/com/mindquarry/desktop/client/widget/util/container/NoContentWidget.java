@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -49,7 +50,15 @@ public class NoContentWidget extends Composite {
 		internalComp.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				true));
 
-		Label label = new Label(internalComp, SWT.CENTER);
+        Image icon = new Image(null, getClass().getResourceAsStream(
+            "/org/tango-project/tango-icon-theme/22x22/status/dialog-information.png")); //$NON-NLS-1$
+
+        Label label = new Label(internalComp, SWT.CENTER);
+        label.setImage(icon);
+        label.setBackground(label.getParent().getBackground());
+        label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+
+		label = new Label(internalComp, SWT.CENTER);
 		label.setText(message);
 		label.setBackground(label.getParent().getBackground());
 		label.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
