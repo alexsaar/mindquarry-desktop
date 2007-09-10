@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Display;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
-import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction.SyncThread;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.workspace.exception.CancelException;
