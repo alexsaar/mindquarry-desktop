@@ -119,7 +119,7 @@ public class UpdateWorkspacesAction extends ActionBase {
             log.debug("Killing synchronize thread");
             // TODO: use non-deprecated way to stop threads: interrupt(); 
             updateThread.stop();
-            workspaceWidget.showMessage(Messages.getString("Refresh stopped."), "warn"); //$NON-NLS-1$
+            workspaceWidget.showMessage(Messages.getString("Refresh cancelled."), "warn"); //$NON-NLS-1$
             client.stopAction(REFRESH_MESSAGE);
             client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             client.enableActions(false, ActionBase.STOP_ACTION_GROUP);

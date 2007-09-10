@@ -546,5 +546,9 @@
         <source>Task refresh cancelled.</source>
         <translation>Aufgabenaktualisierung abgebrochen.</translation>
     </message>
+    <message>
+        <source>Refresh cancelled.</source>
+        <translation>Aktualisierung abgebrochen.</translation>
+    </message>
 </context>
 </TS>
