@@ -34,7 +34,7 @@
     </bean>
 
     <bean id="StopAction" parent="ActionBase"
-        class="com.mindquarry.desktop.client.action.workspace.StopAction"/>
+        class="com.mindquarry.desktop.client.action.app.StopAction"/>
         
 
     <!-- task actions -->
