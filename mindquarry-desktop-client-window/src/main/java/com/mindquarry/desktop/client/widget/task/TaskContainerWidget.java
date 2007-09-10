@@ -155,7 +155,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
             refreshing = false;
             return;
         }
-        updateContainer(true, null, false);
+        showRefreshMessage(null);
         log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
         // cleanup current task list
@@ -235,18 +235,15 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                     }
                 });
 
-                updateContainer(false, errMessage, false);
+                showErrorMessage(errMessage);
             }
             enableAction(true);
             refreshing = false;
             return;
         }
 
-        if (tasks.getTasks().isEmpty()) {
-            updateContainer(false, null, true);
-        } else {
-            updateContainer(false, null, false);
-
+        showEmptyMessage(tasks.getTasks().isEmpty());
+        if (!tasks.getTasks().isEmpty()) {
             // update task table
             log.info("Updating list of tasks."); //$NON-NLS-1$
             getDisplay().syncExec(new Runnable() {
@@ -258,6 +255,24 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         }
         refreshing = false;
         enableAction(true);
+    }
+
+    public void showErrorMessage(String message) {
+        updateContainer(false, null, false, null, message);
+    }
+    
+    public void showRefreshMessage(String message) {
+        updateContainer(true, Messages.getString("Updating task list") + " ...", //$NON-NLS-1$ //$NON-NLS-2$  
+        false, null, null);
+    }
+
+    public void showEmptyMessage(boolean isEmpty) {
+        updateContainer(false, null, isEmpty, Messages.getString(
+                "Currently no tasks are active."), null); //$NON-NLS-1$
+    }
+
+    public void showEmptyMessage(String emptyMessage) {
+        updateContainer(false, null, true, emptyMessage, null);
     }
 
     private void enableAction(boolean enable) {
@@ -276,10 +291,11 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         }
     }
 
-    public void updateContainer(final boolean refreshing,
-            final String errMessage, final boolean empty) {
+    
+    private void updateContainer(final boolean refreshing,
+            String refreshMessage, final boolean empty, String emptyMessage, final String errorMessage) {
         getDisplay().syncExec(
-                new TaskUpdateContainerRunnable(client, this, empty,
-                        errMessage, refreshing));
+                new TaskUpdateContainerRunnable(client, this, refreshing,
+                        refreshMessage, empty, emptyMessage, errorMessage));
     }
 }

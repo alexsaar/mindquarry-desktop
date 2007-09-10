@@ -26,24 +26,24 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
     protected ContainerWidget<V> containerWidget;
 
     private final boolean empty;
-    private final String errMessage;
+    private final String errorMessage;
     private final boolean refreshing;
-    private final String updateMessage;
+    private final String refreshMessage;
     private final String emptyMessage;
 
     private static Image networkErrorIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
             "/org/tango-project/tango-icon-theme/22x22/status/network-error.png")); //$NON-NLS-1$
 
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
-            boolean empty, String errMessage, String updateMessage, 
-            String emptyMessage, boolean refreshing) {
+            boolean refreshing, String refreshMessage, boolean empty, 
+            String emptyMessage, String errorMessage) {
         this.containerWidget = containerWidget;
 
-        this.empty = empty;
-        this.errMessage = errMessage;
-        this.updateMessage = updateMessage;
-        this.emptyMessage = emptyMessage;
         this.refreshing = refreshing;
+        this.refreshMessage = refreshMessage;
+        this.empty = empty;
+        this.emptyMessage = emptyMessage;
+        this.errorMessage = errorMessage;
     }
 
     public void run() {
@@ -51,12 +51,12 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
             // an action is running, so we show a progress bar:
             destroyContent();
             containerWidget.refreshWidget = new UpdateWidget(containerWidget,
-                    updateMessage);
-        } else if (errMessage == null && !empty) {
+                    refreshMessage);
+        } else if (errorMessage == null && !empty) {
             // show the content itself:
             destroyContent();
             createContainerContent();
-        } else if (errMessage == null && empty) {
+        } else if (errorMessage == null && empty) {
             // show a message that there is no content:
             destroyContent();
             containerWidget.noContentWidget = new NoContentWidget(
@@ -65,7 +65,7 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
             // show an error message:
             destroyContent();
             containerWidget.errorWidget = new IconTextWidget(containerWidget,
-                    networkErrorIcon, errMessage);
+                    networkErrorIcon, errorMessage);
         }
         containerWidget.layout(true);
     }

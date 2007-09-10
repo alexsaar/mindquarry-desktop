@@ -538,5 +538,9 @@
         <source>Information about the Mindquarry desktop client.</source>
         <translation>Informationen über den Mindquarry Desktop Client.</translation>
     </message>
+    <message>
+        <source>Task refresh cancelled.</source>
+        <translation>Aufgabenaktualisierung abgebrochen.</translation>
+    </message>
 </context>
 </TS>

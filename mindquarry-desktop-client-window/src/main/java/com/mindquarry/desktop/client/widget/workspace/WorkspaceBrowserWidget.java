@@ -226,8 +226,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     private void updateContainer(final boolean refreshing,
             final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
-        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, empty,
-            emptyMessage, errMessage, refreshing, refreshMessage);
+        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, refreshing,
+            refreshMessage, empty, emptyMessage, errMessage);
         getDisplay().syncExec(containerRunnable);
     }
 

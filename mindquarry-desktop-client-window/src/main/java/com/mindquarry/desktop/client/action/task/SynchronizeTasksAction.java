@@ -76,7 +76,7 @@ public class SynchronizeTasksAction extends ActionBase {
 	        log.debug("Killing task update thread");
 	        updateThread.stop();
 	        client.stopAction(SYNC_MESSAGE);
-	        taskContainer.updateContainer(false, Messages.getString("Task refresh cancelled"), false);
+	        taskContainer.showErrorMessage(Messages.getString("Task refresh cancelled.")); //$NON-NLS-1$
 	    }
 	}
 	

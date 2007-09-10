@@ -334,7 +334,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         teamList.clear();
         categoryWidget.getWorkspaceBrowser().showErrorMessage(message);
-        categoryWidget.getTaskContainer().updateContainer(false, message, false); //$NON-NLS-1$
+        categoryWidget.getTaskContainer().showErrorMessage(message);
     }
 
     /**

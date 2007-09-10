@@ -64,4 +64,9 @@ public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     public void setViewer(V viewer) {
         this.viewer = viewer;
     }
+
+    public abstract void showErrorMessage(String message);
+    public abstract void showRefreshMessage(String message);
+    public abstract void showEmptyMessage(boolean isEmpty);
+    public abstract void showEmptyMessage(String message);
 }
