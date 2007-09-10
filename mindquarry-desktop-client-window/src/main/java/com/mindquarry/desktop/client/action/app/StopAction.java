@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.client.action.workspace;
+package com.mindquarry.desktop.client.action.app;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +21,8 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
+import com.mindquarry.desktop.client.action.workspace.SynchronizeWorkspacesAction;
+import com.mindquarry.desktop.client.action.workspace.UpdateWorkspacesAction;
 
 /**
  * Stops all running actions (synchronize workspace, workspace refresh, task refresh).

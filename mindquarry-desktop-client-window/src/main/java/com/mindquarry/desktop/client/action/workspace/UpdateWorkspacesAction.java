@@ -115,7 +115,7 @@ public class UpdateWorkspacesAction extends ActionBase {
         this.workspaceWidget = workspaceWidget;
     }
     
-    void stop() {
+    public void stop() {
         if (updateThread != null && updateThread.isAlive()) {
             log.debug("Killing synchronize thread");
             // TODO: use non-deprecated way to stop threads: interrupt(); 
