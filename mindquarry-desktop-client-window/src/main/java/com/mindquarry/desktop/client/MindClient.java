@@ -142,9 +142,11 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     static {
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
+        //DEFAULT_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_OPEN_GROUP);
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.STOP_ACTION_GROUP);
 
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_ACTION_GROUP);
+        INITIAL_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_OPEN_GROUP);
         INITIAL_TOOLBAR_GROUPS.addAll(DEFAULT_TOOLBAR_GROUPS);
     }
 
@@ -297,7 +299,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
     }
 
     public void setFilesActive() {
-        activateActionGroup(ActionBase.WORKSPACE_ACTION_GROUP);
+        activateActionGroups(new String[] {ActionBase.WORKSPACE_ACTION_GROUP,
+                ActionBase.WORKSPACE_OPEN_GROUP});
     }
 
     public ActionBase getAction(String id) {
@@ -420,6 +423,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         // create toolbar groups
         manager.add(new GroupMarker(ActionBase.WORKSPACE_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.WORKSPACE_OPEN_GROUP));
         manager.add(new GroupMarker(ActionBase.TASK_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.STOP_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.MANAGEMENT_ACTION_GROUP));
@@ -495,17 +499,31 @@ public class MindClient extends ApplicationWindow implements EventListener {
         }
     }
 
+    public void enableAction(boolean enabled, String id) {
+        for (ActionBase action : actions) {
+            if (action.getId().equals(id)) {
+                action.setEnabled(enabled);
+            }
+        }
+    }
+
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
     private void activateActionGroup(String group) {
+        activateActionGroups(new String []{group});
+    }
+
+    private void activateActionGroups(String[] groups) {
         for (ActionBase action : actions) {
             if ((action.isToolbarAction())
                     && (!DEFAULT_TOOLBAR_GROUPS.contains(action.getGroup()))) {
                 getToolBarManager().remove(action.getId());
             }
-            if ((action.isToolbarAction()) && (action.getGroup().equals(group))) {
-                getToolBarManager().appendToGroup(group, action);
+            for (String group : groups) {
+                if (action.isToolbarAction() && action.getGroup().equals(group)) {
+                    getToolBarManager().appendToGroup(group, action);
+                }
             }
         }
         getToolBarManager().update(true);
@@ -810,13 +828,17 @@ public class MindClient extends ApplicationWindow implements EventListener {
     }
 
     private void refreshOnStartup() {
-        try {
-            displayNotConnected();
-            teamList.refresh();
-        } catch (CancelException e) {
-            // TODO: better exception handling
-            log.error("Refresh on startup cancelled.", e);
-        }
+        displayNotConnected();
+        getShell().getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                try {
+                    teamList.refresh();
+                } catch (CancelException e) {
+                    // TODO: better exception handling?
+                    log.error("Refresh on startup cancelled.", e);
+                }
+            }
+        });
     }
 
     private void refreshAll() throws CancelException {

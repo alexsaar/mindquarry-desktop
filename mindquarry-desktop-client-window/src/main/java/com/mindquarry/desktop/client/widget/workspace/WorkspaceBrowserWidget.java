@@ -28,8 +28,11 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.tigris.subversion.javahl.ClientException;
@@ -40,7 +43,9 @@ import org.tigris.subversion.javahl.StatusKind;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
+import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.event.EventListener;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -50,7 +55,7 @@ import com.mindquarry.desktop.workspace.SVNSynchronizer;
  * 
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
+public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implements EventListener {
     private static Log log = LogFactory.getLog(WorkspaceBrowserWidget.class);
 
     protected File workspaceRoot;
@@ -65,6 +70,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
+        client.getEventBus().registerEventListener(this);
     }
 
     // #########################################################################
@@ -96,6 +102,24 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> {
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
         return true;
+    }
+    
+    public void onEvent(com.mindquarry.desktop.event.Event event) {
+        if (event instanceof OpenFileEvent) {
+            ISelection selection = viewer.getSelection();
+            if (selection instanceof StructuredSelection) {
+                StructuredSelection structsel = (StructuredSelection) selection;
+                Object element = structsel.getFirstElement();
+                if (element instanceof File) {
+                    File file = (File) element;
+                    log.debug("Launching " + file.getAbsolutePath());
+                    // TODO: this doesn't work with directories
+                    Program.launch(file.getAbsolutePath());
+                } else {
+                    log.warn("onEvent: not of expected type File: " + element.getClass());
+                }
+            }
+        }
     }
     
     public boolean changesEqual(Map<File, Status> first, Map<File, Status> second, boolean remote) {

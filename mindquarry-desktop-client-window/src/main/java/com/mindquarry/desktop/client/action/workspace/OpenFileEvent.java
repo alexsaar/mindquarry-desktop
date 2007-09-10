@@ -1,0 +1,49 @@
+/*
+ * Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
+ * 
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ */
+
+package com.mindquarry.desktop.client.action.workspace;
+
+import com.mindquarry.desktop.event.Event;
+
+/**
+ * Published when the user wants to open the selected file or directory in
+ * the workspace view.
+ * 
+ * @author dnaber
+ */
+public class OpenFileEvent implements Event {
+
+    public OpenFileEvent() {
+    }
+    
+    public void consume() {
+    }
+
+    public String getMessage() {
+        return null;
+    }
+
+    public Object getSource() {
+        return null;
+    }
+
+    public long getTimestamp() {
+        return 0;
+    }
+
+    public boolean isConsumed() {
+        return false;
+    }
+
+}

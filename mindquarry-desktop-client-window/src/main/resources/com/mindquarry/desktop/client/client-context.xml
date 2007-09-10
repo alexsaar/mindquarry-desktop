@@ -29,6 +29,7 @@
                 <ref bean="PreferencesAction"/>
                 <ref bean="OpenWebpageAction"/>
                 <ref bean="CloseAction"/>
+                <ref bean="OpenFileAction"/>
             </list>
         </property>
         <property name="eventBus" ref="EventBus" />

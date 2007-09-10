@@ -19,6 +19,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -38,6 +42,7 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
+import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 
@@ -95,6 +100,31 @@ public class WorkspaceUpdateContainerRunnable extends
                         | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION));
         containerWidget.getViewer().setContentProvider(
                 new ContentProvider((WorkspaceBrowserWidget) containerWidget));
+        containerWidget.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent arg0) {
+                // make sure the "open" button is only enables when it makes sense:
+                ISelection iSelection = containerWidget.getViewer().getSelection();
+                if (iSelection instanceof StructuredSelection) {
+                    StructuredSelection structsel = (StructuredSelection) iSelection;
+                    Object element = structsel.getFirstElement();
+                    if (element instanceof File) {
+                        boolean enableButton;
+                        if (containerWidget.getViewer().getSelection().isEmpty()) {
+                            enableButton = false;
+                        } else {
+                            File file = (File) element;
+                            if (file.exists() && file.isFile()) {     // TODO: we cannot open directories yet
+                                enableButton = true;
+                            } else {
+                                // a remotely added file, we cannot view that yet:
+                                enableButton = false;
+                            }
+                        }
+                        client.enableAction(enableButton, OpenFileAction.class.getName());
+                    }
+                }
+            }
+        });
         containerWidget.getViewer().setSorter(new ViewerSorter() {
             public int category(Object element) {
                 File file = (File) element;
