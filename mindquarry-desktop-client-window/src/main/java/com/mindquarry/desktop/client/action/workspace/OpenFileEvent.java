@@ -14,7 +14,7 @@
 
 package com.mindquarry.desktop.client.action.workspace;
 
-import com.mindquarry.desktop.event.Event;
+import com.mindquarry.desktop.event.EventBase;
 
 /**
  * Published when the user wants to open the selected file or directory in
@@ -22,28 +22,10 @@ import com.mindquarry.desktop.event.Event;
  * 
  * @author dnaber
  */
-public class OpenFileEvent implements Event {
+public class OpenFileEvent extends EventBase {
 
-    public OpenFileEvent() {
+    public OpenFileEvent(Object source) {
+        super(source);
     }
     
-    public void consume() {
-    }
-
-    public String getMessage() {
-        return null;
-    }
-
-    public Object getSource() {
-        return null;
-    }
-
-    public long getTimestamp() {
-        return 0;
-    }
-
-    public boolean isConsumed() {
-        return false;
-    }
-
 }

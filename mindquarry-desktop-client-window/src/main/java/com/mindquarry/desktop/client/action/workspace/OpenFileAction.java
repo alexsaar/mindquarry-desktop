@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.event.EventBus;
 
 /**
  * Open the selected file.
@@ -48,7 +49,7 @@ public class OpenFileAction extends ActionBase {
     }
 
     public void run() {
-        client.getEventBus().sendEvent(new OpenFileEvent());
+        EventBus.send(new OpenFileEvent(this));
     }
     
     public String getGroup() {

@@ -173,14 +173,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     private FileLock fileLock;
 
-    private EventBus eventBus;
-
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
     // #########################################################################
     public MindClient() throws IOException {
         super(null);
         createLock();
+        
+        EventBus.registerListener(this);
         // initialize preferences
         prefFile = new File(PREF_FILE);
         store = new PreferenceStore(prefFile.getAbsolutePath());
@@ -874,15 +874,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     public void setActions(List<ActionBase> actions) {
         this.actions = actions;
-    }
-    
-    public void setEventBus(EventBus eventBus) {
-        this.eventBus = eventBus;
-        this.eventBus.registerEventListener(this);
-    }
-    
-    public EventBus getEventBus() {
-        return eventBus;
     }
     
     public boolean close() {

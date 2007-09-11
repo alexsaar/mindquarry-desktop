@@ -45,6 +45,7 @@ import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.event.EventListener;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -70,7 +71,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
-        client.getEventBus().registerEventListener(this);
+        EventBus.registerListener(this);
     }
 
     // #########################################################################

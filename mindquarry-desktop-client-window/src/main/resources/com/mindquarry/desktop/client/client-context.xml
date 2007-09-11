@@ -32,10 +32,6 @@
                 <ref bean="OpenFileAction"/>
             </list>
         </property>
-        <property name="eventBus" ref="EventBus" />
     </bean>
-    
-    <!-- one central event bus for the entire application -->
-    <bean id="EventBus" class="com.mindquarry.desktop.event.EventBus" />
     
 </beans>

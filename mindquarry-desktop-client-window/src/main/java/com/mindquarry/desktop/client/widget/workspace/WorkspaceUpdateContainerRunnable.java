@@ -48,6 +48,7 @@ import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
 import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
+import com.mindquarry.desktop.event.EventBus;
 
 /**
  * Add summary documentation here.
@@ -139,7 +140,7 @@ public class WorkspaceUpdateContainerRunnable extends
                             File file = (File) element;
                             if (file.exists() && file.isFile()) {
                                 // TODO: we cannot open directories yet
-                                client.getEventBus().sendEvent(new OpenFileEvent());
+                                EventBus.send(new OpenFileEvent(this));
                             }
                         }
                     }

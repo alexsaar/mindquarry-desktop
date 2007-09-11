@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Local broker for inter application events.
+ * Local broker for inter application events. Follows the singleton pattern.
  * 
  * @author <a href="mailto:alexander(dot)klimetschek(at)mindquarry(dot)com">
  *         Alexander Klimetschek</a>
@@ -31,12 +31,54 @@ public class EventBus {
     
     private static Log log = LogFactory.getLog(EventBus.class);
     
+    private static EventBus instance = null;
+    
     private Collection<EventListener> registeredListeners;
+    
+    /**
+     * Singleton getter
+     */
+    public static EventBus get() {
+        if (instance == null) {
+            instance = new EventBus();
+        }
+        return instance;
+    }
+    
+    /**
+     * Sends an event synchronously. Convenience static method.
+     */
+    public static void send(Event event) {
+        get().sendEvent(event);
+    }
 
-    public EventBus() {
+    /**
+     * Sends an event asynchronously, ie. it returns immediately and the event
+     * is delivered inside a new thread. Convenience static method.
+     */
+    public static void sendAsync(Event event) {
+        get().sendAsyncEvent(event);
+    }
+
+    /**
+     * Registers an event listener to receive all events sent over this
+     * EventBus. Convenience static method.
+     */
+    public static void registerListener(EventListener listener) {
+        get().registerEventListener(listener);
+    }
+    
+    /**
+     * Private constructor because of singleton pattern.
+     */
+    private EventBus() {
         registeredListeners = new ArrayList<EventListener>();
     }
 
+    /**
+     * Registers an event listener to receive all events sent over this
+     * EventBus.
+     */
     public void registerEventListener(EventListener listener) {
         log.info("registerEventListener: listener=" + listener.getClass().getName());
         registeredListeners.add(listener);
