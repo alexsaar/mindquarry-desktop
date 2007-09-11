@@ -60,17 +60,17 @@ public class WorkspaceUpdateContainerRunnable extends
     private static Log log = LogFactory
             .getLog(WorkspaceUpdateContainerRunnable.class);
 
-    private static final Image folderImage = new Image(
+    private static final Image FOLDER_IMAGE = new Image(
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
 
-    private static final Image fileImage = new Image(
+    private static final Image FILE_IMAGE = new Image(
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
 
-    private static final Image unknownFileImage = new Image(
+    private static final Image UNKNOWN_FILE_IMAGE = new Image(
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
@@ -213,28 +213,28 @@ public class WorkspaceUpdateContainerRunnable extends
                     // first check for a NodeKind set as local property
                     if (status.getNodeKind() == NodeKind.dir || status.getNodeKind() == NodeKind.file) {
                         if (status.getNodeKind() == NodeKind.dir) {
-                            return folderImage;
+                            return FOLDER_IMAGE;
                         } else {
-                            return fileImage;
+                            return FILE_IMAGE;
                         }
                     } else {
                         // otherwise look for the remote variant (ie. newly added file or folder remotely)
                         if (status.getReposKind() == NodeKind.dir) {
-                            return folderImage;
+                            return FOLDER_IMAGE;
                         } else if (status.getReposKind() == NodeKind.file) {
-                            return fileImage;
+                            return FILE_IMAGE;
                         } else {
-                            return unknownFileImage;
+                            return UNKNOWN_FILE_IMAGE;
                         }
                     }
                 }
                 // fallback: simply lookup the local file
                 if (file.isDirectory()) {
-                    return folderImage;
+                    return FOLDER_IMAGE;
                 } else if (file.isFile()) {
-                    return fileImage;
+                    return FILE_IMAGE;
                 } else {
-                    return unknownFileImage;
+                    return UNKNOWN_FILE_IMAGE;
                 }
             }
 
