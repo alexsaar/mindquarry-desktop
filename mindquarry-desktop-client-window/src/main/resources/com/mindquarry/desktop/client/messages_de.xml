@@ -35,7 +35,7 @@
     </message>
     <message>
         <source>After starting MS Word, merge both versions and save the result.\nThen click the &apos;Done&apos; button that will appear and click &apos;OK&apos;.</source>
-        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen\und speichern Sie das Ergebnis. Wählen Sie dann den\n&apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
+        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen\nund speichern Sie das Ergebnis. Wählen Sie dann den\n&apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
     </message>
     <message>
         <source>One of the local directories was deleted and replaced with a file of the same name. This structural change must be resolved before synchronization.</source>
