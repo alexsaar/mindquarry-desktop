@@ -169,6 +169,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                 });
                 try {
                     for (Team team : teams) {
+                        long startTime = System.currentTimeMillis();
                         SVNSynchronizer sc = new SVNSynchronizer(team
                                 .getWorkspaceURL(), selected
                                 .getWorkspaceFolder()
@@ -179,6 +180,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         sc.setNotifyListener(new NotifyListener());
                         sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
                         sc.synchronizeOrCheckout();
+                        log.debug("synchronizeOrCheckout for team '" + team + "' took " +
+                                (System.currentTimeMillis()-startTime) + "ms (incl. user interaction if any)");
                     }
                     workspaceWidget.refresh();
                 } catch (SynchronizeCancelException e) {

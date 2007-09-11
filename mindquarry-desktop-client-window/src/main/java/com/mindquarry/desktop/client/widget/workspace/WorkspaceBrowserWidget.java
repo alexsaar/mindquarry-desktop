@@ -277,6 +277,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             for (Team team : selectedTeams) {
                 String url = team.getWorkspaceURL();
                 log.info("Refreshing for SVN URL: " + url);
+                long startTime = System.currentTimeMillis();
 
                 setMessage(Messages.getString(
                         "Refreshing workspaces changes for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
@@ -362,6 +363,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 }
                 log.debug("local changes: " + localChanges);
                 log.debug("remote changes: " + remoteChanges);
+                log.debug("time required to find changes: " + (System.currentTimeMillis()-startTime) + "ms");
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
         } catch (ClientException e) {
