@@ -458,7 +458,7 @@ public class SVNSynchronizer {
 		return statusList;
 	}
 
-    private void presentNewConflict(Conflict conflict, List<Conflict> conflicts) throws CancelException {
+    private void presentConflictToUser(Conflict conflict) throws CancelException {
         conflict.setSVNClient(client);
         
         log.info("-----------------------------------------------------------");
@@ -466,9 +466,6 @@ public class SVNSynchronizer {
         
         // resolve it, ask the user
         conflict.accept(handler);
-        
-        // collect all conflicts
-        conflicts.add(conflict);
     }
     
     /**
@@ -514,7 +511,7 @@ public class SVNSynchronizer {
      * Finds all local files that are obstructed (ie. file changed into a folder
      * or vice-versa).
      */
-    private List<Conflict> findLocalObstructed(List<Status> localChanges) throws CancelException {
+    private List<Conflict> findLocalObstructed(List<Status> localChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         Iterator<Status> iter = localChanges.iterator();
         
@@ -525,7 +522,7 @@ public class SVNSynchronizer {
             if (status.getTextStatus() == StatusKind.obstructed) {
                 iter.remove();
                 
-                presentNewConflict(new ObstructedConflict(status), conflicts);
+                conflicts.add(new ObstructedConflict(status));
             }
         }
         
@@ -535,7 +532,7 @@ public class SVNSynchronizer {
     /**
      * Finds all local files that are marked as (content-) conflicted.
      */
-    private List<Conflict> findLocalConflicted(List<Status> localChanges) throws CancelException {
+    private List<Conflict> findLocalConflicted(List<Status> localChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         Iterator<Status> iter = localChanges.iterator();
         
@@ -546,7 +543,7 @@ public class SVNSynchronizer {
             if (status.getTextStatus() == StatusKind.conflicted) {
                 iter.remove();
                 
-                presentNewConflict(new ContentConflict(status), conflicts);
+                conflicts.add(new ContentConflict(status));
             }
         }
         
@@ -556,9 +553,11 @@ public class SVNSynchronizer {
     /**
      * Handles conflicts that need to be resolved before calling remote status.
      * @throws IOException 
+     * @throws CancelException 
      */
-    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException, IOException {
+    private void handleConflictsBeforeRemoteStatus(List<Conflict> localConflicts) throws ClientException, IOException, CancelException {
         for (Conflict conflict : localConflicts) {
+            presentConflictToUser(conflict);
             log.info(">> Before Remote Status: " + conflict.toString());
             conflict.beforeRemoteStatus();
         }
@@ -567,9 +566,11 @@ public class SVNSynchronizer {
     /**
      * Handles conflicts that need to be resolved before committing.
      * @throws IOException 
+     * @throws CancelException 
      */
-    private void handleConflictsBeforeCommit(List<Conflict> localConflicts) throws ClientException, IOException {
+    private void handleConflictsBeforeCommit(List<Conflict> localConflicts) throws ClientException, IOException, CancelException {
         for (Conflict conflict : localConflicts) {
+            presentConflictToUser(conflict);
             log.info(">> Before Commit: " + conflict.toString());
             conflict.beforeCommit();
         }
@@ -649,7 +650,7 @@ public class SVNSynchronizer {
 	 * Finds all Add/Add conflicts, including file/file, file/dir, dir/file and
 	 * dir/dir conflicts.
 	 */
-    private List<Conflict> findAddConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findAddConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -694,7 +695,7 @@ public class SVNSynchronizer {
                     }
                 }
                 
-                presentNewConflict(new AddConflict(conflictParent, localAdded, remoteAdded), conflicts);
+                conflicts.add(new AddConflict(conflictParent, localAdded, remoteAdded));
             }
         }
         
@@ -705,7 +706,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a local folder delete conflicts with remotely
      * added or modified files in that directory.
      */
-    private List<Conflict> findLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -753,7 +754,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(true, conflictParent, remoteModList, localPath, repositoryURL), conflicts);
+                    conflicts.add(new DeleteWithModificationConflict(true, conflictParent, remoteModList, localPath, repositoryURL));
                 }
                 
                 // reset global iterator for next conflict search
@@ -768,7 +769,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a remote folder delete conflicts with locally
      * added or modified files in that directory.
      */
-    private List<Conflict> findRemoteContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findRemoteContainerDeleteConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -812,7 +813,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new DeleteWithModificationConflict(false, conflictParent, localModList, localPath, repositoryURL), conflicts);
+                    conflicts.add(new DeleteWithModificationConflict(false, conflictParent, localModList, localPath, repositoryURL));
                 }
                 
                 // reset global iterator for next conflict search
@@ -827,7 +828,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a locally deleted file conflicts with a remote
      * file modification.
      */
-    private List<Conflict> findFileDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findFileDeleteModifiedConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -843,7 +844,7 @@ public class SVNSynchronizer {
                 if (status.getRepositoryTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    presentNewConflict(new DeleteWithModificationConflict(true, status, null, localPath, repositoryURL), conflicts);
+                    conflicts.add(new DeleteWithModificationConflict(true, status, null, localPath, repositoryURL));
                 }
             }
         }
@@ -855,7 +856,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a locally modified file conflicts with a remote
      * file deletion.
      */
-    private List<Conflict> findFileModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findFileModifiedDeleteConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -871,7 +872,7 @@ public class SVNSynchronizer {
                 if (status.getTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    presentNewConflict(new DeleteWithModificationConflict(false, status, null, localPath, repositoryURL), conflicts);
+                    conflicts.add(new DeleteWithModificationConflict(false, status, null, localPath, repositoryURL));
                 }
             }
         }
@@ -883,7 +884,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a locally replaced folder conflicts with a
      * remote modification of (in) that folder.
      */
-    private List<Conflict> findLocalContainerReplacedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findLocalContainerReplacedConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -932,7 +933,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
+                    conflicts.add(new ReplaceConflict(conflictParent, localChildren, remoteChildren));
                 }
                 
                 // reset global iterator for next conflict search
@@ -947,7 +948,7 @@ public class SVNSynchronizer {
      * Finds all conflicts where a remotely replaced folder conflicts with a
      * local modification of (in) that folder.
      */
-    private List<Conflict> findRemoteContainerReplacedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findRemoteContainerReplacedConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -995,7 +996,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
+                    conflicts.add(new ReplaceConflict(conflictParent, localChildren, remoteChildren));
                 }
                 
                 // reset global iterator for next conflict search
@@ -1009,7 +1010,7 @@ public class SVNSynchronizer {
     /**
      * Finds all Replaced/Modified, Modified/Replaced and Replaced/Replaced conflicts.
      */
-    private List<Conflict> findReplacedModifiedConflicts(List<Status> remoteAndLocalChanges) throws CancelException {
+    private List<Conflict> findReplacedModifiedConflicts(List<Status> remoteAndLocalChanges) {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -1052,7 +1053,7 @@ public class SVNSynchronizer {
                     }
                 }
                 
-                presentNewConflict(new ReplaceConflict(conflictParent, localChildren, remoteChildren), conflicts);
+                conflicts.add(new ReplaceConflict(conflictParent, localChildren, remoteChildren));
             }
         }
         
@@ -1064,7 +1065,7 @@ public class SVNSynchronizer {
      * @throws ClientException 
      * 
      */
-    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) throws CancelException, ClientException {
+    private List<Conflict> findPropertyConflicts(List<Status> remoteAndLocalChanges) throws ClientException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -1096,9 +1097,9 @@ public class SVNSynchronizer {
                             // TODO add further mergeable properties (e.g. mq:tags for Tagging)
                             if(localProp.getName().equals(PropertyData.IGNORE) || 
                                     localProp.getName().equals(PropertyData.EXTERNALS)) {
-                                presentNewConflict(new PropertyConflict(status, localProp, remoteProp, true), conflicts);
+                                conflicts.add(new PropertyConflict(status, localProp, remoteProp, true));
                             } else {
-                                presentNewConflict(new PropertyConflict(status, localProp, remoteProp, false), conflicts);
+                                conflicts.add(new PropertyConflict(status, localProp, remoteProp, false));
                             }
                             break;
                         }
@@ -1114,9 +1115,11 @@ public class SVNSynchronizer {
     /**
 	 * Calls {@link Conflict.handleBeforeUpdate} on all conflicts in the list.
      * @throws IOException 
+     * @throws CancelException 
 	 */
-	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException, IOException {
+	private void handleConflictsBeforeUpdate(List<Conflict> conflicts) throws ClientException, IOException, CancelException {
 		for (Conflict conflict : conflicts) {
+            presentConflictToUser(conflict);
 			log.info(">> Before Update: " + conflict.toString());
 			conflict.beforeUpdate();
 		}
