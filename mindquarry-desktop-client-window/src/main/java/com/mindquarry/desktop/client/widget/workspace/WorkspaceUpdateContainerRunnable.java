@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -43,6 +45,7 @@ import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
+import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 
@@ -124,6 +127,25 @@ public class WorkspaceUpdateContainerRunnable extends
                     }
                 }
             }
+        });
+        containerWidget.getViewer().addDoubleClickListener(new IDoubleClickListener() {
+            public void doubleClick(DoubleClickEvent arg0) {
+                ISelection iSelection = containerWidget.getViewer().getSelection();
+                if (iSelection instanceof StructuredSelection) {
+                    StructuredSelection structsel = (StructuredSelection) iSelection;
+                    Object element = structsel.getFirstElement();
+                    if (element instanceof File) {
+                        if (!containerWidget.getViewer().getSelection().isEmpty()) {
+                            File file = (File) element;
+                            if (file.exists() && file.isFile()) {
+                                // TODO: we cannot open directories yet
+                                client.getEventBus().sendEvent(new OpenFileEvent());
+                            }
+                        }
+                    }
+                }
+            }
+            
         });
         containerWidget.getViewer().setSorter(new ViewerSorter() {
             public int category(Object element) {
