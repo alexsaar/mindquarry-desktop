@@ -72,17 +72,25 @@ public class ContentProvider implements ITreeContentProvider {
 
             /**
              * Return true if <tt>file</tt> contains at least one file
-             * with a local or remote modification.
+             * with a local or remote modification (or if itself is modified).
              */
             private boolean containsChange(File dir) {
                 String potentialSuperDir = dir.getAbsolutePath() + File.separator;
                 for (File remoteFile : workspaceBrowser.remoteChanges.keySet()) {
-                    if (remoteFile.getAbsolutePath().startsWith(potentialSuperDir)) {
+                    String file = remoteFile.getAbsolutePath();
+                    if (remoteFile.isDirectory()) {
+                        file += File.separator;
+                    }
+                    if (file.startsWith(potentialSuperDir)) {
                         return true;
                     }
                 }
                 for (File localFile : workspaceBrowser.localChanges.keySet()) {
-                    if (localFile.getAbsolutePath().startsWith(potentialSuperDir)) {
+                    String file = localFile.getAbsolutePath();
+                    if (localFile.isDirectory()) {
+                        file += File.separator;
+                    }
+                    if (file.startsWith(potentialSuperDir)) {
                         return true;
                     }
                 }
