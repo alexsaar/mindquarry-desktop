@@ -197,21 +197,15 @@ public class WorkspaceUpdateContainerRunnable extends
                 if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
                     Status status = widget.localChanges.get(file);
                     // first check for a NodeKind set as local property
-                    if (status.getNodeKind() == NodeKind.dir || status.getNodeKind() == NodeKind.file) {
-                        if (status.getNodeKind() == NodeKind.dir) {
-                            return FOLDER_IMAGE;
-                        } else {
-                            return FILE_IMAGE;
-                        }
-                    } else {
-                        // otherwise look for the remote variant (ie. newly added file or folder remotely)
-                        if (status.getReposKind() == NodeKind.dir) {
-                            return FOLDER_IMAGE;
-                        } else if (status.getReposKind() == NodeKind.file) {
-                            return FILE_IMAGE;
-                        } else {
-                            return UNKNOWN_FILE_IMAGE;
-                        }
+                    if (status.getNodeKind() == NodeKind.dir) {
+                        return FOLDER_IMAGE;
+                    } else if (status.getNodeKind() == NodeKind.file) {
+                        return FILE_IMAGE;
+                    // otherwise look for the remote variant (ie. newly added file or folder remotely)
+                    } else if (status.getReposKind() == NodeKind.dir) {
+                        return FOLDER_IMAGE;
+                    } else if (status.getReposKind() == NodeKind.file) {
+                        return FILE_IMAGE;
                     }
                 }
                 // fallback: simply lookup the local file
