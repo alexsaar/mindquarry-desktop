@@ -425,9 +425,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
         manager.add(new GroupMarker(ActionBase.TASK_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.STOP_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.WORKSPACE_OPEN_GROUP));
+        manager.appendToGroup(ActionBase.WORKSPACE_OPEN_GROUP, new Separator());
         manager.add(new GroupMarker(ActionBase.MANAGEMENT_ACTION_GROUP));
-        manager.appendToGroup(ActionBase.MANAGEMENT_ACTION_GROUP,
-                new Separator());
+        manager.appendToGroup(ActionBase.MANAGEMENT_ACTION_GROUP, new Separator());
 
         for (ActionBase action : actions) {
             if ((action.isToolbarAction())
