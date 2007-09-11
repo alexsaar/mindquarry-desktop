@@ -85,6 +85,12 @@ public class ContentConflict extends Conflict {
             
         case USE_LOCAL:
             // just keep the local file
+            parent = new File(status.getPath()).getParentFile();
+            remoteFile = new File(parent, status.getConflictWorking());
+            
+            conflictFile = new File(status.getPath());
+            FileHelper.delete(conflictFile);
+            FileHelper.renameTo(remoteFile, conflictFile);
             break;
             
         case MERGE:
