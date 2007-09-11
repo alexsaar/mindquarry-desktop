@@ -71,58 +71,58 @@ public class ModificationDescription {
     public static ModificationDescription getDescription(int localStatus, int remoteStatus) {
         // checking local status first
         switch (localStatus) {
-        case StatusKind.obstructed:
-            // FIXME: add question mark icon
-            break;
-
-        case StatusKind.added:
-        case StatusKind.unversioned:
-            if (remoteStatus == StatusKind.added) {
-                // TODO: show conflict icon with "+" sign
-                return new ModificationDescription(conflictImage,
-                        Messages.getString("This new item has also been added on the server. "
-                                +"You will nee to resolve the conflict."));
-            }
-
-            // TODO: show upload icon with "+" sign
-            return new ModificationDescription(uploadImage,
-                    Messages.getString("This new item will be uploaded to the server."));
-
-        case StatusKind.modified:
-            if (remoteStatus == StatusKind.modified) {
-                // we cannot decide here if SVN can merge the changes for us,
-                // so show a conflict:
+            case StatusKind.obstructed:
+                // FIXME: add question mark icon
+                break;
+    
+            case StatusKind.added:
+            case StatusKind.unversioned:
+                if (remoteStatus == StatusKind.added) {
+                    // TODO: show conflict icon with "+" sign
+                    return new ModificationDescription(conflictImage,
+                            Messages.getString("This new item has also been added on the server. "
+                                    +"You will nee to resolve the conflict."));
+                }
+    
+                // TODO: show upload icon with "+" sign
+                return new ModificationDescription(uploadImage,
+                        Messages.getString("This new item will be uploaded to the server."));
+    
+            case StatusKind.modified:
+                if (remoteStatus == StatusKind.modified) {
+                    // we cannot decide here if SVN can merge the changes for us,
+                    // so show a conflict:
+                    return new ModificationDescription(conflictImage, CONFLICT_TEXT);
+                }
+                return new ModificationDescription(uploadImage,
+                        Messages.getString("Your changes of this item will be uploaded to the server."));
+                
+            case StatusKind.deleted:
+            case StatusKind.missing:
+                return new ModificationDescription(deleteImage,
+                        Messages.getString("This item has been deleted or moved locally. " +
+                        		"It will be deleted on the server."));
+    
+            case StatusKind.conflicted:
                 return new ModificationDescription(conflictImage, CONFLICT_TEXT);
-            }
-            return new ModificationDescription(uploadImage,
-                    Messages.getString("Your changes of this item will be uploaded to the server."));
-            
-        case StatusKind.deleted:
-        case StatusKind.missing:
-            return new ModificationDescription(deleteImage,
-                    Messages.getString("This item has been deleted or moved locally. " +
-                    		"It will be deleted on the server."));
-
-        case StatusKind.conflicted:
-            return new ModificationDescription(conflictImage, CONFLICT_TEXT);
         }
         
         // checking remote status
         switch (remoteStatus) {
-        case StatusKind.modified:
-            return new ModificationDescription(downloadImage,
-                    Messages.getString("This item has been modified on the server, " +
-                    "the new version will be downloaded."));
-
-        case StatusKind.added:
-            return new ModificationDescription(downloadImage,
-                    Messages.getString("This item is new on the server, " +
-                    "it will be downloaded."));
-            
-        case StatusKind.deleted:
-            return new ModificationDescription(deleteImage,
-                    Messages.getString("This item has been deleted or moved on the server. " +
-                    "It will be deleted locally."));
+            case StatusKind.modified:
+                return new ModificationDescription(downloadImage,
+                        Messages.getString("This item has been modified on the server, " +
+                        "the new version will be downloaded."));
+    
+            case StatusKind.added:
+                return new ModificationDescription(downloadImage,
+                        Messages.getString("This item is new on the server, " +
+                        "it will be downloaded."));
+                
+            case StatusKind.deleted:
+                return new ModificationDescription(deleteImage,
+                        Messages.getString("This item has been deleted or moved on the server. " +
+                        "It will be deleted locally."));
         }
 
         if (localStatus != -1 || remoteStatus != -1) {
