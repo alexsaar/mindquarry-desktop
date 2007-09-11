@@ -550,5 +550,25 @@
         <source>Refresh cancelled.</source>
         <translation>Aktualisierung abgebrochen.</translation>
     </message>
+    <message>
+        <source>Merge manually, continue only if done</source>
+        <translation>Manuell zusammenführen; nur fortfahren, wenn fertig</translation>
+    </message>
+    <message>
+        <source>Open original file</source>
+        <translation>Originale Datei</translation>
+    </message>
+    <message>
+        <source>Open my local file</source>
+        <translation>Meine lokale Datei</translation>
+    </message>
+    <message>
+        <source>Open updated file from server</source>
+        <translation>Datei vom Server</translation>
+    </message>
+    <message>
+        <source>Open automatically merged file</source>
+        <translation>Automatisch zusammengeführte Datei</translation>
+    </message>
 </context>
 </TS>

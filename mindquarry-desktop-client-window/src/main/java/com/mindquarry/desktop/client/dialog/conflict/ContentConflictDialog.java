@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -61,7 +62,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
 
     private File mergedVersion = null;
     private File mergedVersionTarget = null;
-    private Button startMergeButton;
+    private Button startMergeButton = null;
 
     // files used when merging versions with MS Word, will
     // may be deleted at the end:
@@ -79,6 +80,47 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         Label name = new Label(composite, SWT.READ_ONLY);
         name.setText(Messages.getString("Filename(s)") + ": "
                 + conflict.getStatus().getPath());
+        
+        Composite fileButtonBar = new Composite(composite, SWT.NONE);
+        fileButtonBar.setLayout(new RowLayout(SWT.HORIZONTAL));
+        
+        final Status status = conflict.getStatus();
+        final File parentDir = new File(status.getPath()).getParentFile();
+        
+        Button openOldFileButton = new Button(fileButtonBar, SWT.BUTTON1);
+        openOldFileButton.setText(Messages.getString("Open original file")); //$NON-NLS-1$
+        openOldFileButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event arg0) {
+                File file = new File(parentDir, status.getConflictOld());
+                Program.launch(file.getAbsolutePath());
+            }
+        });
+
+        Button openMyFileButton = new Button(fileButtonBar, SWT.BUTTON1);
+        openMyFileButton.setText(Messages.getString("Open my local file")); //$NON-NLS-1$
+        openMyFileButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event arg0) {
+                File file = new File(parentDir, status.getConflictWorking());
+                Program.launch(file.getAbsolutePath());
+            }
+        });
+        
+        Button openServerFileButton = new Button(fileButtonBar, SWT.BUTTON1);
+        openServerFileButton.setText(Messages.getString("Open updated file from server")); //$NON-NLS-1$
+        openServerFileButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event arg0) {
+                File file = new File(parentDir, status.getConflictNew());
+                Program.launch(file.getAbsolutePath());
+            }
+        });
+
+        Button openMergedFileButton = new Button(fileButtonBar, SWT.BUTTON1);
+        openMergedFileButton.setText(Messages.getString("Open automatically merged file")); //$NON-NLS-1$
+        openMergedFileButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event arg0) {
+                Program.launch(status.getPath());
+            }
+        });
     }
 
     @Override
@@ -128,7 +170,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 okButton.setEnabled(true);
-                startMergeButton.setEnabled(false);
+                if(startMergeButton != null) {
+                    startMergeButton.setEnabled(false);
+                }
             }
         });
 
@@ -138,7 +182,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 okButton.setEnabled(true);
-                startMergeButton.setEnabled(false);
+                if(startMergeButton != null) {
+                    startMergeButton.setEnabled(false);
+                }
             }
         });
 
@@ -161,7 +207,20 @@ public class ContentConflictDialog extends AbstractConflictDialog {
             startMergeButton.setEnabled(false);
             startMergeButton.addListener(SWT.Selection,
                     new MergeButtonListener());
+        } else { // manual merge
+            Button button3 = makeRadioButton(subComposite, Messages
+                    .getString("Merge manually, continue only if done"), //$NON-NLS-1$
+                    ContentConflict.Action.MERGE);
+            button3.addListener(SWT.Selection, new Listener() {
+                public void handleEvent(Event event) {
+                    okButton.setEnabled(true);
+                    if(startMergeButton != null) {
+                        startMergeButton.setEnabled(false);
+                    }
+                }
+            });
         }
+
     }
 
     protected String getHelpURL() {
