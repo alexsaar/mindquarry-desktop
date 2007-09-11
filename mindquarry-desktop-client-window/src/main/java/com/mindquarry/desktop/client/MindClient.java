@@ -87,6 +87,7 @@ import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.preferences.profile.ProfileActivatedEvent;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
@@ -796,13 +797,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
                         Profile.selectProfile(getPreferenceStore(), menuItem
                                 .getText());
                         saveOptions();
-                        try {
-                            displayNotConnected();
-                            teamList.refresh();                            
-                        } catch (CancelException e) {
-                            // TODO: better exception handling
-                            log.warn("Refreshing after profile change cancelled.", e);
-                        }
                     }
                 }
             });
@@ -816,9 +810,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
             profilesInMenu.add(menuItem);
         }
         if (!hasSelection && firstMenuItem != null) {
-            Profile
-                    .selectProfile(getPreferenceStore(), firstMenuItem
-                            .getText());
+            Profile.selectProfile(getPreferenceStore(), firstMenuItem.getText());
+            saveOptions();
         }
     }
 
@@ -886,7 +879,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
     }
 
     public void onEvent(com.mindquarry.desktop.event.Event event) {
-        // TODO Auto-generated method stub
-        
+        if(event instanceof ProfileActivatedEvent) {
+            try {
+                displayNotConnected();
+                teamList.refresh();
+            } catch (CancelException e) {
+                // TODO: better exception handling
+                log.warn("Refreshing after profile change cancelled.", e);
+            }
+        }
     }
 }

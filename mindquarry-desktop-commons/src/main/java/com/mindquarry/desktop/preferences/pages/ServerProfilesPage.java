@@ -452,7 +452,13 @@ public class ServerProfilesPage extends PreferencePage {
 
 	@Override
 	public boolean performOk() {
-		Profile.storeProfiles((PreferenceStore) getPreferenceStore(), profiles);
+	    PreferenceStore store = (PreferenceStore)getPreferenceStore();
+        String[] selection = profileList.getSelection();
+        if (selection.length > 0) {
+            Profile.selectProfile(store, selection[0]);
+        }
+
+		Profile.storeProfiles(store, profiles);
 		return true;
 	}
 
