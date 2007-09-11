@@ -142,7 +142,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     static {
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.MANAGEMENT_ACTION_GROUP);
-        //DEFAULT_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_OPEN_GROUP);
         DEFAULT_TOOLBAR_GROUPS.add(ActionBase.STOP_ACTION_GROUP);
 
         INITIAL_TOOLBAR_GROUPS.add(ActionBase.WORKSPACE_ACTION_GROUP);
@@ -423,9 +422,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         // create toolbar groups
         manager.add(new GroupMarker(ActionBase.WORKSPACE_ACTION_GROUP));
-        manager.add(new GroupMarker(ActionBase.WORKSPACE_OPEN_GROUP));
         manager.add(new GroupMarker(ActionBase.TASK_ACTION_GROUP));
         manager.add(new GroupMarker(ActionBase.STOP_ACTION_GROUP));
+        manager.add(new GroupMarker(ActionBase.WORKSPACE_OPEN_GROUP));
         manager.add(new GroupMarker(ActionBase.MANAGEMENT_ACTION_GROUP));
         manager.appendToGroup(ActionBase.MANAGEMENT_ACTION_GROUP,
                 new Separator());
