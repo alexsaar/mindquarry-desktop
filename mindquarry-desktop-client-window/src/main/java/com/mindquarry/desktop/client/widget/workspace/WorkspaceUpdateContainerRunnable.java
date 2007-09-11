@@ -45,7 +45,7 @@ import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
-import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
+import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 import com.mindquarry.desktop.event.EventBus;
@@ -131,22 +131,8 @@ public class WorkspaceUpdateContainerRunnable extends
         });
         containerWidget.getViewer().addDoubleClickListener(new IDoubleClickListener() {
             public void doubleClick(DoubleClickEvent arg0) {
-                ISelection iSelection = containerWidget.getViewer().getSelection();
-                if (iSelection instanceof StructuredSelection) {
-                    StructuredSelection structsel = (StructuredSelection) iSelection;
-                    Object element = structsel.getFirstElement();
-                    if (element instanceof File) {
-                        if (!containerWidget.getViewer().getSelection().isEmpty()) {
-                            File file = (File) element;
-                            if (file.exists() && file.isFile()) {
-                                // TODO: we cannot open directories yet
-                                EventBus.send(new OpenFileEvent(this));
-                            }
-                        }
-                    }
-                }
+                EventBus.send(new OpenSelectedFileEvent(this));
             }
-            
         });
         containerWidget.getViewer().setSorter(new ViewerSorter() {
             public int category(Object element) {

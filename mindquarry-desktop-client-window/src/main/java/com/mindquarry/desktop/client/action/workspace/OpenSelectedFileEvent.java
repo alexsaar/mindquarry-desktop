@@ -22,9 +22,9 @@ import com.mindquarry.desktop.event.EventBase;
  * 
  * @author dnaber
  */
-public class OpenFileEvent extends EventBase {
+public class OpenSelectedFileEvent extends EventBase {
 
-    public OpenFileEvent(Object source) {
+    public OpenSelectedFileEvent(Object source) {
         super(source);
     }
     

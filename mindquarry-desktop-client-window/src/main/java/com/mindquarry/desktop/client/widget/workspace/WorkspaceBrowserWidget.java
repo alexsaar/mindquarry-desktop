@@ -43,7 +43,7 @@ import org.tigris.subversion.javahl.StatusKind;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
-import com.mindquarry.desktop.client.action.workspace.OpenFileEvent;
+import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.event.EventListener;
@@ -106,18 +106,29 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     }
     
     public void onEvent(com.mindquarry.desktop.event.Event event) {
-        if (event instanceof OpenFileEvent) {
+        if (event instanceof OpenSelectedFileEvent) {
             ISelection selection = viewer.getSelection();
             if (selection instanceof StructuredSelection) {
                 StructuredSelection structsel = (StructuredSelection) selection;
                 Object element = structsel.getFirstElement();
                 if (element instanceof File) {
-                    File file = (File) element;
-                    log.debug("Launching " + file.getAbsolutePath());
-                    // TODO: this doesn't work with directories
-                    Program.launch(file.getAbsolutePath());
+                    if (!selection.isEmpty()) {
+                        File file = (File) element;
+                        // TODO: open directories as well as files
+                        // TODO: open remotely added files from repository
+                        if (file.exists()) {
+                            if(file.isFile()) {
+                                log.debug("Launching " + file.getAbsolutePath());
+                                Program.launch(file.getAbsolutePath());
+                            } else {
+                                log.warn("onEvent: cannot open directory");
+                            }
+                        } else {
+                            log.warn("onEvent: cannpt open remote files");
+                        }
+                    }
                 } else {
-                    log.warn("onEvent: not of expected type File: " + element.getClass());
+                    log.warn("onEvent: unexpected type: " + element.getClass());
                 }
             }
         }

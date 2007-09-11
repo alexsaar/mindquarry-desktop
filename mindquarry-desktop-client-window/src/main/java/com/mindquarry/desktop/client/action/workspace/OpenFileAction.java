@@ -49,7 +49,7 @@ public class OpenFileAction extends ActionBase {
     }
 
     public void run() {
-        EventBus.send(new OpenFileEvent(this));
+        EventBus.send(new OpenSelectedFileEvent(this));
     }
     
     public String getGroup() {
