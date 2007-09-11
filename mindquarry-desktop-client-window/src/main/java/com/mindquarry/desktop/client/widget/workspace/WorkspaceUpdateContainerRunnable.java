@@ -248,15 +248,15 @@ public class WorkspaceUpdateContainerRunnable extends
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
-                int localStatus = -1;
-                int remoteStatus = -1;
+                Status localStatus = null;
+                Status remoteStatus = null;
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
                 if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
-                    localStatus = widget.localChanges.get(file).getTextStatus();
+                    localStatus = widget.localChanges.get(file);
                 }
                 if (widget.remoteChanges != null && widget.remoteChanges.containsKey(file)) {
-                    remoteStatus = widget.remoteChanges.get(file).getRepositoryTextStatus();
+                    remoteStatus = widget.remoteChanges.get(file);
                 }
                 ModificationDescription descr = 
                     ModificationDescription.getDescription(localStatus, remoteStatus);
@@ -330,13 +330,13 @@ public class WorkspaceUpdateContainerRunnable extends
                                 }
                                 
                                 WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
-                                int localStatus = -1;
-                                int remoteStatus = -1;
+                                Status localStatus = null;
+                                Status remoteStatus = null;
                                 if (browserWidget.localChanges.containsKey(item.getData())) {
-                                    localStatus = browserWidget.localChanges.get(item.getData()).getTextStatus();
+                                    localStatus = browserWidget.localChanges.get(item.getData());
                                 }
                                 if (browserWidget.remoteChanges.containsKey(item.getData())) {
-                                	remoteStatus = browserWidget.remoteChanges.get(item.getData()).getRepositoryTextStatus();
+                                	remoteStatus = browserWidget.remoteChanges.get(item.getData());
                                 }
                                 ModificationDescription modDescription = 
                                     ModificationDescription.getDescription(localStatus, remoteStatus);

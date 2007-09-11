@@ -18,6 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.tigris.subversion.javahl.NodeKind;
+import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
@@ -68,8 +70,22 @@ public class ModificationDescription {
         return description;
     }
     
-    public static ModificationDescription getDescription(int localStatus, int remoteStatus) {
+    public static ModificationDescription getDescription(Status localStatusObj, Status remoteStatusObj) {
         // checking local status first
+        if ((localStatusObj != null && localStatusObj.getNodeKind() == NodeKind.dir) || 
+                (remoteStatusObj != null && remoteStatusObj.getNodeKind() == NodeKind.dir)) {
+            // showing upload/download status on directories is confusing,
+            // just don't display anything:
+            return new ModificationDescription(null, "");
+        }
+        int localStatus = -1;
+        int remoteStatus = -1;
+        if (localStatusObj != null) {
+            localStatus = localStatusObj.getTextStatus();
+        }
+        if (remoteStatusObj != null) {
+            remoteStatus = remoteStatusObj.getRepositoryTextStatus();
+        }
         switch (localStatus) {
             case StatusKind.obstructed:
                 // FIXME: add question mark icon
