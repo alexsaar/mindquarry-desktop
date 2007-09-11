@@ -21,6 +21,8 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.tigris.subversion.javahl.NodeKind;
+import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 import org.tmatesoft.svn.core.internal.wc.SVNFileListUtil;
@@ -37,6 +39,8 @@ public class ContentProvider implements ITreeContentProvider {
 
     public Object[] getChildren(Object parentElement) {
         File workspaceRoot = (File) parentElement;
+        // TODO: below we iterate over the local and remote changes anyway, do we 
+        // really need to iterate over the file system at all?
         File[] children = SVNFileListUtil.listFiles(workspaceRoot, new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
@@ -67,7 +71,7 @@ public class ContentProvider implements ITreeContentProvider {
             }
 
             /**
-             * Return true if <tt>file</tt> contains at leats one file
+             * Return true if <tt>file</tt> contains at least one file
              * with a local or remote modification.
              */
             private boolean containsChange(File dir) {
@@ -132,8 +136,15 @@ public class ContentProvider implements ITreeContentProvider {
 
     public boolean hasChildren(Object element) {
         File file = (File) element;
-        if ((file.isDirectory()) && (file.listFiles().length > 0)) {
+        if (file.isDirectory() && file.listFiles().length > 0) {
             return true;
+        }
+        // directories added remotely:
+        if (workspaceBrowser.remoteChanges != null) {
+            Status s = workspaceBrowser.remoteChanges.get(file);
+            if (s != null && s.getReposKind() == NodeKind.dir) {
+                return true;
+            }
         }
         return false;
     }
