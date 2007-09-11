@@ -30,7 +30,6 @@ import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
-import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * Show GUI dialogs to let the user resolve conflicts.
@@ -49,9 +48,9 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
     
     public void handle(final AddConflict conflict) throws SynchronizeCancelException {
-        final AddConflictDialog dlg = new AddConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                AddConflictDialog dlg = new AddConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == AddConflict.Action.RENAME) {
@@ -74,10 +73,10 @@ public class InteractiveConflictHandler implements ConflictHandler {
 
     public void handle(final DeleteWithModificationConflict conflict)
             throws SynchronizeCancelException {
-        final DeleteWithModificationConflictDialog dlg = 
-            new DeleteWithModificationConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                DeleteWithModificationConflictDialog dlg = 
+                    new DeleteWithModificationConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == DeleteWithModificationConflict.Action.REVERTDELETE) {
@@ -101,9 +100,9 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(final ReplaceConflict conflict) throws SynchronizeCancelException {
-        final ReplaceConflictDialog dlg = new ReplaceConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                ReplaceConflictDialog dlg = new ReplaceConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == ReplaceConflict.Action.RENAME) {
@@ -125,10 +124,10 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(final ContentConflict conflict) throws SynchronizeCancelException {
-        final ContentConflictDialog dlg = 
-            new ContentConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                ContentConflictDialog dlg = 
+                    new ContentConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == ContentConflict.Action.USE_LOCAL) {
@@ -153,10 +152,10 @@ public class InteractiveConflictHandler implements ConflictHandler {
 
     public void handle(final ObstructedConflict conflict)
             throws SynchronizeCancelException {
-        final ObstructedConflictDialog dlg = 
-            new ObstructedConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                ObstructedConflictDialog dlg = 
+                    new ObstructedConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == ObstructedConflict.Action.RENAME) {
@@ -178,10 +177,10 @@ public class InteractiveConflictHandler implements ConflictHandler {
     }
 
     public void handle(final PropertyConflict conflict) throws SynchronizeCancelException {
-        final PropertyConflictDialog dlg = 
-            new PropertyConflictDialog(conflict, shell);
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
+                PropertyConflictDialog dlg = 
+                    new PropertyConflictDialog(conflict, shell);
                 int resolution = dlg.open();
                 if (resolution == IDialogConstants.OK_ID) {
                     if (dlg.getResolveMethod() == PropertyConflict.Action.USE_LOCAL_VALUE) {
