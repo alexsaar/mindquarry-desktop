@@ -285,6 +285,7 @@ public class SVNSynchronizer {
                         // remove on a missing directory does not work;
                         // simply recreate the directory and then delete it
                         
+                        // FIXME: recreate subdirectories as well!
                         FileHelper.mkdirs(new File(s.getPath()));
                         client.remove(new String[] { s.getPath() }, null, true);
                         
