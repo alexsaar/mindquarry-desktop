@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuEvent;
+import org.eclipse.swt.events.MenuListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -38,11 +40,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
 import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
@@ -51,7 +56,7 @@ import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnab
 import com.mindquarry.desktop.event.EventBus;
 
 /**
- * Add summary documentation here.
+ * Class that creates the workspace widget.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  */
@@ -76,7 +81,8 @@ public class WorkspaceUpdateContainerRunnable extends
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
 
     private MindClient client;
-    
+    private MenuItem menuItem;
+
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean refreshing,
             String refreshMessage, boolean empty, String emptyMessage,
@@ -104,29 +110,14 @@ public class WorkspaceUpdateContainerRunnable extends
                         | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION));
         containerWidget.getViewer().setContentProvider(
                 new ContentProvider((WorkspaceBrowserWidget) containerWidget));
+
+        addContextMenu();
+        
         containerWidget.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent arg0) {
+            public void selectionChanged(SelectionChangedEvent event) {
                 // make sure the "open" button is only enables when it makes sense:
-                ISelection iSelection = containerWidget.getViewer().getSelection();
-                if (iSelection instanceof StructuredSelection) {
-                    StructuredSelection structsel = (StructuredSelection) iSelection;
-                    Object element = structsel.getFirstElement();
-                    if (element instanceof File) {
-                        boolean enableButton;
-                        if (containerWidget.getViewer().getSelection().isEmpty()) {
-                            enableButton = false;
-                        } else {
-                            File file = (File) element;
-                            if (file.exists() && file.isFile()) {     // TODO: we cannot open directories yet
-                                enableButton = true;
-                            } else {
-                                // a remotely added file, we cannot view that yet:
-                                enableButton = false;
-                            }
-                        }
-                        client.enableAction(enableButton, OpenFileAction.class.getName());
-                    }
-                }
+                boolean enableButton = enableOpenButton();
+                client.enableAction(enableButton, OpenFileAction.class.getName());
             }
         });
         containerWidget.getViewer().addDoubleClickListener(new IDoubleClickListener() {
@@ -253,7 +244,59 @@ public class WorkspaceUpdateContainerRunnable extends
         checkAllItem(containerWidget.getViewer().getTree().getItems());
         containerWidget.layout(true);
     }
-    
+        
+    /**
+     * Return true if the user selected an item which can be opened.
+     */
+    private boolean enableOpenButton() {
+        ISelection iSelection = containerWidget.getViewer().getSelection();
+        if (iSelection instanceof StructuredSelection) {
+            StructuredSelection structsel = (StructuredSelection) iSelection;
+            Object element = structsel.getFirstElement();
+            if (element instanceof File) {
+                File file = (File) element;
+                boolean enableButton = false;
+                if (containerWidget.getViewer().getSelection().isEmpty()) {
+                    enableButton = false;
+                } else {
+                    if (file.exists() && file.isFile()) {     // TODO: we cannot open directories yet
+                        enableButton = true;
+                    } else {
+                        // a remotely added file, we cannot view that yet:
+                        enableButton = false;
+                    }
+                }
+                return enableButton;
+            }
+        }
+        return false;
+    }
+
+    private void addContextMenu() {
+        final Menu popupmenu = new Menu (client.getShell(), SWT.POP_UP);
+        popupmenu.addMenuListener(new MenuListener() {
+            public void menuHidden(MenuEvent e) {
+            }
+            public void menuShown(MenuEvent e) {
+                if (enableOpenButton()) {
+                    if (menuItem != null) {
+                        menuItem.dispose();
+                    }
+                    menuItem = new MenuItem(popupmenu, SWT.NONE);
+                    menuItem.setText(Messages.getString("Open local file"));
+                    menuItem.addListener(SWT.Selection, new Listener() {
+                        public void handleEvent(Event e) {
+                            EventBus.send(new OpenSelectedFileEvent(this));
+                        }
+                    });
+                } else {
+                    menuItem.dispose();
+                }
+            }
+        });
+        containerWidget.getViewer().getControl().setMenu(popupmenu);
+    }
+
     private void checkAllItem(TreeItem[] items) {
         for(TreeItem item : items) {
             item.setChecked(true);
