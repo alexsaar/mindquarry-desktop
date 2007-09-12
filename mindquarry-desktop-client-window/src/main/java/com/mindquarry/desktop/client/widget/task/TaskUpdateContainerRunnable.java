@@ -72,8 +72,10 @@ public class TaskUpdateContainerRunnable extends
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
-                containerWidget.getViewer().getTable().getColumn(0).setWidth(
+                if(containerWidget.getViewer() != null) {
+                    containerWidget.getViewer().getTable().getColumn(0).setWidth(
                         containerWidget.getViewer().getTable().getSize().x);
+                }
             }
         });
         containerWidget.getViewer().setContentProvider(new ContentProvider());
