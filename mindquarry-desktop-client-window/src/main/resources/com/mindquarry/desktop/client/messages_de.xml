@@ -578,5 +578,9 @@
         <source>Please use the various file version at the top to merge the changes into the target file. Click &apos;Finished Merging&apos; and then &apos;OK&apos; when done.</source>
         <translation>Bitte verwenden Sie die verschiedenen Dateiversionen oben, um Änderungen in der Zieldatei zusammenzuführen. Klicken Sie anschließend &apos;Fertig zusammengeführt&apos; und dann &apos;OK&apos;.</translation>
     </message>
+    <message>
+        <source>Task {0} of {1}</source>
+        <translation>Aufgabe {0} von {1}</translation>
+    </message>
 </context>
 </TS>
