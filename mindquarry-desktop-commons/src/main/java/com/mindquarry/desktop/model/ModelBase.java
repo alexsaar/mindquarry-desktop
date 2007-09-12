@@ -33,6 +33,7 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  */
 public abstract class ModelBase {
 	protected Log log = LogFactory.getLog(this.getClass());
+    protected Document doc;
 
 	public ModelBase() {
 		initModel();
@@ -40,16 +41,38 @@ public abstract class ModelBase {
 
 	public ModelBase(InputStream data, TransformerBase transformer) {
 		initModel();
-		parseInput(data, transformer);
+		doc = parseInput(data);
+        init(transformer);
 	}
 
-	public ModelBase(String url, String login, String password,
-			TransformerBase transformer) throws NotAuthorizedException,
-			Exception {
+    public ModelBase(String url, String login, String password, TransformerBase transformer) throws NotAuthorizedException, Exception {
+        initModel();
+        InputStream content = getContent(url, login, password);
+        doc = parseInput(content);
+        init(transformer);
+    }
+
+    /**
+     * This constructor does not automatically call the transformer. You need to call init(Transformer)
+     * yourfeld. The advantage of this is that the extending class can provide a getSize() method
+     * that can return the size of a collection before the transformer is used, i.e. before
+     * all items of the collection are fetched (e.g. TaskList).
+     */
+	public ModelBase(String url, String login, String password) throws NotAuthorizedException, Exception {
 		initModel();
 		InputStream content = getContent(url, login, password);
-		parseInput(content, transformer);
+		doc = parseInput(content);
 	}
+
+	/**
+	 * Calls the transformer, to be used only together with the ModelBase(String,String,String)
+	 * contructor.
+	 */
+	protected void init(TransformerBase transformer) {
+        if (doc != null) {
+            transformDoc(doc, transformer);
+        }
+    }
 
 	/**
 	 * Can be overidden by subclasses for initializing member variables when
@@ -66,15 +89,17 @@ public abstract class ModelBase {
 		return content;
 	}
 
-	private void parseInput(InputStream data, TransformerBase transformer) {
-		SAXReader reader = new SAXReader();
-		Document doc;
-		try {
-			doc = reader.read(data);
-		} catch (DocumentException e) {
-			log.error("Error while reading document.", e); //$NON-NLS-1$
-			return;
-		}
+	private Document parseInput(InputStream data) {
+        SAXReader reader = new SAXReader();
+        try {
+            return reader.read(data);
+        } catch (DocumentException e) {
+            log.error("Error while reading document.", e); //$NON-NLS-1$
+            return null;
+        }
+	}
+	
+	private void transformDoc(Document doc, TransformerBase transformer) {
 		transformer.execute(this, doc);
 	}
 }

@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.model.task;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +25,15 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  */
 public class TaskList extends ModelBase {
 	private List<Task> tasks;
-
-	public TaskList(InputStream data, String login, String password) {
-		super(data, new TaskListTransformer(login, password));
-	}
-
+	private String login;
+	private String password;
+    private boolean initDone = false;
+	
 	public TaskList(String url, String login, String password)
 			throws NotAuthorizedException, Exception {
-		super(url, login, password, new TaskListTransformer(login, password));
+		super(url, login, password);
+		this.login = login;
+		this.password = password;
 	}
 
 	public TaskList() {
@@ -45,6 +45,10 @@ public class TaskList extends ModelBase {
 		this.tasks = tasks;
 	}
 
+	public int getSize() {
+	    return doc.getRootElement().elements().size();
+	}
+	
 	@Override
 	protected void initModel() {
 		tasks = new ArrayList<Task>();
@@ -56,6 +60,10 @@ public class TaskList extends ModelBase {
 	 * @return the list of tasks
 	 */
 	public List<Task> getTasks() {
+	    if (!initDone) {
+	        init(new TaskListTransformer(login, password));
+	        initDone = true;
+	    }
 		return tasks;
 	}
 
