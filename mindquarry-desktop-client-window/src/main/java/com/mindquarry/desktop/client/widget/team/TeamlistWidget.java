@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dom4j.DocumentException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -204,8 +205,9 @@ public class TeamlistWidget extends WidgetBase {
         }
         // retrieve list of teams
         TeamList teamList;
+        String teamUrl = selected.getServerURL() + "/teams";
         try {
-            teamList = new TeamList(selected.getServerURL() + "/teams", //$NON-NLS-1$
+            teamList = new TeamList(teamUrl, //$NON-NLS-1$
                     selected.getLogin(), selected.getPassword());
             return teamList;
         } catch (NotAuthorizedException e) {
@@ -232,10 +234,16 @@ public class TeamlistWidget extends WidgetBase {
             // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
+            String msg = Messages.getString("Could not update team list from {0}: ",  //$NON-NLS-1$
+                    selected.getServerURL()) + e.getLocalizedMessage();
+            if (e.getCause() != null && e.getCause().getClass() == DocumentException.class) {
+                // this happens when HTML is returned instead of XML
+                msg = Messages.getString("The specified URL \"{0}\" does belong to a " +
+                		"running Mindquarry server. No team information found at {1}",
+                		selected.getServerURL(), teamUrl);
+            }
             MessageDialog.openError(getShell(), Messages.getString("Error"),  //$NON-NLS-1$
-                    Messages.getString("Could not update team list from {0}: ",  //$NON-NLS-1$
-                        selected.getServerURL()) +
-                        e.getLocalizedMessage());
+                    msg);
             return null;
         }
     }
