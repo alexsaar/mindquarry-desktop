@@ -73,7 +73,11 @@ public class ContentConflict extends Conflict {
         conflictNewFile = renameConflictFile(status.getConflictNew(), false);
         conflictWorkingFile = renameConflictFile(status.getConflictWorking(), false);
         
-        handler.handle(this);
+        try {
+            handler.handle(this);
+        } catch(CancelException e) {
+            doCancel(); // cleaning up if there's an exception
+        }
     }
     
     /**
