@@ -121,10 +121,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                                 log.debug("Launching " + file.getAbsolutePath());
                                 Program.launch(file.getAbsolutePath());
                             } else {
-                                log.warn("onEvent: cannot open directory");
+                                log.warn("onEvent: cannot open directory: " + file);
                             }
                         } else {
-                            log.warn("onEvent: cannpt open remote files");
+                            log.warn("onEvent: cannot open remote files: " + file);
                         }
                     }
                 } else {
