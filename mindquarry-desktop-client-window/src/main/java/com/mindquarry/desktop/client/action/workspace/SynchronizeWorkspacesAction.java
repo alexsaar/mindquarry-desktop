@@ -132,7 +132,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             client.startAction(REFRESHING_MESSAGE); //$NON-NLS-1$
             boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
             client.stopAction(REFRESHING_MESSAGE); //$NON-NLS-1$
-            workspaceWidget.showEmptyMessage(workspaceWidget.isRefreshListEmpty());
+//            workspaceWidget.showEmptyMessage(workspaceWidget.isRefreshListEmpty());
 
             if (refreshNeeded) {
                 Display.getDefault().syncExec(new Runnable() {
