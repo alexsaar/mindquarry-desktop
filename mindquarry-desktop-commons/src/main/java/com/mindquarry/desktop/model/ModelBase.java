@@ -52,28 +52,6 @@ public abstract class ModelBase {
         init(transformer);
     }
 
-    /**
-     * This constructor does not automatically call the transformer. You need to call init(Transformer)
-     * yourfeld. The advantage of this is that the extending class can provide a getSize() method
-     * that can return the size of a collection before the transformer is used, i.e. before
-     * all items of the collection are fetched (e.g. TaskList).
-     */
-	public ModelBase(String url, String login, String password) throws NotAuthorizedException, Exception {
-		initModel();
-		InputStream content = getContent(url, login, password);
-		doc = parseInput(content);
-	}
-
-	/**
-	 * Calls the transformer, to be used only together with the ModelBase(String,String,String)
-	 * contructor.
-	 */
-	protected void init(TransformerBase transformer) {
-        if (doc != null) {
-            transformDoc(doc, transformer);
-        }
-    }
-
 	/**
 	 * Can be overidden by subclasses for initializing member variables when
 	 * constructor initialization with transformer is used.
@@ -82,14 +60,23 @@ public abstract class ModelBase {
 		// nothing to do here
 	}
 
-	private InputStream getContent(String url, String login, String password)
+	/**
+     * Calls the transformer, to be used only together with the 
+     * ModelBase(String,String,String) constructor.
+     */
+    protected void init(TransformerBase transformer) {
+        if (doc != null) {
+            transformDoc(doc, transformer);
+        }
+    }
+
+	protected InputStream getContent(String url, String login, String password)
 			throws NotAuthorizedException, Exception {
-		InputStream content = HttpUtilities.getContentAsXML(login, password,
-				url);
+		InputStream content = HttpUtilities.getContentAsXML(login, password, url);
 		return content;
 	}
 
-	private Document parseInput(InputStream data) {
+	protected Document parseInput(InputStream data) {
         SAXReader reader = new SAXReader();
         try {
             return reader.read(data);
@@ -99,7 +86,7 @@ public abstract class ModelBase {
         }
 	}
 	
-	private void transformDoc(Document doc, TransformerBase transformer) {
+	protected void transformDoc(Document doc, TransformerBase transformer) {
 		transformer.execute(this, doc);
 	}
 }

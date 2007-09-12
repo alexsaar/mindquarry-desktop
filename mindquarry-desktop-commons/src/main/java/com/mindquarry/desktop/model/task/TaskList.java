@@ -16,14 +16,14 @@ package com.mindquarry.desktop.model.task;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.model.ManualTransformModelBase;
 import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
  *         Trieloff</a>
  */
-public class TaskList extends ModelBase {
+public class TaskList extends ManualTransformModelBase {
 	private List<Task> tasks;
 	private String login;
 	private String password;
