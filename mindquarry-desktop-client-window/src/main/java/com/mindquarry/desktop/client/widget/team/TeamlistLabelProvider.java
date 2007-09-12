@@ -15,7 +15,6 @@ package com.mindquarry.desktop.client.widget.team;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.model.team.Team;
@@ -27,13 +26,7 @@ import com.mindquarry.desktop.model.team.Team;
  *         Saar</a>
  */
 public class TeamlistLabelProvider extends ColumnLabelProvider {
-	private static final String ICON_SIZE = "32x32";//$NON-NLS-1$
 	
-	private static Image doneTask = new Image(
-			Display.getCurrent(),
-			TeamlistLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-done.png")); //$NON-NLS-1$
-
 	public Image getImage(Object element) {
 		return null;
 	}
