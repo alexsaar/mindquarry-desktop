@@ -60,7 +60,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
         setTitle(Messages.getString("Resolve conflicts")); //$NON-NLS-1$
         setMessage(getMessage(), IMessageProvider.INFORMATION);
         getShell().setText(Messages.getString("Resolving conflicts")); //$NON-NLS-1$
-        getShell().setSize(600, 320);
+        getShell().setSize(600, 350);
         getShell().redraw();
         return contents;
     }

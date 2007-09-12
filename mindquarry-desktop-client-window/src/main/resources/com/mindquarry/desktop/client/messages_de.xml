@@ -34,8 +34,8 @@
         <translation>Beendet die Desktop-Client Anwendung.</translation>
     </message>
     <message>
-        <source>After starting MS Word, merge both versions and save the result.\nThen click the &apos;Done&apos; button that will appear and click &apos;OK&apos;.</source>
-        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen\nund speichern Sie das Ergebnis. Wählen Sie dann den\n&apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
+        <source>After starting MS Word, merge both versions and save the result. Then click the &apos;Done&apos; button that will appear and click &apos;OK&apos;.</source>
+        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen und speichern Sie das Ergebnis. Wählen Sie dann den &apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
     </message>
     <message>
         <source>One of the local directories was deleted and replaced with a file of the same name. This structural change must be resolved before synchronization.</source>
@@ -314,8 +314,8 @@
         <translation>Titel</translation>
     </message>
     <message>
-        <source>Manually merge both files</source>
-        <translation>Beide Dateien manuell zusammenführen</translation>
+        <source>Manually merge both files (recommended)</source>
+        <translation>Beide Dateien manuell zusammenführen (empfohlen)</translation>
     </message>
     <message>
         <source>Synchronizing workspaces</source>
@@ -330,8 +330,8 @@
         <translation>Neuer Wert für diese Datei-Eigenschaft</translation>
     </message>
     <message>
-        <source>The file you are trying to synchronize was modified on the server. Please select the version that should be treated as the current version. </source>
-        <translation>Die Datei, die Sie auf den Server hochladen wollen, wurde auf dem Server geändert. Bitte wählen Sie die Version, die ab jetzt benutzt werden soll. </translation>
+        <source>The file you are trying to synchronize was modified on the server. Please select a resolution method. </source>
+        <translation>Die Datei, die Sie auf den Server hochladen wollen, wurde auf dem Server geändert. Bitte wählen Sie eine Konfliktlösung. </translation>
     </message>
     <message>
         <source>Refresh the list of file changes</source>
@@ -567,8 +567,16 @@
         <translation>Datei vom Server</translation>
     </message>
     <message>
-        <source>Open automatically merged file</source>
-        <translation>Automatisch zusammengeführte Datei</translation>
+        <source>Target file (automatically merged)</source>
+        <translation>Zieldatei (automatisch zusammengeführt)</translation>
+    </message>
+    <message>
+        <source>Finished Merging</source>
+        <translation>Fertig zusammengeführt</translation>
+    </message>
+    <message>
+        <source>Please use the various file version at the top to merge the changes into the target file. Click &apos;Finished Merging&apos; and then &apos;OK&apos; when done.</source>
+        <translation>Bitte verwenden Sie die verschiedenen Dateiversionen oben, um Änderungen in der Zieldatei zusammenzuführen. Klicken Sie anschließend &apos;Fertig zusammengeführt&apos; und dann &apos;OK&apos;.</translation>
     </message>
 </context>
 </TS>
