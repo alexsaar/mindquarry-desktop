@@ -13,8 +13,6 @@
  */
 package com.mindquarry.desktop.model.team;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Node;
 
 import com.mindquarry.desktop.model.ModelBase;
@@ -27,12 +25,9 @@ import dax.Path;
  *         Saar</a>
  */
 public class TeamTransformer extends TransformerBase {
-    private Log log;
-    
     private Team team = null;
     
     public TeamTransformer() {
-        log = LogFactory.getLog(TeamTransformer.class);
     }
 
     @Override
