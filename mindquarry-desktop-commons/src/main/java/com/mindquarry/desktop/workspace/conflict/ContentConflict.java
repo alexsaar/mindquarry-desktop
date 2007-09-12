@@ -32,6 +32,9 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 public class ContentConflict extends Conflict {
 
     private Action action = Action.UNKNOWN;
+    private File conflictOldFile;
+    private File conflictNewFile;
+    private File conflictWorkingFile;
     
     public enum Action {
         /**
@@ -57,14 +60,64 @@ public class ContentConflict extends Conflict {
     
     public ContentConflict(Status status) {
         super(status);
+        File parentDir = new File(status.getPath()).getParentFile();
+        conflictOldFile = new File(parentDir, status.getConflictOld());
+        conflictNewFile = new File(parentDir, status.getConflictNew());
+        conflictWorkingFile = new File(parentDir, status.getConflictWorking());
     }
 
     @Override
     public void accept(ConflictHandler handler) throws CancelException {
+        // rename conflicts files
+        conflictOldFile = renameConflictFile(status.getConflictOld(), false);
+        conflictNewFile = renameConflictFile(status.getConflictNew(), false);
+        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), false);
+        
         handler.handle(this);
+    }
+    
+    /**
+     * Rename a file created in a conflict to make their name them useful for
+     * users and vice versa, e.g. 'file.txt.r11' <=> 'file.r11.txt'. Essentially
+     * swaps the last two extensions of the filename.
+     * 
+     * @param conflictedFilename
+     *            Filename of the conflict file (e.g. file.txt.r11).
+     * @param undo
+     *            Use false for 'file.txt.r11' => 'file.r11.txt' and true for
+     *            'file.txt.r11' <= 'file.r11.txt'.
+     * @return the new file
+     */
+    private File renameConflictFile(String conflictedFilename, boolean undo) {
+        int ext2pos = conflictedFilename.lastIndexOf('.');
+        int ext1pos = conflictedFilename.lastIndexOf('.', ext2pos-1);
+
+        String name = conflictedFilename.substring(0, ext1pos);
+        String ext1 = conflictedFilename.substring(ext1pos+1, ext2pos);
+        String ext2 = conflictedFilename.substring(ext2pos+1);
+
+        String newFilename = name+"."+ext2+"."+ext1;
+        File parentDir = new File(status.getPath()).getParentFile();
+        File conflictedFile = new File(parentDir, conflictedFilename);
+        File newFile = new File(parentDir, newFilename);
+
+        if (!undo) { // rename file.doc.r123 => file.r123.doc
+            log.info("Renaming '" + conflictedFilename + "' => '" + newFilename + "'");
+            conflictedFile.renameTo(newFile);
+            return newFile;
+        } else { // rename file.r123.doc => file.doc.r123
+            log.info("Renaming '" + newFilename + "' => '" + conflictedFilename + "'");
+            newFile.renameTo(conflictedFile);
+            return conflictedFile;
+        }
     }
 
     private void resolveConflict() throws ClientException, IOException {
+        // rename conflicts files
+        conflictOldFile = renameConflictFile(status.getConflictOld(), true);
+        conflictNewFile = renameConflictFile(status.getConflictNew(), true);
+        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), true);
+        
         // check for conflict resolve method
         switch (action) {
         case UNKNOWN:
@@ -139,5 +192,17 @@ public class ContentConflict extends Conflict {
      */
     public void doMerge() {
         this.action = Action.MERGE;
+    }
+
+    public File getConflictNewFile() {
+        return conflictNewFile;
+    }
+
+    public File getConflictOldFile() {
+        return conflictOldFile;
+    }
+
+    public File getConflictWorkingFile() {
+        return conflictWorkingFile;
     }
 }

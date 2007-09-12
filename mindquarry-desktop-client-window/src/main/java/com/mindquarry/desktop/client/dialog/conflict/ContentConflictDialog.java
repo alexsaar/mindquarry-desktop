@@ -91,8 +91,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         openOldFileButton.setText(Messages.getString("Open original file")); //$NON-NLS-1$
         openOldFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                File file = new File(parentDir, status.getConflictOld());
-                Program.launch(file.getAbsolutePath());
+                Program.launch(conflict.getConflictOldFile().getAbsolutePath());
             }
         });
 
@@ -100,8 +99,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         openMyFileButton.setText(Messages.getString("Open my local file")); //$NON-NLS-1$
         openMyFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                File file = new File(parentDir, status.getConflictWorking());
-                Program.launch(file.getAbsolutePath());
+                Program.launch(conflict.getConflictWorkingFile().getAbsolutePath());
             }
         });
         
@@ -109,8 +107,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         openServerFileButton.setText(Messages.getString("Open updated file from server")); //$NON-NLS-1$
         openServerFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                File file = new File(parentDir, status.getConflictNew());
-                Program.launch(file.getAbsolutePath());
+                Program.launch(conflict.getConflictNewFile().getAbsolutePath());
             }
         });
 
