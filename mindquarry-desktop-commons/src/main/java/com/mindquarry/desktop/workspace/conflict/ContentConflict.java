@@ -205,4 +205,11 @@ public class ContentConflict extends Conflict {
     public File getConflictWorkingFile() {
         return conflictWorkingFile;
     }
+
+    public void doCancel() {
+        // rename conflicts files
+        conflictOldFile = renameConflictFile(status.getConflictOld(), true);
+        conflictNewFile = renameConflictFile(status.getConflictNew(), true);
+        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), true);        
+    }
 }

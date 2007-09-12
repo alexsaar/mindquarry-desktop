@@ -141,6 +141,7 @@ public class InteractiveConflictHandler implements ConflictHandler {
                                 dlg.getResolveMethod());
                     }
                 } else {
+                    conflict.doCancel();
                     cancelled = true;
                 }
             }
