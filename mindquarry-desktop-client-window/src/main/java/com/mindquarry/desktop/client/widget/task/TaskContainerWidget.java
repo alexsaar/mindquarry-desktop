@@ -34,8 +34,13 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
+import com.mindquarry.desktop.event.Event;
+import com.mindquarry.desktop.event.EventBus;
+import com.mindquarry.desktop.event.EventListener;
+import com.mindquarry.desktop.model.task.NewTaskFromUrlEvent;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
+import com.mindquarry.desktop.model.task.TaskListTransformer;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.ExceptionUtilities;
@@ -44,7 +49,7 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 /**
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
-public class TaskContainerWidget extends ContainerWidget<TableViewer> {
+public class TaskContainerWidget extends ContainerWidget<TableViewer> implements EventListener {
     private static final String FACET_ALL = "all";
 
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
@@ -57,8 +62,13 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
 
     private TaskUpdateContainerRunnable containerRunnable;
 
+    private int taskDownloadCount = 1;
+    private int tasksInCurrentTeamCount = -1;
+    private String updateMessage = null;
+    
     public TaskContainerWidget(Composite parent, MindClient client) {
         super(parent, SWT.BORDER, client);
+        EventBus.registerListener(this);
     }
 
     // #########################################################################
@@ -179,15 +189,18 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
                 String login = profile.getLogin();
                 String password = profile.getPassword();
 
-                setMessage(Messages.getString(
-                        "Updating task list for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
+                TaskList taskList = new TaskList(url + "/tasks/"
+                        + team.getId() + "/", login, password);
+
+                // set for use in onEvent():
+                tasksInCurrentTeamCount = taskList.getSize();
+                taskDownloadCount = 1;
+                updateMessage = Messages.getString(
+                        "Updating task list for team \"{0}\" (team {1} of {2}): ",
                         team.getName(),
                         Integer.toString(teams.indexOf(team)+1),
-                        Integer.toString(teams.size())));
-
-                tasks.getTasks().addAll(new TaskList(url + "/tasks/" //$NON-NLS-1$
-                        + team.getId() + "/", login, password).getTasks());
-
+                        Integer.toString(teams.size()));
+                tasks.getTasks().addAll(taskList.getTasks());
             }
         } catch (final NotAuthorizedException e) {
             log.error("Could not update list of tasks for " //$NON-NLS-1$
@@ -307,11 +320,19 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> {
         }
     }
 
-    
     private void updateContainer(final boolean refreshing, String refreshMessage,
             final boolean empty, String emptyMessage, final String errorMessage) {
         containerRunnable = new TaskUpdateContainerRunnable(client, this,
                 refreshing, refreshMessage, empty, emptyMessage, errorMessage);
         getDisplay().syncExec(containerRunnable);
+    }
+
+    public void onEvent(Event event) {
+        if (event instanceof NewTaskFromUrlEvent) {
+            setMessage(updateMessage + Messages.getString("Task {0} of {1}",
+                    taskDownloadCount+"",
+                    tasksInCurrentTeamCount+""));
+            taskDownloadCount++;
+        }
     }
 }

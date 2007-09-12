@@ -77,10 +77,12 @@ public class UpdateWidget extends Composite {
     protected void setMessage(final String message) {
         getDisplay().syncExec(new Runnable() {
             public void run() {
-                mainLabel.setText(message);
-                mainLabel.setBackground(mainLabel.getParent().getBackground());
-                mainLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
-                internalComp.layout();
+                if (!mainLabel.isDisposed()) {
+                    mainLabel.setText(message);
+                    mainLabel.setBackground(mainLabel.getParent().getBackground());
+                    mainLabel.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, true));
+                    internalComp.layout();
+                }
             }
         });
     }
