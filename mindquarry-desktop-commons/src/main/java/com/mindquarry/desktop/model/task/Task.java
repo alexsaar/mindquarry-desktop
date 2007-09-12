@@ -21,6 +21,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.model.ModelBase;
 import com.mindquarry.desktop.util.NotAuthorizedException;
 
@@ -83,6 +84,8 @@ public class Task extends ModelBase implements Cloneable {
         public String role;
     }
 
+    private static EventBus eventBus = EventBus.get();
+    
     public void addPerson(String pid, String role) {
         Person person = new Person();
         person.pid = pid;
@@ -114,6 +117,7 @@ public class Task extends ModelBase implements Cloneable {
     public Task(String url, String login, String password)
             throws NotAuthorizedException, Exception {
         super(url, login, password, new TaskTransformer());
+        eventBus.sendAsyncEvent(new NewTaskFromUrlEvent(this));
         this.url = url;
         this.login = login;
         this.password = password;
