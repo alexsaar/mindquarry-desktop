@@ -45,7 +45,8 @@ public abstract class ModelBase {
         init(transformer);
 	}
 
-    public ModelBase(String url, String login, String password, TransformerBase transformer) throws NotAuthorizedException, Exception {
+    public ModelBase(String url, String login, String password, TransformerBase transformer) 
+            throws NotAuthorizedException {
         initModel();
         InputStream content = getContent(url, login, password);
         doc = parseInput(content);
@@ -71,7 +72,7 @@ public abstract class ModelBase {
     }
 
 	protected InputStream getContent(String url, String login, String password)
-			throws NotAuthorizedException, Exception {
+			throws NotAuthorizedException {
 		InputStream content = HttpUtilities.getContentAsXML(login, password, url);
 		return content;
 	}
@@ -81,8 +82,7 @@ public abstract class ModelBase {
         try {
             return reader.read(data);
         } catch (DocumentException e) {
-            log.error("Error while reading document.", e); //$NON-NLS-1$
-            return null;
+            throw new RuntimeException(e);
         }
 	}
 	

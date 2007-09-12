@@ -20,6 +20,7 @@ import org.dom4j.Node;
 
 import com.mindquarry.desktop.model.ModelBase;
 import com.mindquarry.desktop.model.TransformerBase;
+import com.mindquarry.desktop.util.NotAuthorizedException;
 
 import dax.Path;
 
@@ -69,7 +70,7 @@ public class TeamListTransformer extends TransformerBase {
     }
 
     @Path("teamspace")
-    public void teamspace(Node node) {
+    public void teamspace(Node node) throws NotAuthorizedException {
         log.info("Found new teamspace element."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;

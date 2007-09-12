@@ -38,7 +38,7 @@ public class Team extends ModelBase {
     }
 
     public Team(String url, String login, String password)
-            throws NotAuthorizedException, Exception {
+            throws NotAuthorizedException {
         super(url, login, password, new TeamTransformer());
     }
 

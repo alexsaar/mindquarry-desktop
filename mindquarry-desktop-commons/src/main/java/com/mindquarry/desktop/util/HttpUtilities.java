@@ -47,75 +47,92 @@ public class HttpUtilities {
     private static final int CONNECTION_TIMEOUT = 60 * 1000;    // milliseconds
 
     public static InputStream getContentAsXML(String login, String pwd,
-            String address) throws NotAuthorizedException, Exception {
-        HttpClient client = createHttpClient(login, pwd, address);
-        GetMethod get = createAndExecuteGetMethod(address, client);
+            String address) throws NotAuthorizedException {
+        try {
+            HttpClient client = createHttpClient(login, pwd, address);
+            GetMethod get = createAndExecuteGetMethod(address, client);
 
-        InputStream result = null;
-        if (get.getStatusCode() == 200) {
-            result = get.getResponseBodyAsStream();
-        } else if (get.getStatusCode() == 401) {
-            throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
-        } else {
-            throw new HttpException(Messages
-                    .getString("Unknown connection error. Status code ") //$NON-NLS-1$
-                    + get.getStatusCode());
+            InputStream result = null;
+            if (get.getStatusCode() == 200) {
+                result = get.getResponseBodyAsStream();
+            } else if (get.getStatusCode() == 401) {
+                throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
+            } else {
+                throw new HttpException(Messages
+                        .getString("Unknown connection error. Status code ") //$NON-NLS-1$
+                        + get.getStatusCode());
+            }
+            return result;
+        } catch (NotAuthorizedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString(), e);
         }
-        return result;
     }
 
     public static String getContentAsString(String login, String pwd,
-            String address) throws NotAuthorizedException, Exception {
-        HttpClient client = createHttpClient(login, pwd, address);
-        GetMethod get = createAndExecuteGetMethod(address, client);
+            String address) throws NotAuthorizedException {
+        try {
+            HttpClient client = createHttpClient(login, pwd, address);
+            GetMethod get = createAndExecuteGetMethod(address, client);
 
-        String result = null;
-        if (get.getStatusCode() == 200) {
-            result = get.getResponseBodyAsString();
-        } else if (get.getStatusCode() == 401) {
-            throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
-        } else {
-            throw new Exception(CONNECTION_ERROR + get.getStatusCode());
+            String result = null;
+            if (get.getStatusCode() == 200) {
+                result = get.getResponseBodyAsString();
+            } else if (get.getStatusCode() == 401) {
+                throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
+            } else {
+                throw new Exception(CONNECTION_ERROR + get.getStatusCode());
+            }
+            return result;
+        } catch (NotAuthorizedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString(), e);
         }
-        return result;
     }
 
     public static String putAsXML(String login, String pwd, String address,
-			byte[] content) throws NotAuthorizedException, Exception {
-		HttpClient client = createHttpClient(login, pwd, address);
+			byte[] content) throws NotAuthorizedException {
+        try {
+            HttpClient client = createHttpClient(login, pwd, address);
+            PutMethod put = new PutMethod(address);
+            put.setDoAuthentication(true);
+            put.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
+            put.setRequestEntity(new ByteArrayRequestEntity(content,
+                    "text/xml; charset=utf-8"));
 
-		PutMethod put = new PutMethod(address);
-		put.setDoAuthentication(true);
-		put.addRequestHeader("accept", "text/xml"); //$NON-NLS-1$ //$NON-NLS-2$
-		put.setRequestEntity(new ByteArrayRequestEntity(content,
-				"text/xml; charset=utf-8"));
+            log.info("Executing HTTP PUT on " + address); //$NON-NLS-1$
+            client.executeMethod(put);
+            log.info("Finished HTTP PUT with status code: "//$NON-NLS-1$
+                    + put.getStatusCode());
 
-		log.info("Executing HTTP PUT on " + address); //$NON-NLS-1$
-		client.executeMethod(put);
-		log.info("Finished HTTP PUT with status code: "//$NON-NLS-1$
-				+ put.getStatusCode());
-
-		String id = null;
-		if (put.getStatusCode() == 401) {
-		    throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
-		} else if (put.getStatusCode() == 302) {
-			Header locationHeader = put.getResponseHeader("location");
-			if (locationHeader != null) {
-				// we received a redirect to the URL of the putted document, so
-				// everything seems right and we just use the new ID:
-				id = locationHeader.getValue();
-			} else {
-				throw new Exception(CONNECTION_ERROR
-						+ put.getStatusCode());
-			}
-		} else {
-			throw new Exception(CONNECTION_ERROR
-					+ put.getStatusCode());
-		}
-		put.releaseConnection();
-		return id;
-	}
-
+            String id = null;
+            if (put.getStatusCode() == 401) {
+                throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
+            } else if (put.getStatusCode() == 302) {
+                Header locationHeader = put.getResponseHeader("location");
+                if (locationHeader != null) {
+                    // we received a redirect to the URL of the putted document, so
+                    // everything seems right and we just use the new ID:
+                    id = locationHeader.getValue();
+                } else {
+                    throw new RuntimeException(CONNECTION_ERROR
+                            + put.getStatusCode());
+                }
+            } else {
+                throw new RuntimeException(CONNECTION_ERROR
+                        + put.getStatusCode());
+            }
+            put.releaseConnection();
+            return id;
+        } catch (NotAuthorizedException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e.toString(), e);
+        }
+    }
+    
     private static HttpClient createHttpClient(String login, String pwd,
             String address) throws MalformedURLException {
         URL url = new URL(address);

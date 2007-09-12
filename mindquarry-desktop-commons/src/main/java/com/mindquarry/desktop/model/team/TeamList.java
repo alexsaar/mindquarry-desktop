@@ -27,8 +27,7 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 public class TeamList extends ModelBase {
     private List<Team> teams;
 
-    public TeamList(InputStream data, String url, String login, String password)
-            throws NotAuthorizedException {
+    public TeamList(InputStream data, String url, String login, String password) {
         super(data, new TeamListTransformer(url, login, password));
     }
 
@@ -61,13 +60,7 @@ public class TeamList extends ModelBase {
         return teams;
     }
 
-    public void add(String url, String login, String password) {
-        try {
-            teams.add(new Team(url, login, password));
-        } catch (Exception e) {
-            log.error("Error while loading team from " //$NON-NLS-1$
-                    + url, e);
-            return;
-        }
+    public void add(String url, String login, String password) throws NotAuthorizedException {
+        teams.add(new Team(url, login, password));
     }
 }
