@@ -262,8 +262,8 @@
         <translation>Sie versuchen eine Datei auf den Server hochzuladen, die zwischenzeitlich jemand auf dem Server gelöscht hat.</translation>
     </message>
     <message>
-        <source>You are not a member of a team or no team is selected. Thus you can not create new tasks.</source>
-        <translation>Sie sind in keinen Team Mitglied oder es wurde kein Team ausgewählt. Sie können keine Aufgabe anlegen.</translation>
+        <source>Cannot not add a new task because of one of the following issues:\n\n(1) You are not a member of any team.\n(2) You currently have no teams selected.\n(3) Your Mindquarry server settings are not correct.</source>
+        <translation>Es konnte keine neue Aufgabe hinzugefügt werden. Dies könnte folgende Ursachen haben:\n\n(1) Sie sind in keinem Team Mitglied.\n(2) Sie haben momentan keine Teams ausgewählt.\n(3) Ihre Mindquarry-Servereinstellungen sind nicht korrekt.</translation>
     </message>
     <message>
         <source>Select a Team</source>
@@ -435,7 +435,7 @@
     </message>
     <message>
         <source>Authorization Error</source>
-        <translation>Autorisierungsfehler</translation>
+        <translation>Authorisierungsfehler</translation>
     </message>
     <message>
         <source>LoginID</source>

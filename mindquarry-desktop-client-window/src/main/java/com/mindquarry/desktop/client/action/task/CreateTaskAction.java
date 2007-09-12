@@ -77,9 +77,12 @@ public class CreateTaskAction extends ActionBase {
 
 		List teams = client.getSelectedTeams();
 		if (teams.size() == 0) {
-			MessageDialog.openWarning(new Shell(SWT.ON_TOP), Messages
-					.getString("Authorization Error"), Messages
-					.getString("You are not a member of a team or no team is selected. Thus you can not create new tasks."));
+			MessageDialog.openError(new Shell(SWT.None), Messages
+					.getString("Error"), Messages //$NON-NLS-1$
+					.getString("Cannot not add a new task because of one of the following issues:\n\n" +
+                            "(1) You are not a member of any team.\n" +
+                            "(2) You currently have no teams selected.\n" +
+                            "(3) Your Mindquarry server settings are not correct.")); //$NON-NLS-1$
 			return;
 		}
 
