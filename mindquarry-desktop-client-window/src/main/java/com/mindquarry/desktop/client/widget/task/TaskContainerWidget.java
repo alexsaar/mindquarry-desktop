@@ -40,7 +40,6 @@ import com.mindquarry.desktop.event.EventListener;
 import com.mindquarry.desktop.model.task.NewTaskFromUrlEvent;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
-import com.mindquarry.desktop.model.task.TaskListTransformer;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.ExceptionUtilities;
@@ -51,6 +50,9 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  */
 public class TaskContainerWidget extends ContainerWidget<TableViewer> implements EventListener {
     private static final String FACET_ALL = "all";
+
+    private static final Color HIGHLIGHT_COLOR = new Color(Display.getCurrent(),
+            233, 233, 251);
 
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
@@ -314,8 +316,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
         TableItem[] items = viewer.getTable().getItems();
         for (int i = 0; i < items.length; i++) {
             if (i % 2 == 1) {
-                items[i].setBackground(new Color(Display.getCurrent(), 233,
-                        233, 251));
+                items[i].setBackground(HIGHLIGHT_COLOR);
             }
         }
     }
