@@ -43,7 +43,7 @@ import com.mindquarry.desktop.model.team.Team;
 public class TeamSelectionDialog extends DialogBase {
     private Combo teamWidget = null;
 
-    private List teams;
+    private List<Team> teams;
 
     private String selected;
 
@@ -51,7 +51,7 @@ public class TeamSelectionDialog extends DialogBase {
         super(shell);
         setBlockOnOpen(true);
         setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
-        this.teams = teams;
+        this.teams = (List<Team>)teams;
     }
 
     protected Control createContents(Composite parent) {
@@ -78,18 +78,17 @@ public class TeamSelectionDialog extends DialogBase {
         teamWidget.setBackground(Display.getCurrent().getSystemColor(
                 SWT.COLOR_WHITE));
 
-        Iterator tIt = teams.iterator();
-        while (tIt.hasNext()) {
-            Team team = (Team) tIt.next();
-            teamWidget.add(team.getId());
+        for(Team team : teams) {
+            teamWidget.add(team.getName());
         }
+        
         teamWidget.addSelectionListener(new SelectionListener() {
             public void widgetDefaultSelected(SelectionEvent e) {
                 // don't need this
             }
 
             public void widgetSelected(SelectionEvent e) {
-                setSelected(teamWidget.getItem(teamWidget.getSelectionIndex()));
+                setSelected(teams.get(teamWidget.getSelectionIndex()).getId());
             }
         });
         teamWidget.select(0);
