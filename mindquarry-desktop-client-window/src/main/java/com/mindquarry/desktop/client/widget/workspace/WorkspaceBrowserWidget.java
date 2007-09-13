@@ -270,6 +270,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                     selectedTeams.addAll(client.getSelectedTeams());
                 }
             });
+            toIgnore = new HashMap<File, Integer>();
             for (Team team : selectedTeams) {
                 String url = team.getWorkspaceURL();
                 log.info("Refreshing for SVN URL: " + url);
@@ -306,7 +307,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                         teamHasObstruction = true;
                     }
                 }
-                toIgnore = new HashMap<File, Integer>();
                 // we need to stop here in case of obstruction,
                 // as getRemoteAndLocalChanges() would throw a
                 // ClientException:
