@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,42 +92,49 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         
         Composite fileButtonBar = new Composite(composite, SWT.NONE);
         fileButtonBar.setLayout(new RowLayout(SWT.HORIZONTAL));
-        
-        // Button 1: old revision which both the local and the remote files are based on
-        Button openOldFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openOldFileButton.setText(Messages.getString("Open original file")); //$NON-NLS-1$
-        openOldFileButton.addListener(SWT.Selection, new Listener() {
+
+        // Button 1: target file (automatically merged if file is plain text)
+        Button openMergedFileButton = new Button(fileButtonBar, SWT.BUTTON1);
+        openMergedFileButton.setText(Messages.getString("Edit target file")); //$NON-NLS-1$
+        openMergedFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictOldFile().getAbsolutePath());
+                Program.launch(conflict.getConflictTargetFile().getAbsolutePath());
             }
         });
+        
+        Label spacer = new Label(fileButtonBar, SWT.NONE);
+        RowData rowData = new RowData();
+        rowData.width = 20;
+        spacer.setLayoutData(rowData);
 
         // Button 2: locally modified version of the file
         Button openMyFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openMyFileButton.setText(Messages.getString("Open my local file")); //$NON-NLS-1$
+
+        openMyFileButton.setText(Messages.getString("View my local file")); //$NON-NLS-1$
         openMyFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictWorkingFile().getAbsolutePath());
+                Program.launch(conflict.getConflictLocalFile().getAbsolutePath());
             }
         });
 
         // Button 3: new revision from server which contains the remote changes
         Button openServerFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openServerFileButton.setText(Messages.getString("Open updated file from server")); //$NON-NLS-1$
+        openServerFileButton.setText(Messages.getString("View updated file from server")); //$NON-NLS-1$
         openServerFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictNewFile().getAbsolutePath());
+                Program.launch(conflict.getConflictServerFile().getAbsolutePath());
             }
         });
 
-        // Button 4: automatically created file using text-based merging
-        Button openMergedFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openMergedFileButton.setText(Messages.getString("Target file (automatically merged)")); //$NON-NLS-1$
-        openMergedFileButton.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event arg0) {
-                Program.launch(conflict.getStatus().getPath());
-            }
-        });
+        // make files created by conflict read-only to discourage users from
+        // editing them (as they will be deleted at commit anyway)
+        conflict.getConflictServerFile().setReadOnly();
+        
+        // for binary files, the local file is the target file, so don't make it readonly
+        if (!conflict.getConflictLocalFile().getAbsolutePath().equalsIgnoreCase(
+                    conflict.getConflictTargetFile().getAbsolutePath())) {
+            conflict.getConflictLocalFile().setReadOnly();
+        }
     }
 
     @Override
@@ -134,12 +142,16 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         // TODO: move the information about which user made the change to
         // AbstractConflictDialog so (almost) all other dialogs can show it,
         // too:
-        return Messages
-                .getString("The file you are trying to synchronize was modified on the server. "
-                        + "Please select a resolution method. ")
-                + Messages
-                        .getString("Latest change on the server was done by user: ")
-                + conflict.getStatus().getLastCommitAuthor(); // TODO: show 'User Name' rather than 'user'
+        return Messages.getString(
+                        "The last change on the server was by {0} ({1}).",
+                        conflict.getStatus().getLastCommitAuthor(), // TODO: show 'User Name' rather than 'user'
+                        new SimpleDateFormat().format(conflict.getStatus().getLastChangedDate()));
+    }
+
+    @Override
+    protected String getTitle() {
+        return Messages.getString(
+                "The file you are trying to synchronize was modified on the server"); //$NON-NLS-1$
     }
 
     @Override
@@ -165,6 +177,10 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         // works only on Windows:
         boolean isWindows = SVNFileUtil.isWindows;
         boolean offerMSWordMerge = isWordDocument && isWindows;
+        
+        Label chooseOptionLabel = new Label(subComposite,SWT.NONE);
+        chooseOptionLabel.setText(Messages.getString(
+                "Please resolve the conflict using one of the following options:"));
 
         // Option 1: use locally modified file
         Button button1 = makeRadioButton(subComposite, Messages
@@ -189,13 +205,12 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         // Option 3: merge manually (recommended)
         mergeOptionButton = makeRadioButton(subComposite, Messages
                 .getString("Manually merge both files (recommended)"), //$NON-NLS-1$
-                ContentConflict.Action.MERGE, false);
+                ContentConflict.Action.MERGE, true);
 
         mergeHelpLabel = new Label(subComposite, SWT.WRAP);
         RowData rowData = new RowData();
         rowData.width = 500;
         mergeHelpLabel.setLayoutData(rowData);
-        mergeHelpLabel.setEnabled(false);
 
         mergeButton = new Button(subComposite, SWT.BUTTON1);
 
@@ -227,7 +242,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
                 }
             });
         }
-        mergeButton.setEnabled(false);
+
+        // TODO: disable the OK button of the dialog (because the
+        // 'Finished Merging' must be clicked first)
     }
     
     /**

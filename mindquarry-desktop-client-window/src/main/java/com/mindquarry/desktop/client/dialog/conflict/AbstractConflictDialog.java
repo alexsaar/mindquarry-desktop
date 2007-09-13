@@ -57,7 +57,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
 
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
-        setTitle(Messages.getString("Resolve conflicts")); //$NON-NLS-1$
+        setTitle(getTitle());
         setMessage(getMessage(), IMessageProvider.INFORMATION);
         getShell().setText(Messages.getString("Resolving conflicts")); //$NON-NLS-1$
         getShell().setSize(600, 350);
@@ -103,4 +103,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
         name.setText(text);
     }
 
+    protected String getTitle() {
+        return Messages.getString("Resolve conflicts"); //$NON-NLS-1$
+    }
 }

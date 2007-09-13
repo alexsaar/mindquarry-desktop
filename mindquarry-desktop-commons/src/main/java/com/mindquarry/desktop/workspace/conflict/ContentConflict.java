@@ -32,9 +32,8 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 public class ContentConflict extends Conflict {
 
     private Action action = Action.UNKNOWN;
-    private File conflictOldFile;
-    private File conflictNewFile;
-    private File conflictWorkingFile;
+    private File conflictServerFile;
+    private File conflictLocalFile;
     
     public enum Action {
         /**
@@ -61,21 +60,25 @@ public class ContentConflict extends Conflict {
     public ContentConflict(Status status) {
         super(status);
         File parentDir = new File(status.getPath()).getParentFile();
-        conflictOldFile = new File(parentDir, status.getConflictOld());
-        conflictNewFile = new File(parentDir, status.getConflictNew());
-        conflictWorkingFile = new File(parentDir, status.getConflictWorking());
+        conflictServerFile = new File(parentDir, status.getConflictNew());
+
+        // FIXME: handle binary files correctly
+        if (status.getConflictWorking().isEmpty()) { // binary file
+            conflictLocalFile = new File(status.getPath());
+        } else { // plain text files
+            conflictLocalFile = new File(parentDir, status.getConflictWorking());
+        }
     }
 
     @Override
     public void accept(ConflictHandler handler) throws CancelException {
         // rename conflicts files
-        conflictOldFile = renameConflictFile(status.getConflictOld(), false);
-        conflictNewFile = renameConflictFile(status.getConflictNew(), false);
-        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), false);
+        conflictServerFile = renameConflictFile(getConflictServerFile());
+        conflictLocalFile = renameConflictFile(getConflictLocalFile());
         
         try {
             handler.handle(this);
-        } catch(CancelException e) {
+        } catch(Exception e) {
             doCancel(); // cleaning up if there's an exception
         }
     }
@@ -87,20 +90,23 @@ public class ContentConflict extends Conflict {
      * 
      * @param conflictedFilename
      *            Filename of the conflict file (e.g. file.txt.r11).
-     * @param undo
-     *            Use false for 'file.txt.r11' => 'file.r11.txt' and true for
-     *            'file.txt.r11' <= 'file.r11.txt'.
      * @return the new file
      */
-    private File renameConflictFile(String conflictedFilename, boolean undo) {
-        File parentDir = new File(status.getPath()).getParentFile();
+    private File renameConflictFile(File conflictedFile) {
+        if(conflictedFile == null) {
+            log.warn("renameConflictFile: conflictedFile is null");
+            return null;
+        }
+
+        File parentDir = conflictedFile.getParentFile();
+        String conflictedFilename = conflictedFile.getName(); 
         int ext2pos = conflictedFilename.lastIndexOf('.');
         int ext1pos = conflictedFilename.lastIndexOf('.', ext2pos-1);
         
-        // test if there's only one extension, and if so skip renaming
-        if (ext1pos < 0) {
+        // test if there are less than two extension, and if so skip renaming
+        if (ext1pos < 0 || ext2pos < 0) {
             log.info("Skip renaming file '" + conflictedFilename + "'");
-            return new File(parentDir, conflictedFilename);
+            return conflictedFile;
         }
 
         String name = conflictedFilename.substring(0, ext1pos);
@@ -108,25 +114,17 @@ public class ContentConflict extends Conflict {
         String ext2 = conflictedFilename.substring(ext2pos+1);
 
         String newFilename = name+"."+ext2+"."+ext1;
-        File conflictedFile = new File(parentDir, conflictedFilename);
         File newFile = new File(parentDir, newFilename);
 
-        if (!undo) { // rename file.doc.r123 => file.r123.doc
-            log.info("Renaming '" + conflictedFilename + "' => '" + newFilename + "'");
-            conflictedFile.renameTo(newFile);
-            return newFile;
-        } else { // rename file.r123.doc => file.doc.r123
-            log.info("Renaming '" + newFilename + "' => '" + conflictedFilename + "'");
-            newFile.renameTo(conflictedFile);
-            return conflictedFile;
-        }
+        log.info("Renaming '" + conflictedFilename + "' => '" + newFilename + "'");
+        conflictedFile.renameTo(newFile);
+        return newFile;
     }
 
     private void resolveConflict() throws ClientException, IOException {
         // rename conflicts files
-        conflictOldFile = renameConflictFile(status.getConflictOld(), true);
-        conflictNewFile = renameConflictFile(status.getConflictNew(), true);
-        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), true);
+        conflictServerFile = renameConflictFile(getConflictServerFile());
+        conflictLocalFile = renameConflictFile(getConflictLocalFile());
         
         // check for conflict resolve method
         switch (action) {
@@ -204,22 +202,21 @@ public class ContentConflict extends Conflict {
         this.action = Action.MERGE;
     }
 
-    public File getConflictNewFile() {
-        return conflictNewFile;
+    public File getConflictServerFile() {
+        return conflictServerFile;
     }
 
-    public File getConflictOldFile() {
-        return conflictOldFile;
+    public File getConflictLocalFile() {
+        return conflictLocalFile;
     }
 
-    public File getConflictWorkingFile() {
-        return conflictWorkingFile;
+    public File getConflictTargetFile() {
+        return new File(status.getPath());
     }
 
     public void doCancel() {
         // rename conflicts files
-        conflictOldFile = renameConflictFile(status.getConflictOld(), true);
-        conflictNewFile = renameConflictFile(status.getConflictNew(), true);
-        conflictWorkingFile = renameConflictFile(status.getConflictWorking(), true);        
+        conflictServerFile = renameConflictFile(getConflictServerFile());
+        conflictLocalFile = renameConflictFile(getConflictLocalFile());      
     }
 }

@@ -298,8 +298,8 @@
         <translation>Name</translation>
     </message>
     <message>
-        <source>Latest change on the server was done by user: </source>
-        <translation>Die Letzte Änderung auf dem Server stammt von Benutzer: </translation>
+        <source>The last change on the server was by {0} ({1}).</source>
+        <translation>Die Letzte Änderung auf dem Server stammt von {0} ({1}).</translation>
     </message>
     <message>
         <source>Please check your username and password settings in the preferences dialog.</source>
@@ -330,8 +330,16 @@
         <translation>Neuer Wert für diese Datei-Eigenschaft</translation>
     </message>
     <message>
-        <source>The file you are trying to synchronize was modified on the server. Please select a resolution method. </source>
-        <translation>Die Datei, die Sie auf den Server hochladen wollen, wurde auf dem Server geändert. Bitte wählen Sie eine Konfliktlösung. </translation>
+        <source>The file you are trying to synchronize was modified on the server</source>
+        <translation>Die zu synchronisierende Datei wurde auf dem Server geändert</translation>
+    </message>
+    <message>
+        <source>Please select a resolution method.</source>
+        <translation>Bitte wählen Sie eine Konfliktlösung.</translation>
+    </message>
+    <message>
+        <source>Please resolve the conflict using one of the following options:</source>
+        <translation>Bitte wählen Sie eine der folgenden Optionen, um den Konflikt aufzulösen:</translation>
     </message>
     <message>
         <source>Refresh the list of file changes</source>
@@ -559,16 +567,16 @@
         <translation>Originale Datei</translation>
     </message>
     <message>
-        <source>Open my local file</source>
-        <translation>Meine lokale Datei</translation>
+        <source>View my local file</source>
+        <translation>Meine lokale Datei anzeigen</translation>
     </message>
     <message>
-        <source>Open updated file from server</source>
-        <translation>Datei vom Server</translation>
+        <source>View updated file from server</source>
+        <translation>Datei vom Server anzeigen</translation>
     </message>
     <message>
-        <source>Target file (automatically merged)</source>
-        <translation>Zieldatei (automatisch zusammengeführt)</translation>
+        <source>Edit target file</source>
+        <translation>Zieldatei bearbeiten</translation>
     </message>
     <message>
         <source>Finished Merging</source>
