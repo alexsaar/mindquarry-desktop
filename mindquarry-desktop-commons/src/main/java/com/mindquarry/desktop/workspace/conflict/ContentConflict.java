@@ -93,15 +93,21 @@ public class ContentConflict extends Conflict {
      * @return the new file
      */
     private File renameConflictFile(String conflictedFilename, boolean undo) {
+        File parentDir = new File(status.getPath()).getParentFile();
         int ext2pos = conflictedFilename.lastIndexOf('.');
         int ext1pos = conflictedFilename.lastIndexOf('.', ext2pos-1);
+        
+        // test if there's only one extension, and if so skip renaming
+        if (ext1pos < 0) {
+            log.info("Skip renaming file '" + conflictedFilename + "'");
+            return new File(parentDir, conflictedFilename);
+        }
 
         String name = conflictedFilename.substring(0, ext1pos);
         String ext1 = conflictedFilename.substring(ext1pos+1, ext2pos);
         String ext2 = conflictedFilename.substring(ext2pos+1);
 
         String newFilename = name+"."+ext2+"."+ext1;
-        File parentDir = new File(status.getPath()).getParentFile();
         File conflictedFile = new File(parentDir, conflictedFilename);
         File newFile = new File(parentDir, newFilename);
 
