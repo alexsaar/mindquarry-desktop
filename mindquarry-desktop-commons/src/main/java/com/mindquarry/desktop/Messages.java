@@ -89,7 +89,7 @@ public class Messages {
             if (translation == null) { 
                 if (!"en".equals(Locale.getDefault().getLanguage())) {
                     // don't log if GUI is English
-                    log.debug("No translation found for '" +key+ "'");
+                    log.warn("No translation found for '" +key+ "'");
                 }
                 translation = key;
             }
@@ -104,7 +104,14 @@ public class Messages {
           if (!m.find()) {
             break;
           }
-          translation = m.replaceAll(args[i]);
+          try {
+              translation = m.replaceAll(args[i]);
+          } catch (ArrayIndexOutOfBoundsException e) {
+              // happens if the translation contains a "{n}" but there's
+              // no parameter for it - fall back to non-translated text:
+              log.error("Missing parameter " +i+ " for key '" +key+ "'");
+              return key;
+          }
           i++;
         }
         return translation;
