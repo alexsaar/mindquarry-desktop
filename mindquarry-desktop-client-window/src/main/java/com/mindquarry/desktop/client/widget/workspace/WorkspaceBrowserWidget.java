@@ -355,7 +355,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                             File dir = new File(status.getPath()).getParentFile();
                             toIgnore.put(new File(dir, status.getConflictNew()), status.getTextStatus());
                             toIgnore.put(new File(dir, status.getConflictOld()), status.getTextStatus());
-                            toIgnore.put(new File(dir, status.getConflictWorking()), status.getTextStatus());
+                            String workingFile = status.getConflictWorking();
+                            if (workingFile != null && !"".equals(workingFile)) {
+                                toIgnore.put(new File(dir, status.getConflictWorking()), status.getTextStatus());
+                            }
                         }
                     }
                 } else {
@@ -363,6 +366,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 }
                 log.debug("local changes: " + localChanges);
                 log.debug("remote changes: " + remoteChanges);
+                log.debug("internal svn files (to be ignored): " + toIgnore);
                 log.debug("time required to find changes: " + (System.currentTimeMillis()-startTime) + "ms");
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
