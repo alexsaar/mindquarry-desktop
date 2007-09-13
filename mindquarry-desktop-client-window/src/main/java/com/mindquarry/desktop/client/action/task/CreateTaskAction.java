@@ -98,7 +98,7 @@ public class CreateTaskAction extends ActionBase {
 			} else {
 				// display dialog for team selection
 				TeamSelectionDialog tsDlg = new TeamSelectionDialog(new Shell(
-						SWT.ON_TOP), teams);
+						SWT.NONE), teams);
 				if (tsDlg.open() == Window.OK) {
 					teamID = tsDlg.getSelectedTeam();
 					published = publishTask(task, teamID);
