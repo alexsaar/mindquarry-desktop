@@ -117,7 +117,7 @@ public class Task extends ModelBase implements Cloneable {
     public Task(String url, String login, String password)
             throws NotAuthorizedException, Exception {
         super(url, login, password, new TaskTransformer());
-        eventBus.sendAsyncEvent(new NewTaskFromUrlEvent(this));
+        eventBus.sendEvent(new NewTaskFromUrlEvent(this));
         this.url = url;
         this.login = login;
         this.password = password;
