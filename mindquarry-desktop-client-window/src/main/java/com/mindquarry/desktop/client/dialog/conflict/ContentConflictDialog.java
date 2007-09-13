@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.tigris.subversion.javahl.Status;
+import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.util.FileHelper;
@@ -160,13 +161,9 @@ public class ContentConflictDialog extends AbstractConflictDialog {
                 isWordDocument = true;
             }
         }
-        String system = System.getProperty("os.name");
         // the current merge solution for MS Word is based on a script that
         // works only on Windows:
-        boolean isWindows = true;
-        if (system != null) {
-            isWindows = system.startsWith("Windows");
-        }
+        boolean isWindows = SVNFileUtil.isWindows;
         boolean offerMSWordMerge = isWordDocument && isWindows;
 
         // Option 1: use locally modified file
