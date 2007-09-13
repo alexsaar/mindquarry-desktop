@@ -114,15 +114,11 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 if (element instanceof File) {
                     if (!selection.isEmpty()) {
                         File file = (File) element;
-                        // TODO: open directories as well as files
                         // TODO: open remotely added files from repository
                         if (file.exists()) {
-                            if(file.isFile()) {
-                                log.debug("Launching " + file.getAbsolutePath());
-                                Program.launch(file.getAbsolutePath());
-                            } else {
-                                log.warn("onEvent: cannot open directory: " + file);
-                            }
+                            log.debug("Launching " + file.getAbsolutePath());
+                            // TODO: doesn't work on Linux
+                            Program.launch(file.getAbsolutePath());
                         } else {
                             log.warn("onEvent: cannot open remote files: " + file);
                         }

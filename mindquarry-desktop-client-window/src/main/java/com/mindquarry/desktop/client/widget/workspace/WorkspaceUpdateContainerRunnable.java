@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
+import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -259,7 +260,13 @@ public class WorkspaceUpdateContainerRunnable extends
                 if (containerWidget.getViewer().getSelection().isEmpty()) {
                     enableButton = false;
                 } else {
-                    if (file.exists() && file.isFile()) {     // TODO: we cannot open directories yet
+                    if (file.exists() && (SVNFileUtil.isWindows || SVNFileUtil.isOSX)) {
+                        // on windows and Mac we can open both files and
+                        // directories with Program.launch()
+                        enableButton = true;
+                    } else if (file.exists() && file.isFile()) {
+                        // TODO: we cannot open directories on Unix yet,
+                        // it depends on the desktop (gnome-open, kfmclient)
                         enableButton = true;
                     } else {
                         // a remotely added file, we cannot view that yet:
