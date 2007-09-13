@@ -825,6 +825,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             public void run() {
                 try {
                     teamList.refresh();
+                    teamList.selectAll();
                 } catch (CancelException e) {
                     // TODO: better exception handling?
                     log.error("Refresh on startup cancelled.", e);
@@ -883,6 +884,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             try {
                 displayNotConnected();
                 teamList.refresh();
+                teamList.selectAll();
             } catch (CancelException e) {
                 // TODO: better exception handling
                 log.warn("Refreshing after profile change cancelled.", e);

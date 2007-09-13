@@ -153,7 +153,6 @@ public class TeamlistWidget extends WidgetBase {
         // TODO: show progress bar in the widget itself
         try {
             viewer.setInput(queryTeams());
-            selectAllIfAllDeselected();
         } finally {
             client.stopAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
         }
@@ -169,19 +168,6 @@ public class TeamlistWidget extends WidgetBase {
 
     public void clear() {
         viewer.setInput(null);
-    }
-
-    /**
-     * Selects all teams if all teams are deselected, e.g. after a team list
-     * refresh.
-     */
-    private void selectAllIfAllDeselected() {
-        TableItem[] tis = viewer.getTable().getItems();
-        for (TableItem item : tis) {
-            if(item.getChecked())
-                return;
-        }
-        selectAll();
     }
 
     private void setChecked(boolean checked) {
