@@ -16,13 +16,15 @@ package com.mindquarry.desktop.client.action.workspace;
 
 /**
  * Thrown when user cancels synchronizatin in a conflict dialog.
- * Extends RuntimeException so it can be thrown n a thread's
+ * Extends RuntimeException so it can be thrown in a thread's
  * run() method.
  * 
  * @author dnaber
  */
 public class SynchronizeCancelException extends RuntimeException {
     
+    private static final long serialVersionUID = -6547768139798663528L;
+
     public SynchronizeCancelException() {
     }
 

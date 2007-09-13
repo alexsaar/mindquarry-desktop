@@ -47,6 +47,7 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 
 /**
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
+ * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
  */
 public class TaskContainerWidget extends ContainerWidget<TableViewer> implements EventListener {
     private static final String FACET_ALL = "all";
@@ -281,12 +282,14 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     }
 
     public void showRefreshMessage(String message) {
-        updateContainer(true, message, false, null, null);
+        containerRunnable = new TaskUpdateContainerRunnable(client, this, true, false, null, message);
+        getDisplay().syncExec(containerRunnable);
     }
 
     public void showEmptyMessage(boolean isEmpty) {
-        updateContainer(false, null, isEmpty, Messages.getString(
-                "Currently no tasks are active."), null); //$NON-NLS-1$
+        containerRunnable = new TaskUpdateContainerRunnable(client, this, false, isEmpty, "info",
+                Messages.getString("Currently no tasks are active.")); // $NON-NLS-1$
+        getDisplay().syncExec(containerRunnable);
     }
 
     public void showMessage(String message, String icon) {
@@ -319,13 +322,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 items[i].setBackground(HIGHLIGHT_COLOR);
             }
         }
-    }
-
-    private void updateContainer(final boolean refreshing, String refreshMessage,
-            final boolean empty, String emptyMessage, final String errorMessage) {
-        containerRunnable = new TaskUpdateContainerRunnable(client, this,
-                refreshing, refreshMessage, empty, emptyMessage, errorMessage);
-        getDisplay().syncExec(containerRunnable);
     }
 
     public void onEvent(Event event) {

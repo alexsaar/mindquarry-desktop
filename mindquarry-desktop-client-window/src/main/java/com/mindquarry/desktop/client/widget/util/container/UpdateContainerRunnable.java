@@ -20,16 +20,14 @@ import org.eclipse.swt.graphics.Image;
  * Add summary documentation here.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
+ * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
  */
 public abstract class UpdateContainerRunnable<V extends Viewer> implements
         Runnable {
     protected ContainerWidget<V> containerWidget;
 
     private final boolean empty;
-    private final String errorMessage;
     private final boolean refreshing;
-    private final String refreshMessage;
-    private final String emptyMessage;
 
     private Image icon;
     private String message;
@@ -42,35 +40,6 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
 
     private static Image warningIcon = new Image(null, UpdateContainerRunnable.class.getResourceAsStream(
         "/org/tango-project/tango-icon-theme/22x22/status/dialog-warning.png")); //$NON-NLS-1$
-    
-    @Deprecated
-    public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
-            boolean refreshing, String refreshMessage, boolean empty, 
-            String emptyMessage, String errorMessage) {
-        this.containerWidget = containerWidget;
-
-        this.refreshing = refreshing;
-        this.refreshMessage = refreshMessage;
-        this.empty = empty;
-        this.emptyMessage = emptyMessage;
-        this.errorMessage = errorMessage;
-
-        // replicated structure of the if statement in run()
-        if (refreshing) {
-            // show a progress bar
-            message = refreshMessage;
-        } else if (errorMessage == null && !empty) {
-            // show the content itself
-        } else if (errorMessage == null && empty) {
-            // show a message that there is no content
-            icon = infoIcon;
-            message = emptyMessage;
-        } else {
-            // show an error message
-            icon = networkErrorIcon;
-            message = errorMessage;
-        }
-    }
 
     public UpdateContainerRunnable(ContainerWidget<V> containerWidget,
             boolean refreshing, boolean empty, String icon, String message) {
@@ -81,18 +50,12 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
         this.empty = empty;
         this.message = message;
 
-        if ("info".equals(icon)) {
-            this.icon = infoIcon;
-        } else if ("warn".equals(icon)) {
+        this.icon = infoIcon; // default icon
+        if ("warn".equalsIgnoreCase(icon)) {
             this.icon = warningIcon;
-        } else if ("networkerror".equals(icon)) {
+        } else if ("networkerror".equalsIgnoreCase(icon)) {
             this.icon = networkErrorIcon;
         }
-        
-        // TODO: deprecated ...
-        this.emptyMessage = null;
-        this.errorMessage = null;
-        this.refreshMessage = null;
     }
 
     public void run() {
@@ -101,15 +64,15 @@ public abstract class UpdateContainerRunnable<V extends Viewer> implements
             destroyContent();
             containerWidget.refreshWidget = new UpdateWidget(containerWidget,
                     message);
-        } else if (errorMessage == null && !empty) {
-            // show the content itself:
-            destroyContent();
-            createContainerContent();
-        } else {
+        } else if (empty) {
             // show a message with icon (e.g. empty or error)
             destroyContent();
             containerWidget.messageWidget = new IconTextWidget(containerWidget,
                     icon, message);
+        } else {
+            // show the content itself:
+            destroyContent();
+            createContainerContent();
         }
         containerWidget.layout(true);
     }

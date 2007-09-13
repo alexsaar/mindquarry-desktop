@@ -51,7 +51,7 @@ public class AutostartUtilities {
 
         // create registry method objects
         final Preferences userRoot = Preferences.userRoot();
-        final Class clz = userRoot.getClass();
+        final Class<? extends Preferences> clz = userRoot.getClass();
 
         try {
             // define methods for registry manipulation

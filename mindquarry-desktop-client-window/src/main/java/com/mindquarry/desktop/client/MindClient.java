@@ -834,12 +834,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
         });
     }
 
-    private void refreshAll() throws CancelException {
-        teamList.refresh();
-        getAction(UpdateWorkspacesAction.class.getName()).run();
-        getAction(SynchronizeTasksAction.class.getName()).run();
-    }
-
     // #########################################################################
     // ### INNER CLASSES
     // #########################################################################

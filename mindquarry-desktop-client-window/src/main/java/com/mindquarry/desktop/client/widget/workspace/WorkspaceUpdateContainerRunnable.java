@@ -83,15 +83,6 @@ public class WorkspaceUpdateContainerRunnable extends
 
     private MindClient client;
     private MenuItem menuItem;
-
-    public WorkspaceUpdateContainerRunnable(MindClient client,
-            ContainerWidget<TreeViewer> containerWidget, boolean refreshing,
-            String refreshMessage, boolean empty, String emptyMessage,
-            String errorMessage) {
-        super(containerWidget, refreshing, refreshMessage, empty,
-                emptyMessage, errorMessage);
-        this.client = client;
-    }
     
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean refreshing,

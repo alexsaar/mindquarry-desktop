@@ -55,6 +55,7 @@ import com.mindquarry.desktop.workspace.SVNSynchronizer;
  * Widget displaying incoming and outgoing file changes.
  * 
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
+ * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
  */
 public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implements EventListener {
     private static Log log = LogFactory.getLog(WorkspaceBrowserWidget.class);
@@ -231,7 +232,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     }
     
     public void showRefreshMessage(String message) {
-        updateContainer(true, message, null, false, null);
+        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this,
+                true, false, null, message);
+        getDisplay().syncExec(containerRunnable);
     }
 
     public void showEmptyMessage(boolean isEmpty) {
@@ -240,8 +243,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 "i.e. there are no local changes and there are no changes on the server.\n" +
                 "Last refresh: ")
                 + new SimpleDateFormat().format(new Date()); //$NON-NLS-1$
-
-        updateContainer(false, null, null, isEmpty, emptyMessage);
+        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this,
+                false, isEmpty, null, emptyMessage);
+        getDisplay().syncExec(containerRunnable);
     }
 
     public void showMessage(String message, String icon) {
@@ -252,13 +256,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     // #########################################################################
     // ### PRIVATE METHODS
     // #########################################################################
-
-    private void updateContainer(final boolean refreshing,
-            final String refreshMessage, final String errMessage, boolean empty, String emptyMessage) {
-        containerRunnable = new WorkspaceUpdateContainerRunnable(client, this, refreshing,
-            refreshMessage, empty, emptyMessage, errMessage);
-        getDisplay().syncExec(containerRunnable);
-    }
 
     private void getAllChanges(Profile selected,
             Map<File, Status> localChanges, Map<File, Status> remoteChanges) {

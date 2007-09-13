@@ -16,7 +16,6 @@ package com.mindquarry.desktop.client.action.task;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -64,9 +63,6 @@ public class CreateTaskAction extends ActionBase {
 	}
 
 	public void run() {
-		PreferenceStore store = client.getPreferenceStore();
-		Profile profile = Profile.getSelectedProfile(store);
-
 		// create initial task
 		Task task = new Task();
 		task.setStatus("new"); //$NON-NLS-1$
@@ -75,7 +71,7 @@ public class CreateTaskAction extends ActionBase {
 		task.setSummary(Messages.getString("summary of the task")); //$NON-NLS-1$
 		task.setDate(null); // no due date by default
 
-		List teams = client.getSelectedTeams();
+		List<Team> teams = client.getSelectedTeams();
 		if (teams.size() == 0) {
 			MessageDialog.openError(new Shell(SWT.None), Messages
 					.getString("Error"), Messages //$NON-NLS-1$

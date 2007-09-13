@@ -27,23 +27,19 @@ import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 
 /**
- * Add summary documentation here.
+ * Container that can show three different things, depending on state:
+ * 
+ *   (a) Show a list of tasks
+ *   (b) Show a progress bar with a message while updating
+ *   (c) Show a message with an icon, e.g. that there are no tasks or that there
+ *       was an error.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
+ * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
  */
 public class TaskUpdateContainerRunnable extends
         UpdateContainerRunnable<TableViewer> {
     private MindClient client;
-
-    @Deprecated
-    public TaskUpdateContainerRunnable(MindClient client,
-            ContainerWidget<TableViewer> containerWidget, boolean refreshing,
-            String refreshMessage, boolean empty, String emptyMessage,
-            String errorMessage) {
-        super(containerWidget, refreshing, refreshMessage, 
-                empty, emptyMessage, errorMessage); //$NON-NLS-1$
-        this.client = client;
-    }
 
     public TaskUpdateContainerRunnable(MindClient client,
             ContainerWidget<TableViewer> containerWidget, boolean refreshing,

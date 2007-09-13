@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.client.dialog.team;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -47,11 +46,11 @@ public class TeamSelectionDialog extends DialogBase {
 
     private String selected;
 
-    public TeamSelectionDialog(Shell shell, List teams) {
+    public TeamSelectionDialog(Shell shell, List<Team> teams) {
         super(shell);
         setBlockOnOpen(true);
         setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
-        this.teams = (List<Team>)teams;
+        this.teams = teams;
     }
 
     protected Control createContents(Composite parent) {
