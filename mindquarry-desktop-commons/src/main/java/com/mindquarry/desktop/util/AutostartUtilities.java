@@ -19,6 +19,7 @@ import java.util.prefs.Preferences;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
 /**
  * Set autostart registry entries on Windows platforms.
@@ -39,12 +40,13 @@ public class AutostartUtilities {
     
     public static void setAutostart(boolean autostart, Set<String> targetPatterns) {
         // check if we are on a Windows platform, otherwise skip processing
-        String os = System.getProperty("os.name"); //$NON-NLS-1$
-        if (!os.toLowerCase().contains("windows")) { //$NON-NLS-1$
-        	log.debug("not setting autostart, os is not windows: " + os);
+        boolean windows = SVNFileUtil.isWindows;
+        if (!windows) {
+        	log.debug("not setting autostart, os is not windows: " + 
+        	        System.getProperty("os.name"));
             return;
         }
-        log.debug("setting autostart, os: " + os);
+        log.debug("setting autostart, os: " + System.getProperty("os.name"));
         // registry variables
 
         // create registry method objects
