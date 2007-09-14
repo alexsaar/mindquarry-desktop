@@ -91,6 +91,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         if (selectedProfile == null) {
             return false;
         }
+        boolean refreshNeeded = false;
         ChangeSets newLocalChanges = new ChangeSets();
         ChangeSets newRemoteChanges = new ChangeSets();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
@@ -100,13 +101,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         Set<String> newLocalTeamIds = newLocalChanges.getTeamIds();
         if (!localTeamIds.equals(newLocalTeamIds)) {
             log.debug("Changes list does need update (1)");
-            return true;
+            refreshNeeded = true;
         }
-        Set<String> remoteTeamIds = localChanges.getTeamIds();
-        Set<String> newRemoteTeamIds = newLocalChanges.getTeamIds();
+        Set<String> remoteTeamIds = remoteChanges.getTeamIds();
+        Set<String> newRemoteTeamIds = newRemoteChanges.getTeamIds();
         if (!remoteTeamIds.equals(newRemoteTeamIds)) {
             log.debug("Changes list does need update (2)");
-            return true;
+            refreshNeeded = true;
         }
 
         // no changes in team selection, compare the changes per team:
@@ -114,7 +115,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         boolean remoteUpdateRequired = checkChangeSetUpdateRequired(remoteChanges, newRemoteChanges);
         if (localUpdateRequired || remoteUpdateRequired) {
             log.debug("Changes list does need update (3)");
-            return true;
+            refreshNeeded = true;
         }
         
         if(applyNewChanges) {
@@ -122,8 +123,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             remoteChanges = newRemoteChanges;
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
-        log.debug("Changes list does not need update");
-        return false;
+        if (!refreshNeeded) {
+            log.debug("Changes list does not need update");
+        }
+        return refreshNeeded;
     }
     
     public void onEvent(com.mindquarry.desktop.event.Event event) {
