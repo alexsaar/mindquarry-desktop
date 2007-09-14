@@ -42,6 +42,7 @@ import org.tigris.subversion.javahl.Status.Kind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.util.FileHelper;
+import com.mindquarry.desktop.util.MimeTypeUtilities;
 import com.mindquarry.desktop.util.RelativePath;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
@@ -344,6 +345,25 @@ public class SVNSynchronizer {
                     // because svn sees it as 'none' at this point
                     if (new File(s.getPath()).isDirectory()) {
                         deleteMissingAndAddUnversioned(s.getPath());
+                    } else {
+                        // For files, we guess the MIME type and set it as a
+                        // property. This allows the server to provide more
+                        // specific options, such as showing images inline
+                        // and displaying more suitable icons for files.
+                        // Also, if the svn:mime-type property is
+                        // set, then the Subversion Apache module will use its
+                        // value to populate the Content-type: HTTP header when
+                        // responding to GET requests.
+                        String mimeType = MimeTypeUtilities.guessMimetype(s.getPath());
+                        client.propertyCreate(s.getPath(), "svn:mime-type", mimeType, false);
+                        if(mimeType.startsWith("text/")) {
+                            // Causes the file to contain the EOL markers that
+                            // are native to the operating system on which
+                            // Subversion was run. Subversion will actually
+                            // store the file in the repository using normalized
+                            // LF EOL markers.
+                            client.propertyCreate(s.getPath(), "svn:eol-style", "native", false);
+                        }
                     }
                 }
             }

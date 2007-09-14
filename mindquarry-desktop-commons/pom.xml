@@ -33,6 +33,13 @@
 			<artifactId>svnkit</artifactId>
 			<version>1.1.0-Mindquarry_7</version>
 		</dependency>
+
+		<!-- for guessing mime types -->
+		<dependency>
+			<groupId>jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+			<version>0.1.2</version>
+		</dependency>
 	</dependencies>
 
 	<scm>
