@@ -63,7 +63,7 @@ public class ContentConflict extends Conflict {
         conflictServerFile = new File(parentDir, status.getConflictNew());
 
         // FIXME: handle binary files correctly
-        if (status.getConflictWorking().isEmpty()) { // binary file
+        if (status.getConflictWorking().length() == 0) { // binary file
             conflictLocalFile = new File(status.getPath());
         } else { // plain text files
             conflictLocalFile = new File(parentDir, status.getConflictWorking());
