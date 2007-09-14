@@ -590,5 +590,13 @@
         <source>Task {0} of {1}</source>
         <translation>Aufgabe {0} von {1}</translation>
     </message>
+    <message>
+        <source>Open local file</source>
+        <translation>Lokal öffnen</translation>
+    </message>
+    <message>
+        <source>Open selected file locally</source>
+        <translation>Ausgewählte Datei lokal öffnen</translation>
+    </message>
 </context>
 </TS>
