@@ -22,7 +22,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  */
 public abstract class Conflict {
     
-	protected static Log log;
+	protected Log log;
 	
     protected SVNClientImpl client;
 

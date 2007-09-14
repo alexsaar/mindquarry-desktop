@@ -16,6 +16,8 @@ package com.mindquarry.desktop.workspace.conflict;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
@@ -30,6 +32,8 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  *
  */
 public class ContentConflict extends Conflict {
+    
+    private static Log log = LogFactory.getLog(ContentConflict.class);
 
     private Action action = Action.UNKNOWN;
     private File conflictServerFile;
@@ -92,7 +96,7 @@ public class ContentConflict extends Conflict {
      *            Filename of the conflict file (e.g. file.txt.r11).
      * @return the new file
      */
-    private File renameConflictFile(File conflictedFile) {
+    protected static File renameConflictFile(File conflictedFile) {
         if(conflictedFile == null) {
             log.warn("renameConflictFile: conflictedFile is null");
             return null;
