@@ -14,55 +14,24 @@
 
 package com.mindquarry.desktop.client.action.workspace;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.tigris.subversion.javahl.CommitItem;
 import org.tigris.subversion.javahl.CommitMessage;
 
-import com.mindquarry.desktop.client.Messages;
-import com.mindquarry.desktop.model.team.Team;
-
+/**
+ * A message handler that just returns a given string to its caller.
+ * 
+ * @author <a href="naber(at)mindquarry(dot)com">Daniel Naber</a>
+ */
 public class CommitMessageHandler implements CommitMessage {
 
     private String commitMessage = "";
 
-    private Team team;
-
-    private Shell shell;
-
-    public CommitMessageHandler(Shell shell, Team team) {
-        this.team = team;
-        this.shell = shell;
+    public CommitMessageHandler(String commitMessage) {
+        this.commitMessage = commitMessage;
     }
 
     public String getLogMessage(CommitItem[] elementsToBeCommited) {
-        // TODO: show all elements to be commited
-    	// TODO: show multiline dialog
-        final InputDialog dlg = new InputDialog(shell,
-                Messages.getString("Commit message"), //$NON-NLS-1$
-                // TODO: add argument to i18n class:
-                Messages.getString("Please describe your changes for team ") //$NON-NLS-1$
-                    + team.getName() + ":",
-                "",     // the default commit message
-                null);
-
-        shell.getDisplay().syncExec(new Runnable() {
-            public void run() {
-                dlg.setBlockOnOpen(true);
-                if (dlg.open() == Dialog.OK) {
-                    setCommitMessage(dlg.getValue());
-                } else {
-                    //setCommitMessage(null);
-                    throw new SynchronizeCancelException();
-                }
-            }
-        });
         return commitMessage;
     }
 
-    private void setCommitMessage(String message) {
-        commitMessage = message;
-    }
-    
 }

@@ -62,9 +62,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
     protected File workspaceRoot;
 
-    // FIXME: these maps currently contain all files of all teams - split this
-    protected Map<File, Status> localChanges = new HashMap<File, Status>();
-    protected Map<File, Status> remoteChanges = new HashMap<File, Status>();
+    protected ChangeSets localChanges = new ChangeSets();
+    protected ChangeSets remoteChanges = new ChangeSets();
     // ignore files like "<filename>.r200" that are created in case of conflicts:
     protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
 
@@ -79,6 +78,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     // ### PUBLIC METHODS
     // #########################################################################
 
+    public ChangeSets getLocalChanges() {
+        return localChanges;
+    }
+    
     /**
      * Checks if a refresh of the changes list itself is needed.
      */
@@ -88,22 +91,39 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         if (selectedProfile == null) {
             return false;
         }
-        Map<File, Status> newLocalChanges = new HashMap<File, Status>();
-        Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
+        ChangeSets newLocalChanges = new ChangeSets();
+        ChangeSets newRemoteChanges = new ChangeSets();
         getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
-        
-        if (changesEqual(newLocalChanges, localChanges, false)
-                && changesEqual(newRemoteChanges, remoteChanges, true)) {
-            log.debug("Changes list does not need update");
-            return false;
+
+        // if team selection has changed, a refresh is needed:
+        Set<String> localTeamIds = localChanges.getTeamIds();
+        Set<String> newLocalTeamIds = newLocalChanges.getTeamIds();
+        if (!localTeamIds.equals(newLocalTeamIds)) {
+            log.debug("Changes list does need update (1)");
+            return true;
         }
-        log.debug("Changes list needs update");
+        Set<String> remoteTeamIds = localChanges.getTeamIds();
+        Set<String> newRemoteTeamIds = newLocalChanges.getTeamIds();
+        if (!remoteTeamIds.equals(newRemoteTeamIds)) {
+            log.debug("Changes list does need update (2)");
+            return true;
+        }
+
+        // no changes in team selection, compare the changes per team:
+        boolean localUpdateRequired = checkChangeSetUpdateRequired(localChanges, newLocalChanges);
+        boolean remoteUpdateRequired = checkChangeSetUpdateRequired(remoteChanges, newRemoteChanges);
+        if (localUpdateRequired || remoteUpdateRequired) {
+            log.debug("Changes list does need update (3)");
+            return true;
+        }
+        
         if(applyNewChanges) {
             localChanges = newLocalChanges;
             remoteChanges = newRemoteChanges;
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
-        return true;
+        log.debug("Changes list does not need update");
+        return false;
     }
     
     public void onEvent(com.mindquarry.desktop.event.Event event) {
@@ -180,8 +200,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         refreshing = true;
         try {
             // update tree
-            Map<File, Status> newLocalChanges = new HashMap<File, Status>();
-            Map<File, Status> newRemoteChanges = new HashMap<File, Status>();
+            ChangeSets newLocalChanges = new ChangeSets();
+            ChangeSets newRemoteChanges = new ChangeSets();
             getAllChanges(selectedProfile, newLocalChanges, newRemoteChanges);
             localChanges = newLocalChanges;
             remoteChanges = newRemoteChanges;
@@ -194,7 +214,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     public boolean isRefreshListEmpty() {
         // FIXME: as ContentProvider does some filtering, this does
         // not always reflect the status in the GUI
-        return localChanges.size() == 0 && remoteChanges.size() == 0;
+        return localChanges.getFiles().size() == 0 && 
+            remoteChanges.getFiles().size() == 0;
     }
     
     public void setMessage(String message) {
@@ -257,8 +278,23 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     // ### PRIVATE METHODS
     // #########################################################################
 
+    private boolean checkChangeSetUpdateRequired(ChangeSets changes1, ChangeSets changes2) {
+        for (ChangeSet changes : changes2.getList()) {
+            for (ChangeSet newChanges : changes1.getList()) {
+                if (newChanges.getTeam().getId().equals(changes.getTeam().getId())) {
+                    boolean equal = changesEqual(changes.getChanges(), 
+                            newChanges.getChanges(), false);
+                    if (!equal) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     private void getAllChanges(Profile selected,
-            Map<File, Status> localChanges, Map<File, Status> remoteChanges) {
+            ChangeSets localChanges, ChangeSets remoteChanges) {
         try {
             log.debug("getting all changes");
             final List<Team> selectedTeams = new ArrayList<Team>();
@@ -269,6 +305,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             });
             toIgnore = new HashMap<File, Integer>();
             for (Team team : selectedTeams) {
+                ChangeSet localChangeSet = new ChangeSet(team);
+                ChangeSet remoteChangeSet = new ChangeSet(team);
+                
                 String url = team.getWorkspaceURL();
                 log.info("Refreshing for SVN URL: " + url);
                 long startTime = System.currentTimeMillis();
@@ -300,7 +339,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 List<Status> tmpLocalChanges = sc.getLocalChanges();
                 for (Status status : tmpLocalChanges) {
                     if (status.getTextStatus() == StatusKind.obstructed) {
-                        localChanges.put(new File(status.getPath()), status);
+                        localChangeSet.addChange(new File(status.getPath()), status);
                         teamHasObstruction = true;
                     }
                 }
@@ -320,11 +359,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                                 status.getRepositoryTextStatus() == StatusKind.normal)) {
                             continue;
                         }
-                        if (status.getTextStatus() == StatusKind.external && (status.getRepositoryTextStatus() == StatusKind.none || status.getRepositoryTextStatus() == StatusKind.external )) {
+                        if (status.getTextStatus() == StatusKind.external &&
+                                (status.getRepositoryTextStatus() == StatusKind.none ||
+                                 status.getRepositoryTextStatus() == StatusKind.external )) {
                         	continue;
                         }
-                        localChanges.put(new File(status.getPath()), status);
-                        remoteChanges.put(new File(status.getPath()), status);
+                        localChangeSet.addChange(new File(status.getPath()), status);
+                        remoteChangeSet.addChange(new File(status.getPath()), status);
                         // If we add a directory with contents, SVN will only
                         // report the directory as unversioned, not the files
                         // inside the directory, so we add the files (= all
@@ -336,7 +377,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                             SetStatusDirFilter dirFilter = new SetStatusDirFilter();
                             FileUtils.iterateFiles(f, fileFilter, dirFilter);
                             for (Status tmpStatus : fileFilter.getSubFiles()) {
-                                localChanges.put(new File(tmpStatus.getPath()), status);
+                                localChangeSet.addChange(new File(tmpStatus.getPath()), status);
                             }
                         }
                         // if there's a local conflict, ignore (i.e. don't display) files
@@ -357,10 +398,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 } else {
                     log.info("obstructed status, not calling getRemoteAndLocalChanges()");
                 }
+                localChanges.add(localChangeSet);
+                remoteChanges.add(remoteChangeSet);
                 log.debug("local changes: " + localChanges);
                 log.debug("remote changes: " + remoteChanges);
                 log.debug("internal svn files (to be ignored): " + toIgnore);
-                log.debug("time required to find changes: " + (System.currentTimeMillis()-startTime) + "ms");
+                log.debug("time required to find changes for team '" +team.getName()+ "': " +
+                        (System.currentTimeMillis()-startTime) + "ms");
             }
             workspaceRoot = new File(selected.getWorkspaceFolder());
         } catch (ClientException e) {

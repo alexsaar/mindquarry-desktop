@@ -16,7 +16,9 @@ package com.mindquarry.desktop.client.action.workspace;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,6 +32,9 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
+import com.mindquarry.desktop.client.dialog.workspace.CommitDialog;
+import com.mindquarry.desktop.client.widget.workspace.ChangeSet;
+import com.mindquarry.desktop.client.widget.workspace.ChangeSets;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
@@ -168,6 +173,16 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     }
                 });
                 try {
+                    // ask the user for the message(s) and remember it, this
+                    // way he can let the sync run in the background:
+                    Map<Team,String> commitMessages = new HashMap<Team, String>();
+                    ChangeSets changeSets = workspaceWidget.getLocalChanges();
+                    for (ChangeSet changeSet : changeSets.getList()) {
+                        CommitDialog dlg = new CommitDialog(client.getShell(), changeSet.getTeam());
+                        String message = dlg.show(changeSet);
+                        commitMessages.put(changeSet.getTeam(), message);
+                    }
+                    // now actually update and commit for each team:
                     for (Team team : teams) {
                         long startTime = System.currentTimeMillis();
                         SVNSynchronizer sc = new SVNSynchronizer(team
@@ -178,7 +193,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                 new InteractiveConflictHandler(client
                                         .getShell()));
                         sc.setNotifyListener(new NotifyListener());
-                        sc.setCommitMessageHandler(new CommitMessageHandler(client.getShell(), team));
+                        sc.setCommitMessageHandler(new CommitMessageHandler(commitMessages.get(team)));
                         sc.synchronizeOrCheckout();
                         log.debug("synchronizeOrCheckout for team '" + team + "' took " +
                                 (System.currentTimeMillis()-startTime) + "ms (incl. user interaction if any)");

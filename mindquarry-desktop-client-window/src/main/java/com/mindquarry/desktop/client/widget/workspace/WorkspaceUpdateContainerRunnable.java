@@ -177,8 +177,8 @@ public class WorkspaceUpdateContainerRunnable extends
             public Image getImage(Object element) {
                 File file = (File) element;
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
-                    Status status = widget.localChanges.get(file);
+                if (widget.localChanges != null && widget.localChanges.getFiles().contains(file)) {
+                    Status status = widget.localChanges.getStatus(file);
                     // first check for a NodeKind set as local property
                     if (status.getNodeKind() == NodeKind.dir) {
                         return FOLDER_IMAGE;
@@ -215,11 +215,11 @@ public class WorkspaceUpdateContainerRunnable extends
                 Status remoteStatus = null;
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.localChanges != null && widget.localChanges.containsKey(file)) {
-                    localStatus = widget.localChanges.get(file);
+                if (widget.localChanges != null && widget.localChanges.getFiles().contains(file)) {
+                    localStatus = widget.localChanges.getStatus(file);
                 }
-                if (widget.remoteChanges != null && widget.remoteChanges.containsKey(file)) {
-                    remoteStatus = widget.remoteChanges.get(file);
+                if (widget.remoteChanges != null && widget.remoteChanges.getFiles().contains(file)) {
+                    remoteStatus = widget.remoteChanges.getStatus(file);
                 }
                 ModificationDescription descr = 
                     ModificationDescription.getDescription(localStatus, remoteStatus);
@@ -353,11 +353,12 @@ public class WorkspaceUpdateContainerRunnable extends
                                 WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
                                 Status localStatus = null;
                                 Status remoteStatus = null;
-                                if (browserWidget.localChanges.containsKey(item.getData())) {
-                                    localStatus = browserWidget.localChanges.get(item.getData());
+                                File file = (File)item.getData();
+                                if (browserWidget.localChanges.getFiles().contains(file)) {
+                                    localStatus = browserWidget.localChanges.getStatus(file);
                                 }
-                                if (browserWidget.remoteChanges.containsKey(item.getData())) {
-                                	remoteStatus = browserWidget.remoteChanges.get(item.getData());
+                                if (browserWidget.remoteChanges.getFiles().contains(file)) {
+                                	remoteStatus = browserWidget.remoteChanges.getStatus(file);
                                 }
                                 ModificationDescription modDescription = 
                                     ModificationDescription.getDescription(localStatus, remoteStatus);
