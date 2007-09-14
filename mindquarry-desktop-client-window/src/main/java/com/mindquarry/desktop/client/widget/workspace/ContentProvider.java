@@ -39,10 +39,10 @@ public class ContentProvider implements ITreeContentProvider {
     }
 
     public Object[] getChildren(Object parentElement) {
-        File workspaceRoot = (File) parentElement;
+        File rootDir = (File) parentElement;
         // TODO: below we iterate over the local and remote changes anyway, do we 
         // really need to iterate over the file system at all?
-        File[] children = SVNFileListUtil.listFiles(workspaceRoot, new FilenameFilter() {
+        File[] children = SVNFileListUtil.listFiles(rootDir, new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 File f = new File(dir, name);
                 // ignore e.g. conflict files like <file>.r<rev>
@@ -103,7 +103,7 @@ public class ContentProvider implements ITreeContentProvider {
                 remoteStatus = workspaceBrowser.remoteChanges.getStatus(remoteFile).
                     getRepositoryTextStatus(); 
                 if (remoteStatus == StatusKind.added &&
-                        remoteFile.getParentFile().equals(workspaceRoot)) {
+                        remoteFile.getParentFile().equals(rootDir)) {
                     allFiles.add(remoteFile);
                 }
             }
@@ -111,11 +111,10 @@ public class ContentProvider implements ITreeContentProvider {
         // don't skip the files that were deleted locally:
         if (workspaceBrowser.localChanges != null) {
             for (File localFile : workspaceBrowser.localChanges.getFiles()) {
-                int localStatus = -1;
-                localStatus = workspaceBrowser.localChanges.getStatus(localFile).
+                int localStatus = workspaceBrowser.localChanges.getStatus(localFile).
                     getTextStatus();
                 if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
-                        && localFile.getParentFile().equals(workspaceRoot)) {
+                        && localFile.getParentFile().equals(rootDir)) {
                     // If someone moves a directory, local status of the old name
                     // will be "deleted" locally, but remote status will be "added". 
                     // This directory has been displayed above already, so we need
@@ -145,6 +144,24 @@ public class ContentProvider implements ITreeContentProvider {
             Status s = workspaceBrowser.remoteChanges.getStatus(file);
             if (s != null && s.getReposKind() == NodeKind.dir) {
                 return true;
+            }
+        }
+        // directories deleted locally:
+        if (isDeletedLocally(file)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDeletedLocally(File file) {
+        if (workspaceBrowser.localChanges != null) {
+            for (File localFile : workspaceBrowser.localChanges.getFiles()) {
+                int localStatus = workspaceBrowser.localChanges.getStatus(localFile).
+                    getTextStatus();
+                if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
+                        && localFile.getParentFile().equals(file)) {
+                    return true;
+                }
             }
         }
         return false;
