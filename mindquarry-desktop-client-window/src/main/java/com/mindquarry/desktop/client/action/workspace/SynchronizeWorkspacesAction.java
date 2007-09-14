@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.action.workspace;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyInformation;
+import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -179,6 +182,12 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     final Map<Team,String> commitMessages = new HashMap<Team, String>();
                     ChangeSets changeSets = workspaceWidget.getLocalChanges();
                     for (final ChangeSet changeSet : changeSets.getList()) {
+                        // TODO: clean up, this is only needed because the list
+                        // returned by getLocalChanges() does actually also contain
+                        // remote changes:
+                        if (!hasLocalChanges(changeSet)) {
+                            continue;
+                        }
                         Display.getDefault().syncExec(new Runnable() {
                             public void run() {
                                 CommitDialog dlg = new CommitDialog(client.getShell(), changeSet);
@@ -251,6 +260,18 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             }
             client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             client.enableActions(false, ActionBase.STOP_ACTION_GROUP);
+        }
+
+        private boolean hasLocalChanges(ChangeSet changeSet) {
+            for (File file : changeSet.getChanges().keySet()) {
+                Status status = changeSet.getChanges().get(file);
+                if (status.getTextStatus() != StatusKind.unversioned &&
+                        status.getTextStatus() != StatusKind.none &&
+                        status.getTextStatus() != StatusKind.normal) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
