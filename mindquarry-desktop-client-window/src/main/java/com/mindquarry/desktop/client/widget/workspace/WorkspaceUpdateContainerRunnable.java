@@ -288,7 +288,9 @@ public class WorkspaceUpdateContainerRunnable extends
                         }
                     });
                 } else {
-                    menuItem.dispose();
+                    if (menuItem != null) {
+                        menuItem.dispose();
+                    }
                 }
             }
         });
