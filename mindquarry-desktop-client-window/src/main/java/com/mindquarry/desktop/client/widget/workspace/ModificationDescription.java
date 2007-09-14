@@ -25,7 +25,7 @@ import org.tigris.subversion.javahl.StatusKind;
 import com.mindquarry.desktop.client.Messages;
 
 /**
- * Image and text that describes a local or remote change so it
+ * Image, text, and short text that describe a local or remote change so it
  * can be explained to the user.
  * 
  * @author dnaber
@@ -53,21 +53,33 @@ public class ModificationDescription {
     private static final String CONFLICT_TEXT = 
         Messages.getString("This file has been modified both on the server " +
             "and locally. You will need to merge the changes.");
+    private static final String CONFLICT_SHORT_TEXT = 
+        Messages.getString("Conflict");
 
     private Image image;
     private String description;
+    private String shortDescription;
 
-    ModificationDescription(Image img, String description) {
+    ModificationDescription(Image img, String description, String shortDescription) {
         this.image = img;
         this.description = description;
+        this.shortDescription = shortDescription;
     }
     
-    Image getImage() {
+    public Image getImage() {
         return image;
     }
 
-    String getDescription() {
+    public String getDescription() {
         return description;
+    }
+
+    public String getShortDescription() {
+        return shortDescription;
+    }
+
+    public static ModificationDescription getLocalDescription(Status localStatusObj) {
+        return getDescription(localStatusObj, null);
     }
     
     public static ModificationDescription getDescription(Status localStatusObj, Status remoteStatusObj) {
@@ -76,7 +88,7 @@ public class ModificationDescription {
                 (remoteStatusObj != null && remoteStatusObj.getNodeKind() == NodeKind.dir)) {
             // showing upload/download status on directories is confusing,
             // just don't display anything:
-            return new ModificationDescription(null, "");
+            return new ModificationDescription(null, "", "");
         }
         int localStatus = -1;
         int remoteStatus = -1;
@@ -97,30 +109,36 @@ public class ModificationDescription {
                     // TODO: show conflict icon with "+" sign
                     return new ModificationDescription(conflictImage,
                             Messages.getString("This new item has also been added on the server. "
-                                    +"You will nee to resolve the conflict."));
+                                    +"You will nee to resolve the conflict."),
+                                    Messages.getString("Conflict"));
                 }
     
                 // TODO: show upload icon with "+" sign
                 return new ModificationDescription(uploadImage,
-                        Messages.getString("This new item will be uploaded to the server."));
+                        Messages.getString("This new item will be uploaded to the server."),
+                        Messages.getString("Added"));
     
             case StatusKind.modified:
                 if (remoteStatus == StatusKind.modified) {
                     // we cannot decide here if SVN can merge the changes for us,
                     // so show a conflict:
-                    return new ModificationDescription(conflictImage, CONFLICT_TEXT);
+                    return new ModificationDescription(conflictImage, CONFLICT_TEXT,
+                            CONFLICT_SHORT_TEXT);
                 }
                 return new ModificationDescription(uploadImage,
-                        Messages.getString("Your changes of this item will be uploaded to the server."));
+                        Messages.getString("Your changes of this item will be uploaded to the server."),
+                        Messages.getString("Modified"));
                 
             case StatusKind.deleted:
             case StatusKind.missing:
                 return new ModificationDescription(deleteImage,
                         Messages.getString("This item has been deleted or moved locally. " +
-                        		"It will be deleted on the server."));
+                        		"It will be deleted on the server."),
+                        		Messages.getString("Deleted"));
     
             case StatusKind.conflicted:
-                return new ModificationDescription(conflictImage, CONFLICT_TEXT);
+                return new ModificationDescription(conflictImage, CONFLICT_TEXT,
+                        CONFLICT_SHORT_TEXT);
         }
         
         // checking remote status
@@ -128,24 +146,27 @@ public class ModificationDescription {
             case StatusKind.modified:
                 return new ModificationDescription(downloadImage,
                         Messages.getString("This item has been modified on the server, " +
-                        "the new version will be downloaded."));
+                        "the new version will be downloaded."), 
+                        Messages.getString("Modified"));
     
             case StatusKind.added:
                 return new ModificationDescription(downloadImage,
                         Messages.getString("This item is new on the server, " +
-                        "it will be downloaded."));
+                        "it will be downloaded."),
+                        Messages.getString("Added"));
                 
             case StatusKind.deleted:
                 return new ModificationDescription(deleteImage,
                         Messages.getString("This item has been deleted or moved on the server. " +
-                        "It will be deleted locally."));
+                        "It will be deleted locally."),
+                        Messages.getString("Deleted"));
         }
 
         if (localStatus != -1 || remoteStatus != -1) {
             log.warn("Unhandled case for local/remote status "
                     + localStatus + "/" + remoteStatus);
         }
-        return new ModificationDescription(null, "");
+        return new ModificationDescription(null, "", "");
     }
 
 }

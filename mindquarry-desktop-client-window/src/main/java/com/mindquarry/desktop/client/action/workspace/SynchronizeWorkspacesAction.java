@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -175,12 +176,20 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                 try {
                     // ask the user for the message(s) and remember it, this
                     // way he can let the sync run in the background:
-                    Map<Team,String> commitMessages = new HashMap<Team, String>();
+                    final Map<Team,String> commitMessages = new HashMap<Team, String>();
                     ChangeSets changeSets = workspaceWidget.getLocalChanges();
-                    for (ChangeSet changeSet : changeSets.getList()) {
-                        CommitDialog dlg = new CommitDialog(client.getShell(), changeSet.getTeam());
-                        String message = dlg.show(changeSet);
-                        commitMessages.put(changeSet.getTeam(), message);
+                    for (final ChangeSet changeSet : changeSets.getList()) {
+                        Display.getDefault().syncExec(new Runnable() {
+                            public void run() {
+                                CommitDialog dlg = new CommitDialog(client.getShell(), changeSet);
+                                int result = dlg.open();
+                                if (result == IDialogConstants.OK_ID) {
+                                    commitMessages.put(changeSet.getTeam(), dlg.getCommitMessage());
+                                } else {
+                                    throw new SynchronizeCancelException();
+                                }
+                            }
+                        });
                     }
                     // now actually update and commit for each team:
                     for (Team team : teams) {
