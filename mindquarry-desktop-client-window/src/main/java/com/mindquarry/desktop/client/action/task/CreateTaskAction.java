@@ -75,10 +75,10 @@ public class CreateTaskAction extends ActionBase {
 		if (teams.size() == 0) {
 			MessageDialog.openError(new Shell(SWT.None), Messages
 					.getString("Error"), Messages //$NON-NLS-1$
-					.getString("Cannot not add a new task because of one of the following issues:\n\n" +
+					.getString("A new task cannot be added because one of the following issues occurred:\n\n" +
                             "(1) You are not a member of any team.\n" +
-                            "(2) You currently have no teams selected.\n" +
-                            "(3) Your Mindquarry server settings are not correct.")); //$NON-NLS-1$
+                            "(2) Currently you have no teams selected.\n" +
+                            "(3) The Mindquarry server settings are incorrect.")); //$NON-NLS-1$
 			return;
 		}
 

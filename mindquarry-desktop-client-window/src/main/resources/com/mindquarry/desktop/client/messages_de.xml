@@ -262,8 +262,8 @@
         <translation>Sie versuchen eine Datei auf den Server hochzuladen, die zwischenzeitlich jemand auf dem Server gelöscht hat.</translation>
     </message>
     <message>
-        <source>Cannot not add a new task because of one of the following issues:\n\n(1) You are not a member of any team.\n(2) You currently have no teams selected.\n(3) Your Mindquarry server settings are not correct.</source>
-        <translation>Es konnte keine neue Aufgabe hinzugefügt werden. Dies könnte folgende Ursachen haben:\n\n(1) Sie sind in keinem Team Mitglied.\n(2) Sie haben momentan keine Teams ausgewählt.\n(3) Ihre Mindquarry-Servereinstellungen sind nicht korrekt.</translation>
+        <source>A new task cannot be added because one of the following issues occurred:\n\n(1) You are not a member of any team.\n(2) Currently you have no teams selected.\n(3) The Mindquarry server settings are incorrect.</source>
+        <translation>Es konnte keine neue Aufgabe hinzugefügt werden. Dies könnte folgende Ursachen haben:\n\n(1) Sie sind in keinem Team Mitglied.\n(2) Sie haben momentan keine Teams ausgewählt.\n(3) Die Mindquarry-Servereinstellungen sind inkorrekt.</translation>
     </message>
     <message>
         <source>Select a Team</source>
