@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -180,7 +181,10 @@ public class TaskSettingsDialog extends DialogBase {
 				if (e.keyCode == SWT.TAB) {
 					e.doit = false;
 					dueDateCheckbox.setFocus();
-				}
+				} else if (e.keyCode == SWT.CR && e.stateMask == SWT.CTRL) {
+          // support Ctrl+Return => OK
+          getButton(IDialogConstants.OK_ID).notifyListeners(SWT.Selection, new Event());
+        }
 			}
 
 			public void keyReleased(KeyEvent e) {
