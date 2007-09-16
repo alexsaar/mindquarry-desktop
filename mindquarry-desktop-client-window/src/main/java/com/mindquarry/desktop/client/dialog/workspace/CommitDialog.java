@@ -16,6 +16,7 @@ package com.mindquarry.desktop.client.dialog.workspace;
 
 import java.io.File;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
@@ -24,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -110,6 +112,10 @@ public class CommitDialog extends DialogBase {
                 SWT.V_SCROLL | SWT.WRAP);
         textField.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent evt) {
+              // support Ctrl+Return => OK 
+              if (evt.keyCode == SWT.CR && evt.stateMask==SWT.CTRL) {
+                getButton(IDialogConstants.OK_ID).notifyListeners(SWT.Selection, new Event());
+              }
             }
             public void keyReleased(KeyEvent evt) {
                 setCommitMessage(textField.getText());
