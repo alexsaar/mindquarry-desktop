@@ -49,6 +49,7 @@ public class CommitDialog extends DialogBase {
     public CommitDialog(Shell shell, ChangeSet changeSet) {
         super(shell);
         this.changeSet = changeSet;
+        setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
     }
 
     protected Control createContents(Composite parent) {
