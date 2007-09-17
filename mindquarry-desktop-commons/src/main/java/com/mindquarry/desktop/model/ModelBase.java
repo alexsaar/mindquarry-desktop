@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.model;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +47,7 @@ public abstract class ModelBase {
 	}
 
     public ModelBase(String url, String login, String password, TransformerBase transformer) 
-            throws NotAuthorizedException {
+            throws NotAuthorizedException, MalformedURLException {
         initModel();
         InputStream content = getContent(url, login, password);
         doc = parseInput(content);
@@ -72,7 +73,7 @@ public abstract class ModelBase {
     }
 
 	protected InputStream getContent(String url, String login, String password)
-			throws NotAuthorizedException {
+			throws NotAuthorizedException, MalformedURLException {
 		InputStream content = HttpUtilities.getContentAsXML(login, password, url);
 		return content;
 	}

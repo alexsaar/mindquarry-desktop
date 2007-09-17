@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.model.team;
 
 import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import com.mindquarry.desktop.model.ModelBase;
 import com.mindquarry.desktop.util.NotAuthorizedException;
@@ -38,7 +39,7 @@ public class Team extends ModelBase {
     }
 
     public Team(String url, String login, String password)
-            throws NotAuthorizedException {
+            throws NotAuthorizedException, MalformedURLException {
         super(url, login, password, new TeamTransformer());
     }
 

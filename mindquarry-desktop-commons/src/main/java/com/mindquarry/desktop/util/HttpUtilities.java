@@ -47,7 +47,7 @@ public class HttpUtilities {
     private static final int CONNECTION_TIMEOUT = 60 * 1000;    // milliseconds
 
     public static InputStream getContentAsXML(String login, String pwd,
-            String address) throws NotAuthorizedException {
+            String address) throws NotAuthorizedException, MalformedURLException {
         try {
             HttpClient client = createHttpClient(login, pwd, address);
             GetMethod get = createAndExecuteGetMethod(address, client);
@@ -64,6 +64,8 @@ public class HttpUtilities {
             }
             return result;
         } catch (NotAuthorizedException e) {
+            throw e;
+        } catch (MalformedURLException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e.toString(), e);

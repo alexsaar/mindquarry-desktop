@@ -13,6 +13,8 @@
  */
 package com.mindquarry.desktop.model.team;
 
+import java.net.MalformedURLException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
@@ -70,7 +72,7 @@ public class TeamListTransformer extends TransformerBase {
     }
 
     @Path("teamspace")
-    public void teamspace(Node node) throws NotAuthorizedException {
+    public void teamspace(Node node) throws NotAuthorizedException, MalformedURLException {
         log.info("Found new teamspace element."); //$NON-NLS-1$
         if (node instanceof Element) {
             Element element = (Element) node;

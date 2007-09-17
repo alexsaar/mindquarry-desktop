@@ -415,6 +415,43 @@ public class MindClient extends ApplicationWindow implements EventListener {
         return false;
     }
 
+    /**
+     * Displays an error message and prompts the user to check their credentials
+     * in the preferences dialog, or to cancel.
+     * 
+     * @param exception Contains the error message to be displayed.
+     * @return True if and only if preferences dialog was shown to user which
+     *         means that the credentials were potentially updated.
+     */
+    public Boolean handleMalformedURLException(MalformedURLException exception) {
+        // create custom error message with the option to open the preferences dialog
+        MessageDialog messageDialog = new MessageDialog(
+                getShell(),
+                Messages.getString("Error"), //$NON-NLS-1$
+                null,
+                ("Invalid server URL given."
+                        + "\n\n" //$NON-NLS-1$
+                        + Messages.getString("Please check your server settings in the preferences dialog.")), //$NON-NLS-1$
+                MessageDialog.ERROR,
+                new String[] {
+                        Messages.getString("Go to preferences"), //$NON-NLS-1$
+                        Messages.getString("Cancel") //$NON-NLS-1$
+                },
+                0);
+        
+        int buttonClicked = messageDialog.open();
+        switch(buttonClicked) {
+        case 0: // go to preferences
+            showPreferenceDialog(true);
+            return true;
+            
+        case 1: // cancel
+            displayNotConnected();
+            return false;
+        }
+        return false;
+    }
+
     // #########################################################################
     // ### PROTECTED METHODS
     // #########################################################################

@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.team;
 
+import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -216,6 +217,16 @@ public class TeamlistWidget extends WidgetBase {
             }
 
             throw new CancelException("Updating team list cancelled due to unknown server.", uhe);
+        } catch (MalformedURLException murle) {
+            log.error("Error while updating team list at " //$NON-NLS-1$
+                    + selected.getServerURL(), murle);
+
+            Boolean retry = client.handleMalformedURLException(murle);
+            if(retry) {
+                return queryTeams();
+            }
+
+            throw new CancelException("Updating team list cancelled due to unknown server.", murle);
         } catch (Exception e) {
             // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
