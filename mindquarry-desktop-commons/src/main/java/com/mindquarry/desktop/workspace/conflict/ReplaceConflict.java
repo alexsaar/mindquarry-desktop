@@ -57,8 +57,6 @@ public class ReplaceConflict extends RenamingConflict {
 		super(status);
 		this.localChildren = localChildren;
 		this.remoteChildren = remoteChildren;
-		
-		this.folder = new File(status.getPath()).getParentFile();
 	}
 
 	public void beforeUpdate() throws ClientException, IOException {

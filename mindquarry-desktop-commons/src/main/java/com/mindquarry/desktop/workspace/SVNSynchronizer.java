@@ -227,7 +227,9 @@ public class SVNSynchronizer {
 			client.commit(new String[] { localPath }, null, true);
 
         } catch (CancelException e) {
-            log.info("Canceled");
+            log.info("Cancelled");
+            throw new SynchronizeException("synchronize() cancelled: "
+                    +e.toString(), e);
 		} catch (Exception e) {
 			// TODO think about exception handling
 			e.printStackTrace();

@@ -39,18 +39,16 @@ import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
  * 
  * @author dnaber
  */
-public class AddConflictDialog extends AbstractConflictDialog {
+public class AddConflictDialog extends RenamingConflictDialog {
 
-    private String newName;
-    private Text newNameField;
-    private AddConflict conflict;
     private Action resolveMethod;
+
+    protected Text newNameField;
 
     private static final Action DEFAULT_RESOLUTION = Action.RENAME;
 
     public AddConflictDialog(AddConflict conflict, Shell shell) {
-        super(shell);
-        this.conflict = conflict;
+        super(conflict, shell);
         resolveMethod = DEFAULT_RESOLUTION;
     }
 
@@ -82,30 +80,9 @@ public class AddConflictDialog extends AbstractConflictDialog {
             }
         });
 
-        newNameField = new Text(subComposite, SWT.BORDER | SWT.SINGLE);
-        // TODO: make field wider
-        String oldName = FilenameUtils.getName(conflict.getStatus().getPath());
-        String nameSuggestion = getNameSuggestion(oldName);
-        newNameChanged(nameSuggestion);
-        newNameField.setText(nameSuggestion);
-        newName = nameSuggestion;
-        newNameField.addFocusListener(new FocusListener() {
-            public void focusGained(FocusEvent arg0) {
-                newNameField.selectAll();
-            }
-
-            public void focusLost(FocusEvent arg0) {
-            }
-        });
-        newNameField.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent arg0) {
-            }
-
-            public void keyReleased(KeyEvent arg0) {
-                newNameChanged(newNameField.getText());
-            }
-        });
+        newNameField = createNewNameField(subComposite, FilenameUtils.getName(conflict.getStatus().getPath()));        
         newNameField.setFocus();
+
         // no replace available because it is a dangerous, unrecoverable action
         /*
          * Button button2 = makeRadioButton(subComposite,
@@ -122,41 +99,6 @@ public class AddConflictDialog extends AbstractConflictDialog {
     protected String getHelpURL() {
         // TODO fix help URL
         return "http://www.mindquarry.com/";
-    }
-
-    private void newNameChanged(String name) {
-        try {
-            if (conflict.isRenamePossible(name)) {
-                newName = newNameField.getText();
-                if (okButton != null) {
-                    okButton.setEnabled(true);
-                }
-                System.err.println(name + " accepted");
-            } else {
-                // TODO: show error
-                if (okButton != null) {
-                    okButton.setEnabled(false);
-                }
-                System.err.println(name + " not accepted");
-            }
-        } catch (ClientException e) {
-            throw new RuntimeException(e.toString(), e);
-        }
-    }
-
-    private String getNameSuggestion(String existingName) {
-        int pos = existingName.lastIndexOf('.');
-        // TODO: avoid suggesting a name that exists
-        if (pos == -1) {
-            return existingName + "_1";
-        } else {
-            return existingName.substring(0, pos) + "_1"
-                    + existingName.substring(pos);
-        }
-    }
-
-    public String getNewName() {
-        return newName;
     }
 
     protected Button makeRadioButton(Composite composite, String text,

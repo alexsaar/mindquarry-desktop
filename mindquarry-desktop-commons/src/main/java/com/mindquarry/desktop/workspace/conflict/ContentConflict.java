@@ -16,12 +16,15 @@ package com.mindquarry.desktop.workspace.conflict;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
+import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.util.FileHelper;
+import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -31,13 +34,15 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  *         Alexander Klimetschek</a>
  *
  */
-public class ContentConflict extends Conflict {
+public class ContentConflict extends RenamingConflict {
     
     private static Log log = LogFactory.getLog(ContentConflict.class);
 
     private Action action = Action.UNKNOWN;
     private File conflictServerFile;
     private File conflictLocalFile;
+
+    private String newName;
     
     public enum Action {
         /**
@@ -57,16 +62,19 @@ public class ContentConflict extends Conflict {
          * Call a merge program (ie. Word in merge-mode) to let the user handle
          * the conflicts.
          */
-        MERGE;
+        MERGE,
+        /**
+         * Rename the local version of the file (keeping the server file).
+         */
+        RENAME;
     }
     
     
     public ContentConflict(Status status) {
         super(status);
-        File parentDir = new File(status.getPath()).getParentFile();
+        File parentDir = new File(status.getPath()).getParentFile(); // TODO: replace with this.folder
         conflictServerFile = new File(parentDir, status.getConflictNew());
 
-        // FIXME: handle binary files correctly
         if (status.getConflictWorking().length() == 0) { // binary file
             conflictLocalFile = new File(status.getPath());
         } else { // plain text files
@@ -84,6 +92,7 @@ public class ContentConflict extends Conflict {
             handler.handle(this);
         } catch(Exception e) {
             doCancel(); // cleaning up if there's an exception
+            throw new CancelException(e);
         }
     }
     
@@ -136,26 +145,47 @@ public class ContentConflict extends Conflict {
             // client did not set a conflict resolution
             log.error("ContentConflict with no action set: " + status.getPath());
             return;
+
+        case RENAME:
+            log.info("renaming to " + newName);
+
+            File destination = new File(conflictLocalFile.getParentFile(), newName);
+            
+            // copy the file rather than rename, because we don't want the file
+            // to be readonly (the source file is readonly)
+            FileUtils.copyFile(conflictLocalFile, destination);            
+            
+            // NOTE: this could fail if the file with newName already exists
+            // although we do check this previously in isRenamePossible() it
+            // can happen when there are multiple add conflicts and the user
+            // chooses twice the same newName for different add conflicts -
+            // this is very seldom and can simply be given as error messages
+            
+            client.add(destination.getPath(), true, true);
+
+            // NOTE: need to fall through to USE_REMOTE, which keeps the latest
+            // revision from the repository with the normal filename
             
         case USE_REMOTE:
             // copy latest revision from repository to main file
-            File parent = new File(status.getPath()).getParentFile();
-            File remoteFile = new File(parent, status.getConflictNew());
-            
             File conflictFile = new File(status.getPath());
             FileHelper.delete(conflictFile);
-            FileHelper.renameTo(remoteFile, conflictFile);
+            
+            // copy the file rather than rename, because we don't want the file
+            // to be readonly (the source file is readonly)
+            FileUtils.copyFile(conflictLocalFile, conflictFile);   
             
             break;
             
-        case USE_LOCAL:
+        case USE_LOCAL: // FIXME: clean up, use conflictLocalFile
             // just keep the local file
-            parent = new File(status.getPath()).getParentFile();
-            remoteFile = new File(parent, status.getConflictWorking());
-            
             conflictFile = new File(status.getPath());
             FileHelper.delete(conflictFile);
-            FileHelper.renameTo(remoteFile, conflictFile);
+
+            // copy the file rather than rename, because we don't want the file
+            // to be readonly (the source file is readonly)
+            FileUtils.copyFile(conflictLocalFile, conflictFile);   
+
             break;
             
         case MERGE:
@@ -174,6 +204,25 @@ public class ContentConflict extends Conflict {
     @Override
     public void beforeRemoteStatus() throws ClientException, IOException {
         resolveConflict();
+    }
+
+    public void beforeUpdate() throws ClientException, IOException {        
+        switch (action) {
+        case RENAME:
+            log.info("renaming to " + newName);
+
+            File destination = new File(conflictLocalFile.getParentFile(), newName);
+            FileHelper.renameTo(conflictLocalFile, destination);
+            // NOTE: this could fail if the file with newName already exists
+            // although we do check this previously in isRenamePossible() it
+            // can happen when there are multiple add conflicts and the user
+            // chooses twice the same newName for different add conflicts -
+            // this is very seldom and can simply be given as error messages
+            
+            client.add(destination.getPath(), true, true);
+            
+            break;
+        }
     }
 
     public String toString() {
@@ -204,6 +253,20 @@ public class ContentConflict extends Conflict {
      */
     public void doMerge() {
         this.action = Action.MERGE;
+    }
+    
+    /**
+     * Resolve the conflict by renaming the local file before updating.
+     * 
+     * Make sure you have called isRenamePossible(newName) and it returned true
+     * before calling doRename(newName).
+     * 
+     * @param newName the new name of the file to rename to. Must be just a
+     *                filename but not a full path name.
+     */
+    public void doRename(String newName) {
+        this.action = Action.RENAME;
+        this.newName = newName;
     }
 
     public File getConflictServerFile() {

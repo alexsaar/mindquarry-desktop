@@ -58,8 +58,6 @@ public class AddConflict extends RenamingConflict {
 		super(status);
 		this.localAdded = localAdded;
 		this.remoteAdded = remoteAdded;
-		
-		this.folder = new File(status.getPath()).getParentFile();
 	}
 
 	public void beforeUpdate() throws ClientException, IOException {

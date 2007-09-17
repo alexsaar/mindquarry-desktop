@@ -136,12 +136,13 @@ public class InteractiveConflictHandler implements ConflictHandler {
                         conflict.doUseRemote();
                     } else if (dlg.getResolveMethod() == ContentConflict.Action.MERGE) {
                         conflict.doMerge();
+                    } else if (dlg.getResolveMethod() == ContentConflict.Action.RENAME) {
+                        conflict.doRename(dlg.getNewName());
                     } else {
                         throw new IllegalArgumentException("Unexpected dialog resolution: " + 
                                 dlg.getResolveMethod());
                     }
                 } else {
-                    conflict.doCancel();
                     cancelled = true;
                 }
             }

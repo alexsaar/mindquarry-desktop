@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.Status;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
@@ -50,7 +51,7 @@ import com.mindquarry.desktop.workspace.conflict.ContentConflict;
  * @author <a href="mailto:victor(dot)saar(at)mindquarry(dot)com">Victor Saar</a>
  * @author <a href="mailto:christian(dot)richardt(at)mindquarry(dot)com">Christian Richardt</a>
  */
-public class ContentConflictDialog extends AbstractConflictDialog {
+public class ContentConflictDialog extends RenamingConflictDialog {
 
     private static Log log = LogFactory.getLog(ContentConflictDialog.class);
 
@@ -63,7 +64,6 @@ public class ContentConflictDialog extends AbstractConflictDialog {
             + "changes into the target file. Click 'Finished Merging' and then "
             + "'OK' when done."); //$NON-NLS-1$
 
-    private ContentConflict conflict;
     private ContentConflict.Action resolveMethod = ContentConflict.Action.MERGE;
 
     private File mergedVersion = null;
@@ -71,14 +71,17 @@ public class ContentConflictDialog extends AbstractConflictDialog {
     private Button mergeButton = null;
     private Button mergeOptionButton;
     private Label mergeHelpLabel;
+    private ContentConflict contentConflict;
 
     // files used when merging versions with MS Word, will
     // may be deleted at the end:
     private List<File> tempFiles = new ArrayList<File>();
 
+    protected Text newNameField;
+
     public ContentConflictDialog(ContentConflict conflict, Shell shell) {
-        super(shell);
-        this.conflict = conflict;
+        super(conflict, shell);
+        this.contentConflict = conflict;
     }
 
     /**
@@ -98,7 +101,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         openMergedFileButton.setText(Messages.getString("Edit target file")); //$NON-NLS-1$
         openMergedFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictTargetFile().getAbsolutePath());
+                Program.launch(contentConflict.getConflictTargetFile().getAbsolutePath());
             }
         });
         
@@ -113,27 +116,30 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         openMyFileButton.setText(Messages.getString("View my local file")); //$NON-NLS-1$
         openMyFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictLocalFile().getAbsolutePath());
+                Program.launch(contentConflict.getConflictLocalFile().getAbsolutePath());
             }
         });
-
+        
         // Button 3: new revision from server which contains the remote changes
         Button openServerFileButton = new Button(fileButtonBar, SWT.BUTTON1);
         openServerFileButton.setText(Messages.getString("View updated file from server")); //$NON-NLS-1$
         openServerFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
-                Program.launch(conflict.getConflictServerFile().getAbsolutePath());
+                Program.launch(contentConflict.getConflictServerFile().getAbsolutePath());
             }
         });
 
         // make files created by conflict read-only to discourage users from
         // editing them (as they will be deleted at commit anyway)
-        conflict.getConflictServerFile().setReadOnly();
+        contentConflict.getConflictServerFile().setReadOnly();
         
         // for binary files, the local file is the target file, so don't make it readonly
-        if (!conflict.getConflictLocalFile().getAbsolutePath().equalsIgnoreCase(
-                    conflict.getConflictTargetFile().getAbsolutePath())) {
-            conflict.getConflictLocalFile().setReadOnly();
+        if (!contentConflict.getConflictLocalFile().getAbsolutePath().equalsIgnoreCase(
+                contentConflict.getConflictTargetFile().getAbsolutePath())) {
+            // TODO: Should not make local file readonly, as this cannot be
+            // undone (until Java 6). But this is required if the file is
+            // renamed locally and hence kept.
+            contentConflict.getConflictLocalFile().setReadOnly();
         }
     }
 
@@ -189,6 +195,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 enableButtons(true, false);
+                newNameField.setEnabled(false);
             }
         });
 
@@ -199,10 +206,29 @@ public class ContentConflictDialog extends AbstractConflictDialog {
         button2.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 enableButtons(true, false);
+                newNameField.setEnabled(false);
             }
         });
 
-        // Option 3: merge manually (recommended)
+        // Option 3: rename local file and upload to server
+        // FIXME: Fix the layout, it's horrible! Need radio buttons to be in a
+        // row and equidistant.
+        Button button3 = makeRadioButton(subComposite, Messages
+                .getString("Rename local file and upload it under a new name:"), //$NON-NLS-1$
+                ContentConflict.Action.RENAME, false);
+        button3.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                enableButtons(true, false);
+                newNameField.setEnabled(true);
+            }
+        });
+
+        newNameField = createNewNameField(subComposite,
+                contentConflict.getConflictLocalFile().getName().replaceAll(".mine", ""), //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("local")); //$NON-NLS-1$   
+        newNameField.setEnabled(false);
+        
+        // Option 4: merge manually (recommended)
         mergeOptionButton = makeRadioButton(subComposite, Messages
                 .getString("Manually merge both files (recommended)"), //$NON-NLS-1$
                 ContentConflict.Action.MERGE, true);
@@ -218,6 +244,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
             mergeOptionButton.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     enableButtons(false, true);
+                    newNameField.setEnabled(false);
                 }
             });
 
@@ -230,6 +257,7 @@ public class ContentConflictDialog extends AbstractConflictDialog {
             mergeOptionButton.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event event) {
                     enableButtons(false, true);
+                    newNameField.setEnabled(false);
                 }
             });
 
@@ -400,5 +428,10 @@ public class ContentConflictDialog extends AbstractConflictDialog {
                 }
             }
         }
+    }
+
+    @Override
+    protected int getHeightHint() {
+        return 400;
     }
 }

@@ -26,6 +26,7 @@ public abstract class RenamingConflict extends Conflict {
     
     public RenamingConflict(Status status) {
         super(status);
+        this.folder = new File(status.getPath()).getParentFile();
     }
     
     /**
@@ -41,6 +42,12 @@ public abstract class RenamingConflict extends Conflict {
      * and throw a CancelException in the handle method
      */
     public boolean isRenamePossible(String newName) throws ClientException {
+        // new file name must be available locally
+        if (new File(folder, newName).exists()) {
+            System.out.println("Cannot rename to '" + newName + "' (exists locally)");
+            return false;
+        }
+
         if (remoteAddedInFolder == null) {
             // lazily retrieve possible conflicts with other remotely added files
             remoteAddedInFolder = new ArrayList<String>();
@@ -57,13 +64,13 @@ public abstract class RenamingConflict extends Conflict {
         
         // TODO: check for relative path names (eg. ../../newfile) and return false
         
-        // such a file must not exist locally yet and it must not be added
-        // during the next update (that would be another conflict then)
-        boolean result = !(new File(folder, newName).exists() || remoteAddedInFolder.contains(newName));
-        
-        if (!result) {
-            System.out.println("Cannot rename to '" + newName + "'");
+        // such a file must not be added during the next update (that would be
+        // another conflict then)        
+        if (remoteAddedInFolder.contains(newName)) {
+            System.out.println("Cannot rename to '" + newName + "' (exists on the server)");
+            return false;
         }
-        return result;
+
+        return true;
     }
 }

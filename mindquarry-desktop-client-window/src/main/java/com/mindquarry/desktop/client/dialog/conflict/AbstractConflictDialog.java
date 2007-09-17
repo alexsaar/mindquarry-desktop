@@ -60,7 +60,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
         setTitle(getTitle());
         setMessage(getMessage(), IMessageProvider.INFORMATION);
         getShell().setText(Messages.getString("Resolving conflicts")); //$NON-NLS-1$
-        getShell().setSize(600, 350);
+        getShell().setSize(600, getHeightHint());
         getShell().redraw();
         return contents;
     }
@@ -105,5 +105,13 @@ public abstract class AbstractConflictDialog extends DialogBase {
 
     protected String getTitle() {
         return Messages.getString("Resolve conflicts"); //$NON-NLS-1$
+    }
+    
+    /**
+     * Returns a hint as to the optimal height of the dialog.
+     * TODO: Make it dynamic, i.e. infer height from the components in the UI.
+     */
+    protected int getHeightHint() {
+        return 350;
     }
 }
