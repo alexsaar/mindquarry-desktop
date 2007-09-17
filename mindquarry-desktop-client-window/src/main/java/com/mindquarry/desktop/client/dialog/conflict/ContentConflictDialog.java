@@ -214,7 +214,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         // FIXME: Fix the layout, it's horrible! Need radio buttons to be in a
         // row and equidistant.
         Button button3 = makeRadioButton(subComposite, Messages
-                .getString("Rename local file and upload it under a new name:"), //$NON-NLS-1$
+                .getString("Rename local file and upload it using a new name:"), //$NON-NLS-1$
                 ContentConflict.Action.RENAME, false);
         button3.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {

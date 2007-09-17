@@ -55,11 +55,15 @@ public class AddConflictDialog extends RenamingConflictDialog {
 
     @Override
     protected String getMessage() {
-        return Messages
-                .getString("One of the local files you want to upload "
-                        + "already exists on the server. This case can occur if "
-                        + "you created a file or renamed an existing file and someone else created "
-                        + "the file in between (by creating it or renaming an existing file).");
+        return Messages.getString("This case can occur if you created a file " +
+                "or renamed an existing file and someone else created a file " +
+                "with the same name.");
+    }
+    
+    @Override
+    protected String getTitle() {
+        return Messages.getString(
+                "The file you are trying to synchronize already exists on the server"); //$NON-NLS-1$
     }
 
     @Override
@@ -67,7 +71,7 @@ public class AddConflictDialog extends RenamingConflictDialog {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
         Button button1 = makeRadioButton(subComposite, Messages
-                .getString("Rename file and upload it under the new name"), //$NON-NLS-1$
+                .getString("Rename file and upload it using a new name:"), //$NON-NLS-1$
                 Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {

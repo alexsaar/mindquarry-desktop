@@ -72,7 +72,7 @@ public class ObstructedConflictDialog extends RenamingConflictDialog {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
         Button button1 = makeRadioButton(subComposite, Messages
-                .getString("Rename file and upload it under the new name"), //$NON-NLS-1$
+                .getString("Rename file and upload it using a new name:"), //$NON-NLS-1$
                 ObstructedConflict.Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {

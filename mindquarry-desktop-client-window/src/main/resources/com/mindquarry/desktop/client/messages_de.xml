@@ -110,8 +110,12 @@
         <translation>Aktualisieren</translation>
     </message>
     <message>
-        <source>Rename file and upload it under the new name</source>
-        <translation>Datei umbenennen und unter neuem Namen hochladen</translation>
+        <source>Rename file and upload it using a new name:</source>
+        <translation>Datei umbenennen und unter neuem Namen hochladen:</translation>
+    </message>
+    <message>
+        <source>Rename local file and upload it using a new name:</source>
+        <translation>Lokale Datei umbenennen und unter neuem Namen hochladen:</translation>
     </message>
     <message>
         <source>Filename(s)</source>
@@ -362,8 +366,12 @@
         <translation>Öffnet den Einstellungsdialog inklusive der Konfiguration von Serverprofilen</translation>
     </message>
     <message>
-        <source>One of the local files you want to upload already exists on the server. This case can occur if you created a file or renamed an existing file and someone else created the file in between (by creating it or renaming an existing file).</source>
-        <translation>Eine Ihrer neuen lokalen Dateien existiert bereits auf dem Server. Dieser Fall kann auftreten, wenn Sie eine Datei erstellt oder umbenannt haben und jemand hat zwischenzeitlich eine Datei gleichen Namens auf dem Server erstellt.</translation>
+        <source>The file you are trying to synchronize already exists on the server</source>
+        <translation>Die Datei, die Sie synchronisieren wollen, existiert bereits auf dem Server</translation>
+    </message>
+    <message>
+        <source>This case can occur if you created a file or renamed an existing file and someone else created a file with the same name.</source>
+        <translation>Dieser Fall kann auftreten, wenn Sie eine Datei erstellt oder umbenannt haben, und jemand hat zwischenzeitlich eine Datei gleichen Namens auf dem Server erstellt.</translation>
     </message>
     <message>
         <source>Error executing MS Word</source>
@@ -598,5 +606,32 @@
         <source>Open selected file locally</source>
         <translation>Ausgewählte Datei lokal öffnen</translation>
     </message>
+    
+    
+    <message>
+        <source>Modified files:</source>
+        <translation>Veränderte Dateien:</translation>
+    </message>
+    <message>
+        <source>Your message:</source>
+        <translation>Ihre Beschreibung:</translation>
+    </message>
+    <message>
+        <source>Commit message for team '{0}'</source>
+        <translation>Änderungsbeschreibung für Team '{0}'</translation>
+    </message>
+    <message>
+        <source>Please describe the changes you have made to the following files in team '{0}'</source>
+        <translation>Bitte beschreiben Sie die Änderungen, die Sie in den folgenen Dateien des Teams '{0}' vorgenommen haben</translation>
+    </message>    
+    
+    
+    <message>
+        <source>local</source>
+        <translation>lokal</translation>
+    </message>
+    
+    
+    
 </context>
 </TS>
