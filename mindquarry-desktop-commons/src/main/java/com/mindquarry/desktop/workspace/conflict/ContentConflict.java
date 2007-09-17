@@ -21,10 +21,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
-import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.util.FileHelper;
-import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**

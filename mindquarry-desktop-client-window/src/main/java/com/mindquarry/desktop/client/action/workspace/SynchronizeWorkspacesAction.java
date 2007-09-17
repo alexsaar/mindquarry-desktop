@@ -216,7 +216,6 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         log.debug("synchronizeOrCheckout for team '" + team + "' took " +
                                 (System.currentTimeMillis()-startTime) + "ms (incl. user interaction if any)");
                     }
-                    workspaceWidget.refresh();
                 } catch (SynchronizeCancelException e) {
                     log.info("synchronization cancelled (1)"); //$NON-NLS-1$
                     cancelled = true;

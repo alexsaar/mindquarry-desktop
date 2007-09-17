@@ -13,24 +13,16 @@
  */
 package com.mindquarry.desktop.client.dialog.conflict;
 
-import java.io.File;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.ClientException;
-import org.tmatesoft.svn.core.SVNErrorCode;
-import org.tmatesoft.svn.core.SVNErrorMessage;
-import org.tmatesoft.svn.core.internal.wc.SVNErrorManager;
-import org.tmatesoft.svn.core.internal.wc.SVNFileType;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.conflict.RenamingConflict;

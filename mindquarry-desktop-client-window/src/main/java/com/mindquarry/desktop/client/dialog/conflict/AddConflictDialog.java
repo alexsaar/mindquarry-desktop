@@ -15,10 +15,6 @@ package com.mindquarry.desktop.client.dialog.conflict;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -28,7 +24,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.tigris.subversion.javahl.ClientException;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
