@@ -265,8 +265,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
         private boolean hasLocalChanges(ChangeSet changeSet) {
             for (File file : changeSet.getChanges().keySet()) {
                 Status status = changeSet.getChanges().get(file);
-                if (status.getTextStatus() != StatusKind.unversioned &&
-                        status.getTextStatus() != StatusKind.none &&
+                // TODO: better check for local changes
+                // Note: At this point, when dirs/files are added, they are
+                // 'unversioned', but they will be added later (which is a local
+                // change).
+                if (status.getTextStatus() != StatusKind.none &&
                         status.getTextStatus() != StatusKind.normal) {
                     return true;
                 }
