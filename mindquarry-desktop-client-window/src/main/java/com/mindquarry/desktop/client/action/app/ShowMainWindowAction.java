@@ -44,7 +44,7 @@ public class ShowMainWindowAction extends Action {
 
 	public void run() {
         client.getShell().open();
-	    client.getShell().setActive();
+	    client.getShell().forceActive();
 	}
 	
 	public boolean isToolbarAction() {
