@@ -30,6 +30,8 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  *         Trieloff</a>
  */
 public class Task extends ModelBase implements Cloneable {
+    private static final String NO_TITLE_PLACEHOLDER = "<No title>";
+
     public static final String STATUS_NEW = "new"; //$NON-NLS-1$
 
     public static final String STATUS_RUNNING = "running"; //$NON-NLS-1$
@@ -124,6 +126,9 @@ public class Task extends ModelBase implements Cloneable {
     }
 
     public String getTitle() {
+        if(title.equals("")) {
+            return NO_TITLE_PLACEHOLDER;
+        }
         return title;
     }
 
