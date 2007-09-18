@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentException;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -34,7 +35,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
@@ -57,8 +57,6 @@ public class TeamlistWidget extends WidgetBase {
     private static Log log = LogFactory.getLog(TeamlistWidget.class);
 
     private TableViewer viewer;
-    
-    private Table table;
 
     public TeamlistWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
@@ -87,26 +85,33 @@ public class TeamlistWidget extends WidgetBase {
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         // create team list table
-        table = new Table(parent, SWT.SINGLE | SWT.CHECK
+        viewer = new TableViewer(parent, SWT.SINGLE | SWT.CHECK
                 | SWT.FULL_SELECTION | SWT.BORDER);
-        table.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
-                true, 2, 1));
-        table.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+        viewer.setContentProvider(new TeamlistContentProvider());
+        viewer.setLabelProvider(new TeamlistLabelProvider());
+        viewer.getTable().addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (e.detail == SWT.CHECK) {
+                    setSelectedTeams();
+                }
+            }
+        });
+        viewer.getTable().setLayoutData(
+                new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
+        viewer.getTable().setFont(
+                JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
-        Menu menu = new Menu(table);
-        table.setMenu(menu);
+        Menu menu = new Menu(viewer.getTable());
+        viewer.getTable().setMenu(menu);
 
-        RefreshTeamlistAction action = (RefreshTeamlistAction)client
+        RefreshTeamlistAction action = (RefreshTeamlistAction) client
                 .getAction(RefreshTeamlistAction.class.getName());
         action.setTeamList(this);
-        
+
         ActionContributionItem refreshTeamsAction = new ActionContributionItem(
                 action);
         refreshTeamsAction.fill(menu, menu.getItemCount());
-
-        viewer = new TableViewer(table);
-        viewer.setContentProvider(new TeamlistContentProvider());
-        viewer.setLabelProvider(new TeamlistLabelProvider());
 
         // create selection buttons
         Button button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
@@ -163,6 +168,19 @@ public class TeamlistWidget extends WidgetBase {
         setChecked(true);
     }
 
+    public void loadSelection() {
+        Profile profile = Profile.getSelectedProfile(client
+                .getPreferenceStore());
+
+        TableItem[] tis = viewer.getTable().getItems();
+        for (TableItem item : tis) {
+            if (profile.getSelectedTeams().contains(
+                    ((Team) item.getData()).getId())) {
+                item.setChecked(true);
+            }
+        }
+    }
+
     public void deselectAll() {
         setChecked(false);
     }
@@ -176,6 +194,29 @@ public class TeamlistWidget extends WidgetBase {
         for (TableItem item : tis) {
             item.setChecked(checked);
         }
+        setSelectedTeams();
+    }
+
+    private void setSelectedTeams() {
+        PreferenceStore store = client.getPreferenceStore();
+        List<Profile> profiles = Profile.loadProfiles(store);
+        Profile selected = Profile.getSelectedProfile(store);
+
+        for (Profile profile : profiles) {
+            if (profile.getName().equals(selected.getName())) {
+                profile.clearSelectedTeams();
+
+                // set selected teams
+                TableItem[] tis = viewer.getTable().getItems();
+                for (TableItem item : tis) {
+                    if (item.getChecked()) {
+                        profile.selectTeam(((Team) item.getData()).getId());
+                    }
+                }
+                break;
+            }
+        }
+        Profile.storeProfiles(store, profiles);
     }
 
     private TeamList queryTeams() throws CancelException {
@@ -200,46 +241,56 @@ public class TeamlistWidget extends WidgetBase {
         } catch (NotAuthorizedException e) {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
-            
+
             Boolean retry = client.handleNotAuthorizedException(e);
-            if(retry) {
+            if (retry) {
                 return queryTeams();
             }
-            
-            throw new CancelException("Updating team list cancelled due to wrong credentials.", e);
+
+            throw new CancelException(
+                    "Updating team list cancelled due to wrong credentials.", e);
         } catch (UnknownHostException uhe) {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), uhe);
 
             Boolean retry = client.handleUnknownHostException(uhe);
-            if(retry) {
+            if (retry) {
                 return queryTeams();
             }
 
-            throw new CancelException("Updating team list cancelled due to unknown server.", uhe);
+            throw new CancelException(
+                    "Updating team list cancelled due to unknown server.", uhe);
         } catch (MalformedURLException murle) {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), murle);
 
             Boolean retry = client.handleMalformedURLException(murle);
-            if(retry) {
+            if (retry) {
                 return queryTeams();
             }
 
-            throw new CancelException("Updating team list cancelled due to unknown server.", murle);
+            throw new CancelException(
+                    "Updating team list cancelled due to unknown server.",
+                    murle);
         } catch (Exception e) {
-            // FIXME: could be: wrong server name, no network, server temporarily not reachable - better text
+            // FIXME: could be: wrong server name, no network, server
+            // temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
-            String msg = Messages.getString("Could not update team list from {0}: ",  //$NON-NLS-1$
-                    selected.getServerURL()) + e.getLocalizedMessage();
-            if (e.getCause() != null && e.getCause().getClass() == DocumentException.class) {
+            String msg = Messages.getString(
+                    "Could not update team list from {0}: ", //$NON-NLS-1$
+                    selected.getServerURL())
+                    + e.getLocalizedMessage();
+            if (e.getCause() != null
+                    && e.getCause().getClass() == DocumentException.class) {
                 // this happens when HTML is returned instead of XML
-                msg = Messages.getString("The specified URL \"{0}\" does belong to a " +
-                		"running Mindquarry server. No team information found at {1}",
-                		selected.getServerURL(), teamUrl);
+                msg = Messages
+                        .getString(
+                                "The specified URL \"{0}\" does belong to a "
+                                        + "running Mindquarry server. No team information found at {1}",
+                                selected.getServerURL(), teamUrl);
             }
-            MessageDialog.openError(getShell(), Messages.getString("Error"),  //$NON-NLS-1$
+            MessageDialog.openError(getShell(), Messages.getString("Error"), //$NON-NLS-1$
                     msg);
             return null;
         }

@@ -46,6 +46,8 @@ import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.events.ShellAdapter;
@@ -527,6 +529,11 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         });
         getShell().addShellListener(new IconifyingShellListener());
+        getShell().addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+                saveOptions();
+            }
+        });
         getShell().setImage(JFaceResources.getImage(CLIENT_IMG_KEY));
         getShell().setText(APPLICATION_NAME);
         getShell().setSize(800, 600);
@@ -636,7 +643,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
         } catch (MalformedURLException e) {
             MessageDialog.openError(getShell(), "Error", e
                     .getLocalizedMessage());
-            profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
+            // FIXME: what should be done here???
+            // profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
         }
         return Profile.addProfile(store, profile);
     }
@@ -885,7 +893,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             public void run() {
                 try {
                     teamList.refresh();
-                    teamList.selectAll();
+                    teamList.loadSelection();
                 } catch (CancelException e) {
                     // TODO: better exception handling?
                     log.error("Refresh on startup cancelled.", e);
@@ -920,7 +928,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             try {
                 displayNotConnected();
                 teamList.refresh();
-                teamList.selectAll();
+                teamList.loadSelection();
             } catch (CancelException e) {
                 // TODO: better exception handling
                 log.warn("Refreshing after profile change cancelled.", e);

@@ -51,7 +51,7 @@ public class CloseAction extends ActionBase {
 
 	public void run() {
 	    client.getTrayItem().dispose();
-	    System.exit(1);
+	    client.close();
 	}
 	
 	public String getGroup() {
