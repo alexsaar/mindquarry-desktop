@@ -21,7 +21,6 @@ import com.mindquarry.desktop.event.EventBase;
  *
  */
 public class ProfileActivatedEvent extends EventBase {
-
     private Profile profile;
 
     public ProfileActivatedEvent(Object source, Profile profile) {

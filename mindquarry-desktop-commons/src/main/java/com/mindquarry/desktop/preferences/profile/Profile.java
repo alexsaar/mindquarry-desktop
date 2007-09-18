@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.preferences.profile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,8 @@ public class Profile {
 
     public static final String PREF_NAME = "name"; //$NON-NLS-1$
 
+    public static final String PREF_SELECTED_TEAMS = "teams"; //$NON-NLS-1$
+
     public static final String PROFILE_KEY_BASE = "com.mindquarry.server.profile."; //$NON-NLS-1$
 
     public static final String PROFILE_SELECTED = "com.mindquarry.server.selected"; //$NON-NLS-1$
@@ -62,6 +65,8 @@ public class Profile {
 
     private String workspaceFolder;
 
+    private List<String> selectedTeams = new ArrayList<String>();
+
     /**
      * Default constructor
      */
@@ -77,6 +82,7 @@ public class Profile {
         password = new String(old.getPassword());
         serverURL = new String(old.getServerURL());
         workspaceFolder = new String(old.getWorkspaceFolder());
+        selectedTeams = new ArrayList<String>(old.getSelectedTeams());
     }
 
     /**
@@ -84,12 +90,22 @@ public class Profile {
      */
     public Profile(String name, String login, String password,
             String serverURL, String workspaceFolder) {
+        this(name, login, password, serverURL, workspaceFolder,
+                new ArrayList<String>());
+    }
+
+    /**
+     * Constructor that initializes all fields.
+     */
+    public Profile(String name, String login, String password,
+            String serverURL, String workspaceFolder, List<String> selectedTeams) {
         super();
         this.name = name;
         this.login = login;
         this.password = password;
         this.serverURL = serverURL;
         this.workspaceFolder = workspaceFolder;
+        this.selectedTeams = selectedTeams;
     }
 
     /**
@@ -187,6 +203,24 @@ public class Profile {
         this.password = password;
     }
 
+    public List<String> getSelectedTeams() {
+        return selectedTeams;
+    }
+
+    public void selectTeam(String teamID) {
+        if (!selectedTeams.contains(teamID)) {
+            selectedTeams.add(teamID);
+        }
+    }
+
+    public void clearSelectedTeams() {
+        selectedTeams.clear();
+    }
+
+    private void setSelectedTeams(List<String> selectedTeams) {
+        this.selectedTeams = selectedTeams;
+    }
+
     public static List<Profile> loadProfiles(PreferenceStore store) {
         HashMap<Integer, Profile> storedProfiles = new HashMap<Integer, Profile>();
 
@@ -197,9 +231,8 @@ public class Profile {
                 String val = store.getString(pref);
                 if (val.trim().equals(EMPTY)) {
                     // ignore empty values as PreferenceStore cannot properly
-                    // delete
-                    // entries, so we just set deleted entries to the empty
-                    // string
+                    // delete entries, so we just set deleted entries to the
+                    // empty string
                     continue;
                 }
                 // analyze preference
@@ -208,7 +241,7 @@ public class Profile {
                 String prefName = pref.substring(PROFILE_KEY_BASE.length() + 2,
                         pref.length());
 
-                // init profile
+                // initialize profile
                 Profile profile;
                 if (storedProfiles.containsKey(number)) {
                     profile = storedProfiles.get(number);
@@ -231,16 +264,14 @@ public class Profile {
 
     public static void storeProfiles(PreferenceStore store,
             List<Profile> profiles) {
-        // set properties from profiles
-        int pos = 0;
-
-        if (store == null)
+        if (store == null) {
             return;
-
+        }
         // PreferenceStore cannot properly delete entries, so we first "delete"
         // all entries by setting them to the empty string and then set all
         // entries that are left in the following loop (on reading the config,
         // we ignore empty entries):
+        int pos = 0;
         for (String storeKey : store.preferenceNames()) {
             if (storeKey.startsWith(Profile.PROFILE_KEY_BASE)) {
                 store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
@@ -256,7 +287,7 @@ public class Profile {
                 pos++;
             }
         }
-
+        // reset counter and store profiles
         pos = 0;
         for (Profile profile : profiles) {
             store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
@@ -273,6 +304,18 @@ public class Profile {
                     .getBytes());
             store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
                     + Profile.PREF_PASSWORD, new String(passwordData));
+
+            // store selected teams
+            String selectedTeamsValue = "";
+            for (String teamID : profile.getSelectedTeams()) {
+                if (selectedTeamsValue.equals("")) {
+                    selectedTeamsValue += teamID;
+                } else {
+                    selectedTeamsValue += ("," + teamID);
+                }
+            }
+            store.putValue(Profile.PROFILE_KEY_BASE + pos + DELIM
+                    + Profile.PREF_SELECTED_TEAMS, selectedTeamsValue);
             pos++;
         }
     }
@@ -366,6 +409,9 @@ public class Profile {
             profile.setServerURL(store.getString(pref));
         } else if (prefName.equals(PREF_WORKSPACES)) {
             profile.setWorkspaceFolder(store.getString(pref));
+        } else if (prefName.equals(PREF_SELECTED_TEAMS)) {
+            profile.setSelectedTeams(new ArrayList<String>(Arrays.asList(store
+                    .getString(pref).split(","))));
         }
     }
 }
