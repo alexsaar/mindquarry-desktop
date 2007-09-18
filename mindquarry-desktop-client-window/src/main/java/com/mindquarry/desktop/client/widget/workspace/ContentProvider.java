@@ -60,8 +60,7 @@ public class ContentProvider implements ITreeContentProvider {
                         return false;
                     }
                 }
-                if (!workspaceBrowser.localChanges.getFiles().contains(f)
-                        && !workspaceBrowser.remoteChanges.getFiles().contains(f)) {
+                if (!workspaceBrowser.changes.getFiles().contains(f)) {
                     return false;
                 }
                 if (name.equals(".svn")
@@ -76,8 +75,7 @@ public class ContentProvider implements ITreeContentProvider {
              * with a local or remote modification (or if itself is modified).
              */
             private boolean containsChange(File dir) {
-                List<File> allChangedFiles = workspaceBrowser.remoteChanges.getFiles();
-                allChangedFiles.addAll(workspaceBrowser.localChanges.getFiles());
+                List<File> allChangedFiles = workspaceBrowser.changes.getFiles();
                 String potentialSuperDir = dir.getAbsolutePath() + File.separator;
                 for (File changedFile : allChangedFiles) {
                     String file = changedFile.getAbsolutePath();
@@ -97,32 +95,27 @@ public class ContentProvider implements ITreeContentProvider {
         if (children != null) {
             allFiles.addAll(Arrays.asList(children));
         }
-        if (workspaceBrowser.remoteChanges != null) {
-            for (File remoteFile : workspaceBrowser.remoteChanges.getFiles()) {
-                int remoteStatus = -1;
-                remoteStatus = workspaceBrowser.remoteChanges.getStatus(remoteFile).
-                    getRepositoryTextStatus(); 
+        if (workspaceBrowser.changes != null) {
+            for (File file : workspaceBrowser.changes.getFiles()) {
+                int remoteStatus = workspaceBrowser.changes.getStatus(file).getRepositoryTextStatus();
+                int localStatus = workspaceBrowser.changes.getStatus(file).getTextStatus();
+
                 if (remoteStatus == StatusKind.added &&
-                        remoteFile.getParentFile().equals(rootDir)) {
-                    allFiles.add(remoteFile);
+                        file.getParentFile().equals(rootDir)) {
+                    allFiles.add(file);
                 }
-            }
-        }
-        // don't skip the files that were deleted locally:
-        if (workspaceBrowser.localChanges != null) {
-            for (File localFile : workspaceBrowser.localChanges.getFiles()) {
-                int localStatus = workspaceBrowser.localChanges.getStatus(localFile).
-                    getTextStatus();
+
+                // don't skip the files that were deleted locally:
                 if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
-                        && localFile.getParentFile().equals(rootDir)) {
+                        && file.getParentFile().equals(rootDir)) {
                     // If someone moves a directory, local status of the old name
                     // will be "deleted" locally, but remote status will be "added". 
                     // This directory has been displayed above already, so we need
                     // to filter them out:
-                    if (allFiles.contains(localFile)) {
+                    if (allFiles.contains(file)) {
                         continue;
                     }
-                    allFiles.add(localFile);
+                    allFiles.add(file);
                 }
             }
         }
@@ -140,8 +133,8 @@ public class ContentProvider implements ITreeContentProvider {
             return true;
         }
         // directories added remotely:
-        if (workspaceBrowser.remoteChanges != null) {
-            Status s = workspaceBrowser.remoteChanges.getStatus(file);
+        if (workspaceBrowser.changes != null) {
+            Status s = workspaceBrowser.changes.getStatus(file);
             if (s != null && s.getReposKind() == NodeKind.dir) {
                 return true;
             }
@@ -154,9 +147,9 @@ public class ContentProvider implements ITreeContentProvider {
     }
 
     private boolean isDeletedLocally(File file) {
-        if (workspaceBrowser.localChanges != null) {
-            for (File localFile : workspaceBrowser.localChanges.getFiles()) {
-                int localStatus = workspaceBrowser.localChanges.getStatus(localFile).
+        if (workspaceBrowser.changes != null) {
+            for (File localFile : workspaceBrowser.changes.getFiles()) {
+                int localStatus = workspaceBrowser.changes.getStatus(localFile).
                     getTextStatus();
                 if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
                         && localFile.getParentFile().equals(file)) {

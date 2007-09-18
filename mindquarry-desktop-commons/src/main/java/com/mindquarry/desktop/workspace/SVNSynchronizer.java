@@ -45,6 +45,7 @@ import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.util.MimeTypeUtilities;
 import com.mindquarry.desktop.util.RelativePath;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
+import com.mindquarry.desktop.workspace.conflict.Change;
 import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
@@ -573,6 +574,28 @@ public class SVNSynchronizer {
     }
 
     /**
+     * Finds all files that will be marked as (content-) conflicted after update.
+     */
+    private List<Conflict> findIncomingConflicted(List<Status> remoteAndLocalChanges) {
+        List<Conflict> conflicts = new ArrayList<Conflict>();
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local MODIFIED, remote MODIFIED
+            if (status.getTextStatus() == StatusKind.modified && 
+                    status.getRepositoryTextStatus() == StatusKind.modified) {
+                iter.remove();
+                
+                conflicts.add(new ContentConflict(status));
+            }
+        }
+        
+        return conflicts;
+    }
+    
+    /**
      * Handles conflicts that need to be resolved before calling remote status.
      * @throws IOException 
      * @throws CancelException 
@@ -667,6 +690,88 @@ public class SVNSynchronizer {
         
 		return conflicts;
 	}
+
+
+    /**
+     * Important method that returns a list of all changes and conflicts that
+     * are to take place when synchronising. 
+     */
+    public List<Change> getChangesAndConflicts() throws ClientException {
+        List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
+        List<Status> remoteAndLocalChanges2 = new ArrayList<Status>(remoteAndLocalChanges);
+        log.debug("Analyzing changes and clonflicts ...");
+
+        for (Status s : remoteAndLocalChanges) {
+            log.debug("analyzing " + SVNSynchronizer.textStatusDesc(s.getTextStatus()) +
+                    " " + nodeKindDesc(s.getNodeKind()) +
+                    " <->" +
+                    " " + SVNSynchronizer.textStatusDesc(s.getRepositoryTextStatus()) +
+                    " " + nodeKindDesc(s.getReposKind()) +
+                    " '" + wcPath(s) + "'");
+        }
+
+        List<Change> changes = new ArrayList<Change>();
+        
+        // LOCAL status can be everything except:
+        //   none/normal          won't be displayed in local changes
+        //   unversioned/missing  set to added/deleted (handled anyway)
+        //   merged               only happens on update
+        //   ignored              can be ignored ;-)
+        //   incomplete (on dir)  missing files are set to deleted
+        
+        // LOCAL status can be any one of those:
+        // simple ones:
+        //   modified
+        //   added
+        //   deleted
+        //   replaced (only possible with svn client)
+        // hard ones:
+        //   conflicted
+        //   obstructed (eg. deleted file, created dir with same name)
+        //   external (only possible with svn client)
+        
+        // REMOTE status can be only the following:
+        //   none
+        //   normal
+        //   modified
+        //   added
+        //   deleted
+        //   replaced (delete and re-add in one step)
+        
+
+        // content conflicts
+        changes.addAll(findLocalConflicted(remoteAndLocalChanges));
+        changes.addAll(findIncomingConflicted(remoteAndLocalChanges));
+
+        // replace conflicts
+        changes.addAll(findLocalContainerReplacedConflicts(remoteAndLocalChanges));
+        changes.addAll(findRemoteContainerReplacedConflicts(remoteAndLocalChanges));
+        changes.addAll(findReplacedModifiedConflicts(remoteAndLocalChanges));
+      
+        // add conflicts
+        changes.addAll(findAddConflicts(remoteAndLocalChanges));
+        
+        // delete/modified conflicts
+        changes.addAll(findLocalContainerDeleteConflicts(remoteAndLocalChanges));
+        changes.addAll(findRemoteContainerDeleteConflicts(remoteAndLocalChanges));
+        changes.addAll(findFileDeleteModifiedConflicts(remoteAndLocalChanges));
+        changes.addAll(findFileModifiedDeleteConflicts(remoteAndLocalChanges));
+        
+        // property conflicts
+        // get up-to-date remote and local changes to get property conflicts of
+        // previously removed stati
+        // TODO: use deep copy rather than repeated call to getRemoteAndLocalChanges()
+        changes.addAll(findPropertyConflicts(remoteAndLocalChanges2));
+        
+        // add normal changes
+        for (Status status : remoteAndLocalChanges) {
+            Change change = new Change(status);
+            log.info(change);
+            changes.add(change);
+        }
+
+        return changes;
+    }
 
     /**
 	 * Finds all Add/Add conflicts, including file/file, file/dir, dir/file and

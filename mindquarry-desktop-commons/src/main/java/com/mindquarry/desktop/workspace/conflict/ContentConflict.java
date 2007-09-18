@@ -17,8 +17,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
@@ -34,8 +32,6 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  */
 public class ContentConflict extends RenamingConflict {
     
-    private static Log log = LogFactory.getLog(ContentConflict.class);
-
     private Action action = Action.UNKNOWN;
     private File conflictServerFile;
     private File conflictLocalFile;

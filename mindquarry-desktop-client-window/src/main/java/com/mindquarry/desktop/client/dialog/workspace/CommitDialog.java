@@ -92,7 +92,7 @@ public class CommitDialog extends DialogBase {
         StringBuilder sb = new StringBuilder();
         for (File file : changeSet.getChanges().keySet()) {
             ModificationDescription desc = ModificationDescription.
-                getLocalDescription(changeSet.getChanges().get(file));
+                getDescription(changeSet.getChanges().get(file));
             String shortDesc = desc.getShortDescription();
             // TODO: this currently happens because the changeset
             // also contains remote changes -- needs cleanup:

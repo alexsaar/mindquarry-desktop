@@ -23,6 +23,9 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
 import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.workspace.conflict.Change;
+import com.mindquarry.desktop.workspace.conflict.Conflict;
+import com.mindquarry.desktop.workspace.conflict.LocalAddition;
 
 /**
  * Image, text, and short text that describe a local or remote change so it
@@ -78,8 +81,31 @@ public class ModificationDescription {
         return shortDescription;
     }
 
-    public static ModificationDescription getLocalDescription(Status localStatusObj) {
-        return getDescription(localStatusObj, null);
+    public static ModificationDescription getDescription(Change change) {
+        // normal behavior:
+//        return getDescription(change.getStatus(), change.getStatus());
+
+        if (change == null) {
+            return new ModificationDescription(null, "", "");
+        }
+
+        // TODO: use class of change to infer description, e.g.
+        if (change instanceof Conflict) {
+            return new ModificationDescription(conflictImage, change.getClass()
+                    .toString(), "Conflict");
+        } else if (change instanceof LocalAddition) {
+            return new ModificationDescription(uploadImage, change.getClass()
+                    .toString(), "Added");
+        } else {
+            // ...
+            ModificationDescription md = getDescription(change.getStatus(),
+                    change.getStatus());
+            if (md == null) {
+                return new ModificationDescription(null, "", "");
+            }
+            return new ModificationDescription(md.getImage(), change.getClass()
+                    .toString(), md.getShortDescription());
+        }
     }
     
     public static ModificationDescription getDescription(Status localStatusObj, Status remoteStatusObj) {

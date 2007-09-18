@@ -55,6 +55,7 @@ import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 import com.mindquarry.desktop.event.EventBus;
+import com.mindquarry.desktop.workspace.conflict.Change;
 
 /**
  * Class that creates the workspace widget.
@@ -177,8 +178,8 @@ public class WorkspaceUpdateContainerRunnable extends
             public Image getImage(Object element) {
                 File file = (File) element;
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.localChanges != null && widget.localChanges.getFiles().contains(file)) {
-                    Status status = widget.localChanges.getStatus(file);
+                if (widget.changes != null && widget.changes.getFiles().contains(file)) {
+                    Status status = widget.changes.getStatus(file);
                     // first check for a NodeKind set as local property
                     if (status.getNodeKind() == NodeKind.dir) {
                         return FOLDER_IMAGE;
@@ -211,18 +212,16 @@ public class WorkspaceUpdateContainerRunnable extends
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
-                Status localStatus = null;
-                Status remoteStatus = null;
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.localChanges != null && widget.localChanges.getFiles().contains(file)) {
-                    localStatus = widget.localChanges.getStatus(file);
+
+                ModificationDescription descr = ModificationDescription.getDescription(null, null);
+                if (widget.changes != null
+                        && widget.changes.getFiles().contains(file)) {
+                    descr = ModificationDescription
+                            .getDescription(widget.changes.getChange(file));
                 }
-                if (widget.remoteChanges != null && widget.remoteChanges.getFiles().contains(file)) {
-                    remoteStatus = widget.remoteChanges.getStatus(file);
-                }
-                ModificationDescription descr = 
-                    ModificationDescription.getDescription(localStatus, remoteStatus);
+                
                 return descr.getImage();
             }
 
@@ -353,17 +352,14 @@ public class WorkspaceUpdateContainerRunnable extends
                                 }
                                 
                                 WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
-                                Status localStatus = null;
-                                Status remoteStatus = null;
                                 File file = (File)item.getData();
-                                if (browserWidget.localChanges.getFiles().contains(file)) {
-                                    localStatus = browserWidget.localChanges.getStatus(file);
+                                Change change = null;
+                                if (browserWidget.changes.getFiles().contains(file)) {
+                                    change = browserWidget.changes.getChange(file);
                                 }
-                                if (browserWidget.remoteChanges.getFiles().contains(file)) {
-                                	remoteStatus = browserWidget.remoteChanges.getStatus(file);
-                                }
+                                
                                 ModificationDescription modDescription = 
-                                    ModificationDescription.getDescription(localStatus, remoteStatus);
+                                    ModificationDescription.getDescription(change);
                                 
                                 String tooltip = modDescription.getDescription();
                                 if (tooltip != null && !tooltip.equals("")) {

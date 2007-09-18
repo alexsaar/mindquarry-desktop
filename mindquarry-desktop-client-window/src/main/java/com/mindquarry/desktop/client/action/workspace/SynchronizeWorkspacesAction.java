@@ -180,7 +180,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     // ask the user for the message(s) and remember it, this
                     // way he can let the sync run in the background:
                     final Map<Team,String> commitMessages = new HashMap<Team, String>();
-                    ChangeSets changeSets = workspaceWidget.getLocalChanges();
+                    ChangeSets changeSets = workspaceWidget.getChanges();
                     for (final ChangeSet changeSet : changeSets.getList()) {
                         // TODO: clean up, this is only needed because the list
                         // returned by getLocalChanges() does actually also contain
@@ -263,7 +263,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
 
         private boolean hasLocalChanges(ChangeSet changeSet) {
             for (File file : changeSet.getChanges().keySet()) {
-                Status status = changeSet.getChanges().get(file);
+                Status status = changeSet.getChanges().get(file).getStatus();
                 // TODO: better check for local changes
                 // Note: At this point, when dirs/files are added, they are
                 // 'unversioned', but they will be added later (which is a local

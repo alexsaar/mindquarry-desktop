@@ -19,9 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.tigris.subversion.javahl.Status;
-
 import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.workspace.conflict.Change;
 
 /**
  * A set of changed files and their status (per team).
@@ -31,7 +30,7 @@ import com.mindquarry.desktop.model.team.Team;
 public class ChangeSet {
 
     private Team team;
-    private Map<File, Status> changes = new HashMap<File, Status>();
+    private Map<File, Change> changes = new HashMap<File, Change>();
     
     public ChangeSet(Team team) {
         this.team = team;
@@ -41,11 +40,11 @@ public class ChangeSet {
         return team;
     }
     
-    public void addChange(File file, Status status) {
-        changes.put(file, status);
+    public void addChange(Change change) {
+        changes.put(change.getFile(), change);
     }
 
-    public Map<File, Status> getChanges() {
+    public Map<File, Change> getChanges() {
         return changes;
     }
 
@@ -56,7 +55,7 @@ public class ChangeSet {
     public String toString() {
         // Status doesn't offer a useful toString() anyway, so print 
         // just the file names:
-        return team + ": " + changes.keySet();
+        return team + ": " + changes.values();
     }
 
 }

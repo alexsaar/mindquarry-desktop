@@ -5,11 +5,9 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
-import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -20,35 +18,17 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * @author <a href="mailto:victor.saar@mindquarry.com">Victor Saar</a>
  * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
-public abstract class Conflict {
+public abstract class Conflict extends Change {
     
-	protected Log log;
-	
-    protected SVNClientImpl client;
-
-	protected Status status;
-	
 	public Conflict(Status status) {
-		this.status = status;
-		log = LogFactory.getLog(getClass());
+        super(status);
 	}
-	
-	/**
-	 * This setter is ensured to be called before {@link accept()} so that an
-	 * implementation has full access to the svn client.
-	 */
-	public void setSVNClient(SVNClientImpl client) {
-	    this.client = client;
-	}
-
-	/**
-	 * Returns the status (including local and remote) of the central object
-	 * (ie. file or folder) in the conflict.
-	 */
-    public Status getStatus() {
-        return status;
-    }
     
+	@Override
+    public String toString() {
+        return "!"+super.toString();
+    }
+
     /**
      * Pass this conflict to a ConflictHandler implementation that will choose
      * one of the possible actions to resolve the conflict. This is typically

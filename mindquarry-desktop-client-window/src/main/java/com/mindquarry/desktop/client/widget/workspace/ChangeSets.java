@@ -22,6 +22,8 @@ import java.util.Set;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.workspace.conflict.Change;
+
 /**
  * A list of change sets (just a List with some convenience methods),
  * one changeset per team.
@@ -55,15 +57,26 @@ public class ChangeSets {
     }
 
     /**
-     * Get the status of a file (no matter what team it is in).
+     * Get the Change item of a file (no matter what team it is in).
      */
-    public Status getStatus(File file) {
+    public Change getChange(File file) {
         for (ChangeSet changeSet : changeSets) {
             for (File tmpFile : changeSet.getFiles()) {
                 if (tmpFile.equals(file)) {
                     return changeSet.getChanges().get(file);
                 }
             }
+        }
+        return null;
+    }
+
+    /**
+     * Get the status of a file (no matter what team it is in). Convenience method.
+     */
+    public Status getStatus(File file) {
+        Change change = getChange(file);
+        if (change != null) {
+            return change.getStatus();
         }
         return null;
     }
