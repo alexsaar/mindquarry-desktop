@@ -875,8 +875,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
     // ### INNER CLASSES
     // #########################################################################
     class IconifyingShellListener implements ShellListener {
-        boolean first = true;
-
         public void shellClosed(ShellEvent e) {
         }
 
@@ -901,11 +899,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
         this.actions = actions;
     }
     
-    public boolean close() {
-        getShell().setVisible(false);
-        return false;
-    }
-
     public TrayItem getTrayItem() {
         return this.trayItem;
     }
