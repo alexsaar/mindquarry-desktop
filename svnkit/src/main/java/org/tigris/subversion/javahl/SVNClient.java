@@ -12,6 +12,7 @@
 package org.tigris.subversion.javahl;
 
 import java.io.OutputStream;
+import java.util.Map;
 
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
@@ -130,13 +131,21 @@ public class SVNClient implements SVNClientInterface {
     public long[] update(String[] path, Revision revision, boolean recurse, boolean ignoreExternals) throws ClientException {
         return myDelegate.update(path, revision, recurse, ignoreExternals);
     }
-
+    
     public long commit(String[] path, String message, boolean recurse) throws ClientException {
-        return myDelegate.commit(path, message, recurse);
+        return commit(path, message, recurse, null);
     }
 
+    public long commit(String[] path, String message, boolean recurse, Map revprops) throws ClientException {
+        return myDelegate.commit(path, message, recurse, revprops);
+    }
+    
     public long commit(String[] path, String message, boolean recurse, boolean noUnlock) throws ClientException {
-        return myDelegate.commit(path, message, recurse, noUnlock);
+        return commit(path, message, recurse, noUnlock, null);
+    }
+
+    public long commit(String[] path, String message, boolean recurse, boolean noUnlock, Map revprops) throws ClientException {
+        return myDelegate.commit(path, message, recurse, noUnlock, revprops);
     }
 
     public void copy(String srcPath, String destPath, String message, Revision revision) throws ClientException {
