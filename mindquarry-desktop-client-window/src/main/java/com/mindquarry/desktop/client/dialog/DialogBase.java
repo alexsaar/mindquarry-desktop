@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.dialog;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpEvent;
@@ -41,6 +42,16 @@ public abstract class DialogBase extends TitleAreaDialog {
         
         setShellStyle(SWT.RESIZE);
         setBlockOnOpen(true);
+    }
+    
+    protected void setValid() {
+        setErrorMessage(null);
+        getButton(IDialogConstants.OK_ID).setEnabled(true);
+    }
+
+    protected void setInvalid(String message) {
+        setErrorMessage(message);
+        getButton(IDialogConstants.OK_ID).setEnabled(false);
     }
     
     protected abstract String getHelpURL();
