@@ -62,7 +62,7 @@
             <entry key="10">Use this button to finish a running task.</entry>
             <entry key="11">Could not update team list.</entry>
             <entry key="12">Authorization Error</entry>
-            <entry key="13">You are not a member of a team. Thus you can not create new tasks.</entry>
+            <entry key="13">You are not allowed to create tasks because you are not a member of any team.</entry>
             <entry key="14">new task</entry>
             <entry key="15">summary of the task</entry>
             <entry key="16">Network error</entry>
@@ -97,7 +97,7 @@
             <entry key="1">Synchronizing tasks</entry>
             <entry key="2">Updating task list</entry>
             <entry key="3">Description</entry>
-            <entry key="4">Currently no tasks are active.</entry>
+            <entry key="4">Currently no tasks are available.</entry>
             <entry key="5">List of tasks could not be updated</entry>
             <entry key="6">Network error</entry>
             <entry key="7">Could not update the task</entry>
@@ -132,14 +132,14 @@
     <message id="com.mindquarry.desktop.client.task.dialog.TaskDialog">
         <locale language="en">
             <entry key="0">Edit the contents of a task</entry>
-            <entry key="1">Please enter the tasks data and press OK for adding/changing the task.</entry>
+            <entry key="1">Please enter the tasks data and click OK for adding/changing the task.</entry>
             <entry key="2">Edit Task</entry>
             <entry key="3">Title</entry>
             <entry key="4">Status</entry>
             <entry key="5">Priority</entry>
             <entry key="6">Summary</entry>
             <entry key="7">Due Date</entry>
-            <entry key="8">No Due date set for this task, select one below</entry>
+            <entry key="8">No Due date is set for this task, please select one below</entry>
         </locale>
         
         <locale language="de">
@@ -211,7 +211,7 @@
 
     <message id="com.mindquarry.desktop.client.workspace.dialog.AlreadyAddedConflictDialog">
         <locale language="en">
-            <entry key="0">One of the local files you want to upload to the server already exists on the server. This case can occur if you created a file or renamed an existing file and someone created the file in between (by creating it or renaming an existing file).</entry>
+            <entry key="0">One of the local files you are attempting to upload to the server already exists on the server. This can occur if you created a file or renamed an existing file while someone else in the meantime gave a file the same name. (by creating it or renaming an existing file).</entry>
             <entry key="1">Rename file and upload it under the new name</entry>
             <entry key="2">Overwrite the file on the server with your local version</entry>
         </locale>
@@ -226,8 +226,8 @@
     <message id="com.mindquarry.desktop.client.workspace.dialog.ContainerDeletedConflictDialog">
         <locale language="en">
             <entry key="0">One of your local modifications cannot be uploaded because the directory with your modification has been deleted on the server.</entry>
-            <entry key="1">Move the file to a different directory and then upload it</entry>
-            <entry key="2">Create the deleted directory on the server and upload your file</entry>
+            <entry key="1">Move the file to a different directory and then upload the file</entry>
+            <entry key="2">Create the deleted directory anew on the server and then upload your changes</entry>
         </locale>
         
         <locale language="de">
@@ -240,8 +240,8 @@
     <message id="com.mindquarry.desktop.client.workspace.dialog.FileDeletedConflictDialog">
         <locale language="en">
             <entry key="0">One of your local modifications cannot be uploaded because the directory with your modification has been deleted on the server.</entry>
-            <entry key="1">Move the file to a different directory and then upload it</entry>
-            <entry key="2">Create the deleted directory on the server and upload your file</entry>
+            <entry key="1">Create the file anew on the server and then upload the fle</entry>
+            <entry key="2">Rename the file and then upload the file</entry>
         </locale>
         
         <locale language="de">
@@ -253,13 +253,13 @@
 
     <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteContainerWithAddConflictDialog">
         <locale language="en">
-            <entry key="0">You are trying to delete a directory in which someone else added a file on the server.</entry>
+            <entry key="0">You are trying to delete a directory that has had files added to it concurrently on the Server</entry>
             <entry key="1">Delete the directory on the server anyway</entry>
-            <entry key="2">Don't delete the directory and fetch the new files from the server</entry>
+            <entry key="2">Don't delete the directory instead replace it with the new files</entry>
         </locale>
         
         <locale language="de">
-            <entry key="0">Sie möchten ein Verzeichnis löschen, zu dem auf dem Server inzwischen Dateien hinzugefügt wurden.</entry>
+            <entry key="0">Sie möchten ein Verzeichnis löschen, zu dem auf dem Server inzwischen Dateien hinzugefügt wurden</entry>
             <entry key="1">Das Verzeichnis auf dem Server trotzdem löschen</entry>
             <entry key="2">Das Verzeichnis nicht löschen und die neuen Dateien übernehmen</entry>
         </locale>
@@ -267,13 +267,13 @@
 
     <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteContainerWithChangeConflictDialog">
         <locale language="en">
-            <entry key="0">You are trying to delete a directory in which someone else modified a file on the server.</entry>
+            <entry key="0">You are trying to delete a directory that has concurrently on the Server been modified</entry>
             <entry key="1">Delete the directory on the server anyway</entry>
-            <entry key="2">Don't delete the directory and fetch the modified files from the server</entry>
+            <entry key="2">Don't delete the directory instead replace it with the changed files</entry>
         </locale>
         
         <locale language="de">
-            <entry key="0">Sie möchten ein Verzeichnis löschen, in dem auf dem Server inzwischen Dateien geändert wurden.</entry>
+            <entry key="0">Sie möchten ein Verzeichnis löschen, in dem auf dem Server inzwischen Dateien geändert wurden</entry>
             <entry key="1">Das Verzeichnis auf dem Server trotzdem löschen</entry>
             <entry key="2">Das Verzeichnis nicht löschen und die geänderten Dateien übernehmen</entry>
         </locale>
@@ -281,9 +281,9 @@
 
     <message id="com.mindquarry.desktop.client.workspace.dialog.DeleteFileWithChangeConflictDialog">
         <locale language="en">
-            <entry key="0">You are trying to delete a file which someone else modified a file on the server.</entry>
+            <entry key="0">You are trying to delete a file on the server that has been concurrently modified.</entry>
             <entry key="1">Delete the file on the server anyway</entry>
-            <entry key="2">Don't delete the file and fetch the modified files from the server</entry>
+            <entry key="2">Don't delete the file rather fetch the modified files from the server</entry>
         </locale>
         
         <locale language="de">
@@ -295,7 +295,7 @@
 
     <message id="com.mindquarry.desktop.client.workspace.dialog.ModifyConflictDialog">
         <locale language="en">
-            <entry key="0">Somebody else modified the file your are trying to synchronize. Please select the version that should be treated as the current version.</entry>
+            <entry key="0">Somebody modified the file you are trying to synchronize. Please select the version that should be treated as the current version.</entry>
             <entry key="1">Your local Version</entry>
             <entry key="2">Remote Version, last change by user </entry>
         </locale>
@@ -310,7 +310,7 @@
     <message id="com.mindquarry.desktop.client.workspace.JavaSVNHelper">
         <locale language="en">
             <entry key="0">Change Description</entry>
-            <entry key="1">Description of your changes.</entry>
+            <entry key="1">Description of changes done by you</entry>
         </locale>
         
         <locale language="de">
@@ -322,7 +322,7 @@
     <message id="com.mindquarry.desktop.client.workspace.ListWorkspacesOperation">
         <locale language="en">
             <entry key="0">Retrieving team list</entry>
-            <entry key="1">Could not retrieve list of teams for workspace synchronization.</entry>
+            <entry key="1">Could not retrieve the list of teams for workspace synchronization.</entry>
         </locale>
         
         <locale language="de">
@@ -335,7 +335,7 @@
         <locale language="en">
             <entry key="0">Checking workspace changes</entry>
             <entry key="1">Publishing workspace</entry>
-            <entry key="2">Please provide a short description of the changes you have made to workspace</entry>
+            <entry key="2">Please give a short description of the changes that you have made to the workspace</entry>
             <entry key="3">Could not publish workspace changes</entry>
         </locale>
         
