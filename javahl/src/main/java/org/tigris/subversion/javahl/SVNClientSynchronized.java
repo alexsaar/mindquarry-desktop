@@ -18,6 +18,7 @@
 package org.tigris.subversion.javahl;
 
 import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * This class provides a threadsafe wrapped for SVNClient
@@ -523,6 +524,12 @@ public class SVNClientSynchronized implements SVNClientInterface
      *         -1 if the revision number is invalid.
      * @exception ClientException
      */
+    public long commit(String[] path, String message, boolean recurse, Map revprops)
+    throws ClientException
+	{
+    	return commit(path, message, recurse);
+	}
+    
     public long commit(String[] path, String message, boolean recurse)
             throws ClientException
     {
@@ -1376,6 +1383,11 @@ public class SVNClientSynchronized implements SVNClientInterface
      * @throws ClientException
      * @since 1.2
      */
+    public long commit(String[] path, String message, boolean recurse,
+            boolean noUnlock, Map revprops) throws ClientException {
+    	return commit(path, message, recurse, noUnlock);
+    }
+    
     public long commit(String[] path, String message, boolean recurse,
                        boolean noUnlock) throws ClientException
     {

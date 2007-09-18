@@ -19,6 +19,7 @@ package org.tigris.subversion.javahl;
  */
 
 import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * This is the main interface class. All subversion commandline client svn &
@@ -411,6 +412,12 @@ public class SVNClient implements SVNClientInterface
      *         -1 if the revision number is invalid.
      * @exception ClientException
      */
+    public long commit(String[] path, String message, boolean recurse, Map revprops)
+    throws ClientException
+	{
+    	return commit(path, message, recurse);
+	}
+    
     public long commit(String[] path, String message, boolean recurse)
             throws ClientException
     {
@@ -1098,6 +1105,11 @@ public class SVNClient implements SVNClientInterface
      * @throws ClientException
      * @since 1.2
      */
+    public long commit(String[] path, String message, boolean recurse,
+            boolean noUnlock, Map revprops) throws ClientException {
+    	return commit(path, message, recurse, noUnlock);
+    }
+    
     public native long commit(String[] path, String message, boolean recurse,
                               boolean noUnlock) throws ClientException;
 
