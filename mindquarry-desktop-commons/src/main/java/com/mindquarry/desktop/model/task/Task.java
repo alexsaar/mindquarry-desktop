@@ -30,22 +30,16 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  *         Trieloff</a>
  */
 public class Task extends ModelBase implements Cloneable {
-    private static final String NO_TITLE_PLACEHOLDER = "<No title>";
+    public static final String NO_TITLE_PLACEHOLDER = "<No title>";
 
     public static final String STATUS_NEW = "new"; //$NON-NLS-1$
-
     public static final String STATUS_RUNNING = "running"; //$NON-NLS-1$
-
     public static final String STATUS_PAUSED = "paused"; //$NON-NLS-1$
-
     public static final String STATUS_DONE = "done"; //$NON-NLS-1$
 
     public static final String PRIORITY_LOW = "low"; //$NON-NLS-1$
-
     public static final String PRIORITY_MEDIUM = "medium"; //$NON-NLS-1$
-
     public static final String PRIORITY_IMPORTANT = "important"; //$NON-NLS-1$
-
     public static final String PRIORITY_CRITICAL = "critical"; //$NON-NLS-1$
 
     private String url;
