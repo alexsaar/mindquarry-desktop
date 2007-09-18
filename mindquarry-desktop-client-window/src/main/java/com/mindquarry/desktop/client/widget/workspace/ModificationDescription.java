@@ -83,13 +83,6 @@ public class ModificationDescription {
     }
     
     public static ModificationDescription getDescription(Status localStatusObj, Status remoteStatusObj) {
-        // checking local status first
-        if ((localStatusObj != null && localStatusObj.getNodeKind() == NodeKind.dir) || 
-                (remoteStatusObj != null && remoteStatusObj.getNodeKind() == NodeKind.dir)) {
-            // showing upload/download status on directories is confusing,
-            // just don't display anything:
-            return new ModificationDescription(null, "", "");
-        }
         int localStatus = -1;
         int remoteStatus = -1;
         if (localStatusObj != null) {
@@ -98,10 +91,19 @@ public class ModificationDescription {
         if (remoteStatusObj != null) {
             remoteStatus = remoteStatusObj.getRepositoryTextStatus();
         }
+
+        // occasionally, showing upload/download status on directories is
+        // confusing, so need to know whether file/dir
+        boolean isDir = (localStatusObj != null && localStatusObj.getNodeKind() == NodeKind.dir)
+                || (remoteStatusObj != null && remoteStatusObj.getNodeKind() == NodeKind.dir);
+        
+        log.info("ModificationDescription -- status "+statusToString(localStatus)+"/"+statusToString(remoteStatus));
         switch (localStatus) {
             case StatusKind.obstructed:
                 // FIXME: add question mark icon
-                break;
+                return new ModificationDescription(conflictImage,
+                        Messages.getString("This file is obstructed."), // TODO: better description
+                        Messages.getString("Obstructed"));
     
             case StatusKind.added:
             case StatusKind.unversioned:
@@ -144,10 +146,14 @@ public class ModificationDescription {
         // checking remote status
         switch (remoteStatus) {
             case StatusKind.modified:
-                return new ModificationDescription(downloadImage,
-                        Messages.getString("This item has been modified on the server, " +
-                        "the new version will be downloaded."), 
-                        Messages.getString("Modified"));
+                if (isDir) { // don't show icon in this case, as it confuses the user
+                    return new ModificationDescription(null, Messages.getString(
+                            "Items in this folder have been modified or deleted on the server."), "");
+                } else { // file
+                    return new ModificationDescription(downloadImage, Messages.getString(
+                            "This item has been modified on the server, the new version will be downloaded."),
+                            Messages.getString("Modified"));
+                }
     
             case StatusKind.added:
                 return new ModificationDescription(downloadImage,
@@ -164,9 +170,75 @@ public class ModificationDescription {
 
         if (localStatus != -1 || remoteStatus != -1) {
             log.warn("Unhandled case for local/remote status "
-                    + localStatus + "/" + remoteStatus);
+                    + statusToString(localStatus) + "/"
+                    + statusToString(remoteStatus));
         }
         return new ModificationDescription(null, "", "");
     }
 
+    /**
+     * Converts a status based on {@link StatusKind} to a String.
+     * @param status Status to convert (e.g. StatusKind.added).
+     * @return String representation of the status (e.g. "added").
+     */
+    public static String statusToString(int status) {
+        switch (status) {
+        // does not exist
+        case StatusKind.none:
+            return "none"; //$NON-NLS-1$
+
+        // exists, but uninteresting
+        case StatusKind.normal:
+            return "normal"; //$NON-NLS-1$
+
+        // text or props have been modified
+        case StatusKind.modified:
+            return "modified"; //$NON-NLS-1$
+
+        // is scheduled for additon
+        case StatusKind.added:
+            return "added"; //$NON-NLS-1$
+
+        // scheduled for deletion
+        case StatusKind.deleted:
+            return "deleted"; //$NON-NLS-1$
+
+        // is not a versioned thing in this wc
+        case StatusKind.unversioned:
+            return "unversioned"; //$NON-NLS-1$
+
+        // under v.c., but is missing
+        case StatusKind.missing:
+            return "missing"; //$NON-NLS-1$
+
+        // was deleted and then re-added
+        case StatusKind.replaced:
+            return "replaced"; //$NON-NLS-1$
+
+        // local mods received repos mods
+        case StatusKind.merged:
+            return "merged"; //$NON-NLS-1$
+
+        // local mods received conflicting repos mods
+        case StatusKind.conflicted:
+            return "conflicted"; //$NON-NLS-1$
+
+        // an unversioned resource is in the way of the versioned resource
+        case StatusKind.obstructed:
+            return "obstructed"; //$NON-NLS-1$
+
+        // a resource marked as ignored
+        case StatusKind.ignored:
+            return "ignored"; //$NON-NLS-1$
+
+        // a directory doesn't contain a complete entries list
+        case StatusKind.incomplete:
+            return "incomplete"; //$NON-NLS-1$
+
+        // an unversioned path populated by an svn:externals property
+        case StatusKind.external:
+            return "external"; //$NON-NLS-1$
+        }
+        return "invalid (" + status + ")"; //$NON-NLS-1$
+    }
 }
