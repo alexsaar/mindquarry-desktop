@@ -49,11 +49,12 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  * @author <a href="mailto:saar(at)mindquarry(dot)com">Alexander Saar</a>
  * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
  */
-public class TaskContainerWidget extends ContainerWidget<TableViewer> implements EventListener {
+public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
+        EventListener {
     private static final String FACET_ALL = "all";
 
-    private static final Color HIGHLIGHT_COLOR = new Color(Display.getCurrent(),
-            233, 233, 251);
+    private static final Color HIGHLIGHT_COLOR = new Color(
+            Display.getCurrent(), 233, 233, 251);
 
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
@@ -68,7 +69,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     private int taskDownloadCount = 1;
     private int tasksInCurrentTeamCount = -1;
     private String updateMessage = null;
-    
+
     public TaskContainerWidget(Composite parent, MindClient client) {
         super(parent, SWT.BORDER, client);
         EventBus.registerListener(this);
@@ -103,11 +104,13 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     }
 
     private void applyFacets() {
+        showContent();
         if ((viewer != null) && (tasks != null)) {
             TaskList content = new TaskList();
             content.getTasks().addAll(tasks.getTasks());
 
-            if ((statusFacet.equals(FACET_ALL)) && (priorityFacet.equals(FACET_ALL))
+            if ((statusFacet.equals(FACET_ALL))
+                    && (priorityFacet.equals(FACET_ALL))
                     && searchFacet.equals("")) {
                 viewer.setInput(tasks);
                 viewer.refresh();
@@ -146,9 +149,15 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 }
             }
             // update table
-            viewer.setInput(content);
-            viewer.refresh();
-            markColumns();
+            if (content.getTasks().isEmpty()) {
+                showMessage(Messages
+                        .getString("No task matches the selected filter"),
+                        "info");
+            } else {
+                viewer.setInput(content);
+                viewer.refresh();
+                markColumns();
+            }
         }
     }
 
@@ -192,23 +201,24 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 String login = profile.getLogin();
                 String password = profile.getPassword();
 
-                TaskList taskList = new TaskList(url + "/tasks/"
-                        + team.getId() + "/", login, password);
+                TaskList taskList = new TaskList(url + "/tasks/" + team.getId()
+                        + "/", login, password);
 
                 // set for use in onEvent():
                 tasksInCurrentTeamCount = taskList.getSize();
                 taskDownloadCount = 1;
-                updateMessage = Messages.getString(
-                        "Updating task list for team \"{0}\" (team {1} of {2}): ",
-                        team.getName(),
-                        Integer.toString(teams.indexOf(team)+1),
-                        Integer.toString(teams.size()));
+                updateMessage = Messages
+                        .getString(
+                                "Updating task list for team \"{0}\" (team {1} of {2}): ",
+                                team.getName(), Integer.toString(teams
+                                        .indexOf(team) + 1), Integer
+                                        .toString(teams.size()));
                 tasks.getTasks().addAll(taskList.getTasks());
             }
         } catch (final NotAuthorizedException e) {
             log.error("Could not update list of tasks for " //$NON-NLS-1$
                     + profile.getServerURL(), e);
-            
+
             getDisplay().syncExec(new Runnable() {
                 public void run() {
                     Boolean retry = client.handleNotAuthorizedException(e);
@@ -221,12 +231,12 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             } else {
                 enableAction(true);
             }
-            
+
             return;
         } catch (final UnknownHostException e) {
             log.error("Could not update list of tasks for " //$NON-NLS-1$
                     + profile.getServerURL(), e);
-            
+
             getDisplay().syncExec(new Runnable() {
                 public void run() {
                     Boolean retry = client.handleUnknownHostException(e);
@@ -239,7 +249,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             } else {
                 enableAction(true);
             }
-            
+
             return;
         } catch (Exception e) {
             if (ExceptionUtilities.hasCause(e, ThreadDeath.class)) {
@@ -254,8 +264,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
 
                 getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        MessageDialog.openError(getShell(),
-                                Messages.getString("Error"), errMessage);
+                        MessageDialog.openError(getShell(), Messages
+                                .getString("Error"), errMessage);
                     }
                 });
 
@@ -282,19 +292,28 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     }
 
     public void showRefreshMessage(String message) {
-        containerRunnable = new TaskUpdateContainerRunnable(client, this, true, false, null, message);
+        containerRunnable = new TaskUpdateContainerRunnable(client, this, true,
+                false, null, message);
         getDisplay().syncExec(containerRunnable);
     }
 
     public void showEmptyMessage(boolean isEmpty) {
-        containerRunnable = new TaskUpdateContainerRunnable(client, this, false, isEmpty, "info",
-                Messages.getString("Currently no tasks are active.")); // $NON-NLS-1$
+        containerRunnable = new TaskUpdateContainerRunnable(client, this,
+                false, isEmpty, "info", Messages
+                        .getString("Currently no tasks are active.")); // $NON-NLS-1$
         getDisplay().syncExec(containerRunnable);
     }
 
     public void showMessage(String message, String icon) {
-        containerRunnable = new TaskUpdateContainerRunnable(client, this, false, true, icon, message);
-            getDisplay().syncExec(containerRunnable);
+        containerRunnable = new TaskUpdateContainerRunnable(client, this,
+                false, true, icon, message);
+        getDisplay().syncExec(containerRunnable);
+    }
+    
+    public void showContent() {
+        containerRunnable = new TaskUpdateContainerRunnable(client, this,
+                false, false, null, null);
+        getDisplay().syncExec(containerRunnable);
     }
 
     public void setMessage(String message) {
@@ -302,7 +321,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             containerRunnable.setMessage(message);
         }
     }
-    
+
     public void setUpdateMessage(String message) {
         if (containerRunnable != null) {
             containerRunnable.setUpdateMessage(message);
@@ -313,7 +332,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
         client.enableActions(enable, ActionBase.TASK_ACTION_GROUP);
         client.enableActions(!enable, ActionBase.STOP_ACTION_GROUP);
     }
-    
+
     private void markColumns() {
         // set background color for every second table item
         TableItem[] items = viewer.getTable().getItems();
@@ -326,9 +345,9 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
 
     public void onEvent(Event event) {
         if (event instanceof NewTaskFromUrlEvent) {
-            setMessage(updateMessage + Messages.getString("Task {0} of {1}",
-                    taskDownloadCount+"",
-                    tasksInCurrentTeamCount+""));
+            setMessage(updateMessage
+                    + Messages.getString("Task {0} of {1}", taskDownloadCount
+                            + "", tasksInCurrentTeamCount + ""));
             taskDownloadCount++;
         }
     }
