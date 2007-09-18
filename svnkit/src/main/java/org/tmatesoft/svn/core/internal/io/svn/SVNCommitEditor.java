@@ -42,17 +42,23 @@ class SVNCommitEditor implements ISVNEditor {
     private Stack myDirsStack;
     private int myNextToken;
     private Map myFilesToTokens;
+    private Map myRevprops;
     
     public interface ISVNCommitCallback {
         public void run(SVNException error);
     }
-
+    
     public SVNCommitEditor(SVNRepositoryImpl location, SVNConnection connection, ISVNCommitCallback closeCallback) {
+    	this(location, connection, closeCallback, null);
+    }
+
+    public SVNCommitEditor(SVNRepositoryImpl location, SVNConnection connection, ISVNCommitCallback closeCallback, Map revprops) {
         myRepository = location;
         myConnection = connection;
         myCloseCallback = closeCallback;
         myDirsStack = new Stack();
         myNextToken = 0;
+        myRevprops = revprops;
     }
 
     /* do nothing */

@@ -55,8 +55,13 @@ public class FSCommitEditor implements ISVNEditor {
     private Map myCurrentFileProps;
     private String myCurrentFilePath;
     private FSCommitter myCommitter;
+    private Map myRevprops;
     
     public FSCommitEditor(String path, String logMessage, String userName, Map lockTokens, boolean keepLocks, FSTransactionInfo txn, FSFS owner, FSRepository repository) {
+    	this(path, logMessage, userName, lockTokens, keepLocks, txn, owner, repository, null);
+    }
+    
+    public FSCommitEditor(String path, String logMessage, String userName, Map lockTokens, boolean keepLocks, FSTransactionInfo txn, FSFS owner, FSRepository repository, Map revprops) {
         myPathsToLockTokens = !keepLocks ? lockTokens : null;
         myLockTokens = lockTokens != null ? lockTokens.values() : new LinkedList();
         myAuthor = userName;
@@ -67,6 +72,7 @@ public class FSCommitEditor implements ISVNEditor {
         myRepository = repository;
         myFSFS = owner;
         myDirsStack = new Stack();
+        myRevprops = revprops;
     }
 
     public void targetRevision(long revision) throws SVNException {
@@ -85,6 +91,16 @@ public class FSCommitEditor implements ISVNEditor {
             if (myLogMessage != null && !"".equals(myLogMessage)) {
                 myFSFS.setTransactionProperty(myTxn.getTxnId(), SVNRevisionProperty.LOG, myLogMessage);
             }
+        }
+        //set revision properties
+        if (myRevprops!=null) {
+        	for (Iterator it = myRevprops.keySet().iterator(); it.hasNext();) {
+        		Object key = it.next();
+        		Object value = myRevprops.get(key);
+        		if (key!=null&&key instanceof String&&value!=null&&value instanceof String) {
+        			myFSFS.setTransactionProperty(myTxn.getTxnId(), (String) key, (String) value);
+        		}
+        	}
         }
         myTxnRoot = myFSFS.createTransactionRoot(myTxn.getTxnId());
         myCommitter = new FSCommitter(myFSFS, myTxnRoot, myTxn, myLockTokens, myAuthor);

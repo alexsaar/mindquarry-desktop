@@ -1493,6 +1493,11 @@ public abstract class SVNRepository {
      */
     public abstract void replay(long lowRevision, long revision, boolean sendDeltas, ISVNEditor editor) throws SVNException;
 
+    
+    public ISVNEditor getCommitEditor(String logMessage, final ISVNWorkspaceMediator mediator) throws SVNException {
+    	return getCommitEditor(logMessage, mediator, null);
+    }
+    
     /* write methods */
     /**
      * Gets an editor for committing changes to a repository. Having got the editor
@@ -1534,7 +1539,7 @@ public abstract class SVNRepository {
 	 * @see 					ISVNWorkspaceMediator
      * @see                     <a href="http://svnkit.com/kb/dev-guide-commit-operation.html">Using ISVNEditor in commit operations</a>
      */
-    public ISVNEditor getCommitEditor(String logMessage, final ISVNWorkspaceMediator mediator) throws SVNException {
+    public ISVNEditor getCommitEditor(String logMessage, final ISVNWorkspaceMediator mediator, Map revprops) throws SVNException {
         return getCommitEditor(logMessage, null, false, mediator);
     }
     
@@ -1562,6 +1567,10 @@ public abstract class SVNRepository {
      */
     public abstract SVNDirEntry info(String path, long revision) throws SVNException;
     
+    
+    public final ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, final ISVNWorkspaceMediator mediator) throws SVNException {
+    	return getCommitEditor(logMessage, locks, keepLocks, mediator, null);
+    }
     /**
 	 * Gets an editor for committing changes to a repository. Having got the editor
      * traverse a local tree of dirs and/or files to be committed, handling them    
@@ -1613,7 +1622,7 @@ public abstract class SVNRepository {
      * @see                     #getCommitEditor(String, ISVNWorkspaceMediator)
      * @see                     <a href="http://svnkit.com/kb/dev-guide-commit-operation.html">Using ISVNEditor in commit operations</a>
      */    
-    public abstract ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, final ISVNWorkspaceMediator mediator) throws SVNException;
+    public abstract ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, final ISVNWorkspaceMediator mediator, Map revprops) throws SVNException;
     
     /**
      * Gets the lock for the file located at the specified path.

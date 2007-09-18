@@ -711,7 +711,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
     }
 
     public ISVNEditor getCommitEditor(String logMessage, Map locks,
-            boolean keepLocks, final ISVNWorkspaceMediator mediator)
+            boolean keepLocks, final ISVNWorkspaceMediator mediator, Map revprops)
             throws SVNException {
         try {
             openConnection();
@@ -734,7 +734,7 @@ public class SVNRepositoryImpl extends SVNRepository implements ISVNReporter {
                                 }
                             }
                         }
-                    });
+                    }, revprops);
         } catch (SVNException e) {
             closeConnection();
             closeSession();

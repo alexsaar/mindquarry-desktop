@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.tigris.subversion.javahl.BlameCallback;
 import org.tigris.subversion.javahl.ClientException;
@@ -416,10 +417,18 @@ public class SVNClientImpl implements SVNClientInterface {
     }
 
     public long commit(String[] path, String message, boolean recurse) throws ClientException {
+    	return commit(path, message, recurse, null);
+    }
+    
+    public long commit(String[] path, String message, boolean recurse, Map revprops) throws ClientException {
         return commit(path, message, recurse, false);
     }
 
     public long commit(String[] path, String message, boolean recurse, boolean noUnlock) throws ClientException {
+    	return commit(path, message, recurse, noUnlock, null);
+    }
+    
+    public long commit(String[] path, String message, boolean recurse, boolean noUnlock, Map revprops) throws ClientException {
         if(path == null || path.length == 0){
             return 0;
         }
@@ -437,14 +446,18 @@ public class SVNClientImpl implements SVNClientInterface {
                     }
                 });
             }
-            return client.doCommit(files, noUnlock, message, !recurse, recurse).getNewRevision();
+            return client.doCommit(files, noUnlock, message, !recurse, recurse, revprops).getNewRevision();
         } catch (SVNException e) {
             throwException(e);
         }
         return -1;
     }
-
+    
     public long[] commit(String[] path, String message, boolean recurse, boolean noUnlock, boolean atomicCommit) throws ClientException {
+    	return commit(path, message, recurse, noUnlock, atomicCommit, null);
+    }
+
+    public long[] commit(String[] path, String message, boolean recurse, boolean noUnlock, boolean atomicCommit, Map revprops) throws ClientException {
         if(path == null || path.length == 0){
             return new long[0];
         }
@@ -465,7 +478,7 @@ public class SVNClientImpl implements SVNClientInterface {
                 });
             }
             packets = client.doCollectCommitItems(files, noUnlock, !recurse, recurse, atomicCommit);
-            commitResults = client.doCommit(packets, noUnlock, message);
+            commitResults = client.doCommit(packets, noUnlock, message, revprops);
         } catch (SVNException e) {
             throwException(e);
         }

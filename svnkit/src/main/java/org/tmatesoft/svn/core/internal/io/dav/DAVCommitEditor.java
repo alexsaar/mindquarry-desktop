@@ -58,8 +58,13 @@ class DAVCommitEditor implements ISVNEditor {
     private Map myPathsMap;
     private Map myFilesMap;
     private String myBaseChecksum;
-
+    private Map myRevprops;
+    
     public DAVCommitEditor(DAVRepository repository, DAVConnection connection, String message, ISVNWorkspaceMediator mediator, Runnable closeCallback) {
+    	this(repository, connection, message, mediator, closeCallback, null);
+    }
+
+    public DAVCommitEditor(DAVRepository repository, DAVConnection connection, String message, ISVNWorkspaceMediator mediator, Runnable closeCallback, Map revprops) {
         myConnection = connection;
         myLogMessage = message;
         myLocation = repository.getLocation();
@@ -70,6 +75,7 @@ class DAVCommitEditor implements ISVNEditor {
         myDirsStack = new Stack();
         myPathsMap = new HashMap();
         myFilesMap = new HashMap();
+        myRevprops = revprops;
     }
 
     /* do nothing */
@@ -422,6 +428,23 @@ class DAVCommitEditor implements ISVNEditor {
         } catch (SVNException e) {
             SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.RA_DAV_REQUEST_FAILED, "applying log message to {0}", path);
             SVNErrorManager.error(err);
+        }
+        //set revision properties on commit
+        if (myRevprops!=null) {
+        	SVNErrorMessage revproppatchcontext = SVNErrorMessage.create(SVNErrorCode.RA_DAV_REQUEST_FAILED, "applying revision properties to {0}", path);
+        	for (Iterator it = myRevprops.keySet().iterator(); it.hasNext();) {
+        		Object key = it.next();
+        		Object value = myRevprops.get(key);
+        		if (key!=null&&key instanceof String&&value!=null&&value instanceof String) {
+        			StringBuffer revproppatchrequest = DAVProppatchHandler.generatePropertyRequest(null, (String) key, (String) value);
+        			try {
+        	            myConnection.doProppatch(null, location, revproppatchrequest, null, revproppatchcontext);
+        	        } catch (SVNException e) {
+        	            SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.RA_DAV_REQUEST_FAILED, "applying revision properties to {0}", path);
+        	            SVNErrorManager.error(err);
+        	        }
+        		}
+        	}
         }
         return activity;
     }

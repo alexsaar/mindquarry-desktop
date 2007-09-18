@@ -858,7 +858,7 @@ public class FSRepository extends SVNRepository implements ISVNReporter {
         }
     }
 
-    public ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, ISVNWorkspaceMediator mediator) throws SVNException {
+    public ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, ISVNWorkspaceMediator mediator, Map revprops) throws SVNException {
         try {
             openRepository();
         } catch (SVNException svne) {
@@ -867,7 +867,7 @@ public class FSRepository extends SVNRepository implements ISVNReporter {
         }
         // fetch user name!
         String author = getUserName();
-        FSCommitEditor commitEditor = new FSCommitEditor(getRepositoryPath(""), logMessage, author, locks, keepLocks, null, myFSFS, this);
+        FSCommitEditor commitEditor = new FSCommitEditor(getRepositoryPath(""), logMessage, author, locks, keepLocks, null, myFSFS, this, revprops);
         return commitEditor;
     }
 

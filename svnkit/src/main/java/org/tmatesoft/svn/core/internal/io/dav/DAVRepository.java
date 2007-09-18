@@ -703,7 +703,7 @@ class DAVRepository extends SVNRepository {
         }
     }
 
-    public ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, ISVNWorkspaceMediator mediator) throws SVNException {
+    public ISVNEditor getCommitEditor(String logMessage, Map locks, boolean keepLocks, ISVNWorkspaceMediator mediator, Map revprops) throws SVNException {
         try {
             openConnection();
             Map translatedLocks = null;
@@ -729,7 +729,7 @@ class DAVRepository extends SVNRepository {
                 public void run() {
                     closeConnection();
                 }
-            });
+            }, revprops);
         } catch (Throwable th) {
             closeConnection();
             if (th instanceof SVNException) {
