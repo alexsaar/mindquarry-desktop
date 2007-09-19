@@ -232,12 +232,12 @@ public class WorkspaceUpdateContainerRunnable extends
         });
         // add auto resizing of tree columns
         containerWidget.getViewer().getTree().getColumn(0).setWidth(
-                containerWidget.getSize().x - 36);
+                containerWidget.getSize().x - getColumnSpace());
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
                 if(containerWidget.getViewer() != null) {
                     containerWidget.getViewer().getTree().getColumn(0).setWidth(
-                        containerWidget.getViewer().getTree().getSize().x - 36);
+                        containerWidget.getViewer().getTree().getSize().x - getColumnSpace());
                 }
             }
         });
@@ -248,6 +248,13 @@ public class WorkspaceUpdateContainerRunnable extends
         checkAllItem(containerWidget.getViewer().getTree().getItems());
         containerWidget.layout(true);
     }
+
+	private int getColumnSpace() {
+		if (SVNFileUtil.isOSX) {
+			return 322;
+		}
+		return 36;
+	}
         
     /**
      * Return true if the user selected an item which can be opened.

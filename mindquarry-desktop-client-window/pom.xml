@@ -7,7 +7,6 @@
 		<artifactId>mindquarry-desktop-tools</artifactId>
 		<version>1.2-SNAPSHOT</version>
 	</parent>
-
 	<groupId>com.mindquarry.tools</groupId>
 	<artifactId>mindquarry-desktop-client-window</artifactId>
 	<packaging>jar</packaging>
