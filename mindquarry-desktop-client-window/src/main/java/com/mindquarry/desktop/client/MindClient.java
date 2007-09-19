@@ -647,14 +647,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
         }
         return Profile.addProfile(store, profile);
     }
-
+    
     private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
         if (loadProfiles) {
             loadOptions();
         }
         // Create the preferences dialog
         FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(
-                new Shell(), PreferenceUtilities.getDefaultPreferenceManager());
+                getShell(), PreferenceUtilities.getDefaultPreferenceManager());
         dlg.setPreferenceStore(store);
         if (showProfiles) {
             dlg.setSelectedNode(ServerProfilesPage.NAME);
@@ -767,7 +767,16 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 public void widgetSelected(SelectionEvent e) {
                     // single left click => show window
                     if (getShell().isVisible()) {
-                        getShell().setVisible(false);
+                        // get all child shells and block minimizing if necessary
+                        Shell[] shells = getShell().getShells();
+                        if (0 < shells.length) {
+                            for (Shell shell : shells) {
+                                shell.forceActive();
+                            }
+                        }
+                        else {
+                            getShell().setVisible(false);
+                        }
                     } else {
                         getShell().open();
                         getShell().forceActive();
