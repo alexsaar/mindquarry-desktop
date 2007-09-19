@@ -15,7 +15,6 @@ package com.mindquarry.desktop.client.action.app;
 
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
@@ -47,7 +46,7 @@ public class OpenWebpageAction extends ActionBase {
 
 		setText(Messages.getString("Go to webpage"));//$NON-NLS-1$
 		setToolTipText(Messages.getString("Open the web interface of the current profiles server."));//$NON-NLS-1$
-		setAccelerator(SWT.CTRL + SWT.SHIFT + 'O');
+		//setAccelerator(SWT.CTRL | SWT.SHIFT | 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 

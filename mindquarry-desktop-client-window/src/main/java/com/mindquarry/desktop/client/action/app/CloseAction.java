@@ -14,7 +14,6 @@
 package com.mindquarry.desktop.client.action.app;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -45,7 +44,7 @@ public class CloseAction extends ActionBase {
 
 		setText(Messages.getString("Exit"));//$NON-NLS-1$
 		setToolTipText(Messages.getString("Exit the desktop client application."));//$NON-NLS-1$
-		setAccelerator(SWT.CTRL + 'Q');
+//		setAccelerator(SWT.CTRL + 'Q');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
 
