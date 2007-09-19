@@ -767,6 +767,7 @@ public class SVNSynchronizer {
         for (Status status : remoteAndLocalChanges) {
             Change change = new Change(status);
             log.info(change);
+            // TODO: ignore conflict files
             changes.add(change);
         }
 

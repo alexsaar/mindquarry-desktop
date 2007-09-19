@@ -86,6 +86,7 @@ public class ModificationDescription {
         if(change == null)
             return getDescription(null, null);
         ModificationDescription oldMD = getDescription(change.getStatus(), change.getStatus());
+        log.debug(change.getClass());
         return oldMD;
 
 //        if (change == null) {

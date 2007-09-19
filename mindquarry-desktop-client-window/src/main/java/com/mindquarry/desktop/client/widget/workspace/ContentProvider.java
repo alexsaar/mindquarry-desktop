@@ -16,6 +16,7 @@ package com.mindquarry.desktop.client.widget.workspace;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -50,7 +51,9 @@ public class ContentProvider implements ITreeContentProvider {
         this.workspaceBrowser = widget;
         
         // create the tree of changes from the list of all changes/conflicts 
-        changeTree = new ChangeTree(widget.getChangeSets().getChanges());
+        changeTree = new ChangeTree(
+                widget.getChangeSets().getChanges(),
+                widget.toIgnore);
     }
 
     /**
@@ -108,13 +111,30 @@ public class ContentProvider implements ITreeContentProvider {
         // nothing to do here
     }
 
+    /**
+     * Tree of all changes (and resulting conflicts) in the workspace.
+     * 
+     * @author <a href="christian(dot)richardt(at)mindquarry(dot)com">Christian
+     *         Richardt</a>
+     */
     static class ChangeTree {
         private TreeNode root;
 
-        public ChangeTree(List<Change> changes) {
+        /**
+         * Constructs the tree of all changes from the list of changes, ignoring
+         * some of the files.
+         * 
+         * @param changes
+         *            List of all changes (across several teams).
+         * @param toIgnore
+         *            Files to ignore.
+         */
+        public ChangeTree(List<Change> changes, Map<File, Integer> toIgnore) {
             this.root = null;
             for (Change change : changes) {
-                addToTree(change);
+                if(!toIgnore.containsKey(change.getFile())) {
+                    addToTree(change);
+                }
             }
         }
 
