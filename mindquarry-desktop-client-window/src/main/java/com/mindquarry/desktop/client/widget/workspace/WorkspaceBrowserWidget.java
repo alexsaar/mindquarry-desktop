@@ -66,6 +66,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     protected File workspaceRoot;
 
     protected ChangeSets changeSets = new ChangeSets();
+    protected ChangeTree changeTree;
     
     // ignore files like "<filename>.r200" that are created in case of conflicts:
     protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
@@ -83,6 +84,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
     public ChangeSets getChangeSets() {
         return changeSets;
+    }
+
+    public ChangeTree getChangeTree() {
+        return changeTree;
     }
     
     /**
@@ -113,6 +118,10 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         
         if(applyNewChanges) {
             changeSets = newChanges;
+
+            // create the tree of changes from the list of all changes/conflicts 
+            changeTree = new ChangeTree(changeSets.getChanges(), toIgnore);
+            
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
 
@@ -196,8 +205,12 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         }
         refreshing = true;
         try {
-            // update tree
-            this.changeSets = getAllChanges(selectedProfile);
+            // update changes
+            changeSets = getAllChanges(selectedProfile);
+
+            // create the tree of changes from the list of all changes/conflicts 
+            changeTree = new ChangeTree(changeSets.getChanges(), toIgnore);
+            
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         } finally {
             refreshing = false;
@@ -407,7 +420,9 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 log.debug("time required to find changes for team '" +team.getName()+ "': " +
                         (System.currentTimeMillis()-startTime) + "ms");
             }
+
             workspaceRoot = new File(selected.getWorkspaceFolder());
+
         } catch (ClientException e) {
             // TODO: handle exception
             // may happen on very first checkout (before checkout, actually)
@@ -420,7 +435,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             
             log.error(e.toString() + " (apr error " + e.getAprError() + ")", e);
         }
-        
+
         return changeSets;
     }
 
