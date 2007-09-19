@@ -47,6 +47,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
  * This class creates a preference page for Mindquarry Server profiles.
@@ -207,6 +208,7 @@ public class ServerProfilesPage extends PreferencePage {
 
     private void setValid() {
         setErrorMessage(null);
+        setMessage(null, INFORMATION);
         setValid(true);
     }
 
@@ -460,7 +462,44 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
         });
+
+        // init verify server button
+        Button verifyServerButton = new Button(settingsGroup, SWT.LEFT
+                | SWT.PUSH);
+        verifyServerButton
+                .setText(Messages.getString("Verify server settings"));
+        verifyServerButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                try {
+                    HttpUtilities.CheckResult result = HttpUtilities
+                            .checkServerExistence(login.getText(), pwd.getText(),
+                                    url.getText());
+                    
+                    if(HttpUtilities.CheckResult.AUTH_REFUSED == result) {
+                        setErrorMessage("Your login ID or password is incorrect.");
+                    } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
+                        setErrorMessage("Server could not be found.");
+                    } else {
+                        setMessage("Your server settings are correct.", INFORMATION);
+                    }
+                } catch(MalformedURLException murle) {
+                    setErrorMessage("Server URL is not a valid URL.");
+                }
+            }
+        });
     }
+
+    //    
+    // private void verifyServerSettings() {
+    // HttpClient client = HttpUtilities.createHttpClient(login, pwd, url);
+    // GetMethod get = createAndExecuteGetMethod(url, client);
+    //
+    // String result = null;
+    // if (get.getStatusCode() == 200) {
+    // result = get.getResponseBodyAsString();
+    // } else if (get.getStatusCode() == 401) {
+    // }
+    // }
 
     private Profile findByName(String name) {
         Profile result = null;

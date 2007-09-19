@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -132,6 +133,34 @@ public class HttpUtilities {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e.toString(), e);
+        }
+    }
+    
+    public enum CheckResult { AUTH_REFUSED, NOT_AVAILABLE, OK };
+    
+    public static CheckResult checkServerExistence(String login, String pwd,
+            String address) throws MalformedURLException {
+        try {
+            if(!address.endsWith("/")) //$NON-NLS-1$
+                address += "/"; //$NON-NLS-1$
+            
+            HttpClient client = createHttpClient(login, pwd, address);
+            GetMethod get = createAndExecuteGetMethod(address, client);
+            
+            if(200 == get.getStatusCode()) {
+                return CheckResult.OK;
+            } else if(401 == get.getStatusCode()) {
+                return CheckResult.AUTH_REFUSED;
+            } else {
+                return CheckResult.NOT_AVAILABLE;
+            }
+        } catch(UnknownHostException uhe) {
+            return CheckResult.NOT_AVAILABLE;
+        } catch(MalformedURLException murle) {
+            throw murle;
+        } catch (Exception e) {
+            log.info(e.toString());
+            return CheckResult.NOT_AVAILABLE;
         }
     }
     
