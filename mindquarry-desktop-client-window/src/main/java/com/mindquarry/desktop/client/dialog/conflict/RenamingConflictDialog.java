@@ -55,7 +55,8 @@ public abstract class RenamingConflictDialog extends AbstractConflictDialog {
                 }
             } else {
                 setErrorMessage(Messages.getString(
-                        "The filename '{1}' is not available, please choose a different one."));
+                        "The file '{0}' already exists, please choose a different filename.",
+                        name));
                 if (okButton != null) {
                     okButton.setEnabled(false);
                 }
