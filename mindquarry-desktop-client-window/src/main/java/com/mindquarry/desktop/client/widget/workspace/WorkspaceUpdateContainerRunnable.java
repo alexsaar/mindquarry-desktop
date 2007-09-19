@@ -173,7 +173,8 @@ public class WorkspaceUpdateContainerRunnable extends
         TreeViewerColumn col = new TreeViewerColumn(
                 containerWidget.getViewer(), SWT.LEFT);
         col.getColumn().setText("Name");
-        col.getColumn().setWidth(400);
+        col.getColumn().setResizable(false);
+        col.getColumn().setWidth(500);
         col.setLabelProvider(new ColumnLabelProvider() {
             public Image getImage(Object element) {
                 File file = (File) element;
@@ -229,6 +230,18 @@ public class WorkspaceUpdateContainerRunnable extends
                 return "";
             }
         });
+        // add auto resizing of tree columns
+        containerWidget.getViewer().getTree().getColumn(0).setWidth(
+                containerWidget.getSize().x - 36);
+        containerWidget.getShell().addListener(SWT.Resize, new Listener() {
+            public void handleEvent(Event event) {
+                if(containerWidget.getViewer() != null) {
+                    containerWidget.getViewer().getTree().getColumn(0).setWidth(
+                        containerWidget.getViewer().getTree().getSize().x - 36);
+                }
+            }
+        });
+        // set input and trigger refresh
         containerWidget.getViewer().setInput(
                 ((WorkspaceBrowserWidget) containerWidget).workspaceRoot);
         containerWidget.getViewer().expandAll();
