@@ -68,7 +68,7 @@ public class TaskSettingsDialog extends DialogBase {
 
     public TaskSettingsDialog(Shell shell, Task task, boolean isNew) {
         super(shell);
-        setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
+        setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE | SWT.APPLICATION_MODAL);
         setBlockOnOpen(true);
 
         this.task = task;
