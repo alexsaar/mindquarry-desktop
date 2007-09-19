@@ -105,7 +105,9 @@ public class Messages {
             break;
           }
           try {
-              translation = m.replaceAll(args[i]);
+              // need to escape backslashes and dollar signs, so that they
+              // survive the replaceAll
+              translation = m.replaceAll(args[i].replace("\\", "\\\\").replace("$", "\\$"));
           } catch (ArrayIndexOutOfBoundsException e) {
               // happens if the translation contains a "{n}" but there's
               // no parameter for it - fall back to non-translated text:
