@@ -481,4 +481,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             return subFiles;
         }
     }
+
+    public File getWorkspaceRoot() {
+        return workspaceRoot;
+    }
 }

@@ -27,7 +27,7 @@ import com.mindquarry.desktop.workspace.conflict.Change;
  * @author <a href="christian(dot)richardt(at)mindquarry(dot)com">Christian
  *         Richardt</a>
  */
-class ChangeTree {
+public class ChangeTree {
     private ChangeTree.TreeNode root;
 
     /**
@@ -199,6 +199,17 @@ class ChangeTree {
             // not found
             return null;
         }
+        
+        /**
+         * Do a pre-order traversal of the tree (a.k.a. Visitor Pattern).
+         * @param visitor Is called for each node of the tree.
+         */
+        public void visit(TreeNodeVisitor visitor) {
+            visitor.visit(this);
+            for(TreeNode child : children) {
+                child.visit(visitor);
+            }
+        }
 
         public String toString() {
             return printThis() + "\n" + printChildren(1);
@@ -281,5 +292,9 @@ class ChangeTree {
         protected String printThis() {
             return "<" + change + ">";
         }
+    }
+    
+    public interface TreeNodeVisitor {
+        public void visit(TreeNode node);
     }
 }

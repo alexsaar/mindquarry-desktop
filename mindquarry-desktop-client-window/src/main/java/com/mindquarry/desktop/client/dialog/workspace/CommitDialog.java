@@ -34,6 +34,11 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.dialog.DialogBase;
 import com.mindquarry.desktop.client.widget.workspace.ChangeSet;
 import com.mindquarry.desktop.client.widget.workspace.ModificationDescription;
+import com.mindquarry.desktop.client.widget.workspace.ChangeTree;
+import com.mindquarry.desktop.client.widget.workspace.ChangeTree.ChangeTreeNode;
+import com.mindquarry.desktop.client.widget.workspace.ChangeTree.TreeNode;
+import com.mindquarry.desktop.client.widget.workspace.ChangeTree.TreeNodeVisitor;
+import com.mindquarry.desktop.util.FileHelper;
 
 /**
  * Ask the user for a commit message.
@@ -44,17 +49,25 @@ public class CommitDialog extends DialogBase {
 
     private String commitMessage = "";
 
-    private ChangeSet changeSet;
+//    private ChangeSet changeSet;
+    private String teamName;
+    private ChangeTree changeTree;
+    private File workspaceRoot;
+    private File teamDir;
 
-    public CommitDialog(Shell shell, ChangeSet changeSet) {
+    public CommitDialog(Shell shell, String teamName, ChangeTree changeTree, File workspaceRoot) {
         super(shell);
-        this.changeSet = changeSet;
+//        this.changeSet = changeSet;
+        this.teamName = teamName;
+        this.changeTree = changeTree;
+        this.workspaceRoot = workspaceRoot;
+        this.teamDir = new File(workspaceRoot, teamName);
         setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
     }
 
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
-        String teamName = changeSet.getTeam().getName();
+//        String teamName = changeSet.getTeam().getName();
         String title = Messages.getString("Commit message for team '{0}'",  //$NON-NLS-1$ 
                 teamName); 
         setTitle(title);
@@ -78,7 +91,7 @@ public class CommitDialog extends DialogBase {
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Label label = new Label(composite, SWT.READ_ONLY);
-        label.setText(Messages.getString("Modified files:"));
+        label.setText(Messages.getString("Modified files in '{0}':", teamDir.getAbsolutePath()));
 
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         gridData.heightHint = 50;
@@ -89,19 +102,38 @@ public class CommitDialog extends DialogBase {
         final Text fileField = new Text(composite, SWT.MULTI | SWT.BORDER | 
                 SWT.V_SCROLL | SWT.WRAP | SWT.READ_ONLY);
 
-        StringBuilder sb = new StringBuilder();
-        for (File file : changeSet.getChanges().keySet()) {
-            ModificationDescription desc = ModificationDescription.
-                getDescription(changeSet.getChanges().get(file));
-            String shortDesc = desc.getShortDescription();
-            // TODO: this currently happens because the changeset
-            // also contains remote changes -- needs cleanup:
-            if (shortDesc == null || shortDesc.equals("")) {
-                continue;
+        final StringBuilder sb = new StringBuilder();
+        TreeNode node = changeTree.getRoot();
+        node.visit(new TreeNodeVisitor() {
+            public void visit(TreeNode node) {
+                if (node instanceof ChangeTreeNode) {
+                    ChangeTreeNode changeNode = (ChangeTreeNode) node;
+                    ModificationDescription desc = ModificationDescription
+                            .getDescription(changeNode.getChange());
+                    String shortDesc = desc.getShortDescription();
+                    // TODO: this currently happens because the changes
+                    // also contains remote changes -- needs cleanup:
+                    if (shortDesc == null || shortDesc.equals("")) {
+                        return;
+                    }
+                    
+                    if (sb.length() > 0)
+                        sb.append("\n");
+                    
+                    // shorten the displayed path (remove path to team dir)
+                    String pathName = changeNode.getFile().getAbsolutePath();
+                    if (FileHelper.isParent(teamDir, changeNode.getFile())) {
+                        int length = teamDir.getAbsolutePath().length();
+                        pathName = pathName.substring(length);
+                        if(pathName.charAt(0) == '\\')
+                            pathName = pathName.substring(1);
+                    }
+                    
+                    sb.append(pathName+" ("+desc.getShortDescription()+")");
+                }
             }
-            sb.append(file.getAbsolutePath() +
-                    " (" + desc.getShortDescription() + ")\n");
-        }
+        });
+        
         fileField.setLayoutData(gridData);
         fileField.setText(sb.toString());
 

@@ -190,7 +190,11 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         }
                         Display.getDefault().syncExec(new Runnable() {
                             public void run() {
-                                CommitDialog dlg = new CommitDialog(client.getShell(), changeSet);
+                                CommitDialog dlg = new CommitDialog(
+                                        client.getShell(),
+                                        changeSet.getTeam().getName(),
+                                        workspaceWidget.getChangeTree(),
+                                        workspaceWidget.getWorkspaceRoot());
                                 int result = dlg.open();
                                 if (result == IDialogConstants.OK_ID) {
                                     commitMessages.put(changeSet.getTeam(), dlg.getCommitMessage());
