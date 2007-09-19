@@ -116,7 +116,6 @@ public class ContentProvider implements ITreeContentProvider {
             for (Change change : changes) {
                 addToTree(change);
             }
-            System.err.print(root.toString());
         }
 
         public TreeNode getRoot() {

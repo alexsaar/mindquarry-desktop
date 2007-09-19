@@ -307,7 +307,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                 String password = selected.getPassword();
 
                 setMessage(Messages.getString(
-                        "Refreshing workspaces changes #2 for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
+                        "Refreshing workspaces changes for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
                         team.getName(),
                         Integer.toString(selectedTeams.indexOf(team)+1),
                         Integer.toString(selectedTeams.size())));

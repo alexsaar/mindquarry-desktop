@@ -83,6 +83,8 @@ public class ModificationDescription {
 
     public static ModificationDescription getDescription(Change change) {
         // normal behavior:
+        if(change == null)
+            return getDescription(null, null);
         ModificationDescription oldMD = getDescription(change.getStatus(), change.getStatus());
         return oldMD;
 
