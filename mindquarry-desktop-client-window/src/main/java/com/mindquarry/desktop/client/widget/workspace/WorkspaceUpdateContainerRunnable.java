@@ -64,9 +64,6 @@ import com.mindquarry.desktop.workspace.conflict.Change;
  */
 public class WorkspaceUpdateContainerRunnable extends
         UpdateContainerRunnable<TreeViewer> {
-    private static Log log = LogFactory
-            .getLog(WorkspaceUpdateContainerRunnable.class);
-
     private static final Image FOLDER_IMAGE = new Image(
             Display.getCurrent(),
             WorkspaceBrowserWidget.class
@@ -129,7 +126,6 @@ public class WorkspaceUpdateContainerRunnable extends
                 }
             }
         });
-        
         // simulate tooltips:
         Listener treeListener = new HoverForToolTipListener(containerWidget.getViewer());
         containerWidget.getViewer().getTree().addListener (SWT.Dispose, treeListener);
@@ -139,7 +135,7 @@ public class WorkspaceUpdateContainerRunnable extends
         
         containerWidget.getViewer().getTree().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
-        containerWidget.getViewer().getTree().setHeaderVisible(true);
+        containerWidget.getViewer().getTree().setHeaderVisible(false);
         containerWidget.getViewer().getTree().setLinesVisible(true);
         containerWidget.getViewer().getTree().setFont(
                 JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
