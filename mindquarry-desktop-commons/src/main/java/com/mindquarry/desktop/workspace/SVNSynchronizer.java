@@ -804,7 +804,7 @@ public class SVNSynchronizer {
                 // find all children (locally and remotely)
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         if (status.getTextStatus() == StatusKind.added
                                 || status.getTextStatus() == StatusKind.unversioned
                                 || status.getTextStatus() == StatusKind.ignored
@@ -860,7 +860,7 @@ public class SVNSynchronizer {
                 // find all children
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         // Note: if something is locally deleted or missing, the remote status
                         // will always be 'added' - to detect things that were actually added
                         // remotely we need to have a local status of 'none'
@@ -923,7 +923,7 @@ public class SVNSynchronizer {
                 // find all children
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         if (status.getTextStatus() == StatusKind.added ||
                                 status.getTextStatus() == StatusKind.replaced ||
                                 status.getTextStatus() == StatusKind.modified) {
@@ -1039,7 +1039,7 @@ public class SVNSynchronizer {
                 // find all children
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         if (status.getRepositoryTextStatus() == StatusKind.added ||
                                 status.getRepositoryTextStatus() == StatusKind.replaced ||
                                 status.getRepositoryTextStatus() == StatusKind.modified ||
@@ -1104,7 +1104,7 @@ public class SVNSynchronizer {
                 // find all children
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         if (status.getTextStatus() != StatusKind.none &&
                                 status.getTextStatus() != StatusKind.normal) {
                             localChildren.add(status);
@@ -1164,7 +1164,7 @@ public class SVNSynchronizer {
                 // find all children (locally and remotely)
                 while (iter.hasNext()) {
                     status = iter.next();
-                    if (isParent(conflictParent.getPath(), status.getPath())) {
+                    if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
                         if (status.getTextStatus() != StatusKind.normal) {
                             localChildren.add(status);
                         }
@@ -1278,7 +1278,7 @@ public class SVNSynchronizer {
         List<Status> result = new ArrayList<Status>();
         // FIXME: not the fastest way (iterate over all + isParent for each)
         for (Status s : remoteAndLocalChanges) {
-            if (isParent(path, s.getPath())) {
+            if (FileHelper.isParent(path, s.getPath())) {
                 result.add(s);
             }
         }
@@ -1286,22 +1286,6 @@ public class SVNSynchronizer {
     }
 
     /**
-     * Checks if the file path 'parentPath' is a filesystem parent of the path
-     * 'childPath'. Uses the java File api to check that correctly.
-     */
-    public static boolean isParent(String parentPath, String childPath) {
-        File parent = new File(parentPath);
-        File child = new File(childPath);
-
-        while ((child = child.getParentFile()) != null) {
-            if (child.equals(parent)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-	/**
 	 * Helper method that stringifies a notify object from the notify callback
 	 * of svnkit.
 	 */
