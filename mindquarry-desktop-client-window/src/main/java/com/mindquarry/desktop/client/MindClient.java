@@ -232,7 +232,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
      *            the command line arguments
      */
     public static void main(String[] args) {
-
         // show splash
         SplashScreen splash = SplashScreen.newInstance(5);
         splash.show();
@@ -783,7 +782,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 }
             });
         }
-
         ActionContributionItem showMainWindowAction = new ActionContributionItem(
                 new ShowMainWindowAction(this));
         showMainWindowAction.fill(trayMenu, trayMenu.getItemCount());
@@ -934,5 +932,13 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 log.warn("Refreshing after profile change cancelled.", e);
             }
         }
+    }
+
+    @Override
+    public boolean close() {
+        // remove icon from system tray
+        trayItem.dispose();
+        trayItem = null;
+        return super.close();
     }
 }
