@@ -46,7 +46,7 @@ public class ChangeSets {
     }
 
     /**
-     * Get all files from all changesets, ie form all teams.
+     * Get all files from all changesets, i.e. from all teams.
      */
     public List<File> getFiles() {
         List<File> files = new ArrayList<File>();
@@ -54,6 +54,17 @@ public class ChangeSets {
             files.addAll(changeSet.getFiles());
         }
         return files;
+    }
+
+    /**
+     * Get all changes from all changesets, i.e. from all teams.
+     */
+    public List<Change> getChanges() {
+        List<Change> changes = new ArrayList<Change>();
+        for (ChangeSet changeSet : changeSets) {
+            changes.addAll(changeSet.getChanges().values());
+        }
+        return changes;
     }
 
     /**

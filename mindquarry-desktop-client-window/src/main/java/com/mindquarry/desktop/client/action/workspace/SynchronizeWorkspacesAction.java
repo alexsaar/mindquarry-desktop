@@ -180,7 +180,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     // ask the user for the message(s) and remember it, this
                     // way he can let the sync run in the background:
                     final Map<Team,String> commitMessages = new HashMap<Team, String>();
-                    ChangeSets changeSets = workspaceWidget.getChanges();
+                    ChangeSets changeSets = workspaceWidget.getChangeSets();
                     for (final ChangeSet changeSet : changeSets.getList()) {
                         // TODO: clean up, this is only needed because the list
                         // returned by getLocalChanges() does actually also contain

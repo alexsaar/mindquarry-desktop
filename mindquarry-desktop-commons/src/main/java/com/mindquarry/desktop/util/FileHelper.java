@@ -54,18 +54,27 @@ public class FileHelper {
     }
 
     /**
-     * Checks if the file path 'parentPath' is a filesystem parent of the path
-     * 'childPath'. Uses the java File api to check that correctly.
+     * Checks if the file 'parent' is a filesystem parent of 'child'.
+     * Uses the java File api to check that correctly.
      */
-    public static boolean isParent(String parentPath, String childPath) {
-        File parent = new File(parentPath);
-        File child = new File(childPath);
-    
+    public static boolean isParent(File parent, File child) {
         while ((child = child.getParentFile()) != null) {
             if (child.equals(parent)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the file path 'parentPath' is a filesystem parent of the path
+     * 'childPath'. Uses the java File api to check that correctly.
+     * 
+     * Convenience method, calls isParent(File, File).
+     */
+    public static boolean isParent(String parentPath, String childPath) {
+        File parent = new File(parentPath);
+        File child = new File(childPath);
+        return isParent(parent, child);
     }
 }

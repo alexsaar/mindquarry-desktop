@@ -23,9 +23,12 @@ import org.tigris.subversion.javahl.Status;
  */
 public class LocalAddition extends Change {
  
-    protected File file;
-
     public LocalAddition(File file, Status ancestorStatus) {
         super(ancestorStatus, file);
+    }
+
+    @Override
+    public String toString() {
+        return file.getName() + ": LocalAddition";
     }
 }

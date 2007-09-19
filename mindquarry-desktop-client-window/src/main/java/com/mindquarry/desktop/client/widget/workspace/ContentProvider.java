@@ -14,152 +14,88 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.tigris.subversion.javahl.NodeKind;
-import org.tigris.subversion.javahl.Status;
-import org.tigris.subversion.javahl.StatusKind;
-import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
-import org.tmatesoft.svn.core.internal.wc.SVNFileListUtil;
+
+import com.mindquarry.desktop.util.FileHelper;
+import com.mindquarry.desktop.workspace.conflict.Change;
 
 /**
+ * Provides the contents for a tree view showing all file changes and conflicts,
+ * as detected by {@link SVNSynchronizer#getChangesAndConflicts()}.
+ * 
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
+ * @author <a href="christian(dot)richardt(at)mindquarry(dot)com">Christian
+ *         Richardt</a>
  */
 public class ContentProvider implements ITreeContentProvider {
+
+    @SuppressWarnings("unused")
     private final WorkspaceBrowserWidget workspaceBrowser;
 
+    private ChangeTree changeTree;
+
+    /**
+     * Constructor which constructs a tree of changes from
+     * {@link WorkspaceBrowserWidget#getChangeSets()}.
+     * 
+     * @param widget
+     *            WorkspaceBrowserWidget, which contains the change sets.
+     */
     public ContentProvider(WorkspaceBrowserWidget widget) {
         this.workspaceBrowser = widget;
+        
+        // create the tree of changes from the list of all changes/conflicts 
+        changeTree = new ChangeTree(widget.getChangeSets().getChanges());
     }
 
+    /**
+     * Lists all children of the provided file within the tree of changes. See
+     * {@link ITreeContentProvider#getChildren(Object)}.
+     * 
+     * @param parentElement
+     *            The parent as a File.
+     */
     public Object[] getChildren(Object parentElement) {
         File rootDir = (File) parentElement;
-        // TODO: below we iterate over the local and remote changes anyway, do we 
-        // really need to iterate over the file system at all?
-        File[] children = SVNFileListUtil.listFiles(rootDir, new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                File f = new File(dir, name);
-                // ignore e.g. conflict files like <file>.r<rev>
-                if (workspaceBrowser.toIgnore.containsKey(f)) {
-                    return false;
-                }
-                // show only changed files, but within their directory
-                // structure:
-                if (f.isDirectory()) {
-                    // if there is at least one change below this directory,
-                    // show it, otherwise don't:
-                    if (containsChange(f)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-                if (!workspaceBrowser.changes.getFiles().contains(f)) {
-                    return false;
-                }
-                if (name.equals(".svn")
-						|| name.equals(SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME)) {
-                    return false;
-                }
-                return true;
-            }
-
-            /**
-             * Return true if <tt>file</tt> contains at least one file
-             * with a local or remote modification (or if itself is modified).
-             */
-            private boolean containsChange(File dir) {
-                List<File> allChangedFiles = workspaceBrowser.changes.getFiles();
-                String potentialSuperDir = dir.getAbsolutePath() + File.separator;
-                for (File changedFile : allChangedFiles) {
-                    String file = changedFile.getAbsolutePath();
-                    if (changedFile.isDirectory()) {
-                        file += File.separator;
-                    }
-                    if (file.startsWith(potentialSuperDir)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-        });
-        // don't skip files that have been added remotely:
-        Set<File> allFiles = new HashSet<File>();
-        if (children != null) {
-            allFiles.addAll(Arrays.asList(children));
-        }
-        if (workspaceBrowser.changes != null) {
-            for (File file : workspaceBrowser.changes.getFiles()) {
-                int remoteStatus = workspaceBrowser.changes.getStatus(file).getRepositoryTextStatus();
-                int localStatus = workspaceBrowser.changes.getStatus(file).getTextStatus();
-
-                if (remoteStatus == StatusKind.added &&
-                        file.getParentFile().equals(rootDir)) {
-                    allFiles.add(file);
-                }
-
-                // don't skip the files that were deleted locally:
-                if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
-                        && file.getParentFile().equals(rootDir)) {
-                    // If someone moves a directory, local status of the old name
-                    // will be "deleted" locally, but remote status will be "added". 
-                    // This directory has been displayed above already, so we need
-                    // to filter them out:
-                    if (allFiles.contains(file)) {
-                        continue;
-                    }
-                    allFiles.add(file);
-                }
-            }
-        }
-        return allFiles.toArray(new File[] {});
+        return changeTree.getChildren(rootDir);
     }
 
-    public Object getParent(Object element) {
-        File file = (File) element;
+    /**
+     * Returns the parent of the provided file within the tree of changes. See
+     * {@link ITreeContentProvider#getParent(Object)}.
+     * 
+     * @param child
+     *            The child as a File.
+     */
+    public Object getParent(Object child) {
+        File file = (File) child;
         return file.getParent();
     }
 
-    public boolean hasChildren(Object element) {
-        File file = (File) element;
-        if (file.isDirectory() && file.listFiles().length > 0) {
-            return true;
-        }
-        // directories added remotely:
-        if (workspaceBrowser.changes != null) {
-            Status s = workspaceBrowser.changes.getStatus(file);
-            if (s != null && s.getReposKind() == NodeKind.dir) {
-                return true;
-            }
-        }
-        // directories deleted locally:
-        if (isDeletedLocally(file)) {
-            return true;
-        }
-        return false;
+    /**
+     * Returns whether a particular file has children in the tree of changes.
+     * See {@link ITreeContentProvider#hasChildren(Object)}.
+     * 
+     * @param parentElement
+     *            The child as a File.
+     */
+    public boolean hasChildren(Object parentElement) {
+        File file = (File) parentElement;
+        return changeTree.hasChildren(file);
     }
 
-    private boolean isDeletedLocally(File file) {
-        if (workspaceBrowser.changes != null) {
-            for (File localFile : workspaceBrowser.changes.getFiles()) {
-                int localStatus = workspaceBrowser.changes.getStatus(localFile).
-                    getTextStatus();
-                if ((localStatus == StatusKind.deleted || localStatus == StatusKind.missing)
-                        && localFile.getParentFile().equals(file)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Lists all children of the provided file within the tree of changes. See
+     * {@link IStructuredContentProvider#getElements(Object)}.
+     * 
+     * @param inputElement
+     *            The parent as a File.
+     */
     public Object[] getElements(Object inputElement) {
         return getChildren(inputElement);
     }
@@ -171,4 +107,252 @@ public class ContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do here
     }
+
+    static class ChangeTree {
+        private TreeNode root;
+
+        public ChangeTree(List<Change> changes) {
+            this.root = null;
+            for (Change change : changes) {
+                addToTree(change);
+            }
+            System.err.print(root.toString());
+        }
+
+        public TreeNode getRoot() {
+            return root;
+        }
+
+        private void addToTree(Change change) {
+            if (root == null) {
+                root = TreeNode.createTree(change);
+            } else {
+                root.insertChange(change);
+            }
+        }
+
+        public File[] getChildren(File parent) {
+            TreeNode parentNode = root.findFile(parent);
+            if (parentNode == null) {
+                return new File[] {};
+            }
+
+            List<TreeNode> children = parentNode.getChildren();
+            List<File> childrenFiles = new ArrayList<File>();
+            for (TreeNode child : children) {
+                childrenFiles.add(child.getFile());
+            }
+            return childrenFiles.toArray(new File[] {});
+        }
+
+        public boolean hasChildren(File parent) {
+            TreeNode parentNode = root.findFile(parent);
+            if (parentNode == null) {
+                return false;
+            }
+
+            return parentNode.getChildren().size() != 0;
+        }
+
+        // Inner classes -------------------------------------------------------
+
+        public static abstract class TreeNode {
+            protected List<TreeNode> children;
+
+            protected File file;
+
+            protected TreeNode(File file) {
+                this.children = new ArrayList<TreeNode>();
+                this.file = file;
+            }
+
+            protected TreeNode(File file, TreeNode child) {
+                this(file);
+                addChild(child);
+            }
+
+            protected TreeNode(File file, List<TreeNode> children) {
+                this(file);
+                addChildren(children);
+            }
+
+            public void addChild(TreeNode child) {
+                if (child != null)
+                    this.children.add(child);
+            }
+
+            public void addChildren(List<TreeNode> children) {
+                this.children.addAll(children);
+            }
+
+            static ChangeTree.TreeNode createTree(Change change) {
+                File file = change.getFile();
+                ChangeTree.TreeNode node = new ChangeTree.ChangeTreeNode(change);
+                file = file.getParentFile();
+                while (file != null) {
+                    node = new ChangeTree.EmptyTreeNode(file, node);
+                    file = file.getParentFile();
+                }
+                return node;
+            }
+
+            public boolean insertChange(Change change) {
+                // check whether this will be the correct subtree to insert in
+                if (!FileHelper.isParent(file, change.getFile())) {
+                    System.err
+                            .println("Could not insert change in this subtree!");
+                    return false;
+                }
+
+                // check whether the change would be a child of this subtree
+                if (file.equals(change.getFile().getParentFile())) {
+                    // check whether this child already exists
+                    for (TreeNode child : children) {
+                        if (child.getFile().equals(change.getFile())) {
+                            if (child instanceof EmptyTreeNode) {
+                                // replace existing EmptyTreeNode with
+                                // ChangeTreeNode
+                                ChangeTreeNode newChild = new ChangeTreeNode(
+                                        change, child.getChildren());
+                                children.remove(child);
+                                children.add(newChild);
+                                return true;
+                            } else { // multiple conflicts at same file =>
+                                // die
+                                throw new RuntimeException(
+                                        "Unexpected multiple conflicts at "
+                                                + change.getFile());
+                            }
+                        }
+                    }
+
+                    // add new child node
+                    addChild(new ChangeTreeNode(change));
+                    return true;
+                }
+
+                // recurse in the tree
+                for (TreeNode child : children) {
+                    if (FileHelper.isParent(child.getFile(), change.getFile())) {
+                        return child.insertChange(change);
+                    }
+                }
+
+                // need to insert some children first
+                File newChild = change.getFile().getParentFile();
+                TreeNode node = new ChangeTreeNode(change);
+
+                while (!file.equals(newChild)) {
+                    node = new EmptyTreeNode(newChild, node);
+                    newChild = newChild.getParentFile();
+                }
+                addChild(node);
+                return true;
+            }
+
+            public TreeNode findFile(File targetFile) {
+                // check whether we found the file
+                if (targetFile.equals(file))
+                    return this;
+
+                // check whether is the right subtree to search in
+                if (!FileHelper.isParent(file, targetFile)) {
+                    return null;
+                }
+
+                // recurse in the tree
+                for (TreeNode child : children) {
+                    TreeNode node = child.findFile(targetFile);
+                    if (node != null)
+                        return node;
+                }
+
+                // not found
+                return null;
+            }
+
+            public String toString() {
+                return printThis() + "\n" + printChildren(1);
+            }
+
+            protected abstract String printThis();
+
+            protected String printChildren(int indentation) {
+                StringBuilder sb = new StringBuilder();
+                for (TreeNode child : children) {
+                    for (int i = 0; i < indentation; i++)
+                        sb.append("  ");
+                    sb.append("+ ");
+                    sb.append(child.printThis());
+                    sb.append("\n");
+                    sb.append(child.printChildren(indentation + 1));
+                }
+                return sb.toString();
+            }
+
+            public File getFile() {
+                return file;
+            }
+
+            public List<TreeNode> getChildren() {
+                return children;
+            }
+        }
+
+        public static class EmptyTreeNode extends TreeNode {
+            final private File file;
+
+            public EmptyTreeNode(File file) {
+                super(file);
+                this.file = file;
+            }
+
+            public EmptyTreeNode(File file, TreeNode child) {
+                super(file, child);
+                this.file = file;
+            }
+
+            public EmptyTreeNode(File file, List<TreeNode> children) {
+                super(file, children);
+                this.file = file;
+            }
+
+            @Override
+            protected String printThis() {
+                String res = file.getName();
+                if (res == null || res.length() == 0)
+                    res = file.toString();
+                return "<" + res + ">";
+            }
+        }
+
+        public static class ChangeTreeNode extends TreeNode {
+            final private Change change;
+
+            public ChangeTreeNode(Change change) {
+                super(change.getFile());
+                this.change = change;
+            }
+
+            public ChangeTreeNode(Change change, TreeNode child) {
+                super(change.getFile(), child);
+                this.change = change;
+            }
+
+            public ChangeTreeNode(Change change, List<TreeNode> children) {
+                super(change.getFile(), children);
+                this.change = change;
+            }
+
+            public Change getChange() {
+                return change;
+            }
+
+            @Override
+            protected String printThis() {
+                return "<" + change + ">";
+            }
+        }
+    }
+
 }

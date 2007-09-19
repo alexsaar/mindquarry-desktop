@@ -105,7 +105,7 @@ public class WorkspaceUpdateContainerRunnable extends
         
         containerWidget.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
-                // make sure the "open" button is only enables when it makes sense:
+                // make sure the "open" button is only enabled when it makes sense:
                 boolean enableButton = enableOpenButton();
                 client.enableAction(enableButton, OpenFileAction.class.getName());
             }
@@ -175,8 +175,8 @@ public class WorkspaceUpdateContainerRunnable extends
             public Image getImage(Object element) {
                 File file = (File) element;
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.changes != null && widget.changes.getFiles().contains(file)) {
-                    Status status = widget.changes.getStatus(file);
+                if (widget.changeSets != null && widget.changeSets.getFiles().contains(file)) {
+                    Status status = widget.changeSets.getStatus(file);
                     // first check for a NodeKind set as local property
                     if (status.getNodeKind() == NodeKind.dir) {
                         return FOLDER_IMAGE;
@@ -213,10 +213,10 @@ public class WorkspaceUpdateContainerRunnable extends
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
 
                 ModificationDescription descr = ModificationDescription.getDescription(null, null);
-                if (widget.changes != null
-                        && widget.changes.getFiles().contains(file)) {
+                if (widget.changeSets != null
+                        && widget.changeSets.getFiles().contains(file)) {
                     descr = ModificationDescription
-                            .getDescription(widget.changes.getChange(file));
+                            .getDescription(widget.changeSets.getChange(file));
                 }
                 
                 return descr.getImage();
@@ -370,8 +370,8 @@ public class WorkspaceUpdateContainerRunnable extends
                                 WorkspaceBrowserWidget browserWidget = (WorkspaceBrowserWidget) containerWidget;
                                 File file = (File)item.getData();
                                 Change change = null;
-                                if (browserWidget.changes.getFiles().contains(file)) {
-                                    change = browserWidget.changes.getChange(file);
+                                if (browserWidget.changeSets.getFiles().contains(file)) {
+                                    change = browserWidget.changeSets.getChange(file);
                                 }
                                 
                                 ModificationDescription modDescription = 

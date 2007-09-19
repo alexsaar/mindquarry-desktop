@@ -65,7 +65,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
     protected File workspaceRoot;
 
-    protected ChangeSets changes = new ChangeSets();
+    protected ChangeSets changeSets = new ChangeSets();
     
     // ignore files like "<filename>.r200" that are created in case of conflicts:
     protected Map<File, Integer> toIgnore = new HashMap<File, Integer>();
@@ -81,8 +81,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     // ### PUBLIC METHODS
     // #########################################################################
 
-    public ChangeSets getChanges() {
-        return changes;
+    public ChangeSets getChangeSets() {
+        return changeSets;
     }
     
     /**
@@ -98,7 +98,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         ChangeSets newChanges = getAllChanges(selectedProfile);
 
         // if team selection has changed, a refresh is needed:
-        Set<String> teamIds = changes.getTeamIds();
+        Set<String> teamIds = changeSets.getTeamIds();
         Set<String> newTeamIds = newChanges.getTeamIds();
         if (!teamIds.equals(newTeamIds)) {
             log.debug("Changes list does need update (#1)");
@@ -106,13 +106,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         }
 
         // no changes in team selection, compare the changes per team:
-        if (checkChangeSetUpdateRequired(changes, newChanges)) {
+        if (checkChangeSetUpdateRequired(changeSets, newChanges)) {
             log.debug("Changes list does need update (#2)");
             refreshNeeded = true;
         }
         
         if(applyNewChanges) {
-            changes = newChanges;
+            changeSets = newChanges;
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
 
@@ -197,7 +197,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         refreshing = true;
         try {
             // update tree
-            this.changes = getAllChanges(selectedProfile);
+            this.changeSets = getAllChanges(selectedProfile);
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         } finally {
             refreshing = false;
@@ -207,7 +207,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     public boolean isRefreshListEmpty() {
         // FIXME: as ContentProvider does some filtering, this does
         // not always reflect the status in the GUI
-        return changes.getFiles().size() == 0;
+        return changeSets.getFiles().size() == 0;
     }
     
     public void setMessage(String message) {

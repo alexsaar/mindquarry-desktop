@@ -64,7 +64,7 @@ public class Change {
 
     @Override
     public String toString() {
-        return new File(status.getPath()).getName() + ": "
+        return file.getName() + ": "
                 + statusToString(status.getTextStatus()) + "/"
                 + statusToString(status.getRepositoryTextStatus());
     }

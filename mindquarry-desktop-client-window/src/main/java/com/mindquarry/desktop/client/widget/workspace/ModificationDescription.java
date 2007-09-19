@@ -83,29 +83,27 @@ public class ModificationDescription {
 
     public static ModificationDescription getDescription(Change change) {
         // normal behavior:
-//        return getDescription(change.getStatus(), change.getStatus());
+        ModificationDescription oldMD = getDescription(change.getStatus(), change.getStatus());
+        return oldMD;
 
-        if (change == null) {
-            return new ModificationDescription(null, "", "");
-        }
-
-        // TODO: use class of change to infer description, e.g.
-        if (change instanceof Conflict) {
-            return new ModificationDescription(conflictImage, change.getClass()
-                    .toString(), "Conflict");
-        } else if (change instanceof LocalAddition) {
-            return new ModificationDescription(uploadImage, change.getClass()
-                    .toString(), "Added");
-        } else {
-            // ...
-            ModificationDescription md = getDescription(change.getStatus(),
-                    change.getStatus());
-            if (md == null) {
-                return new ModificationDescription(null, "", "");
-            }
-            return new ModificationDescription(md.getImage(), change.getClass()
-                    .toString(), md.getShortDescription());
-        }
+//        if (change == null) {
+//            return new ModificationDescription(null, "", "");
+//        }
+//
+//        // TODO: use class of change to infer description, e.g.
+//        if (change instanceof Conflict) {
+//            return new ModificationDescription(conflictImage, oldMD.getDescription()+"\n"+change.getClass()
+//                    .toString(), "Conflict");
+//        } else if (change instanceof LocalAddition) {
+//            return new ModificationDescription(uploadImage, oldMD.getDescription()+"\n"+change.getClass()
+//                    .toString(), "Added");
+//        } else {
+//            if (oldMD == null) {
+//                return new ModificationDescription(null, "", "");
+//            }
+//            return new ModificationDescription(oldMD.getImage(), oldMD.getDescription()+"\n"+change.getClass()
+//                    .toString(), oldMD.getShortDescription());
+//        }
     }
     
     public static ModificationDescription getDescription(Status localStatusObj, Status remoteStatusObj) {
