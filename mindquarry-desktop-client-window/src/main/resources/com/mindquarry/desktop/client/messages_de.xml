@@ -623,15 +623,14 @@
     <message>
         <source>Please describe the changes you have made to the following files in team '{0}'</source>
         <translation>Bitte beschreiben Sie die Änderungen, die Sie in den folgenen Dateien des Teams '{0}' vorgenommen haben</translation>
-    </message>    
-    
-    
+    </message>
     <message>
         <source>local</source>
         <translation>lokal</translation>
     </message>
-    
-    
-    
+    <message>
+        <source>The file '{0}' already exists, please choose a different filename</source>
+        <translation>Die Datei '{0}' existiert bereits, bitte wählen Sie einen anderen Dateinamen</translation>
+    </message>
 </context>
 </TS>
