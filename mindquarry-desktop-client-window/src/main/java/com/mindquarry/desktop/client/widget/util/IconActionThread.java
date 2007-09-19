@@ -14,8 +14,10 @@
 package com.mindquarry.desktop.client.widget.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,32 +37,35 @@ import com.mindquarry.desktop.client.MindClient;
  *         Saar</a>
  */
 public class IconActionThread extends Thread {
-    private Log log;
+    public static final String ICON_BASE_PATH = "/com/mindquarry/icons/16x16/logo/mindquarry-icon";
 
+    private Log log;
+    private Shell shell;
     private TrayItem item;
 
-    private boolean running = false;
-
     private int count = 10;
-
-    private boolean ascending = false;
+    private boolean running, ascending = false;
 
     private List<String> actions = new ArrayList<String>();
-
-    private Shell shell;
+    private Map<Integer, Image> icons = new HashMap<Integer, Image>();
 
     public IconActionThread(TrayItem item, Shell shell) {
+        log = LogFactory.getLog(IconActionThread.class);
+        this.shell = shell;
+
         this.item = item;
         this.item.setToolTipText(MindClient.APPLICATION_NAME);
 
-        this.shell = shell;
-
-        log = LogFactory.getLog(IconActionThread.class);
+        // initialize icons
+        icons.put(10, new Image(Display.getCurrent(), getClass()
+                .getResourceAsStream(ICON_BASE_PATH + ".png")));
+        for (int i = 1; i <= 9; i++) {
+            icons.put(i, new Image(Display.getCurrent(), getClass()
+                    .getResourceAsStream(ICON_BASE_PATH + "-" + i + ".png")));
+        }
     }
 
-    /**
-     * @see java.lang.Thread#run()
-     */
+    @Override
     public void run() {
         while (true) {
             if (running) {
@@ -71,14 +76,14 @@ public class IconActionThread extends Thread {
                     count--;
                 }
                 // set new icon
-                final Image icon = getImage(count);
+                final Image icon = icons.get(count);
                 shell.getDisplay().syncExec(new Runnable() {
                     public void run() {
                         // check if still running, otherwise reset icon
                         if (running) {
                             item.setImage(icon);
                         } else {
-                            item.setImage(getImage(10));
+                            item.setImage(icons.get(10));
                         }
                     }
                 });
@@ -96,19 +101,6 @@ public class IconActionThread extends Thread {
                 log.error("thread error", e); //$NON-NLS-1$
             }
         }
-    }
-
-    private Image getImage(int count) {
-        if (count == 10) {
-            return new Image(
-                    Display.getCurrent(),
-                    getClass()
-                            .getResourceAsStream(
-                                    "/com/mindquarry/icons/16x16/logo/mindquarry-icon.png")); //$NON-NLS-1$
-        }
-        return new Image(Display.getCurrent(), getClass().getResourceAsStream(
-                "/com/mindquarry/icons/16x16/logo/mindquarry-icon-" + count //$NON-NLS-1$
-                        + ".png")); //$NON-NLS-1$
     }
 
     public void startAction(String description) {
@@ -153,7 +145,7 @@ public class IconActionThread extends Thread {
     private void reset() {
         shell.getDisplay().syncExec(new Runnable() {
             public void run() {
-                item.setImage(getImage(10));
+                item.setImage(icons.get(10));
             }
         });
         ascending = false;
