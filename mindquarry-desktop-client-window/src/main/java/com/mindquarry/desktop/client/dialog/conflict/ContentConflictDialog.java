@@ -270,11 +270,14 @@ public class ContentConflictDialog extends RenamingConflictDialog {
                 }
             });
         }
-
-        // TODO: disable the OK button of the dialog (because the
-        // 'Finished Merging' must be clicked first)
     }
     
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        enableButtons(false, true);
+    }
+
     /**
      * Enables the OK button and the merge options.
      * @param okButton Enable the OK button.
