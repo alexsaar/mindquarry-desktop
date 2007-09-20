@@ -73,28 +73,6 @@ public class HttpUtilities {
         }
     }
 
-    public static String getContentAsString(String login, String pwd,
-            String address) throws NotAuthorizedException {
-        try {
-            HttpClient client = createHttpClient(login, pwd, address);
-            GetMethod get = createAndExecuteGetMethod(address, client);
-
-            String result = null;
-            if (get.getStatusCode() == 200) {
-                result = get.getResponseBodyAsString();
-            } else if (get.getStatusCode() == 401) {
-                throw new NotAuthorizedException(AUTH_REFUSED, address, login, pwd);
-            } else {
-                throw new Exception(CONNECTION_ERROR + get.getStatusCode());
-            }
-            return result;
-        } catch (NotAuthorizedException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e.toString(), e);
-        }
-    }
-
     public static String putAsXML(String login, String pwd, String address,
 			byte[] content) throws NotAuthorizedException {
         try {
