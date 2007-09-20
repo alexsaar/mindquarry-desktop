@@ -24,8 +24,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 
-import com.mindquarry.desktop.event.EventBus;
-
 /**
  * Add summary documentation here.
  * 
@@ -334,8 +332,6 @@ public class Profile {
 
     public static void selectProfile(PreferenceStore store, String name) {
         store.putValue(PROFILE_SELECTED, name);
-        EventBus.send(new ProfileActivatedEvent(Profile.class,
-                getSelectedProfile(store, name)));
     }
 
     public static Profile getSelectedProfile(PreferenceStore store) {

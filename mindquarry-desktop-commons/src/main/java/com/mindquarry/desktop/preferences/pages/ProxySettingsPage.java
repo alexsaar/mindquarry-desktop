@@ -51,7 +51,7 @@ public class ProxySettingsPage extends PreferencePage {
     public static final String PREF_PROXY_LOGIN = "com.mindquarry.desktop.proxy.login";
     public static final String PREF_PROXY_PASSWORD = "com.mindquarry.desktop.proxy.password";
     public static final String PREF_PROXY_URL = "com.mindquarry.desktop.proxy.url";
-    
+
     private Button enableProxy;
     private Text login;
     private Text pwd;
@@ -81,7 +81,7 @@ public class ProxySettingsPage extends PreferencePage {
     @Override
     protected Control createContents(Composite parent) {
         PreferenceStore store = (PreferenceStore) getPreferenceStore();
-        
+
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
 
@@ -150,18 +150,20 @@ public class ProxySettingsPage extends PreferencePage {
         performValidation();
         return composite;
     }
-    
+
     @Override
     public boolean performOk() {
         PreferenceStore store = (PreferenceStore) getPreferenceStore();
-        
-        store.setValue(PREF_PROXY_ENABLED, enableProxy.getSelection());
-        store.setValue(PREF_PROXY_LOGIN, login.getText());
-        store.setValue(PREF_PROXY_PASSWORD, pwd.getText());
-        store.setValue(PREF_PROXY_URL, url.getText());
+
+        if (enableProxy != null) {
+            store.setValue(PREF_PROXY_ENABLED, enableProxy.getSelection());
+            store.setValue(PREF_PROXY_LOGIN, login.getText());
+            store.setValue(PREF_PROXY_PASSWORD, pwd.getText());
+            store.setValue(PREF_PROXY_URL, url.getText());
+        }
         return true;
     }
-    
+
     private void enableProxyFields(boolean enabled) {
         login.setEnabled(enabled);
         pwd.setEnabled(enabled);
@@ -169,7 +171,7 @@ public class ProxySettingsPage extends PreferencePage {
     }
 
     private void performValidation() {
-        if(enableProxy.getSelection()) {
+        if (enableProxy.getSelection()) {
             try {
                 new URL(url.getText());
             } catch (MalformedURLException e) {
@@ -184,7 +186,7 @@ public class ProxySettingsPage extends PreferencePage {
         setErrorMessage(message);
         setValid(false);
     }
-    
+
     private void setValid() {
         setErrorMessage(null);
         setValid(true);

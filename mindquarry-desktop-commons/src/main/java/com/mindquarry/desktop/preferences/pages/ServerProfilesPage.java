@@ -492,8 +492,8 @@ public class ServerProfilesPage extends PreferencePage {
         PreferenceStore store = (PreferenceStore) getPreferenceStore();
         Profile.storeProfiles(store, profiles);
 
-        String[] selection = profileList.getSelection();
-        if (selection.length > 0) {
+        if ((profileList != null) &&(profileList.getSelection().length > 0)) {
+            String[] selection = profileList.getSelection();
             Profile.selectProfile(store, selection[0]);
         }
         return true;
