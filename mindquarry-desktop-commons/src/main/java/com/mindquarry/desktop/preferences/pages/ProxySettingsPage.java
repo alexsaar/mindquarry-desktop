@@ -36,6 +36,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.event.EventBus;
+import com.mindquarry.desktop.event.network.ProxySettingsChangedEvent;
 
 /**
  * This class creates a preference page for proxy server settings.
@@ -160,6 +162,10 @@ public class ProxySettingsPage extends PreferencePage {
             store.setValue(PREF_PROXY_LOGIN, login.getText());
             store.setValue(PREF_PROXY_PASSWORD, pwd.getText());
             store.setValue(PREF_PROXY_URL, url.getText());
+            
+            EventBus.send(new ProxySettingsChangedEvent(this, enableProxy
+                    .getSelection(), url.getText(), pwd.getText(), login
+                    .getText()));
         }
         return true;
     }
