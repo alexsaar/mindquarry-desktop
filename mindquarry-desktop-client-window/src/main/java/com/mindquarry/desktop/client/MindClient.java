@@ -92,6 +92,7 @@ import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.preferences.profile.ProfileActivatedEvent;
 import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
+import com.mindquarry.desktop.util.HttpUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -187,6 +188,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
         // initialize preferences
         prefFile = new File(PREF_FILE);
         store = new PreferenceStore(prefFile.getAbsolutePath());
+        HttpUtilities.setStore(store);
     }
 
     private void createLock() throws IOException {
@@ -660,6 +662,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
             dlg.setSelectedNode(ServerProfilesPage.NAME);
         }
         dlg.open();
+        EventBus.send(new ProfileActivatedEvent(Profile.class,
+                Profile.getSelectedProfile(store)));
         saveOptions();
     }
 
@@ -869,6 +873,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
                     if (((MenuItem) event.widget).getSelection()) {
                         Profile.selectProfile(getPreferenceStore(), menuItem
                                 .getText());
+                        EventBus.send(new ProfileActivatedEvent(Profile.class,
+                                Profile.getSelectedProfile(store)));
                         saveOptions();
                     }
                 }
@@ -886,6 +892,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
             Profile
                     .selectProfile(getPreferenceStore(), firstMenuItem
                             .getText());
+            EventBus.send(new ProfileActivatedEvent(Profile.class,
+                    Profile.getSelectedProfile(store)));
             saveOptions();
         }
     }
