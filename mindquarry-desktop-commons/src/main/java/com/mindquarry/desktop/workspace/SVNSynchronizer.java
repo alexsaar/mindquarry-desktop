@@ -72,17 +72,13 @@ public class SVNSynchronizer {
 	private static final Log log = LogFactory.getLog(SVNSynchronizer.class);
 
 	protected String repositoryURL;
-
 	protected String localPath;
-
     protected File localPathFile;
     
 	protected String username;
-
 	protected String password;
 
 	protected SVNClientImpl client;
-	
 	protected ConflictHandler handler;
 
 	/**
