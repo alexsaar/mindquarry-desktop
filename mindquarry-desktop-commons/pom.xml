@@ -40,6 +40,13 @@
 			<artifactId>jmimemagic</artifactId>
 			<version>0.1.2</version>
 		</dependency>
+		
+		<!-- ini4j -->
+		<dependency>
+			<groupId>ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>0.2.6</version>
+		</dependency>
 	</dependencies>
 
 	<scm>
