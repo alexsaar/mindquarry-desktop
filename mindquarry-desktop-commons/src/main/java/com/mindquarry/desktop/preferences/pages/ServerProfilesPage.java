@@ -26,8 +26,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
@@ -56,27 +56,23 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public class ServerProfilesPage extends PreferencePage {
-    public static final String NAME = "profiles"; //$NON-NLS-1$
+    public static final String NAME = "profiles";
+    public static final String TITLE = Messages.getString("Server Profiles");
 
     private Text login;
-
     private Text pwd;
-
     private Text folder;
-
     private Text url;
 
     private Button delButton;
-
     private List profileList;
-
     private java.util.List<Profile> profiles;
 
     /**
      * ProfilesPage default constructor
      */
     public ServerProfilesPage() {
-        super(Messages.getString("Server Profiles")); //$NON-NLS-1$
+        super(TITLE);
         profiles = new ArrayList<Profile>();
 
         // initialize preference page
@@ -329,7 +325,7 @@ public class ServerProfilesPage extends PreferencePage {
         settingsGroup.setText(Messages.getString("Profile Settings")); //$NON-NLS-1$
         settingsGroup.setLayout(new GridLayout(1, true));
 
-        // init login section
+        // initialize login section
         CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
         loginLabel.setText(Messages.getString("Your Login ID") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
@@ -347,16 +343,12 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
         });
-        login.addFocusListener(new FocusListener() {
+        login.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 login.selectAll();
             }
-
-            public void focusLost(FocusEvent e) {
-                // nothing to do here
-            }
         });
-        // init password section
+        // initialize password section
         CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
         pwdLabel.setText(Messages.getString("Your Password") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
@@ -374,16 +366,12 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
         });
-        pwd.addFocusListener(new FocusListener() {
+        pwd.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 pwd.selectAll();
             }
-
-            public void focusLost(FocusEvent e) {
-                // nothing to do here
-            }
         });
-        // init server URL section
+        // initialize server URL section
         CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
         quarryEndpointLabel.setText(Messages
                 .getString("URL of the Mindquarry Server") //$NON-NLS-1$
@@ -403,16 +391,12 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
         });
-        url.addFocusListener(new FocusListener() {
+        url.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 url.selectAll();
             }
-
-            public void focusLost(FocusEvent e) {
-                // nothing to do here
-            }
         });
-        // init workspace folder section
+        // initialize workspace folder section
         CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
         locationLabel.setText(Messages.getString("Folder for Workspaces") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
@@ -440,13 +424,9 @@ public class ServerProfilesPage extends PreferencePage {
                 }
             }
         });
-        folder.addFocusListener(new FocusListener() {
+        folder.addFocusListener(new FocusAdapter() {
             public void focusGained(FocusEvent e) {
                 folder.selectAll();
-            }
-
-            public void focusLost(FocusEvent e) {
-                // nothing to do here
             }
         });
         Button selectWSLocationButton = new Button(locationArea, SWT.PUSH);
@@ -488,18 +468,6 @@ public class ServerProfilesPage extends PreferencePage {
             }
         });
     }
-
-    //    
-    // private void verifyServerSettings() {
-    // HttpClient client = HttpUtilities.createHttpClient(login, pwd, url);
-    // GetMethod get = createAndExecuteGetMethod(url, client);
-    //
-    // String result = null;
-    // if (get.getStatusCode() == 200) {
-    // result = get.getResponseBodyAsString();
-    // } else if (get.getStatusCode() == 401) {
-    // }
-    // }
 
     private Profile findByName(String name) {
         Profile result = null;

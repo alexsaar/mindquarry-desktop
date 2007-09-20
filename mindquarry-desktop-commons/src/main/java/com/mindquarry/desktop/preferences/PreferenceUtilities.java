@@ -20,6 +20,8 @@ import org.eclipse.jface.preference.PreferenceManager;
 import org.eclipse.jface.preference.PreferenceNode;
 
 import com.mindquarry.desktop.preferences.pages.GeneralSettingsPage;
+import com.mindquarry.desktop.preferences.pages.NetworkSettingsPage;
+import com.mindquarry.desktop.preferences.pages.ProxySettingsPage;
 import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
 
 /**
@@ -29,29 +31,47 @@ import com.mindquarry.desktop.preferences.pages.ServerProfilesPage;
  *         Saar</a>
  */
 public class PreferenceUtilities {
-	public static final String SETTINGS_FOLDER = System
-			.getProperty("user.home") //$NON-NLS-1$
-			+ "/.mindquarry"; //$NON-NLS-1$
+    public static final String SETTINGS_FOLDER = System
+            .getProperty("user.home") //$NON-NLS-1$
+            + "/.mindquarry"; //$NON-NLS-1$
 
-	public static boolean checkPreferenceFile(File prefFile) {
-		if (!prefFile.exists()) {
-			try {
-				prefFile.getParentFile().mkdirs();
-				prefFile.createNewFile();
-			} catch (IOException e) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private static PreferenceManager mgr;
+    
+    public static boolean checkPreferenceFile(File prefFile) {
+        if (!prefFile.exists()) {
+            try {
+                prefFile.getParentFile().mkdirs();
+                prefFile.createNewFile();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	public static PreferenceManager getDefaultPreferenceManager() {
-		PreferenceManager mgr = new PreferenceManager();
-		GeneralSettingsPage general = new GeneralSettingsPage();
-		mgr.addToRoot(new PreferenceNode(GeneralSettingsPage.NAME, general));
+    public static PreferenceManager getDefaultPreferenceManager() {
+        if (mgr == null) {
+            mgr = new PreferenceManager();
 
-		ServerProfilesPage profiles = new ServerProfilesPage();
-		mgr.addToRoot(new PreferenceNode(ServerProfilesPage.NAME, profiles));
-		return mgr;
-	}
+            GeneralSettingsPage general = new GeneralSettingsPage();
+            mgr
+                    .addToRoot(new PreferenceNode(GeneralSettingsPage.NAME,
+                            general));
+
+            NetworkSettingsPage network = new NetworkSettingsPage();
+            PreferenceNode networkNode = new PreferenceNode(
+                    ServerProfilesPage.NAME, network);
+            mgr.addToRoot(networkNode);
+
+            ServerProfilesPage profiles = new ServerProfilesPage();
+            PreferenceNode profilesNode = new PreferenceNode(
+                    ServerProfilesPage.NAME, profiles);
+            mgr.addTo(networkNode.getId(), profilesNode);
+            
+            ProxySettingsPage proxy = new ProxySettingsPage();
+            mgr.addTo(networkNode.getId(), new PreferenceNode(
+                    ProxySettingsPage.NAME, proxy));
+        }
+        return mgr;
+    }
 }

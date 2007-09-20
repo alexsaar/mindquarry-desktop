@@ -15,7 +15,6 @@ package com.mindquarry.desktop.preferences.pages;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -48,9 +47,6 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
     }
 
     protected void createFieldEditors() {
-        IPreferenceStore store = getPreferenceStore();
-        store.setDefault(AUTOSTART, false);
-
         BooleanFieldEditor autostartFlag = new BooleanFieldEditor(AUTOSTART,
                 Messages.getString("Run at system startup (Windows only)"), //$NON-NLS-1$
                 getFieldEditorParent());
