@@ -83,6 +83,7 @@ import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
 import com.mindquarry.desktop.client.widget.util.IconActionThread;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.event.EventListener;
+import com.mindquarry.desktop.event.network.ProxySettingsChangedEvent;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.PreferenceUtilities;
 import com.mindquarry.desktop.preferences.dialog.FilteredPreferenceDialog;
@@ -94,6 +95,7 @@ import com.mindquarry.desktop.splash.SplashScreen;
 import com.mindquarry.desktop.util.AutostartUtilities;
 import com.mindquarry.desktop.util.HttpUtilities;
 import com.mindquarry.desktop.util.NotAuthorizedException;
+import com.mindquarry.desktop.workspace.SVNProxyHandler;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -520,9 +522,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 if (first) {
                     first = false;
                     // TODO: send start event
-                    // eventBus.sendEvent(new ProfileActivatedEvent(this, new
-                    // Profile("test", "user", "pw", "http://server",
-                    // "folder")));
                     refreshOnStartup();
                 }
                 getShell().setActive();
@@ -649,21 +648,21 @@ public class MindClient extends ApplicationWindow implements EventListener {
         }
         return Profile.addProfile(store, profile);
     }
-    
+
     private void showPreferenceDialog(boolean showProfiles, boolean loadProfiles) {
         if (loadProfiles) {
             loadOptions();
         }
         // Create the preferences dialog
-        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(
-                getShell(), PreferenceUtilities.getDefaultPreferenceManager());
+        FilteredPreferenceDialog dlg = new FilteredPreferenceDialog(getShell(),
+                PreferenceUtilities.getDefaultPreferenceManager());
         dlg.setPreferenceStore(store);
         if (showProfiles) {
             dlg.setSelectedNode(ServerProfilesPage.NAME);
         }
         dlg.open();
-        EventBus.send(new ProfileActivatedEvent(Profile.class,
-                Profile.getSelectedProfile(store)));
+        EventBus.send(new ProfileActivatedEvent(Profile.class, Profile
+                .getSelectedProfile(store)));
         saveOptions();
     }
 
@@ -771,14 +770,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 public void widgetSelected(SelectionEvent e) {
                     // single left click => show window
                     if (getShell().isVisible()) {
-                        // get all child shells and block minimizing if necessary
+                        // get all child shells and block minimizing if
+                        // necessary
                         Shell[] shells = getShell().getShells();
                         if (0 < shells.length) {
                             for (Shell shell : shells) {
                                 shell.forceActive();
                             }
-                        }
-                        else {
+                        } else {
                             getShell().setVisible(false);
                         }
                     } else {
@@ -892,8 +891,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
             Profile
                     .selectProfile(getPreferenceStore(), firstMenuItem
                             .getText());
-            EventBus.send(new ProfileActivatedEvent(Profile.class,
-                    Profile.getSelectedProfile(store)));
+            EventBus.send(new ProfileActivatedEvent(Profile.class, Profile
+                    .getSelectedProfile(store)));
             saveOptions();
         }
     }
@@ -947,6 +946,20 @@ public class MindClient extends ApplicationWindow implements EventListener {
             } catch (CancelException e) {
                 // TODO: better exception handling
                 log.warn("Refreshing after profile change cancelled.", e);
+            }
+        } else if (event instanceof ProxySettingsChangedEvent) {
+            // apply Subversion proxy server settings
+            ProxySettingsChangedEvent psce = (ProxySettingsChangedEvent) event;
+            try {
+                if (psce.isProxyEnabled()) {
+                    SVNProxyHandler.applyProxySettings(Profile
+                            .loadProfiles(store), psce.getUrl(), psce
+                            .getLogin(), psce.getPwd());
+                } else {
+                    SVNProxyHandler.removeProxySettings();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
