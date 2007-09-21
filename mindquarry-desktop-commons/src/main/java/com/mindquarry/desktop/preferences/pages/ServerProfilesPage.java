@@ -335,7 +335,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite errorComp = createErrorBorderComposite(settingsGroup);
+        Composite errorComp = createErrorBorderComposite(settingsGroup, 1);
         url = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
         registerErrorBorderComposite(errorComp, url);
         url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -360,7 +360,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 + ":"); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        errorComp = createErrorBorderComposite(settingsGroup);
+        errorComp = createErrorBorderComposite(settingsGroup, 1);
         login = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
         registerErrorBorderComposite(errorComp, login);
         login.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -385,7 +385,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 + ":"); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        errorComp = createErrorBorderComposite(settingsGroup);
+        errorComp = createErrorBorderComposite(settingsGroup, 1);
         pwd = new Text(errorComp, SWT.PASSWORD | SWT.BORDER);
         registerErrorBorderComposite(errorComp, pwd);
         pwd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
