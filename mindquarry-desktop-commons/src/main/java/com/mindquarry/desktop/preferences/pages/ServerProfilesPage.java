@@ -18,10 +18,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -38,6 +40,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.List;
@@ -55,6 +58,11 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
+    private static final Image OK_IMAGE = new Image(
+            Display.getCurrent(),
+            ServerProfilesPage.class
+                    .getResourceAsStream("/com/mindquarry/icons/16x16/actions/save.png")); //$NON-NLS-1$
+    
     public static final String NAME = "profiles";
     public static final String TITLE = Messages.getString("Server Profiles");
 
@@ -215,7 +223,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         profileGroup.setLayout(new GridLayout(2, false));
 
         // create profile list
-        Composite errorComp = createErrorBorderComposite(profileGroup, 2);
+        Composite errorComp = createErrorBorderComposite(profileGroup, 3);
         profileList = new List(errorComp, SWT.SINGLE | SWT.BORDER
                 | SWT.V_SCROLL);
         profileList.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -405,10 +413,24 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             }
         });
         // init verify server button
-        Button verifyServerButton = new Button(settingsGroup, SWT.LEFT
+        Composite verifyArea = new Composite(settingsGroup, SWT.NONE);
+        verifyArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        verifyArea.setLayout(layout);
+        Button verifyServerButton = new Button(verifyArea, SWT.LEFT
                 | SWT.PUSH);
         verifyServerButton
                 .setText(Messages.getString("Verify server settings"));
+        
+        final CLabel verifiedLabel = new CLabel(verifyArea, SWT.WRAP);
+        verifiedLabel.setLayoutData(new GridData(300, 20));
+        
         verifyServerButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 try {
@@ -417,18 +439,32 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                                     url.getText());
                     
                     if (HttpUtilities.CheckResult.AUTH_REFUSED == result) {
-                        setInvalid(Messages.getString("Your login ID or password is incorrect."), login, pwd);
+                        String msg = Messages.getString("Your login ID or password is incorrect.");
+                        setInvalid(msg, login, pwd);
+                        verifiedLabel.setText(msg);
+                        verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
                     } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
-                        setInvalid(Messages.getString("Server could not be found."), url);
+                        String msg = Messages.getString("Server could not be found.");
+                        setInvalid(msg, url);
+                        verifiedLabel.setText(msg);
+                        verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
                     } else {
                         setValid();
-                        setMessage(Messages.getString("Your server settings are correct."), INFORMATION);
+                        String msg = Messages.getString("Your server settings are correct.");
+                        setMessage(msg, INFORMATION);
+                        verifiedLabel.setText(msg);
+                        verifiedLabel.setImage(OK_IMAGE);
                     }
-                } catch(MalformedURLException murle) {
-                    setInvalid(Messages.getString("Server URL is not a valid URL ({0})", murle.getLocalizedMessage()), url);
+                } catch (MalformedURLException murle) {
+                    String msg = Messages.getString("Server URL is not a valid URL ({0})", murle.getLocalizedMessage());
+                    setInvalid(msg, url);
+                    verifiedLabel.setText(msg);
+                    verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
                 }
+                verifiedLabel.getParent().layout();
             }
         });
+        
         // initialize workspace folder section
         CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
         locationLabel.setText(Messages.getString("Folder for Workspaces") //$NON-NLS-1$
@@ -437,13 +473,14 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
 
         Composite locationArea = new Composite(settingsGroup, SWT.NONE);
         locationArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        locationArea.setLayout(new GridLayout(2, false));
-        ((GridLayout) locationArea.getLayout()).marginBottom = 0;
-        ((GridLayout) locationArea.getLayout()).marginTop = 0;
-        ((GridLayout) locationArea.getLayout()).marginLeft = 0;
-        ((GridLayout) locationArea.getLayout()).marginRight = 0;
-        ((GridLayout) locationArea.getLayout()).marginHeight = 0;
-        ((GridLayout) locationArea.getLayout()).marginWidth = 0;
+        layout = new GridLayout(2, false);
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        locationArea.setLayout(layout);
 
         errorComp = createErrorBorderComposite(locationArea, 1);
         folder = new Text(errorComp, SWT.BORDER);
