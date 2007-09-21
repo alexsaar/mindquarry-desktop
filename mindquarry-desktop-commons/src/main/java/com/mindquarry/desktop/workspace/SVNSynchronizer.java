@@ -707,8 +707,11 @@ public class SVNSynchronizer {
     /**
      * Important method that returns a list of all changes and conflicts that
      * are to take place when synchronising. 
+     * @throws IOException 
      */
-    public List<Change> getChangesAndConflicts() throws ClientException {
+    public List<Change> getChangesAndConflicts() throws ClientException, IOException {
+        deleteMissingAndAddUnversioned(localPath);
+        
         List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
         List<Status> remoteAndLocalChanges2 = new ArrayList<Status>(remoteAndLocalChanges);
         log.debug("Analyzing changes and clonflicts ...");
