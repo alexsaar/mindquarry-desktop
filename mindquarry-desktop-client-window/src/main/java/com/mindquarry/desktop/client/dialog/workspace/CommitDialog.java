@@ -122,6 +122,9 @@ public class CommitDialog extends DialogBase {
                     
                     // shorten the displayed path (remove path to team dir)
                     String pathName = changeNode.getFile().getAbsolutePath();
+                    if (teamDir.equals(changeNode.getFile())) {
+                        return; // ignore team workspace
+                    }
                     if (FileHelper.isParent(teamDir, changeNode.getFile())) {
                         int length = teamDir.getAbsolutePath().length();
                         pathName = pathName.substring(length);
