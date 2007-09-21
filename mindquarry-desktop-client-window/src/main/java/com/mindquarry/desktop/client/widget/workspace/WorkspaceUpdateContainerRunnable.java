@@ -66,20 +66,6 @@ import com.mindquarry.desktop.workspace.conflict.Change;
  */
 public class WorkspaceUpdateContainerRunnable extends
         UpdateContainerRunnable<TreeViewer> {
-    private static final Image FOLDER_IMAGE = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
-
-    private static final Image FILE_IMAGE = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
-
-    private static final Image UNKNOWN_FILE_IMAGE = new Image(
-            Display.getCurrent(),
-            WorkspaceBrowserWidget.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
 
     private MindClient client;
     private MenuItem menuItem;
@@ -189,27 +175,9 @@ public class WorkspaceUpdateContainerRunnable extends
                         && widget.changeSets.getFiles().contains(file)) {
                     Status status = widget.changeSets.getStatus(file);
                     return FileIconUtil.getIcon(file, status);
-//                    // first check for a NodeKind set as local property
-//                    if (status.getNodeKind() == NodeKind.dir) {
-//                        return FOLDER_IMAGE;
-//                    } else if (status.getNodeKind() == NodeKind.file) {
-//                        return FILE_IMAGE;
-//                        // otherwise look for the remote variant (ie. newly
-//                        // added file or folder remotely)
-//                    } else if (status.getReposKind() == NodeKind.dir) {
-//                        return FOLDER_IMAGE;
-//                    } else if (status.getReposKind() == NodeKind.file) {
-//                        return FILE_IMAGE;
-//                    }
                 }
                 // fallback: simply lookup the local file
-                if (file.isDirectory()) {
-                    return FOLDER_IMAGE;
-                } else if (file.isFile()) {
-                    return FILE_IMAGE;
-                } else {
-                    return UNKNOWN_FILE_IMAGE;
-                }
+                return FileIconUtil.getIcon(file);
             }
 
             public String getText(Object element) {
@@ -274,6 +242,17 @@ public class WorkspaceUpdateContainerRunnable extends
         markRows(containerWidget.getViewer().getTree().getItems(), 0, null);
     }
     
+    /**
+     * Marks the rows of a tree in alternating colors (white, highlighted,
+     * white, highlighted...).
+     * 
+     * @param items the tree items to look at
+     * @param count number of items visible from the top in a linear order, must
+     *              be passed on (and returned)
+     * @param expandedOrCollapsedItem the item that is about to expand or
+     *              collapse (workaround for a not-yet-set item.getExpanded())
+     * @return the current number of lines visited
+     */
     private int markRows(TreeItem[] items, int count, TreeItem expandedOrCollapsedItem) {
         for (int i = 0; i < items.length; i++) {
             if (count % 2 == 1) {

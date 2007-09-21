@@ -13,13 +13,6 @@
  */
 package com.mindquarry.desktop.client.widget.util;
 
-/*******************************************************************************
- * All Right Reserved. Copyright (c) 1998, 2004 Jackwind Li Guojie
- * 
- * Created on 2004-7-14 7:50:09 by JACK $Id$
- * 
- ******************************************************************************/
-
 import java.io.File;
 
 import org.eclipse.jface.resource.ImageRegistry;
@@ -37,29 +30,21 @@ import org.tigris.subversion.javahl.Status;
 public class FileIconUtil {
     static ImageRegistry imageRegistry;
 
-//    static Image iconFolder;
-//
-//    static Image iconFile;
-//
-//    static {
-//        iconFolder = new Image(Display.getCurrent(), "java2s.gif");
-//        iconFile = new Image(Display.getCurrent(), "java2s.gif");
-//    }
-
     private static final Image FOLDER_IMAGE = new Image(
             Display.getCurrent(),
             FileIconUtil.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/places/folder.png")); //$NON-NLS-1$
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/16x16/places/folder.png")); //$NON-NLS-1$
 
     private static final Image FILE_IMAGE = new Image(
             Display.getCurrent(),
             FileIconUtil.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic.png")); //$NON-NLS-1$
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/16x16/mimetypes/text-x-generic.png")); //$NON-NLS-1$
 
     private static final Image UNKNOWN_FILE_IMAGE = new Image(
             Display.getCurrent(),
             FileIconUtil.class
-                    .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
+                    .getResourceAsStream("/org/tango-project/tango-icon-theme/16x16/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
+
     /**
      * Returns an icon representing the specified file.
      * 
@@ -78,16 +63,18 @@ public class FileIconUtil {
         return image == null ? FILE_IMAGE : image;
     }
 
+    /**
+     * Returns an icon representing the specified file or remote svn file.
+     * 
+     * @param file
+     * @param status
+     * @return an swt Image, never null
+     */
     public static Image getIcon(File file, Status status) {
+        // if the file does not exist locally, it is probably a remote file
+        // and we have to look inside the Status to know what type it is
         if (!file.exists()) {
-            // first check for a NodeKind set as local property
-            if (status.getNodeKind() == NodeKind.dir) {
-                return FOLDER_IMAGE;
-            } else if (status.getNodeKind() == NodeKind.file) {
-                return getIconBasedOnFilename(file.getName());
-                // otherwise look for the remote variant (ie. newly
-                // added file or folder remotely)
-            } else if (status.getReposKind() == NodeKind.dir) {
+            if (status.getReposKind() == NodeKind.dir) {
                 return FOLDER_IMAGE;
             } else if (status.getReposKind() == NodeKind.file) {
                 return getIconBasedOnFilename(file.getName());
@@ -103,6 +90,11 @@ public class FileIconUtil {
         return getIconBasedOnFilename(file.getName());
     }
     
+    /**
+     * Returns an 
+     * @param name
+     * @return an swt Image, never null
+     */
     public static Image getIconBasedOnFilename(String name) {
         int lastDotPos = name.indexOf('.');
         if (lastDotPos == -1) {
