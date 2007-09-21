@@ -24,9 +24,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -151,7 +154,28 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             } else {
                 viewer.setInput(content);
                 viewer.refresh();
+                
+                adjustTable();
             }
+        }
+    }
+
+    private void adjustTable() {
+        Table table = ((TableViewer) viewer).getTable();
+
+        // modify table columns
+        TableItem[] items = table.getItems();
+        for (int i = 0; i < items.length; i++) {
+            // add multiple line table item support
+            TaskTableCell cell = new TaskTableCell(table, SWT.NONE, client,
+                    (Task) items[i].getData());
+            if (i % 2 == 1) {
+                cell.setBackground(ContainerWidget.HIGHLIGHT_COLOR);
+            }
+
+            TableEditor editor = new TableEditor(table);
+            editor.grabHorizontal = editor.grabVertical = true;
+            editor.setEditor(cell, items[i], 0);
         }
     }
 

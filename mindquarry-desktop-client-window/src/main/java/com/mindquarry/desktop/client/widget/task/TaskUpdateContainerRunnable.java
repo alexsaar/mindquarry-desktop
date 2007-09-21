@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -29,10 +28,9 @@ import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnab
 /**
  * Container that can show three different things, depending on state:
  * 
- *   (a) Show a list of tasks
- *   (b) Show a progress bar with a message while updating
- *   (c) Show a message with an icon, e.g. that there are no tasks or that there
- *       was an error.
+ * (a) Show a list of tasks (b) Show a progress bar with a message while
+ * updating (c) Show a message with an icon, e.g. that there are no tasks or
+ * that there was an error.
  * 
  * @author <a href="mailto:saar@mindquarry.com">Alexander Saar</a>
  * @author <a href="mailto:christian.richardt@mindquarry.com">Christian Richardt</a>
@@ -62,15 +60,12 @@ public class TaskUpdateContainerRunnable extends
         containerWidget.getViewer().getTable().setHeaderVisible(false);
         containerWidget.getViewer().getTable().setLinesVisible(false);
         containerWidget.getViewer().getTable().setToolTipText(""); //$NON-NLS-1$
-        containerWidget.getViewer().getTable().setFont(
-                JFaceResources.getFont(MindClient.TASK_TITLE_FONT_KEY));
         containerWidget.getViewer().getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
-                if(containerWidget.getViewer() != null) {
-                    containerWidget.getViewer().getTable().getColumn(0).setWidth(
-                        containerWidget.getViewer().getTable().getSize().x);
+                if (containerWidget.getViewer() != null) {
+                    doResize();
                 }
             }
         });
@@ -85,8 +80,18 @@ public class TaskUpdateContainerRunnable extends
         col.getColumn().setResizable(false);
         col.getColumn().setWidth(200);
         col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
-        containerWidget.getViewer().getTable().getColumn(0).setWidth(
-                containerWidget.getSize().x - 4);
+
+        containerWidget.layout(true);
+        doResize();
+    }
+
+    private void doResize() {
+        containerWidget
+                .getViewer()
+                .getTable()
+                .getColumn(0)
+                .setWidth(
+                        containerWidget.getViewer().getTable().getClientArea().width - 4);
     }
 
     @Override

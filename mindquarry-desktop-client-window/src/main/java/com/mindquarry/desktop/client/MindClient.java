@@ -124,6 +124,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
     public static final String CLIENT_TRAY_IMG_KEY = "client-tray-icon";
 
     public static final String TASK_TITLE_FONT_KEY = "task-title";
+    public static final String TASK_DESC_FONT_KEY = "task-desc";
     public static final String TEAM_NAME_FONT_KEY = "team-name";
 
     public static final List<String> INITIAL_TOOLBAR_GROUPS = new ArrayList<String>();
@@ -714,11 +715,12 @@ public class MindClient extends ApplicationWindow implements EventListener {
         reg.put(CLIENT_TRAY_IMG_KEY, trayImg);
 
         FontRegistry fReg = JFaceResources.getFontRegistry();
-        fReg.put(TASK_TITLE_FONT_KEY, getSystemFont());
-        fReg.put(TEAM_NAME_FONT_KEY, getSmallSystemFont());
+        fReg.put(TASK_TITLE_FONT_KEY, getTaskFont());
+        fReg.put(TASK_DESC_FONT_KEY, getTaskDescriptionFont());
+        fReg.put(TEAM_NAME_FONT_KEY, getTeamFont());
     }
 
-    private FontData[] getSmallSystemFont() {
+    private FontData[] getTeamFont() {
         if (SVNFileUtil.isOSX) {
             // see
             // http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
@@ -729,15 +731,26 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 10, SWT.NONE) };
     }
 
-    private FontData[] getSystemFont() {
+    private FontData[] getTaskFont() {
         if (SVNFileUtil.isOSX) {
             // see
             // http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
             return new FontData[] { new FontData("Lucida Grande", //$NON-NLS-1$
-                    13, SWT.NONE) };
+                    10, SWT.NONE) };
         }
         return new FontData[] { new FontData("Arial", //$NON-NLS-1$
-                12, SWT.NONE) };
+                9, SWT.NONE ) };
+    }
+    
+    private FontData[] getTaskDescriptionFont() {
+        if (SVNFileUtil.isOSX) {
+            // see
+            // http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
+            return new FontData[] { new FontData("Lucida Grande", //$NON-NLS-1$
+                    10, SWT.ITALIC) };
+        }
+        return new FontData[] { new FontData("Arial", //$NON-NLS-1$
+                9, SWT.ITALIC) };
     }
 
     private void createTrayIconAndMenu(Display display) {
