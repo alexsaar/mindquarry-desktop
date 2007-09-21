@@ -212,14 +212,13 @@ public class WorkspaceUpdateContainerRunnable extends
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
 
-                ModificationDescription descr = ModificationDescription.getDescription(null);
+                ModificationDescription descr = new ModificationDescription(null);
                 if (widget.changeSets != null
                         && widget.changeSets.getFiles().contains(file)) {
-                    descr = ModificationDescription
-                            .getDescription(widget.changeSets.getChange(file));
+                    descr = new ModificationDescription(widget.changeSets.getChange(file));
                 }
                 
-                return descr.getImage();
+                return descr.getDirectionImage();
             }
 
             public String getText(Object element) {
@@ -374,10 +373,10 @@ public class WorkspaceUpdateContainerRunnable extends
                                     change = browserWidget.changeSets.getChange(file);
                                 }
                                 
-                                ModificationDescription modDescription = 
-                                    ModificationDescription.getDescription(change);
+                                ModificationDescription modDescription = new
+                                    ModificationDescription(change);
                                 
-                                String tooltip = modDescription.getDescription();
+                                String tooltip = modDescription.getLongDescription();
                                 if (tooltip != null && !tooltip.equals("")) {
                                     tip = new Shell(treeViewer.getTree().getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
                                     tip.setBackground(treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));

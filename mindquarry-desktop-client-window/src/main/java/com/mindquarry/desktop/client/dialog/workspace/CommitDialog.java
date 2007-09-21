@@ -107,8 +107,8 @@ public class CommitDialog extends DialogBase {
             public void visit(TreeNode node) {
                 if (node instanceof ChangeTreeNode) {
                     ChangeTreeNode changeNode = (ChangeTreeNode) node;
-                    ModificationDescription desc = ModificationDescription
-                            .getDescription(changeNode.getChange());
+                    ModificationDescription desc = new ModificationDescription(
+                            changeNode.getChange());
                     String shortDesc = desc.getShortDescription();
                     // TODO: this currently happens because the changes
                     // also contains remote changes -- needs cleanup:
