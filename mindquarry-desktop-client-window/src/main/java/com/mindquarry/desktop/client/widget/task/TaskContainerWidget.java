@@ -154,7 +154,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             } else {
                 viewer.setInput(content);
                 viewer.refresh();
-                
+
                 adjustTable();
             }
         }
@@ -172,7 +172,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             if (i % 2 == 1) {
                 cell.setBackground(ContainerWidget.HIGHLIGHT_COLOR);
             }
-
             TableEditor editor = new TableEditor(table);
             editor.grabHorizontal = editor.grabVertical = true;
             editor.setEditor(cell, items[i], 0);
@@ -326,7 +325,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 false, true, icon, message);
         getDisplay().syncExec(containerRunnable);
     }
-    
+
     public void showContent() {
         containerRunnable = new TaskUpdateContainerRunnable(client, this,
                 false, false, null, null);

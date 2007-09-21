@@ -54,12 +54,12 @@ public class TaskUpdateContainerRunnable extends
         // create table viewer
         containerWidget.setViewer(new TableViewer(containerWidget,
                 SWT.FULL_SELECTION));
-        containerWidget.getViewer().activateCustomTooltips();
+        // containerWidget.getViewer().activateCustomTooltips();
         containerWidget.getViewer().getTable().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
         containerWidget.getViewer().getTable().setHeaderVisible(false);
         containerWidget.getViewer().getTable().setLinesVisible(false);
-        containerWidget.getViewer().getTable().setToolTipText(""); //$NON-NLS-1$
+        // containerWidget.getViewer().getTable().setToolTipText("");
         containerWidget.getViewer().getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
@@ -80,7 +80,7 @@ public class TaskUpdateContainerRunnable extends
         col.getColumn().setResizable(false);
         col.getColumn().setWidth(200);
         col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
-
+        
         containerWidget.layout(true);
         doResize();
     }

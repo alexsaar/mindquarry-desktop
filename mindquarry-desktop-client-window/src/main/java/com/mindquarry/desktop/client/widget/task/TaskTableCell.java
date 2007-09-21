@@ -79,7 +79,7 @@ public class TaskTableCell extends WidgetBase {
         description.setFont(JFaceResources
                 .getFont(MindClient.TASK_DESC_FONT_KEY));
         
-        DoubleClickAdapter ddcAdapter = new DoubleClickAdapter();
+        MouseClickAdapter ddcAdapter = new MouseClickAdapter();
         title.addMouseListener(ddcAdapter);
         description.addMouseListener(ddcAdapter);
         addMouseListener(ddcAdapter);
@@ -92,7 +92,8 @@ public class TaskTableCell extends WidgetBase {
         super.setBackground(color);
     }
     
-    private class DoubleClickAdapter extends MouseAdapter {
+    private class MouseClickAdapter extends MouseAdapter {
+        @Override
         public void mouseDoubleClick(MouseEvent event) {
             Profile prof = Profile.getSelectedProfile(client
                     .getPreferenceStore());
@@ -116,6 +117,11 @@ public class TaskTableCell extends WidgetBase {
                 log.error("Could not update task with id " //$NON-NLS-1$
                         + task.getId(), e);
             }
+        }
+
+        @Override
+        public void mouseDown(MouseEvent e) {
+            setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
         }
     }
 }
