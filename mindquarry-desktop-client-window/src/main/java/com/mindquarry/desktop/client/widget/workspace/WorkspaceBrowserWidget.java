@@ -130,7 +130,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     }
     
     public void onEvent(com.mindquarry.desktop.event.Event event) {
-        if (event instanceof OpenSelectedFileEvent) {
+        if (event instanceof OpenSelectedFileEvent && viewer != null) {
             ISelection selection = viewer.getSelection();
             if (selection instanceof StructuredSelection) {
                 StructuredSelection structsel = (StructuredSelection) selection;
