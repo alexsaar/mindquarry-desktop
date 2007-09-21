@@ -21,7 +21,7 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
-public class Change {
+public class Change implements ChangeDescriptor {
 
     protected static Log log;
     protected SVNClientImpl client;
@@ -133,6 +133,31 @@ public class Change {
             return "external"; //$NON-NLS-1$
         }
         return "invalid (" + status + ")"; //$NON-NLS-1$
+    }
+
+    public ChangeDirection getChangeDirection() {
+        return ChangeDirection.UNKNOWN;
+    }
+
+    public ChangeStatus getChangeStatus() {
+        return ChangeStatus.UNKNOWN;
+    }
+
+    public String getLongDescription() {
+        if (status == null)
+            return "Unknown. Status is null.";
+
+        log.info("getLongDescription -- status "
+                + statusToString(status.getTextStatus()) + "/"
+                + statusToString(status.getRepositoryTextStatus()));
+        return "Generic change with local/remote status: "
+                + statusToString(status.getTextStatus()) + "/"
+                + statusToString(status.getRepositoryTextStatus());
+    }
+
+    public String getShortDescription() {
+        return statusToString(status.getTextStatus()) + "/"
+                + statusToString(status.getRepositoryTextStatus());
     }
 
 }

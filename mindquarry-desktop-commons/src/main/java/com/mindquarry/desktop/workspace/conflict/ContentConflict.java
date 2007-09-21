@@ -21,6 +21,8 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.util.FileHelper;
+import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeDirection;
+import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeStatus;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -279,5 +281,21 @@ public class ContentConflict extends RenamingConflict {
         // rename conflicts files
         conflictServerFile = renameConflictFile(getConflictServerFile());
         conflictLocalFile = renameConflictFile(getConflictLocalFile());      
+    }
+
+    @Override
+    public ChangeDirection getChangeDirection() {
+        return ChangeDirection.CONFLICT;
+    }
+
+    @Override
+    public ChangeStatus getChangeStatus() {
+        return ChangeStatus.MODIFIED;
+    }
+
+    @Override
+    public String getLongDescription() {
+        return "This file has been modified both on the server "
+                + "and locally. You will need to merge the changes.";
     }
 }

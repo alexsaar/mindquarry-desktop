@@ -5,7 +5,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
@@ -112,4 +111,20 @@ public abstract class Conflict extends Change {
 			}
 		}
 	}
+
+    @Override
+    public ChangeDirection getChangeDirection() {
+        return ChangeDirection.CONFLICT;
+    }
+
+    @Override
+    public ChangeStatus getChangeStatus() {
+        return ChangeStatus.CONFLICTED;
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Conflict";
+    }
+    
 }

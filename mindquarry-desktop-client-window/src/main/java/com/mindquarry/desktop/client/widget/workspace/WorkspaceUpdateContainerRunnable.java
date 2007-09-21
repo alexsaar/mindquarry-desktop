@@ -212,7 +212,7 @@ public class WorkspaceUpdateContainerRunnable extends
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
 
-                ModificationDescription descr = ModificationDescription.getDescription(null, null);
+                ModificationDescription descr = ModificationDescription.getDescription(null);
                 if (widget.changeSets != null
                         && widget.changeSets.getFiles().contains(file)) {
                     descr = ModificationDescription

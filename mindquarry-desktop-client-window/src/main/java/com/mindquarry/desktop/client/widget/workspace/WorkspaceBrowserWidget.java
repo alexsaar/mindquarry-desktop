@@ -14,6 +14,7 @@
 package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
 import org.apache.commons.logging.Log;
@@ -51,7 +51,6 @@ import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
 import com.mindquarry.desktop.workspace.conflict.Change;
-import com.mindquarry.desktop.workspace.conflict.LocalAddition;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 
 /**
@@ -299,7 +298,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     }
 
     private ChangeSets getAllChanges(Profile selected) {
-        log.debug("Getting all changes #2");
+        log.debug("Getting all changes");
         ChangeSets changeSets = new ChangeSets();
         
         // getting list of all selected teams
@@ -362,7 +361,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                     List<Change> allChanges = sc.getChangesAndConflicts();
                     for (Change change : allChanges) {
                         Status status = change.getStatus();
-                        File f = new File(status.getPath());
+
                         // we don't know why yet, but files may sometimes be
                         // set to "normal". We ignore these files, i.e. treat
                         // them as non-modified:
@@ -382,34 +381,6 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
                         }
 
                         changeSet.addChange(change);
-                        
-                        // If we add a directory with contents, SVN will only
-                        // report the directory as unversioned, not the files
-                        // inside the directory, so we add the files (= all
-                        // files below the directory) here:
-                        if (status.getTextStatus() == StatusKind.unversioned
-                                && f.isDirectory()) {
-                            SetStatusFileFilter fileFilter = new SetStatusFileFilter();
-                            SetStatusDirFilter dirFilter = new SetStatusDirFilter();
-                            FileUtils.iterateFiles(f, fileFilter, dirFilter);
-                            for (Status tmpStatus : fileFilter.getSubFiles()) {
-                                changeSet.addChange(new LocalAddition(new File(tmpStatus.getPath()), status));
-                            }
-                        }
-                        // if there's a local conflict, ignore (i.e. don't display) files
-                        // like <file>.r<rev> or <file>.mine, because these will not be
-                        // uploaded to the server:
-                        if (status.getTextStatus() == StatusKind.conflicted) {
-                            // status.getConflictNew() etc return relative path names,
-                            // but we need absolute path names in the map:
-                            File dir = new File(status.getPath()).getParentFile();
-                            toIgnore.put(new File(dir, status.getConflictNew()), status.getTextStatus());
-                            toIgnore.put(new File(dir, status.getConflictOld()), status.getTextStatus());
-                            String workingFile = status.getConflictWorking();
-                            if (workingFile != null && !"".equals(workingFile)) {
-                                toIgnore.put(new File(dir, status.getConflictWorking()), status.getTextStatus());
-                            }
-                        }
                     }
                 }
                 
@@ -434,6 +405,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
             // 175002: connection refused
             
             log.error(e.toString() + " (apr error " + e.getAprError() + ")", e);
+        } catch (IOException e) {
+            log.error(e);
         }
 
         return changeSets;

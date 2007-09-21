@@ -18,41 +18,41 @@ import java.io.File;
 import org.tigris.subversion.javahl.Status;
 
 /**
- * Describes changes that add a file or directory locally.
+ * Describes changes that delete a file or directory remotely.
  * 
  * @author <a href="mailto:christian(dot)richardt(at)mindquarry(dot)com">Christian Richardt</a>
  */
-public class LocalAddition extends Change {
+public class RemoteDeletion extends Change {
  
-    public LocalAddition(File file, Status ancestorStatus) {
-        super(ancestorStatus, file);
+    public RemoteDeletion(Status status) {
+        super(status, new File(status.getPath()));
     }
 
     @Override
     public ChangeDirection getChangeDirection() {
-        return ChangeDirection.TO_SERVER;
+        return ChangeDirection.FROM_SERVER;
     }
 
     @Override
     public ChangeStatus getChangeStatus() {
-        return ChangeStatus.ADDED;
+        return ChangeStatus.DELETED;
     }
 
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "This new directory will be uploaded to the server.";
+            return "This directory was deleted on the server and will hence be deleted locally.";
         else
-            return "This new file will be uploaded to the server.";
+            return "This file was deleted on the server and will hence be deleted locally.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Added locally";
+        return "Deleted remotely";
     }
 
     @Override
     public String toString() {
-        return file.getName() + ": LocalAddition";
+        return file.getName() + ": RemoteDeletion";
     }
 }

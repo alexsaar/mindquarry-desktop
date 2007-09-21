@@ -141,4 +141,10 @@ public class ReplaceConflict extends RenamingConflict {
     public List<Status> getRemoteChildren() {
         return remoteChildren;
     }
+    
+    @Override
+    public String getLongDescription() {
+        return "This item has been replaced locally or remotely. "
+                + "You will need to resolve the conflict.";
+    }
 }

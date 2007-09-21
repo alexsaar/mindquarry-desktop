@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.dialog.DialogBase;
-import com.mindquarry.desktop.client.widget.workspace.ChangeSet;
 import com.mindquarry.desktop.client.widget.workspace.ModificationDescription;
 import com.mindquarry.desktop.client.widget.workspace.ChangeTree;
 import com.mindquarry.desktop.client.widget.workspace.ChangeTree.ChangeTreeNode;

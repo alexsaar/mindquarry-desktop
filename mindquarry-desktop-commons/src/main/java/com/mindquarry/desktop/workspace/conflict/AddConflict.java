@@ -146,4 +146,24 @@ public class AddConflict extends RenamingConflict {
     public List<Status> getRemoteAdded() {
         return remoteAdded;
     }
+
+    @Override
+    public ChangeDirection getChangeDirection() {
+        return ChangeDirection.CONFLICT;
+    }
+
+    @Override
+    public ChangeStatus getChangeStatus() {
+        return ChangeStatus.ADDED;
+    }
+
+    @Override
+    public String getLongDescription() {
+        if (file.isDirectory())
+            return "This new directory has also been added on the server. "
+                    + "You will need to resolve the conflict.";
+        else
+            return "This new file has also been added on the server. "
+                    + "You will need to resolve the conflict.";
+    }
 }

@@ -54,8 +54,14 @@ import com.mindquarry.desktop.workspace.conflict.Conflict;
 import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
+import com.mindquarry.desktop.workspace.conflict.LocalAddition;
+import com.mindquarry.desktop.workspace.conflict.LocalDeletion;
+import com.mindquarry.desktop.workspace.conflict.LocalModification;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
+import com.mindquarry.desktop.workspace.conflict.RemoteAddition;
+import com.mindquarry.desktop.workspace.conflict.RemoteDeletion;
+import com.mindquarry.desktop.workspace.conflict.RemoteModification;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 import com.mindquarry.desktop.workspace.exception.SynchronizeException;
@@ -778,11 +784,59 @@ public class SVNSynchronizer {
         // TODO: use deep copy rather than repeated call to getRemoteAndLocalChanges()
         changes.addAll(findPropertyConflicts(remoteAndLocalChanges2));
         
+        // categorize normal changes
+        Iterator<Status> iter = remoteAndLocalChanges.iterator();
+        while (iter.hasNext()) {
+            Status status = iter.next();
+            
+            // local addition of files/dirs
+            if (status.getTextStatus() == StatusKind.added) {
+                iter.remove();
+                changes.add(new LocalAddition(new File(status.getPath()), status));
+                continue;
+            }
+
+            // local deletion of files/dirs
+            if (status.getTextStatus() == StatusKind.deleted) {
+                iter.remove();
+                changes.add(new LocalDeletion(status));
+                continue;
+            }
+
+            // local modification of files/dirs
+            if (status.getTextStatus() == StatusKind.modified) {
+                iter.remove();
+                changes.add(new LocalModification(status));
+                continue;
+            }
+            
+            // remote addition of files/dirs
+            if (status.getRepositoryTextStatus() == StatusKind.added) {
+                iter.remove();
+                changes.add(new RemoteAddition(new File(status.getPath()), status));
+                continue;
+            }
+
+            // remote deletion of files/dirs
+            if (status.getRepositoryTextStatus() == StatusKind.deleted) {
+                iter.remove();
+                changes.add(new RemoteDeletion(status));
+                continue;
+            }
+
+            // remote modification of files/dirs
+            if (status.getRepositoryTextStatus() == StatusKind.modified) {
+                iter.remove();
+                changes.add(new RemoteModification(status));
+                continue;
+            }
+        }
+
         // add normal changes
+        log.debug("Detected the following changes:");
         for (Status status : remoteAndLocalChanges) {
             Change change = new Change(status);
-            log.info(change);
-            // TODO: ignore conflict files
+            log.debug(change);
             changes.add(change);
         }
 

@@ -18,41 +18,45 @@ import java.io.File;
 import org.tigris.subversion.javahl.Status;
 
 /**
- * Describes changes that add a file or directory locally.
+ * Describes changes that modify a file or directory remotely.
  * 
  * @author <a href="mailto:christian(dot)richardt(at)mindquarry(dot)com">Christian Richardt</a>
  */
-public class LocalAddition extends Change {
+public class RemoteModification extends Change {
  
-    public LocalAddition(File file, Status ancestorStatus) {
-        super(ancestorStatus, file);
+    public RemoteModification(Status status) {
+        super(status, new File(status.getPath()));
     }
 
     @Override
     public ChangeDirection getChangeDirection() {
-        return ChangeDirection.TO_SERVER;
+        if(file.isDirectory()) // do not show direction icon for 'modified' dirs
+            return ChangeDirection.NONE;
+        else
+            return ChangeDirection.FROM_SERVER;
     }
 
     @Override
     public ChangeStatus getChangeStatus() {
-        return ChangeStatus.ADDED;
+        return ChangeStatus.MODIFIED;
     }
 
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "This new directory will be uploaded to the server.";
+            return "Files or directories in this directory have been added or deleted on the server. " +
+                    "These updated will be downloaded from the server.";
         else
-            return "This new file will be uploaded to the server.";
+            return "This remotely modified file will be downloaded from the server.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Added locally";
+        return "Modified remotely";
     }
 
     @Override
     public String toString() {
-        return file.getName() + ": LocalAddition";
+        return file.getName() + ": RemoteModified";
     }
 }

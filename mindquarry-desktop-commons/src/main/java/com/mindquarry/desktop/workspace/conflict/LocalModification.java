@@ -18,14 +18,14 @@ import java.io.File;
 import org.tigris.subversion.javahl.Status;
 
 /**
- * Describes changes that add a file or directory locally.
+ * Describes changes that modify a file or directory locally.
  * 
  * @author <a href="mailto:christian(dot)richardt(at)mindquarry(dot)com">Christian Richardt</a>
  */
-public class LocalAddition extends Change {
+public class LocalModification extends Change {
  
-    public LocalAddition(File file, Status ancestorStatus) {
-        super(ancestorStatus, file);
+    public LocalModification(Status status) {
+        super(status, new File(status.getPath()));
     }
 
     @Override
@@ -35,24 +35,24 @@ public class LocalAddition extends Change {
 
     @Override
     public ChangeStatus getChangeStatus() {
-        return ChangeStatus.ADDED;
+        return ChangeStatus.MODIFIED;
     }
 
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "This new directory will be uploaded to the server.";
+            return "Files or directories in this directory have been added or deleted locally.";
         else
-            return "This new file will be uploaded to the server.";
+            return "Your changes to this file will be uploaded to the server.";
     }
 
     @Override
     public String getShortDescription() {
-        return "Added locally";
+        return "Modified locally";
     }
 
     @Override
     public String toString() {
-        return file.getName() + ": LocalAddition";
+        return file.getName() + ": LocalModified";
     }
 }

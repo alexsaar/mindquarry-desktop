@@ -324,4 +324,33 @@ public class DeleteWithModificationConflict extends Conflict {
     public boolean isRemoteDelete() {
         return !localDelete;
     }
+
+    @Override
+    public ChangeStatus getChangeStatus() {
+        if(localDelete)
+            return ChangeStatus.DELETED;
+        else
+            return ChangeStatus.MODIFIED;
+    }
+
+    @Override
+    public String getLongDescription() {
+        if (otherMods == null) { // only single files involved
+            if (localDelete) { // local DELETED, remote MODIFIED
+                return "This remotely modified file was deleted locally. "
+                        + "You will need to resolve the conflict.";
+            } else { // local MODIFIED, remote DELETED
+                return "This remotely deleted file was modified locally. "
+                        + "You will need to resolve the conflict.";
+            }
+        } else { // directories involved
+            if (localDelete) { // local dir DELETED, remote MODIFIED
+                return "This locally deleted directory contains remote changes. "
+                        + "You will need to resolve the conflict.";
+            } else { // local MODIFIED, remote dir DELETED
+                return "This remotely deleted directory contains local changes. "
+                        + "You will need to resolve the conflict.";
+            }
+        }
+    }
 }

@@ -119,4 +119,14 @@ public class ObstructedConflict extends RenamingConflict {
     public void doRevert() {
         this.action = Action.REVERT;
     }
+
+    @Override
+    public String getLongDescription() {
+        return "This file is obstructed."; // TODO: need better description
+    }
+
+    @Override
+    public String getShortDescription() {
+        return "Obstructed";
+    }
 }
