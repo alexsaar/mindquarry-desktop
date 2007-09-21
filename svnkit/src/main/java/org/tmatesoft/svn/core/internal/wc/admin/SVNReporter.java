@@ -172,7 +172,21 @@ public class SVNReporter implements ISVNReporterBaton {
                     reporter.setPath(path, entry.getLockToken(), entry.getRevision(), false);
                 }
             } else if (entry.isDirectory() && recursive) {
-                if (missing) {
+                // NOTE -- Mindquarry modification:
+                // --------------------------------
+                // Usually, when deleting a directory with a SVN client, everything but the actual
+                // directory structure and the contained .svn directories is deleted. However, we
+                // do not want the user to be confused about why his directory was not deleted
+                // properly, so we delete the structure, as it also exists in the shallow working
+                // copy. But svnkit gets confused and considers these directories as locally
+                // 'missing' and hence remotely 'added' -- which would not be correct. So we only
+                // report a path as deleted if it hasn't been scheduled for deletion.
+                //
+                // Attention: This may have unpredictable side effects when not using shallow
+                //            working copies!
+                //
+                // Original line: if (missing) {
+                if (missing && !entry.isScheduledForDeletion()) {
                     if (!reportAll) {
                         reporter.deletePath(path);
                     }
