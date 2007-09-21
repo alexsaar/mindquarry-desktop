@@ -22,10 +22,6 @@
         <translation>Desktop-Client-Einstellungen konnten nicht geladen werden</translation>
     </message>
     <message>
-        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
-        <translation>Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen beide Versionen manuell zusammenführen.</translation>
-    </message>
-    <message>
         <source>Your file will be uploaded to the server.</source>
         <translation>Ihre Datei wird auf den Server hochgeladen.</translation>
     </message>
@@ -216,10 +212,6 @@
     <message>
         <source>Use your local version of the property</source>
         <translation>Ihre lokale Version der Datei-Eigenschaft benutzen</translation>
-    </message>
-    <message>
-        <source>This new item has also been added on the server. You will need to resolve the conflict.</source>
-        <translation>Dieses neuen Objekt wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Please select one of your teams.</source>
@@ -632,5 +624,130 @@
         <source>The file '{0}' already exists, please choose a different filename</source>
         <translation>Die Datei '{0}' existiert bereits, bitte wählen Sie einen anderen Dateinamen</translation>
     </message>
+    
+    <!-- START: Descriptions for changes and conflicts -->
+    <!--  AddConflict -->
+    <message>
+        <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
+        <translation>Dieses neue Verzeichnis wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This new file has also been added on the server. You will need to resolve the conflict.</source>
+        <translation>Diese neue Datei wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    
+    <!--  Change -->
+    <message>
+        <source>Unknown. Status is null.</source>
+        <translation>Unbekannt. Status ist null.</translation>
+    </message>
+    
+    <!--  Conflict -->
+    <message>
+        <source>Conflict</source>
+        <translation>Konflikt</translation>
+    </message>
+    
+    <!--  ContentConflict -->
+    <message>
+        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
+        <translation>Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen beide Versionen manuell zusammenführen.</translation>
+    </message>
+
+	<!--  DeleteWithModificationConflict -->
+    <message>
+        <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
+        <translation>Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
+        <translation>Diese auf dem Server gelöschte Datei wurde lokal geändert. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
+        <translation>Dieses lokal gelöschte Verzeichnis enthält Änderungen auf dem Server. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
+        <translation>Dieses auf dem Server gelöschte Verzeichnis enthält lokale Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    
+    <!--  LocalAddition -->
+    <message>
+        <source>This new directory will be uploaded to the server.</source>
+        <translation>Dieses neue Verzeichnis wird auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>This new file will be uploaded to the server.</source>
+        <translation>Diese neue Datei wird auf den Server hochgeladen.</translation>
+    </message>
+    
+    <!--  LocalDeletion -->
+    <message>
+        <source>This directory will be deleted on the server.</source>
+        <translation>Dieses Verzeichnis wird auf dem Server gelöscht.</translation>
+    </message>
+    <message>
+        <source>This file will be deleted on the server.</source>
+        <translation>Diese Datei wird auf dem Server gelöscht.</translation>
+    </message>
+    
+    <!--  LocalModification -->
+    <message>
+        <source>Files or directories in this directory have been added or deleted locally.</source>
+        <translation>Dateien oder Verzeichnisse in diesem Verzeichnis wurden lokal hinzugefügt oder gelöscht.</translation>
+    </message>
+    <message>
+        <source>Your changes to this file will be uploaded to the server.</source>
+        <translation>Ihre Änderungen an dieser Datei werden auf den Server hochgeladen.</translation>
+    </message>
+    
+    <!--  ObstructedConflict -->
+    <message>
+        <source>This file is obstructed.</source>
+        <translation>Diese Datei ist versperrt.</translation>
+    </message>
+    <message>
+        <source>Obstructed</source>
+        <translation>Versperrt</translation>
+    </message>
+    
+    <!-- RemoteAddition -->
+    <message>
+        <source>This new directory was added on the server and will be downloaded.</source>
+        <translation>Dieses Verzeichnis wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>This new file was added on the server and will be downloaded.</source>
+        <translation>Diese Datei wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+    </message>
+    
+    <!-- RemoteDeletion -->
+    <message>
+        <source>This directory was deleted on the server and will hence be deleted locally.</source>
+        <translation>Dieses Verzeichnis wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+    </message>
+    <message>
+        <source>This file was deleted on the server and will hence be deleted locally.</source>
+        <translation>Diese Datei wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+    </message>
+    
+    <!-- RemoteModification -->
+    <message>
+        <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
+        <translation>Dateien oder Verzeichnisse in diesem Verzeichnis wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden vom Server heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>This remotely modified file will be downloaded from the server.</source>
+        <translation>Diese auf dem Server geänderte Datei wird heruntergeladen.</translation>
+    </message>
+    
+    <!-- ReplaceConflict -->
+    <message>
+        <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
+        <translation>Dieses Object wurde lokal oder auf dem Server ersetzt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <!-- END: Descriptions for changes and conflicts -->
+    
 </context>
 </TS>

@@ -284,11 +284,6 @@ public class ContentConflict extends RenamingConflict {
     }
 
     @Override
-    public ChangeDirection getChangeDirection() {
-        return ChangeDirection.CONFLICT;
-    }
-
-    @Override
     public ChangeStatus getChangeStatus() {
         return ChangeStatus.MODIFIED;
     }
