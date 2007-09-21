@@ -325,6 +325,31 @@ public class ServerProfilesPage extends PreferencePage {
         settingsGroup.setText(Messages.getString("Profile Settings")); //$NON-NLS-1$
         settingsGroup.setLayout(new GridLayout(1, true));
 
+        // initialize server URL section
+        CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
+        quarryEndpointLabel.setText(Messages
+                .getString("URL of the Mindquarry Server") //$NON-NLS-1$
+                + ":"); //$NON-NLS-1$
+        quarryEndpointLabel
+                .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        url = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        url.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setServerURL(url.getText());
+                    performValidation();
+                }
+            }
+        });
+        url.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                url.selectAll();
+            }
+        });
         // initialize login section
         CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
         loginLabel.setText(Messages.getString("Your Login ID") //$NON-NLS-1$
@@ -371,29 +396,28 @@ public class ServerProfilesPage extends PreferencePage {
                 pwd.selectAll();
             }
         });
-        // initialize server URL section
-        CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
-        quarryEndpointLabel.setText(Messages
-                .getString("URL of the Mindquarry Server") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
-        quarryEndpointLabel
-                .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-        url = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
-        url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        url.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                String[] selection = profileList.getSelection();
-                if (selection.length > 0) {
-                    Profile profile = findByName(selection[0]);
-                    profile.setServerURL(url.getText());
-                    performValidation();
+        // init verify server button
+        Button verifyServerButton = new Button(settingsGroup, SWT.LEFT
+                | SWT.PUSH);
+        verifyServerButton
+                .setText(Messages.getString("Verify server settings"));
+        verifyServerButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                try {
+                    HttpUtilities.CheckResult result = HttpUtilities
+                            .checkServerExistence(login.getText(), pwd.getText(),
+                                    url.getText());
+                    
+                    if(HttpUtilities.CheckResult.AUTH_REFUSED == result) {
+                        setErrorMessage("Your login ID or password is incorrect.");
+                    } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
+                        setErrorMessage("Server could not be found.");
+                    } else {
+                        setMessage("Your server settings are correct.", INFORMATION);
+                    }
+                } catch(MalformedURLException murle) {
+                    setErrorMessage("Server URL is not a valid URL.");
                 }
-            }
-        });
-        url.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                url.selectAll();
             }
         });
         // initialize workspace folder section
@@ -443,30 +467,6 @@ public class ServerProfilesPage extends PreferencePage {
             }
         });
 
-        // init verify server button
-        Button verifyServerButton = new Button(settingsGroup, SWT.LEFT
-                | SWT.PUSH);
-        verifyServerButton
-                .setText(Messages.getString("Verify server settings"));
-        verifyServerButton.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
-                try {
-                    HttpUtilities.CheckResult result = HttpUtilities
-                            .checkServerExistence(login.getText(), pwd.getText(),
-                                    url.getText());
-                    
-                    if(HttpUtilities.CheckResult.AUTH_REFUSED == result) {
-                        setErrorMessage("Your login ID or password is incorrect.");
-                    } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
-                        setErrorMessage("Server could not be found.");
-                    } else {
-                        setMessage("Your server settings are correct.", INFORMATION);
-                    }
-                } catch(MalformedURLException murle) {
-                    setErrorMessage("Server URL is not a valid URL.");
-                }
-            }
-        });
     }
 
     private Profile findByName(String name) {

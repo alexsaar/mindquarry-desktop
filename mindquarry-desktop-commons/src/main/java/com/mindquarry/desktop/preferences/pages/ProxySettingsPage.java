@@ -98,6 +98,24 @@ public class ProxySettingsPage extends PreferencePage {
         });
 
         CLabel label = new CLabel(composite, SWT.LEFT);
+        label.setText(Messages.getString("Proxy URL") + ":");
+        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        url = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        url.setText(store.getString(PREF_PROXY_URL));
+        url.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                performValidation();
+            }
+        });
+        url.addFocusListener(new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                url.selectAll();
+            }
+        });
+        
+        label = new CLabel(composite, SWT.LEFT);
         label.setText(Messages.getString("Proxy Login") + ":");
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -131,23 +149,7 @@ public class ProxySettingsPage extends PreferencePage {
                 pwd.selectAll();
             }
         });
-        label = new CLabel(composite, SWT.LEFT);
-        label.setText(Messages.getString("Proxy URL") + ":");
-        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        url = new Text(composite, SWT.SINGLE | SWT.BORDER);
-        url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        url.setText(store.getString(PREF_PROXY_URL));
-        url.addModifyListener(new ModifyListener() {
-            public void modifyText(ModifyEvent e) {
-                performValidation();
-            }
-        });
-        url.addFocusListener(new FocusAdapter() {
-            public void focusGained(FocusEvent e) {
-                url.selectAll();
-            }
-        });
         enableProxyFields(enableProxy.getSelection());
         performValidation();
         return composite;
