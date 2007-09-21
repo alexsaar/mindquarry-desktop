@@ -53,6 +53,7 @@ import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
 import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
+import com.mindquarry.desktop.client.widget.util.FileIconUtil;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 import com.mindquarry.desktop.event.EventBus;
@@ -187,18 +188,19 @@ public class WorkspaceUpdateContainerRunnable extends
                 if (widget.changeSets != null
                         && widget.changeSets.getFiles().contains(file)) {
                     Status status = widget.changeSets.getStatus(file);
-                    // first check for a NodeKind set as local property
-                    if (status.getNodeKind() == NodeKind.dir) {
-                        return FOLDER_IMAGE;
-                    } else if (status.getNodeKind() == NodeKind.file) {
-                        return FILE_IMAGE;
-                        // otherwise look for the remote variant (ie. newly
-                        // added file or folder remotely)
-                    } else if (status.getReposKind() == NodeKind.dir) {
-                        return FOLDER_IMAGE;
-                    } else if (status.getReposKind() == NodeKind.file) {
-                        return FILE_IMAGE;
-                    }
+                    return FileIconUtil.getIcon(file, status);
+//                    // first check for a NodeKind set as local property
+//                    if (status.getNodeKind() == NodeKind.dir) {
+//                        return FOLDER_IMAGE;
+//                    } else if (status.getNodeKind() == NodeKind.file) {
+//                        return FILE_IMAGE;
+//                        // otherwise look for the remote variant (ie. newly
+//                        // added file or folder remotely)
+//                    } else if (status.getReposKind() == NodeKind.dir) {
+//                        return FOLDER_IMAGE;
+//                    } else if (status.getReposKind() == NodeKind.file) {
+//                        return FILE_IMAGE;
+//                    }
                 }
                 // fallback: simply lookup the local file
                 if (file.isDirectory()) {
@@ -301,7 +303,7 @@ public class WorkspaceUpdateContainerRunnable extends
 
     private int getColumnSpace() {
         if (SVNFileUtil.isOSX) {
-            return 322;
+            return 136;
         }
         return 36;
     }
