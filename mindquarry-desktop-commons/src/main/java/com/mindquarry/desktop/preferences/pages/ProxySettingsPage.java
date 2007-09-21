@@ -16,7 +16,6 @@ package com.mindquarry.desktop.preferences.pages;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -33,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 import com.mindquarry.desktop.Messages;
@@ -45,7 +45,7 @@ import com.mindquarry.desktop.event.network.ProxySettingsChangedEvent;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ProxySettingsPage extends PreferencePage {
+public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
     public static final String NAME = "proxy";
     public static final String TITLE = Messages.getString("Proxy Settings");
 
@@ -76,7 +76,7 @@ public class ProxySettingsPage extends PreferencePage {
                                         "/org/tango-project/tango-icon-theme/16x16/places/network-server.png")))); //$NON-NLS-1$
         noDefaultAndApplyButton();
     }
-
+    
     /**
      * Creates the controls for this page
      */
@@ -97,12 +97,19 @@ public class ProxySettingsPage extends PreferencePage {
             }
         });
 
-        CLabel label = new CLabel(composite, SWT.LEFT);
+        Group proxyGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
+        proxyGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
+        //settingsGroup.setText(Messages.getString("Profile Settings")); //$NON-NLS-1$
+        proxyGroup.setLayout(new GridLayout(1, true));
+        
+        CLabel label = new CLabel(proxyGroup, SWT.LEFT);
         label.setText(Messages.getString("Proxy URL") + ":");
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        url = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        Composite errorComp = createErrorBorderComposite(proxyGroup);
+        url = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
         url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        registerErrorBorderComposite(errorComp, url);
         url.setText(store.getString(PREF_PROXY_URL));
         url.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -115,11 +122,11 @@ public class ProxySettingsPage extends PreferencePage {
             }
         });
         
-        label = new CLabel(composite, SWT.LEFT);
+        label = new CLabel(proxyGroup, SWT.LEFT);
         label.setText(Messages.getString("Proxy Login") + ":");
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        login = new Text(composite, SWT.SINGLE | SWT.BORDER);
+        login = new Text(proxyGroup, SWT.SINGLE | SWT.BORDER);
         login.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         login.setText(store.getString(PREF_PROXY_LOGIN));
         login.addModifyListener(new ModifyListener() {
@@ -132,11 +139,11 @@ public class ProxySettingsPage extends PreferencePage {
                 login.selectAll();
             }
         });
-        label = new CLabel(composite, SWT.LEFT);
+        label = new CLabel(proxyGroup, SWT.LEFT);
         label.setText(Messages.getString("Proxy Password") + ":");
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        pwd = new Text(composite, SWT.PASSWORD | SWT.BORDER);
+        pwd = new Text(proxyGroup, SWT.PASSWORD | SWT.BORDER);
         pwd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         pwd.setText(store.getString(PREF_PROXY_PASSWORD));
         pwd.addModifyListener(new ModifyListener() {
@@ -183,20 +190,10 @@ public class ProxySettingsPage extends PreferencePage {
             try {
                 new URL(url.getText());
             } catch (MalformedURLException e) {
-                setInvalid(Messages.getString("Proxy URL is not a valid URL."));
+                setInvalid(Messages.getString("Proxy URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
                 return;
             }
         }
         setValid();
-    }
-
-    private void setInvalid(String message) {
-        setErrorMessage(message);
-        setValid(false);
-    }
-
-    private void setValid() {
-        setErrorMessage(null);
-        setValid(true);
     }
 }

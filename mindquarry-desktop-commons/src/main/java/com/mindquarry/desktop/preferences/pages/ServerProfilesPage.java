@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
@@ -55,7 +54,7 @@ import com.mindquarry.desktop.util.HttpUtilities;
  * @author <a href="mailto:alexander(dot)saar(at)mindquarry(dot)com">Alexander
  *         Saar</a>
  */
-public class ServerProfilesPage extends PreferencePage {
+public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
     public static final String NAME = "profiles";
     public static final String TITLE = Messages.getString("Server Profiles");
 
@@ -125,7 +124,7 @@ public class ServerProfilesPage extends PreferencePage {
         return composite;
     }
 
-    private boolean performValidation() {
+    private void performValidation() {
         // check if selected profile is valid
         if ((profileList.getItemCount() > 0)
                 && (profileList.getSelection().length > 0)) {
@@ -135,10 +134,8 @@ public class ServerProfilesPage extends PreferencePage {
             // validate currently selected profile
             Profile profile = findByName(profileName);
 
-            String message = checkProfileValidity(profile);
-            if (message != null) {
-                setInvalid(message);
-                return false;
+            if (!checkProfileValidity(profile, true)) {
+                return;
             }
         }
         // selected profile seems to be valid, check other profiles as well
@@ -146,66 +143,69 @@ public class ServerProfilesPage extends PreferencePage {
         if (selection.length > 0) {
             for (Profile profile : profiles) {
                 if (!profile.getName().equals(selection[0])) {
-                    String message = checkProfileValidity(profile);
-                    if (message != null) {
-                        setInvalid("There is a problem in profile '"
-                                + profile.getName()
-                                + "'. "
-                                + "Please check these problems before you proceed.");
-                        return false;
+                    if (!checkProfileValidity(profile, false)) {
+                        setInvalid(Messages.getString(
+                                "There is a problem in profile '{0}'. Please check before you proceed.",
+                                profile.getName()),
+                                profileList);
+                        return;
                     }
                 }
             }
         }
         // everything seems to be valid
         setValid();
-        return true;
     }
 
-    private String checkProfileValidity(Profile profile) {
+    private boolean checkProfileValidity(Profile profile, boolean currentlyDisplayed) {
         // check login ID
         if (profile.getLogin() == null) {
-            return "Login ID must be set.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Login ID must be set."), login);
+            return false;
         } else if (profile.getLogin().equals("")) {
-            return "Login ID must not be empty.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Login ID must not be empty."), login);
+            return false;
         }
         // check password
         if (profile.getPassword() == null) {
-            return "Password must be set.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Password must be set."), pwd);
+            return false;
         } else if (profile.getPassword().equals("")) {
-            return "Password can not be empty.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Password can not be empty."), pwd);
+            return false;
         }
         // check server endpoint
         if (profile.getServerURL() == null) {
-            return "Server URL must be set.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Server URL must be set."), url);
+            return false;
         } else {
             try {
                 new URL(profile.getServerURL());
             } catch (MalformedURLException e) {
-                return "Server URL is not a valid URL.";
+                if (!currentlyDisplayed) return false;
+                setInvalid(Messages.getString("Server URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
+                return false;
             }
         }
         // check workspace folder
         if (profile.getWorkspaceFolder() == null) {
-            return "Workspace folder must be set.";
+            if (!currentlyDisplayed) return false;
+            setInvalid(Messages.getString("Workspace folder must be set."), folder);
+            return false;
         } else {
             File file = new File(profile.getWorkspaceFolder());
             if (!file.exists()) {
-                return "Workspace folder does not exist.";
+                if (!currentlyDisplayed) return false;
+                setInvalid(Messages.getString("Workspace folder does not exist."), folder);
+                return false;
             }
         }
-        return null;
-    }
-
-    private void setInvalid(String message) {
-        setErrorMessage(message);
-        setValid(false);
-    }
-
-    private void setValid() {
-        setErrorMessage(null);
-        setMessage(null, INFORMATION);
-        setValid(true);
+        return true;
     }
 
     private void createProfileManagementGroup(Composite composite) {
@@ -215,9 +215,11 @@ public class ServerProfilesPage extends PreferencePage {
         profileGroup.setLayout(new GridLayout(2, false));
 
         // create profile list
-        profileList = new List(profileGroup, SWT.SINGLE | SWT.BORDER
+        Composite errorComp = createErrorBorderComposite(profileGroup, 2);
+        profileList = new List(errorComp, SWT.SINGLE | SWT.BORDER
                 | SWT.V_SCROLL);
         profileList.setLayoutData(new GridData(GridData.FILL_BOTH));
+        registerErrorBorderComposite(errorComp, profileList);
 
         // create buttons for profile management
         Composite buttonArea = new Composite(profileGroup, SWT.NONE);
@@ -333,7 +335,9 @@ public class ServerProfilesPage extends PreferencePage {
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        url = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        Composite errorComp = createErrorBorderComposite(settingsGroup);
+        url = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
+        registerErrorBorderComposite(errorComp, url);
         url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         url.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -341,7 +345,7 @@ public class ServerProfilesPage extends PreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setServerURL(url.getText());
-                    performValidation();
+                    //performValidation();
                 }
             }
         });
@@ -356,7 +360,9 @@ public class ServerProfilesPage extends PreferencePage {
                 + ":"); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        login = new Text(settingsGroup, SWT.SINGLE | SWT.BORDER);
+        errorComp = createErrorBorderComposite(settingsGroup);
+        login = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
+        registerErrorBorderComposite(errorComp, login);
         login.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         login.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -364,7 +370,7 @@ public class ServerProfilesPage extends PreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setLogin(login.getText());
-                    performValidation();
+                    //performValidation();
                 }
             }
         });
@@ -379,7 +385,9 @@ public class ServerProfilesPage extends PreferencePage {
                 + ":"); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        pwd = new Text(settingsGroup, SWT.PASSWORD | SWT.BORDER);
+        errorComp = createErrorBorderComposite(settingsGroup);
+        pwd = new Text(errorComp, SWT.PASSWORD | SWT.BORDER);
+        registerErrorBorderComposite(errorComp, pwd);
         pwd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         pwd.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
@@ -387,7 +395,7 @@ public class ServerProfilesPage extends PreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setPassword(pwd.getText());
-                    performValidation();
+                    //performValidation();
                 }
             }
         });
@@ -408,15 +416,16 @@ public class ServerProfilesPage extends PreferencePage {
                             .checkServerExistence(login.getText(), pwd.getText(),
                                     url.getText());
                     
-                    if(HttpUtilities.CheckResult.AUTH_REFUSED == result) {
-                        setErrorMessage("Your login ID or password is incorrect.");
+                    if (HttpUtilities.CheckResult.AUTH_REFUSED == result) {
+                        setInvalid(Messages.getString("Your login ID or password is incorrect."), login, pwd);
                     } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
-                        setErrorMessage("Server could not be found.");
+                        setInvalid(Messages.getString("Server could not be found."), url);
                     } else {
-                        setMessage("Your server settings are correct.", INFORMATION);
+                        setValid();
+                        setMessage(Messages.getString("Your server settings are correct."), INFORMATION);
                     }
                 } catch(MalformedURLException murle) {
-                    setErrorMessage("Server URL is not a valid URL.");
+                    setInvalid(Messages.getString("Server URL is not a valid URL ({0})", murle.getLocalizedMessage()), url);
                 }
             }
         });
@@ -436,7 +445,9 @@ public class ServerProfilesPage extends PreferencePage {
         ((GridLayout) locationArea.getLayout()).marginHeight = 0;
         ((GridLayout) locationArea.getLayout()).marginWidth = 0;
 
-        folder = new Text(locationArea, SWT.BORDER);
+        errorComp = createErrorBorderComposite(locationArea, 1);
+        folder = new Text(errorComp, SWT.BORDER);
+        registerErrorBorderComposite(errorComp, folder);
         folder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         folder.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
