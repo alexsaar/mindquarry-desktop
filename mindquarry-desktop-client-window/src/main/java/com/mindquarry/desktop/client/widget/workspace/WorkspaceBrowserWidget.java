@@ -120,14 +120,12 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
             // create the tree of changes from the list of all changes/conflicts 
             changeTree = new ChangeTree(changeSets.getChanges(), toIgnore);
-            
             workspaceRoot = new File(selectedProfile.getWorkspaceFolder());
         }
 
         if (refreshNeeded) {
             log.debug("Changes list does not need update");
         }
-
         return refreshNeeded;
     }
     

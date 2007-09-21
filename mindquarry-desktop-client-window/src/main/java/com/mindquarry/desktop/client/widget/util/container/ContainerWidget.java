@@ -14,9 +14,11 @@
 package com.mindquarry.desktop.client.widget.util.container;
 
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.WidgetBase;
@@ -25,9 +27,12 @@ import com.mindquarry.desktop.client.widget.WidgetBase;
  * @author <a href="saar(at)mindquarry(dot)com">Alexander Saar</a>
  */
 public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
+    public static final Color HIGHLIGHT_COLOR = new Color(Display.getCurrent(),
+            233, 233, 251);
+
     protected Composite refreshWidget;
     protected Composite messageWidget;
-    
+
     protected V viewer;
 
     protected boolean refreshing = false;
@@ -59,7 +64,7 @@ public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     public V getViewer() {
         return viewer;
     }
-    
+
     public void setViewer(V viewer) {
         this.viewer = viewer;
     }
@@ -67,12 +72,14 @@ public abstract class ContainerWidget<V extends Viewer> extends WidgetBase {
     public void showErrorMessage(String message) {
         showMessage(message, "networkerror");
     }
-    
+
     public void showEmptyMessage(String message) {
         showMessage(message, "info");
     }
 
     public abstract void showRefreshMessage(String message);
+
     public abstract void showEmptyMessage(boolean isEmpty);
+
     public abstract void showMessage(String message, String icon);
 }

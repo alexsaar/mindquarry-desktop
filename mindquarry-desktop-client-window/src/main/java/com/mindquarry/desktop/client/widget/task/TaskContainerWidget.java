@@ -24,11 +24,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
 
 import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.client.MindClient;
@@ -52,9 +50,6 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
 public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
         EventListener {
     private static final String FACET_ALL = "all";
-
-    private static final Color HIGHLIGHT_COLOR = new Color(
-            Display.getCurrent(), 233, 233, 251);
 
     private static Log log = LogFactory.getLog(TaskContainerWidget.class);
 
@@ -156,7 +151,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             } else {
                 viewer.setInput(content);
                 viewer.refresh();
-                markColumns();
             }
         }
     }
@@ -282,7 +276,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             log.info("Updating list of tasks."); //$NON-NLS-1$
             getDisplay().syncExec(new Runnable() {
                 public void run() {
-                    // viewer.setInput(tasks);
                     applyFacets();
                 }
             });
@@ -331,16 +324,6 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     private void enableAction(boolean enable) {
         client.enableActions(enable, ActionBase.TASK_ACTION_GROUP);
         client.enableActions(!enable, ActionBase.STOP_ACTION_GROUP);
-    }
-
-    private void markColumns() {
-        // set background color for every second table item
-        TableItem[] items = viewer.getTable().getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (i % 2 == 1) {
-                items[i].setBackground(HIGHLIGHT_COLOR);
-            }
-        }
     }
 
     public void onEvent(Event event) {

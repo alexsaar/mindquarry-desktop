@@ -15,8 +15,6 @@ package com.mindquarry.desktop.client.widget.workspace;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -31,6 +29,8 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.TreeEvent;
+import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
@@ -81,7 +82,7 @@ public class WorkspaceUpdateContainerRunnable extends
 
     private MindClient client;
     private MenuItem menuItem;
-    
+
     public WorkspaceUpdateContainerRunnable(MindClient client,
             ContainerWidget<TreeViewer> containerWidget, boolean refreshing,
             boolean empty, String icon, String message) {
@@ -95,26 +96,29 @@ public class WorkspaceUpdateContainerRunnable extends
     @Override
     protected void createContainerContent() {
         // create workspace/changes browser
-        containerWidget
-                .setViewer(new TreeViewer(containerWidget, SWT.BORDER
-                        | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION));
+        containerWidget.setViewer(new TreeViewer(containerWidget, SWT.BORDER
+                | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION));
         containerWidget.getViewer().setContentProvider(
                 new ContentProvider((WorkspaceBrowserWidget) containerWidget));
 
         addContextMenu();
-        
-        containerWidget.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent event) {
-                // make sure the "open" button is only enabled when it makes sense:
-                boolean enableButton = enableOpenButton();
-                client.enableAction(enableButton, OpenFileAction.class.getName());
-            }
-        });
-        containerWidget.getViewer().addDoubleClickListener(new IDoubleClickListener() {
-            public void doubleClick(DoubleClickEvent arg0) {
-                EventBus.send(new OpenSelectedFileEvent(this));
-            }
-        });
+
+        containerWidget.getViewer().addSelectionChangedListener(
+                new ISelectionChangedListener() {
+                    public void selectionChanged(SelectionChangedEvent event) {
+                        // make sure the "open" button is only enabled when it
+                        // makes sense:
+                        boolean enableButton = enableOpenButton();
+                        client.enableAction(enableButton, OpenFileAction.class
+                                .getName());
+                    }
+                });
+        containerWidget.getViewer().addDoubleClickListener(
+                new IDoubleClickListener() {
+                    public void doubleClick(DoubleClickEvent arg0) {
+                        EventBus.send(new OpenSelectedFileEvent(this));
+                    }
+                });
         containerWidget.getViewer().setSorter(new ViewerSorter() {
             public int category(Object element) {
                 File file = (File) element;
@@ -127,16 +131,21 @@ public class WorkspaceUpdateContainerRunnable extends
             }
         });
         // simulate tooltips:
-        Listener treeListener = new HoverForToolTipListener(containerWidget.getViewer());
-        containerWidget.getViewer().getTree().addListener (SWT.Dispose, treeListener);
-        containerWidget.getViewer().getTree().addListener (SWT.KeyDown, treeListener);
-        containerWidget.getViewer().getTree().addListener (SWT.MouseMove, treeListener);
-        containerWidget.getViewer().getTree().addListener (SWT.MouseHover, treeListener);
-        
+        Listener treeListener = new HoverForToolTipListener(containerWidget
+                .getViewer());
+        containerWidget.getViewer().getTree().addListener(SWT.Dispose,
+                treeListener);
+        containerWidget.getViewer().getTree().addListener(SWT.KeyDown,
+                treeListener);
+        containerWidget.getViewer().getTree().addListener(SWT.MouseMove,
+                treeListener);
+        containerWidget.getViewer().getTree().addListener(SWT.MouseHover,
+                treeListener);
+
         containerWidget.getViewer().getTree().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
         containerWidget.getViewer().getTree().setHeaderVisible(false);
-        containerWidget.getViewer().getTree().setLinesVisible(true);
+        containerWidget.getViewer().getTree().setLinesVisible(false);
         containerWidget.getViewer().getTree().setFont(
                 JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         containerWidget.getViewer().getTree().addListener(SWT.Selection,
@@ -175,14 +184,16 @@ public class WorkspaceUpdateContainerRunnable extends
             public Image getImage(Object element) {
                 File file = (File) element;
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
-                if (widget.changeSets != null && widget.changeSets.getFiles().contains(file)) {
+                if (widget.changeSets != null
+                        && widget.changeSets.getFiles().contains(file)) {
                     Status status = widget.changeSets.getStatus(file);
                     // first check for a NodeKind set as local property
                     if (status.getNodeKind() == NodeKind.dir) {
                         return FOLDER_IMAGE;
                     } else if (status.getNodeKind() == NodeKind.file) {
                         return FILE_IMAGE;
-                    // otherwise look for the remote variant (ie. newly added file or folder remotely)
+                        // otherwise look for the remote variant (ie. newly
+                        // added file or folder remotely)
                     } else if (status.getReposKind() == NodeKind.dir) {
                         return FOLDER_IMAGE;
                     } else if (status.getReposKind() == NodeKind.file) {
@@ -217,7 +228,7 @@ public class WorkspaceUpdateContainerRunnable extends
                         && widget.changeSets.getFiles().contains(file)) {
                     descr = new ModificationDescription(widget.changeSets.getChange(file));
                 }
-                
+              
                 return descr.getDirectionImage();
             }
 
@@ -226,13 +237,10 @@ public class WorkspaceUpdateContainerRunnable extends
             }
         });
         // add auto resizing of tree columns
-        containerWidget.getViewer().getTree().getColumn(0).setWidth(
-                containerWidget.getSize().x - getColumnSpace());
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
-                if(containerWidget.getViewer() != null) {
-                    containerWidget.getViewer().getTree().getColumn(0).setWidth(
-                        containerWidget.getViewer().getTree().getSize().x - getColumnSpace());
+                if (containerWidget.getViewer() != null) {
+                    adjustWidth();
                 }
             }
         });
@@ -241,16 +249,63 @@ public class WorkspaceUpdateContainerRunnable extends
                 ((WorkspaceBrowserWidget) containerWidget).workspaceRoot);
         containerWidget.getViewer().expandAll();
         checkAllItem(containerWidget.getViewer().getTree().getItems());
+
         containerWidget.layout(true);
+
+        // set background color for every second table item
+        containerWidget.getViewer().getTree().addTreeListener(
+                new TreeListener() {
+                    public void treeCollapsed(TreeEvent e) {
+                        // NOTE: this event is thrown before the actual items
+                        // have the expanded value updated! That's why we pass
+                        // through the item to handle it differently
+                        markRows(containerWidget.getViewer().getTree()
+                                .getItems(), 0, (TreeItem) e.item);
+                    }
+
+                    public void treeExpanded(TreeEvent e) {
+                        markRows(containerWidget.getViewer().getTree()
+                                .getItems(), 0, (TreeItem) e.item);
+                    }
+                });
+        adjustWidth();
+        markRows(containerWidget.getViewer().getTree().getItems(), 0, null);
+    }
+    
+    private int markRows(TreeItem[] items, int count, TreeItem expandedOrCollapsedItem) {
+        for (int i = 0; i < items.length; i++) {
+            if (count % 2 == 1) {
+                items[i].setBackground(ContainerWidget.HIGHLIGHT_COLOR);
+            } else {
+                items[i].setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+            }
+            count++;
+            if (expandedOrCollapsedItem == items[i]) {
+                if (!items[i].getExpanded()) {
+                    count = markRows(items[i].getItems(), count, expandedOrCollapsedItem);
+                }
+            } else {
+                if (items[i].getExpanded()) {
+                    count = markRows(items[i].getItems(), count, expandedOrCollapsedItem);
+                }
+            }
+        }
+        return count;
     }
 
-	private int getColumnSpace() {
-		if (SVNFileUtil.isOSX) {
-			return 322;
-		}
-		return 36;
-	}
-        
+    private void adjustWidth() {
+        containerWidget.getViewer().getTree().getColumn(0).setWidth(
+                containerWidget.getViewer().getTree().getClientArea().width
+                        - getColumnSpace());
+    }
+
+    private int getColumnSpace() {
+        if (SVNFileUtil.isOSX) {
+            return 322;
+        }
+        return 36;
+    }
+
     /**
      * Return true if the user selected an item which can be opened.
      */
@@ -265,7 +320,8 @@ public class WorkspaceUpdateContainerRunnable extends
                 if (containerWidget.getViewer().getSelection().isEmpty()) {
                     enableButton = false;
                 } else {
-                    if (file.exists() && (SVNFileUtil.isWindows || SVNFileUtil.isOSX)) {
+                    if (file.exists()
+                            && (SVNFileUtil.isWindows || SVNFileUtil.isOSX)) {
                         // on windows and Mac we can open both files and
                         // directories with Program.launch()
                         enableButton = true;
@@ -285,10 +341,11 @@ public class WorkspaceUpdateContainerRunnable extends
     }
 
     private void addContextMenu() {
-        final Menu popupmenu = new Menu (client.getShell(), SWT.POP_UP);
+        final Menu popupmenu = new Menu(client.getShell(), SWT.POP_UP);
         popupmenu.addMenuListener(new MenuListener() {
             public void menuHidden(MenuEvent e) {
             }
+
             public void menuShown(MenuEvent e) {
                 if (enableOpenButton()) {
                     if (menuItem != null) {
@@ -312,7 +369,7 @@ public class WorkspaceUpdateContainerRunnable extends
     }
 
     private void checkAllItem(TreeItem[] items) {
-        for(TreeItem item : items) {
+        for (TreeItem item : items) {
             item.setChecked(true);
             checkAllItem(item.getItems());
         }
@@ -325,36 +382,37 @@ public class WorkspaceUpdateContainerRunnable extends
             containerWidget.setViewer(null);
         }
     }
-    
+
     class HoverForToolTipListener implements Listener {
 
         private Shell tip;
         private Label label;
         private TreeViewer treeViewer;
-        
+
         HoverForToolTipListener(TreeViewer treeViewer) {
             this.treeViewer = treeViewer;
         }
-        
+
         /**
          * TreeView doesn't directly support tooltips, so we need to simulate
          * them. Also see https://bugs.eclipse.org/bugs/attachment.cgi?id=53988
          */
-        public void handleEvent (Event event) {
+        public void handleEvent(Event event) {
             if (!(containerWidget instanceof WorkspaceBrowserWidget)) {
                 return;
             }
             switch (event.type) {
-                case SWT.Dispose:
-                case SWT.KeyDown:
-                case SWT.MouseMove: {
-                    if (tip == null) break;
-                    tip.dispose ();
-                    tip = null;
-                    label = null;
+            case SWT.Dispose:
+            case SWT.KeyDown:
+            case SWT.MouseMove: {
+                if (tip == null)
                     break;
-                }
-                case SWT.MouseHover: {
+                tip.dispose();
+                tip = null;
+                label = null;
+                break;
+            }
+            case SWT.MouseHover: {
                     Point coords = new Point(event.x, event.y);
                     TreeItem item = treeViewer.getTree().getItem(coords);
                     if (item != null) {
@@ -398,10 +456,10 @@ public class WorkspaceUpdateContainerRunnable extends
                                     tip.setVisible(true);
                                     break;
                                 }
-                            }
                         }
                     }
                 }
+            }
             }
         }
     }

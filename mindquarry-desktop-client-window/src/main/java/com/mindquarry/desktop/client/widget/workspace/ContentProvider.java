@@ -97,5 +97,4 @@ public class ContentProvider implements ITreeContentProvider {
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // nothing to do here
     }
-
 }

@@ -14,8 +14,11 @@
 package com.mindquarry.desktop.client.widget.task;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.widgets.TableItem;
 
+import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.model.task.Task;
 import com.mindquarry.desktop.model.task.TaskList;
 
@@ -28,7 +31,7 @@ public class ContentProvider implements IStructuredContentProvider {
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
-    	// nothing to do here
+        // nothing to do here
     }
 
     /**
@@ -36,11 +39,12 @@ public class ContentProvider implements IStructuredContentProvider {
      *      java.lang.Object, java.lang.Object)
      */
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        if ((oldInput != null) && (oldInput instanceof TaskList)) {
-            // remove change listener
-        }
-        if ((newInput != null) && (newInput instanceof TaskList)) {
-            // add new change listener
+        // set background color for every second table item
+        TableItem[] items = ((TableViewer) viewer).getTable().getItems();
+        for (int i = 0; i < items.length; i++) {
+            if (i % 2 == 1) {
+                items[i].setBackground(ContainerWidget.HIGHLIGHT_COLOR);
+            }
         }
     }
 
@@ -49,7 +53,7 @@ public class ContentProvider implements IStructuredContentProvider {
      */
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof TaskList) {
-        	TaskList manager = (TaskList) inputElement;
+            TaskList manager = (TaskList) inputElement;
             return manager.getTasks().toArray(new Task[0]);
         }
         return new Object[] {};
