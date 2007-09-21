@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.app;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -56,7 +57,8 @@ public class CategoryWidget extends WidgetBase {
     private static final String SPACE_HOLDER = "      ";
     private static final String TAB_TASKS_TEXT = Messages.getString("Tasks")
             + SPACE_HOLDER;
-    private static final String TAB_FILES_TEXT = Messages.getString("File Changes")
+    private static final String TAB_FILES_TEXT = Messages
+            .getString("File Changes")
             + SPACE_HOLDER;
 
     private static Image tasksIcon = new Image(
@@ -93,7 +95,14 @@ public class CategoryWidget extends WidgetBase {
 
             public void widgetSelected(SelectionEvent e) {
                 if (tabFolder.getSelection().getText().equals(TAB_TASKS_TEXT)) {
-                    client.setTasksActive();
+                    if (MindClient.isTasksActive()) {
+                        client.setTasksActive();
+                    } else {
+                        tabFolder.setSelection(0);
+                        MessageDialog.openInformation(getShell(),
+                            Messages.getString("Deactivated"),
+                            Messages.getString("Tracking tasks has been deactivated for this installation."));
+                    }
                 } else if (tabFolder.getSelection().getText().equals(
                         TAB_FILES_TEXT)) {
                     client.setFilesActive();

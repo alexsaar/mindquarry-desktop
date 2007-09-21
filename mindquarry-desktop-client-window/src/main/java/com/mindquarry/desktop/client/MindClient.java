@@ -263,6 +263,10 @@ public class MindClient extends ApplicationWindow implements EventListener {
         client.initMacIfAvailable();
         client.open();
     }
+    
+    public static boolean isTasksActive() {
+        return true;//MindClient.class.getResourceAsStream("disable.tasks")==null;
+    }
 
     // #########################################################################
     // ### PUBLIC METHODS
@@ -539,7 +543,6 @@ public class MindClient extends ApplicationWindow implements EventListener {
         getShell().setSize(800, 600);
 
         createTrayIconAndMenu(Display.getDefault());
-
         return parent;
     }
 

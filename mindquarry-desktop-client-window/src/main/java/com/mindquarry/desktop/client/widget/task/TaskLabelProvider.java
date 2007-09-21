@@ -13,11 +13,21 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.widget.util.ImageAdaptor;
+import com.mindquarry.desktop.client.widget.util.ImageHelper;
 import com.mindquarry.desktop.model.task.Task;
 
 /**
@@ -27,98 +37,100 @@ import com.mindquarry.desktop.model.task.Task;
  *         Saar</a>
  */
 public class TaskLabelProvider extends ColumnLabelProvider {
-	private static final String ICON_SIZE = "32x32";//$NON-NLS-1$
+    private static final String TASK_PREFIX = "task-";
 
-	// status images
-	private static Image newTask = new Image(
-			Display.getCurrent(),
-			TaskLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-new.png")); //$NON-NLS-1$
+    private static final int ICON_SIZE = 32;
+    private static final int OVERLAY_ICON_SIZE = 16;
 
-	private static Image runningTask = new Image(
-			Display.getCurrent(),
-			TaskLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-running.png")); //$NON-NLS-1$
+    public Image getImage(Object element) {
+        Task task = (Task) element;
+        if (task.getStatus() == null) {
+            return null;
+        }
+        return createOverlayIcon(task);
+    }
 
-	private static Image pausedTask = new Image(
-			Display.getCurrent(),
-			TaskLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-paused.png")); //$NON-NLS-1$
+    private Image createOverlayIcon(Task task) {
+        ImageRegistry reg = JFaceResources.getImageRegistry();
 
-	private static Image doneTask = new Image(
-			Display.getCurrent(),
-			TaskLabelProvider.class
-					.getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/status/task-done.png")); //$NON-NLS-1$
+        String id = TASK_PREFIX + task.getStatus();
+        if (task.getPriority() != null) {
+            id += "-" + task.getPriority();
+        }
 
-	public Image getImage(Object element) {
-		Task task = (Task) element;
-		if (task.getStatus() == null) {
-			return null;
-		}
-		if (task.getStatus().equals(Task.STATUS_NEW)) {
-			return createOverlayIcon(task, newTask, Task.STATUS_NEW);
-		} else if (task.getStatus().equals(Task.STATUS_RUNNING)) {
-			return createOverlayIcon(task, runningTask, Task.STATUS_RUNNING);
-		} else if (task.getStatus().equals(Task.STATUS_PAUSED)) {
-			return createOverlayIcon(task, pausedTask, Task.STATUS_PAUSED);
-		} else if (task.getStatus().equals(Task.STATUS_DONE)) {
-			return createOverlayIcon(task, doneTask, Task.STATUS_DONE);
-		}
-		return null;
-	}
+        Image result = reg.get(id);
+        if (result == null) {
+            String rID = "/com/mindquarry/icons/" + ICON_SIZE + "x" + ICON_SIZE
+                    + "/status/task-" + task.getStatus() + ".png";
+            InputStream is = TaskLabelProvider.class.getResourceAsStream(rID);
 
-	private Image createOverlayIcon(Task task, Image image, String status) {
-		Image overlay = image;
-		if (task.getPriority() != null && !"".equals(task.getPriority())) {
-			overlay = new Image(Display.getCurrent(),
-					TaskLabelProvider.class
-							.getResourceAsStream("/com/mindquarry/icons/"
-									+ ICON_SIZE + "/status/task-" + status
-									+ "-" + task.getPriority() + ".png"));
-		}
-		return overlay;
-	}
+            if (task.getPriority() == null) {
+                result = new Image(Display.getDefault(), is);
+                reg.put(id, result);
+            } else {
+                try {
+                    BufferedImage statusImg = ImageIO.read(is);
 
-	public String getText(Object element) {
-		Task task = (Task) element;
-		String text = task.getTitle();
-		return text;
-	}
+                    rID = "/com/mindquarry/icons/" + OVERLAY_ICON_SIZE + "x"
+                            + OVERLAY_ICON_SIZE + "/emblems/task-"
+                            + task.getPriority() + ".png";
+                    is = TaskLabelProvider.class.getResourceAsStream(rID);
+                    BufferedImage priorityImg = ImageIO.read(is);
 
-	public String getToolTipText(Object element) {
-		Task task = (Task) element;
+                    int offset = ICON_SIZE - OVERLAY_ICON_SIZE;
+                    ImageAdaptor combImg = ImageHelper.combine(statusImg,
+                            priorityImg, offset, offset);
 
-		final int maxLength = 100;
-		String text = ""; //$NON-NLS-1$
-		String title = task.getTitle();
-		if (title != null) {
-			title = title.length() > maxLength ? title.substring(0, maxLength)
-					+ "..." : title; //$NON-NLS-1$
-		} else {
-			title = "-"; //$NON-NLS-1$
-		}
-		text += Messages.getString("Title") //$NON-NLS-1$
-				+ ": " + title; //$NON-NLS-1$ 
-		text += "\n" + Messages.getString("Status") //$NON-NLS-1$//$NON-NLS-2$
-				+ ": " + task.getStatus(); //$NON-NLS-1$ 
-		String summary = task.getSummary();
-		if (summary != null) {
-			summary = summary.length() > maxLength ? summary.substring(0,
-					maxLength)
-					+ "..." : summary; //$NON-NLS-1$
-		} else {
-			summary = "-"; //$NON-NLS-1$
-		}
-		text += "\n" + Messages.getString("Summary") //$NON-NLS-1$ //$NON-NLS-2$
-				+ ": " + summary; //$NON-NLS-1$ 
-		return text;
-	}
+                    result = combImg.toSwtImage();
+                    reg.put(id, result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return result;
+    }
 
-	public int getToolTipTimeDisplayed(Object object) {
-		return 2000;
-	}
+    public String getText(Object element) {
+        Task task = (Task) element;
+        String text = task.getTitle();
+        return text;
+    }
 
-	public int getToolTipDisplayDelayTime(Object object) {
-		return 10;
-	}
+    public String getToolTipText(Object element) {
+        Task task = (Task) element;
+
+        final int maxLength = 100;
+        String text = ""; //$NON-NLS-1$
+        String title = task.getTitle();
+        if (title != null) {
+            title = title.length() > maxLength ? title.substring(0, maxLength)
+                    + "..." : title; //$NON-NLS-1$
+        } else {
+            title = "-"; //$NON-NLS-1$
+        }
+        text += Messages.getString("Title") //$NON-NLS-1$
+                + ": " + title; //$NON-NLS-1$ 
+        text += "\n" + Messages.getString("Status") //$NON-NLS-1$//$NON-NLS-2$
+                + ": " + task.getStatus(); //$NON-NLS-1$ 
+        String summary = task.getSummary();
+        if (summary != null) {
+            summary = summary.length() > maxLength ? summary.substring(0,
+                    maxLength)
+                    + "..." : summary; //$NON-NLS-1$
+        } else {
+            summary = "-"; //$NON-NLS-1$
+        }
+        text += "\n" + Messages.getString("Summary") //$NON-NLS-1$ //$NON-NLS-2$
+                + ": " + summary; //$NON-NLS-1$ 
+        return text;
+    }
+
+    public int getToolTipTimeDisplayed(Object object) {
+        return 2000;
+    }
+
+    public int getToolTipDisplayDelayTime(Object object) {
+        return 10;
+    }
 }
