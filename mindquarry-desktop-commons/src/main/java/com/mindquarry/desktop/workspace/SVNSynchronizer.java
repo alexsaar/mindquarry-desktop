@@ -19,17 +19,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.CommitMessage;
+import org.tigris.subversion.javahl.LogMessage;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
@@ -286,9 +290,21 @@ public class SVNSynchronizer {
                         // simply recreate the directory and then delete it
                         
                         // FIXME: recreate subdirectories as well!
-                        FileHelper.mkdirs(new File(s.getPath()));
+                        File dir = new File(s.getPath());
+                        FileHelper.mkdirs(dir);
                         client.remove(new String[] { s.getPath() }, null, true);
                         
+                        // NOTE:
+                        // Normally, client.remove doesn't delete the directory,
+                        // but leaves the empty directory structure behind.
+                        // However, since we call this function when refreshing
+                        // the workspace changes, empty directories that are
+                        // left behind will confuse the user, so we need to make
+                        // sure it's really gone. We can reconstruct it later
+                        // using our shallow working copy.
+                        if(dir.exists()) {
+                            FileUtils.deleteDirectory(dir);
+                        }
                     } else {
                         // a file can be simply removed when it's not present anymore
                         
@@ -829,8 +845,9 @@ public class SVNSynchronizer {
     /**
      * Finds all conflicts where a local folder delete conflicts with remotely
      * added or modified files in that directory.
+     * @throws ClientException if getting the log fails.
      */
-    private List<Conflict> findLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) {
+    private List<Conflict> findLocalContainerDeleteConflicts(List<Status> remoteAndLocalChanges) throws ClientException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
         
         Iterator<Status> iter = remoteAndLocalChanges.iterator();
@@ -854,7 +871,7 @@ public class SVNSynchronizer {
                 
                 List<Status> remoteModList = new ArrayList<Status>();
                 
-                // find all children
+                // find all children (using status)
                 while (iter.hasNext()) {
                     status = iter.next();
                     if (FileHelper.isParent(conflictParent.getPath(), status.getPath())) {
@@ -871,6 +888,52 @@ public class SVNSynchronizer {
                     } else {
                         // no more children found, this conflict is done
                         break;
+                    }
+                }
+
+                // find all children (extended, using log)
+                Map<String, String> modifiedFiles = new HashMap<String, String>();
+                LogMessage[] messages = client.logMessages(status.getPath(), Revision.BASE, Revision.HEAD, false, true);
+                for (LogMessage message : messages) {
+                    for (ChangePath changePath : message.getChangedPaths()) {
+                        log.debug("SVN Log R"+message.getRevisionNumber()+"> "
+                                + changePath.getAction() + " "
+                                + changePath.getPath());
+
+                        // keep a history of the status
+                        String history = changePath.getAction()+"";
+                        if(modifiedFiles.containsKey(changePath.getPath())) {
+                            history = modifiedFiles.get(changePath.getPath()) + history;
+                        }
+                        modifiedFiles.put(changePath.getPath(), history);
+                    }
+                }
+                
+//                // Some tests for making sure that only files that were modified
+//                // are found
+//                String[] tests = new String[] {
+//                        "M", "MM", "MMM", "MMMM", // modified
+//                        "A", "AM", "AMM", "ADA", "AMDAM", "AR", // added -> ignore
+//                        "D", "MD", "MMD", "DAD", "MDAMD", "RD", // deleted -> ignore
+//                        "R", "MRM", "MDAM", "DA", "DADA", // replace -> ignore
+//                        "AMD", // none -> ignore
+//                };
+//                for(String test : tests) {
+//                    modifiedFiles.put(test, test);
+//                }
+                
+                // find files that were modified remotely (and not deleted,
+                // added, replaced and various combinations thereof)
+                for(String path : modifiedFiles.keySet()) {
+                    if(modifiedFiles.get(path).matches("M+")) {
+                        log.debug("found remote modification: "+path);
+                        remoteModList.add(new Status(path, null,
+                                NodeKind.unknown, -1, -1, -1, "",
+                                StatusKind.deleted, StatusKind.none,
+                                StatusKind.modified, StatusKind.none, false,
+                                false, null, null, null, null, -1, false, null,
+                                null, null, -1, null, -1, -1, NodeKind.unknown,
+                                null));
                     }
                 }
                 
