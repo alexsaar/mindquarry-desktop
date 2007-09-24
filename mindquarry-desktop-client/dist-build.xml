@@ -143,7 +143,21 @@
 			<classpath refid="classpath-mac" />
 		</taskdef>
 
-		<jarbundler dir="target" verbose="true" showPlist="true" shortname="Mindquarry" name="Mindquarry Desktop Client" bundleid="com.mindquarry.desktop" mainclass="org.eclipse.swt.MindClient" icon="../mindquarry-mac/Resources/DesktopClientAppIcon.icns" version="${version}" vmoptions="" jvmversion="1.5+" swt="true" workingdirectory="$APP_PACKAGE/Contents/Resources/Java">
+		<jarbundler
+			dir="target"
+			verbose="true"
+			showPlist="true"
+			shortname="Mindquarry"
+			name="Mindquarry Desktop Client"
+			bundleid="com.mindquarry.desktop"
+			mainclass="org.eclipse.swt.MindClient"
+			icon="../mindquarry-mac/Resources/DesktopClientAppIcon.icns"
+			version="${version}"
+			vmoptions=""
+			jvmversion="1.5+"
+			swt="true"
+			workingdirectory="$APP_PACKAGE/Contents/Resources/Java"
+			stubfile="src/mac/JavaApplicationStub">
 
 			<jarfileset dir="${standalone.dist.target}/macosx/">
 				<include name="*.jar" />

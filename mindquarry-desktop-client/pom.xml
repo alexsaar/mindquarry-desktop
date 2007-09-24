@@ -275,6 +275,11 @@
 								<artifactId>oro</artifactId>
 								<version>2.0.8</version>
 							</dependency>
+							<dependency>
+								<groupId>net.sourceforge</groupId>
+								<artifactId>jarbundler</artifactId>
+								<version>1.9.1</version>
+							</dependency>
 						</dependencies>
 					</plugin>
 				</plugins>
