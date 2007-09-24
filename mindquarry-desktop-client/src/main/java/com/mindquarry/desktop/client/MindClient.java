@@ -185,6 +185,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
     // #########################################################################
     public MindClient() throws IOException {
         super(null);
+        ensureSettingsFolderExists();
         createLock();
 
         EventBus.registerListener(this);
@@ -194,38 +195,71 @@ public class MindClient extends ApplicationWindow implements EventListener {
         HttpUtilities.setStore(store);
     }
 
-    private void createLock() throws IOException {
+    private void ensureSettingsFolderExists() {
+        File file = new File(PreferenceUtilities.SETTINGS_FOLDER);
+        if (!file.exists()) {
+            if (!file.mkdirs()) {
+                log.error("Cannot create settings folder '" + file.getAbsolutePath() + "'");
+                MessageDialog dlg = new MessageDialog(
+                        getShell(),
+                        Messages.getString("Cannot create settings folder"), null,
+                        Messages.getString("The Mindquarry Desktop Client cannot create its settings folder at\n\n" +
+                                        "'{0}'\n\nMaybe you don't have permissions to access it?\n\n" +
+                                        "If you continue, the program won't work properly, so it is strongly " +
+                                        "recommended to ensure write-access to that folder and restart the client.",
+                                        file.getAbsolutePath()),
+                        MessageDialog.ERROR,
+                        new String[] { Messages.getString("Exit"),
+                                Messages.getString("Start anyway") }, 0);
+                int result = dlg.open();
+                if (result == 0) {
+                    System.exit(1);
+                } else {
+                    log.warn("Starting despite missing settings folder"); //$NON-NLS-1$
+                }
+            }
+        }
+    }
+
+    private void createLock() {
         File f = new File(LOCK_FILE);
 
-        if (!f.exists()) {
-            f.createNewFile();
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+        } catch (IOException e) {
+            log.error("Cannot create lock file '" + f.getAbsolutePath() + "'", e); //$NON-NLS-1$
         }
+        
         // this is the recommended way to implement locking, it doesn't leave
         // a lock file, not even if the app crashes:
-        FileChannel fileChannel = (new FileOutputStream(f)).getChannel();
-        fileLock = fileChannel.tryLock();
-        if (fileLock == null) {
-            MessageDialog dlg = new MessageDialog(
-                    getShell(),
-                    Messages.getString("Mindquarry Client already running"), null, //$NON-NLS-1$
-                    Messages
-                            .getString("The Mindquarry Desktop Client seems to be running " + //$NON-NLS-1$
-                                    "already. Only one instance of the Desktop Client can be "
-                                    + //$NON-NLS-1$
-                                    "running at a time. If you are sure that the Desktop Client "
-                                    + //$NON-NLS-1$
-                                    "isn't running, select 'Start anyway'."),
-                    MessageDialog.ERROR, //$NON-NLS-1$
-                    new String[] { Messages.getString("Exit"), //$NON-NLS-1$
-                            Messages.getString("Start anyway") }, 0); //$NON-NLS-1$
-            int result = dlg.open();
-            if (result == 0) {
-                System.exit(1);
+        FileChannel fileChannel;
+        try {
+            fileChannel = (new FileOutputStream(f)).getChannel();
+            fileLock = fileChannel.tryLock();
+            if (fileLock == null) {
+                MessageDialog dlg = new MessageDialog(
+                        getShell(),
+                        Messages.getString("Mindquarry Client already running"), null,
+                        Messages.getString("The Mindquarry Desktop Client seems to be running " +
+                                        "already. Only one instance of the Desktop Client can be " +
+                                        "running at a time. If you are sure that the Desktop Client " +
+                                        "isn't running, select 'Start anyway'."),
+                        MessageDialog.ERROR,
+                        new String[] { Messages.getString("Exit"),
+                                Messages.getString("Start anyway") }, 0);
+                int result = dlg.open();
+                if (result == 0) {
+                    System.exit(1);
+                } else {
+                    log.warn("Starting despite lock file"); //$NON-NLS-1$
+                }
             } else {
-                log.warn("Starting despite lock file"); //$NON-NLS-1$
+                log.info("Aquired lock: " + fileLock);
             }
-        } else {
-            log.info("Aquired lock: " + fileLock);
+        } catch (IOException e) {
+            log.error("Cannot create lock on lock file '" + f.getAbsolutePath(), e);
         }
         // Note: no need to delete the lock, the JVM will care about that
     }
