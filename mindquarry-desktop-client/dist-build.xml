@@ -1,3 +1,16 @@
+<!--
+    Copyright (C) 2006-2007 Mindquarry GmbH, All Rights Reserved
+    
+    The contents of this file are subject to the Mozilla Public License
+    Version 1.1 (the "License"); you may not use this file except in
+    compliance with the License. You may obtain a copy of the License at
+    http://www.mozilla.org/MPL/
+    
+    Software distributed under the License is distributed on an "AS IS"
+    basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+    License for the specific language governing rights and limitations
+    under the License.
+-->
 <project name="mindquarry-desktop-client" default="standalone" basedir=".">
 	<property name="maven.build.output" value="target/classes" />
 	<property name="maven.build.directory" value="target" />
@@ -300,17 +313,14 @@
         </foreach>
 	</target>
 	
-	<target name="sign-jar">
-	</target>
-
 	<target name="sign-webstart" depends="package-webstart,unsign-webstart"
 		description="Signs all JARs related to the webstart distribution">
 		
-		<foreach param="jar" target="sign-jar">
-			<fileset dir="${web.dist.target}">
-				<include name="**/*.jar"/>
-			</fileset>
-		</foreach>
+		<signjar alias="mindquarry" keystore="${basedir}/src/webstart/keystore" storepass="mindquarry">
+		  <path>
+		    <fileset dir="${web.dist.target}" includes="**/*.jar" />
+		  </path>
+		</signjar>
 	</target>
 
 	<!-- Java Web Start distribution target -->
