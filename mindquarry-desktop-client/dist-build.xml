@@ -280,30 +280,40 @@
 		</sequential>
 	</macrodef>
 
+	<taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach">
+        <classpath>
+            <pathelement location="${maven.repo.local}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" />
+        </classpath>
+    </taskdef>
+	
+	<target name="unsign-jar">
+		<unsignjar jar="${jar}"/>
+	</target>
+	
 	<target name="unsign-webstart" depends="package-webstart" 
-		description="Unsigns all JARs related to the webstart distribution"/>
+		description="Unsigns all JARs related to the webstart distribution">
+		
+		<foreach param="jar" target="unsign-jar">
+            <fileset dir="${web.dist.target}">
+                <include name="**/*.jar"/>
+            </fileset>
+        </foreach>
+	</target>
+	
+	<target name="sign-jar">
+	</target>
 
-	<target name="sign-webstart" depends="unsign-webstart" 
+	<target name="sign-webstart" depends="package-webstart,unsign-webstart"
 		description="Signs all JARs related to the webstart distribution">
-
-		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-			<classpath>
-				<pathelement location="${maven.repo.local}/ant-contrib/ant-contrib/1.0b3/ant-contrib-1.0b3.jar" />
-			</classpath>
-		</taskdef>
-
-		<!--for list="${web.dist.target}/**/*.jar" param="jar">
-			<sequential>
-				<echo>${jar}</echo>
-			</sequential>
-		</for-->
-		<for list="a,b,c,d,e" param="letter">
-			<sequential>
-				<echo>Letter @{letter}</echo>
-			</sequential>
-		</for>
+		
+		<foreach param="jar" target="sign-jar">
+			<fileset dir="${web.dist.target}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</foreach>
 	</target>
 
 	<!-- Java Web Start distribution target -->
-	<target name="webstart" depends="sign-webstart" description="Convenience target for building the webstart distribution" />
+	<target name="webstart" depends="package-webstart,unsign-webstart,sign-webstart" 
+		description="Convenience target for building the webstart distribution" />
 </project>
