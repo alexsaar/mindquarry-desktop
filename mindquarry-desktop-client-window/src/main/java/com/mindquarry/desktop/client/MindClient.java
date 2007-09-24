@@ -736,10 +736,10 @@ public class MindClient extends ApplicationWindow implements EventListener {
             // see
             // http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGText/chapter_13_section_2.html
             return new FontData[] { new FontData("Lucida Grande", //$NON-NLS-1$
-                    10, SWT.NONE) };
+                    12, SWT.NONE) };
         }
         return new FontData[] { new FontData("Arial", //$NON-NLS-1$
-                9, SWT.NONE ) };
+                11, SWT.NONE ) };
     }
     
     private FontData[] getTaskDescriptionFont() {

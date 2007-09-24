@@ -13,6 +13,7 @@
  */
 package com.mindquarry.desktop.client.widget.task;
 
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -54,12 +55,14 @@ public class TaskUpdateContainerRunnable extends
         // create table viewer
         containerWidget.setViewer(new TableViewer(containerWidget,
                 SWT.FULL_SELECTION));
-        // containerWidget.getViewer().activateCustomTooltips();
+        containerWidget.getViewer().activateCustomTooltips();
         containerWidget.getViewer().getTable().setLayoutData(
                 new GridData(GridData.FILL_BOTH));
         containerWidget.getViewer().getTable().setHeaderVisible(false);
         containerWidget.getViewer().getTable().setLinesVisible(false);
-        // containerWidget.getViewer().getTable().setToolTipText("");
+        containerWidget.getViewer().getTable().setToolTipText("");
+        containerWidget.getViewer().getTable().setFont(
+                JFaceResources.getFont(MindClient.TASK_TITLE_FONT_KEY));
         containerWidget.getViewer().getTable().setLayoutData(
                 new GridData(SWT.FILL, SWT.FILL, true, true));
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
@@ -80,7 +83,7 @@ public class TaskUpdateContainerRunnable extends
         col.getColumn().setResizable(false);
         col.getColumn().setWidth(200);
         col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
-        
+
         containerWidget.layout(true);
         doResize();
     }

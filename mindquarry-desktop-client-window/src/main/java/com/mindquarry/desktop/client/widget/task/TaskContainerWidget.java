@@ -166,15 +166,19 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
         // modify table columns
         TableItem[] items = table.getItems();
         for (int i = 0; i < items.length; i++) {
-            // add multiple line table item support
-            TaskTableCell cell = new TaskTableCell(table, SWT.NONE, client,
-                    (Task) items[i].getData());
+            // TODO: add multiple line table item support
+            // TaskTableCell cell = new TaskTableCell(table, SWT.NONE, client,
+            // (Task) items[i].getData());
+            // if (i % 2 == 1) {
+            // cell.setBackground(ContainerWidget.HIGHLIGHT_COLOR);
+            // }
+            // TableEditor editor = new TableEditor(table);
+            // editor.grabHorizontal = editor.grabVertical = true;
+            // editor.setEditor(cell, items[i], 0);
+
             if (i % 2 == 1) {
-                cell.setBackground(ContainerWidget.HIGHLIGHT_COLOR);
+                items[i].setBackground(ContainerWidget.HIGHLIGHT_COLOR);
             }
-            TableEditor editor = new TableEditor(table);
-            editor.grabHorizontal = editor.grabVertical = true;
-            editor.setEditor(cell, items[i], 0);
         }
     }
 
