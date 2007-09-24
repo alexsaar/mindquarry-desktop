@@ -79,13 +79,6 @@
 			<artifactId>spring-context</artifactId>
 			<version>2.0.1</version>
 		</dependency>
-		
-		<!-- Mac dist libs -->
-		<dependency>
-			<groupId>net.sourceforge</groupId>
-			<artifactId>jarbundler</artifactId>
-			<version>1.9.1</version>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -140,11 +133,11 @@
 
 	<profiles>
 		<profile>
-			<id>dist</id>
+			<id>standalone</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 				<property>
-					<name>dist</name>
+					<name>standalone</name>
 				</property>
 			</activation>
 			<build>
@@ -181,17 +174,22 @@
 								<artifactId>oro</artifactId>
 								<version>2.0.8</version>
 							</dependency>
+							<dependency>
+								<groupId>net.sourceforge</groupId>
+								<artifactId>jarbundler</artifactId>
+								<version>1.9.1</version>
+							</dependency>
 						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
 		</profile>
 		<profile>
-			<id>jnlp</id>
+			<id>webstart</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 				<property>
-					<name>jnlp</name>
+					<name>webstart</name>
 				</property>
 			</activation>
 			<build>
@@ -227,58 +225,6 @@
 								<groupId>oro</groupId>
 								<artifactId>oro</artifactId>
 								<version>2.0.8</version>
-							</dependency>
-						</dependencies>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>mac</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-				<property>
-					<name>mac</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.1</version>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<configuration>
-									<tasks>
-										<ant antfile="${basedir}/dist-build.xml"
-										inheritRefs="true">
-										<target name="mac"/>
-										<property name="user.home"
-										value="${user.home}"/>
-										</ant>
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.apache.ant</groupId>
-								<artifactId>ant-apache-oro</artifactId>
-								<version>1.7.0</version>
-							</dependency>
-							<dependency>
-								<groupId>oro</groupId>
-								<artifactId>oro</artifactId>
-								<version>2.0.8</version>
-							</dependency>
-							<dependency>
-								<groupId>net.sourceforge</groupId>
-								<artifactId>jarbundler</artifactId>
-								<version>1.9.1</version>
 							</dependency>
 						</dependencies>
 					</plugin>
