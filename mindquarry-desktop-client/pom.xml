@@ -13,10 +13,10 @@
 	<artifactId>mindquarry-desktop-client</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Mindquarry Desktop Client (Window)</name>
+	<name>Mindquarry Desktop Client</name>
 
 	<scm>
-		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk/mindquarry-desktop-client-window</developerConnection>
+		<developerConnection>scm:svn:https://www.mindquarry.org/repos/mindquarry-desktop-tools/trunk/mindquarry-desktop-client</developerConnection>
 	</scm>
 
 	<dependencies>
@@ -90,16 +90,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/TaskDialogTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ant-plugin</artifactId>
