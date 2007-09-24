@@ -147,7 +147,7 @@
 						<version>1.1</version>
 						<executions>
 							<execution>
-								<phase>package</phase>
+								<phase>install</phase>
 								<configuration>
 									<tasks>
 										<ant antfile="${basedir}/dist-build.xml"
@@ -159,7 +159,7 @@
 									</tasks>
 								</configuration>
 								<goals>
-									<goal>bundle</goal>
+									<goal>run</goal>
 								</goals>
 							</execution>
 						</executions>
@@ -215,7 +215,7 @@
 						<version>1.1</version>
 						<executions>
 							<execution>
-								<phase>package</phase>
+								<phase>install</phase>
 								<configuration>
 									<tasks>
 										<ant antfile="${basedir}/dist-build.xml"
@@ -227,7 +227,7 @@
 									</tasks>
 								</configuration>
 								<goals>
-									<goal>bundle</goal>
+									<goal>run</goal>
 								</goals>
 							</execution>
 						</executions>

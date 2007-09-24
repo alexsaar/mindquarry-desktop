@@ -176,7 +176,7 @@
 		<!-- Mindquarry dependencies -->
 		<copy file="${maven.build.directory}/mindquarry-desktop-client-${client.version}.jar" tofile="${web.dist.target}/client/1.2/MindClient__V1.2.jar" />
 		<copy file="${maven.repo.local}/com/mindquarry/tools/mindquarry-desktop-commons/${client.version}/mindquarry-desktop-commons-${client.version}.jar" tofile="${web.dist.target}/client/1.2/mindquarry-desktop-commons__V1.2.jar" />
-		<copy file="${maven.repo.local}/com/mindquarry/icons/mindquarry-icons/${icons.version}/mindquarry-icons-${icons.version}.jar" tofile="${web.dist.target}/icons/mindquarry-icons__V${icons.version}.jar" />
+		<copy file="${maven.repo.local}/com/mindquarry/icons/mindquarry-icons/${icons.version}/mindquarry-icons-${icons.version}.jar" tofile="${web.dist.target}/icons/mindquarry-icons__V0.9.jar" />
 		<copy file="${maven.repo.local}/org/tango-project/tango-icon-theme/0.8.0/tango-icon-theme-0.8.0.jar" tofile="${web.dist.target}/icons/tango-icon-theme__V0.8.0.jar" />
 		
 		<!-- Logging dependencies -->
