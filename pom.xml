@@ -123,8 +123,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-windows</artifactId>
+					<groupId>swt.windows</groupId>
+					<artifactId>swt</artifactId>
 					<version>3.3</version>
 				</dependency>
 			</dependencies>
@@ -137,8 +137,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-linux</artifactId>
+					<groupId>swt.linux</groupId>
+					<artifactId>swt</artifactId>
 					<version>3.3</version>
 				</dependency>
 			</dependencies>
@@ -151,8 +151,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>swt</groupId>
-					<artifactId>swt-macosx</artifactId>
+					<groupId>swt.macosx</groupId>
+					<artifactId>swt</artifactId>
 					<version>3.3</version>
 				</dependency>
 			</dependencies>

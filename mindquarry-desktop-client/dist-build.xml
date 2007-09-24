@@ -78,7 +78,8 @@
 
 	<!-- standalone distribution for Windows -->
 	<target name="standalone-windows" description="Create directory with JARs for standalone Windows distribution">
-		<copy file="${maven.build.directory}/mindquarry-desktop-client-${client.version}.jar" tofile="${standalone.dist.target}/windows/mindquarry-desktop-client.jar" />
+		<copy file="${maven.build.directory}/mindquarry-desktop-client-${client.version}.jar" 
+			tofile="${standalone.dist.target}/windows/mindquarry-desktop-client.jar" />
 
 		<copy todir="${standalone.dist.target}/windows/lib/" flatten="true">
 			<fileset dir="${maven.repo.local}">
@@ -88,18 +89,22 @@
 
 		<copy todir="${standalone.dist.target}/windows/lib/" flatten="true">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-windows/3.3/swt-windows-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/windows/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
 	</target>
 
-	<target name="package-windows" depends="standalone-windows" description="Creates a ZIP package containing the Windows distribution of the client">
-		<zip destfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-windows_x86_32.zip" basedir="${maven.build.directory}/standalone/windows" update="true" />
+	<target name="package-windows" depends="standalone-windows" 
+		description="Creates a ZIP package containing the Windows distribution of the client">
+		
+		<zip destfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-windows_x86_32.zip" 
+			basedir="${maven.build.directory}/standalone/windows" update="true" />
 	</target>
 
 	<!-- standalone distribution for Linux -->
 	<target name="standalone-linux" description="Create directory with JARs for standalone Linux distribution">
-		<copy file="${maven.build.directory}/mindquarry-desktop-client-${client.version}.jar" tofile="${standalone.dist.target}/linux/mindquarry-desktop-client.jar" />
+		<copy file="${maven.build.directory}/mindquarry-desktop-client-${client.version}.jar" 
+			tofile="${standalone.dist.target}/linux/mindquarry-desktop-client.jar" />
 
 		<copy todir="${standalone.dist.target}/linux/lib/" flatten="true">
 			<fileset dir="${maven.repo.local}">
@@ -109,7 +114,7 @@
 
 		<copy todir="${standalone.dist.target}/linux/lib/" flatten="true">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-linux/3.3/swt-linux-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/linux/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
 	</target>
@@ -132,7 +137,7 @@
 
 		<copy todir="${standalone.dist.target}/macosx/lib/" flatten="true">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-macosx/3.3/swt-macosx-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/macosx/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
 	</target>
@@ -200,26 +205,26 @@
 
 		<copy todir="${web.dist.target}/windows/">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-windows/3.3/swt-windows-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/windows/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
-		<copy file="${web.dist.target}/windows/swt/swt-windows/3.3/swt-windows-3.3.jar" tofile="${web.dist.target}/windows/swt-windows__V3.3.jar" />
+		<copy file="${web.dist.target}/windows/swt/windows/swt/3.3/swt-3.3.jar" tofile="${web.dist.target}/windows/swt-windows__V3.3.jar" />
 		<delete dir="${web.dist.target}/windows/swt" />
 
 		<copy todir="${web.dist.target}/linux/">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-linux/3.3/swt-linux-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/linux/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
-		<copy file="${web.dist.target}/linux/swt/swt-linux/3.3/swt-linux-3.3.jar" tofile="${web.dist.target}/linux/swt-linux__V3.3.jar" />
+		<copy file="${web.dist.target}/linux/swt/linux/swt/3.3/swt-3.3.jar" tofile="${web.dist.target}/linux/swt-linux__V3.3.jar" />
 		<delete dir="${web.dist.target}/linux/swt" />
 
 		<copy todir="${web.dist.target}/macosx/">
 			<resources>
-				<url url="http://releases.mindquarry.org/swt/swt-macosx/3.3/swt-macosx-3.3.jar" />
+				<url url="http://releases.mindquarry.org/swt/macosx/swt/3.3/swt-3.3.jar" />
 			</resources>
 		</copy>
-		<copy file="${web.dist.target}/macosx/swt/swt-macosx/3.3/swt-macosx-3.3.jar" tofile="${web.dist.target}/macosx/swt-macosx__V3.3.jar" />
+		<copy file="${web.dist.target}/macosx/swt/macosx/swt/3.3/swt-3.3.jar" tofile="${web.dist.target}/macosx/swt-macosx__V3.3.jar" />
 		<delete dir="${web.dist.target}/macosx/swt" />
 
 		<!-- XML dependencies -->

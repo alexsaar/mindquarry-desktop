@@ -194,22 +194,6 @@
 							</dependency>
 						</dependencies>
 					</plugin>
-
-					<!--plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>osxappbundle-maven-plugin</artifactId>
-						<configuration>
-							<mainClass>org.eclipse.swt.MindClient</mainClass>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>bundle</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin-->
 				</plugins>
 			</build>
 		</profile>
