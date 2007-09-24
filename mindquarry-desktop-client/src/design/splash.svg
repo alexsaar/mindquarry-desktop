@@ -13,15 +13,26 @@
    height="744.09448"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.44.1"
+   inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/dnaber/mindquarry/mindquarry-meta-system/mindquarry-desktop-client/mindquarry-desktop-client/src/main/design"
+   sodipodi:docbase="/Users/saar/workspace/mindquarry-desktop-tools/mindquarry-desktop-client/src/design"
    sodipodi:docname="splash.svg"
    inkscape:export-filename="/Users/saar/MQ-Workspaces/mindquarry-desktop-client/mindquarry-minutes-editor/src/main/resources/com/mindquarry/splash/splash.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4428"
+       id="linearGradient10524"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-17.99616,-558.6147)"
+       x1="218.13197"
+       y1="289.53876"
+       x2="360.819"
+       y2="289.53876" />
     <linearGradient
        id="linearGradient8500">
       <stop
@@ -44,16 +55,6 @@
          offset="1"
          style="stop-color:#ecf400;stop-opacity:1;" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient4428"
-       id="linearGradient5631"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-17.99616,-558.6147)"
-       x1="218.13197"
-       y1="289.53876"
-       x2="360.819"
-       y2="289.53876" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient8500"
@@ -84,6 +85,16 @@
        y1="289.53876"
        x2="360.819"
        y2="289.53876" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4428"
+       id="linearGradient2692"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-17.99616,-558.6147)"
+       x1="218.13197"
+       y1="289.53876"
+       x2="360.819"
+       y2="289.53876" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -93,16 +104,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="544.57205"
-     inkscape:cy="471.73882"
+     inkscape:cx="524.7664"
+     inkscape:cy="483.65057"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="1052.3622px"
      height="744.09448px"
      inkscape:window-width="1243"
      inkscape:window-height="756"
-     inkscape:window-x="216"
-     inkscape:window-y="144"
+     inkscape:window-x="13"
+     inkscape:window-y="43"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -146,29 +157,34 @@
        ry="0" />
     <text
        xml:space="preserve"
-       style="font-size:16.26980782px;font-style:normal;font-weight:normal;line-height:125%;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="597.24133"
-       y="380.08865"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
+       x="255.31818"
+       y="130.49904"
        id="text8526"
        sodipodi:linespacing="125%"
-       transform="scale(1.021115,0.979322)"><tspan
+       transform="scale(1.0211148,0.9793218)"><tspan
          sodipodi:role="line"
          id="tspan8528"
-         x="597.24133"
-         y="380.08865"
-         style="font-size:16.33805847px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:white;fill-opacity:1;font-family:Helvetica Neue">Enjoy your teamwork</tspan></text>
+         x="255.31818"
+         y="130.49904"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">Share knowledge ...</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:15.93316078px;font-style:normal;font-weight:normal;line-height:125%;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="249.96936"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
+       x="247.96936"
        y="398.34726"
        id="text8530"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         x="249.96936"
+         x="247.96936"
          y="398.34726"
          id="tspan8534"
-         style="font-size:18px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Helvetica Neue">Mindquarry Desktop Client 1.1</tspan></text>
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">Mindquarry Desktop Client </tspan><tspan
+         sodipodi:role="line"
+         x="247.96936"
+         y="423.34726"
+         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans"
+         id="tspan2197">1.2 Beta</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
        id="rect5629"
@@ -178,132 +194,168 @@
        y="399.10519"
        rx="5.7007198"
        ry="5.8688154" />
+    <text
+       xml:space="preserve"
+       style="font-size:39.13755417px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Helvetica Neue"
+       x="512.97394"
+       y="422.00876"
+       id="text5591"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan5593"
+         x="512.97394"
+         y="422.00876"
+         style="font-family:Gill Sans;fill:#282828;fill-opacity:1">Mindquarry</tspan></text>
     <g
-       transform="matrix(0.142512,0,0,0.142512,592.1647,371.7314)"
-       id="g2019">
-      <text
-         sodipodi:linespacing="125%"
-         id="text5591"
-         y="434.40799"
-         x="-397.53699"
-         style="font-size:233.58578491px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Helvetica Neue"
-         xml:space="preserve"><tspan
-           y="434.40799"
-           x="-397.53699"
-           id="tspan5593"
-           sodipodi:role="line">Mindquarry</tspan></text>
+       id="g10505"
+       transform="matrix(0.1675511,0,0,0.1675511,561.15111,360.09224)">
       <g
-         id="g2000">
+         transform="matrix(0.264518,-0.698688,0.698688,0.264518,865.4249,398.7573)"
+         id="g5595"
+         style="display:inline">
         <g
-           style="display:inline"
-           id="g5595"
-           transform="matrix(0.264518,-0.698688,0.698688,0.264518,865.4249,398.7573)">
+           id="g5597"
+           inkscape:label="schatten-hintergrund"
+           style="display:inline">
           <g
-             style="display:inline"
-             inkscape:label="schatten-hintergrund"
-             id="g5597">
-            <g
-               transform="matrix(0.888088,0,0,0.888088,38.8466,29.7105)"
-               id="g5599" />
-          </g>
-          <g
-             id="g5601"
-             inkscape:label="grosse-box">
-            <rect
-               transform="matrix(0,1,-1,0,0,0)"
-               ry="58.880951"
-               rx="58.880951"
-               y="-377.48163"
-               x="45.626045"
-               height="331.42856"
-               width="331.42856"
-               id="rect5603"
-               style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          </g>
-          <g
-             inkscape:label="rand-grosse-box"
-             id="g5605">
-            <rect
-               style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-               id="rect5607"
-               width="331.42856"
-               height="331.42856"
-               x="45.626045"
-               y="-377.48163"
-               rx="58.880951"
-               ry="58.880951"
-               transform="matrix(0,1,-1,0,0,0)" />
-          </g>
-          <g
-             style="display:inline"
-             inkscape:label="kleine-box"
-             id="g5609" />
+             id="g5599"
+             transform="matrix(0.888088,0,0,0.888088,38.8466,29.7105)" />
         </g>
         <g
-           style="display:inline"
-           id="g5611"
-           transform="matrix(0.264518,-0.698688,0.698688,0.264518,755.2199,445.7993)">
+           inkscape:label="grosse-box"
+           id="g5601">
+          <rect
+             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="rect5603"
+             width="331.42856"
+             height="331.42856"
+             x="45.626045"
+             y="-377.48163"
+             rx="58.880951"
+             ry="58.880951"
+             transform="matrix(0,1,-1,0,0,0)" />
+        </g>
+        <g
+           id="g5605"
+           inkscape:label="rand-grosse-box">
+          <rect
+             transform="matrix(0,1,-1,0,0,0)"
+             ry="58.880951"
+             rx="58.880951"
+             y="-377.48163"
+             x="45.626045"
+             height="331.42856"
+             width="331.42856"
+             id="rect5607"
+             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="g5609"
+           inkscape:label="kleine-box"
+           style="display:inline" />
+      </g>
+      <g
+         transform="matrix(0.264518,-0.698688,0.698688,0.264518,755.2199,445.7993)"
+         id="g5611"
+         style="display:inline">
+        <g
+           id="g5613"
+           inkscape:label="schatten-hintergrund"
+           style="display:inline">
           <g
-             style="display:inline"
-             inkscape:label="schatten-hintergrund"
-             id="g5613">
-            <g
-               transform="matrix(0.888088,0,0,0.888088,38.8466,29.7105)"
-               id="g5615">
-              <rect
-                 style="opacity:1;fill:none;fill-opacity:0.01960784;fill-rule:nonzero;stroke:none;stroke-width:10.62992096;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-                 id="rect5617"
-                 width="426.73843"
-                 height="426.73843"
-                 x="-18.657982"
-                 y="-8.8514214"
-                 rx="63.384556"
-                 ry="65.253532" />
-            </g>
-          </g>
-          <g
-             id="g5619"
-             inkscape:label="grosse-box">
+             id="g5615"
+             transform="matrix(0.888088,0,0,0.888088,38.8466,29.7105)">
             <rect
-               transform="matrix(0,1,-1,0,0,0)"
-               ry="58.880951"
-               rx="58.880951"
-               y="-377.48163"
-               x="45.626045"
-               height="331.42856"
-               width="331.42856"
-               id="rect5621"
-               style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+               ry="65.253532"
+               rx="63.384556"
+               y="-8.8514214"
+               x="-18.657982"
+               height="426.73843"
+               width="426.73843"
+               id="rect5617"
+               style="opacity:1;fill:none;fill-opacity:0.01960784;fill-rule:nonzero;stroke:none;stroke-width:10.62992096;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
           </g>
-          <g
-             inkscape:label="rand-grosse-box"
-             id="g5623" />
-          <g
-             style="display:inline"
-             inkscape:label="kleine-box"
-             id="g5625">
-            <rect
-               transform="matrix(0,1,-1,0,0,0)"
-               ry="30.771656"
-               rx="30.771656"
-               y="-335.10461"
-               x="205.45078"
-               height="132.0571"
-               width="132.0571"
-               id="rect5627"
-               style="opacity:1;fill:url(#linearGradient5631);fill-opacity:1;fill-rule:nonzero;stroke:#dda702;stroke-width:15;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-          </g>
+        </g>
+        <g
+           inkscape:label="grosse-box"
+           id="g5619">
+          <rect
+             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ae0a0a;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="rect5621"
+             width="331.42856"
+             height="331.42856"
+             x="45.626045"
+             y="-377.48163"
+             rx="58.880951"
+             ry="58.880951"
+             transform="matrix(0,1,-1,0,0,0)" />
+        </g>
+        <g
+           id="g5623"
+           inkscape:label="rand-grosse-box" />
+        <g
+           id="g5625"
+           inkscape:label="kleine-box"
+           style="display:inline">
+          <rect
+             style="opacity:1;fill:url(#linearGradient2692);fill-opacity:1;fill-rule:nonzero;stroke:#dda702;stroke-width:15;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="rect5627"
+             width="132.0571"
+             height="132.0571"
+             x="205.45078"
+             y="-335.10461"
+             rx="30.771656"
+             ry="30.771656"
+             transform="matrix(0,1,-1,0,0,0)" />
         </g>
       </g>
-      <rect
-         ry="44.792038"
-         rx="43.509098"
-         y="163.70547"
-         x="597.65924"
-         height="335.37064"
-         width="658.61945"
-         id="rect2063"
-         style="opacity:1;fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline" />
     </g>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
+       id="rect2663"
+       width="110.35241"
+       height="56.191719"
+       x="661.28955"
+       y="387.52127"
+       rx="7.2899971"
+       ry="7.5049553" />
+    <text
+       sodipodi:linespacing="125%"
+       id="text9532"
+       y="440.8476"
+       x="515.99689"
+       style="font-size:10.61636925px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ae0a0a;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline;font-family:Helvetica Neue"
+       xml:space="preserve"><tspan
+         y="440.8476"
+         x="515.99689"
+         id="tspan9534"
+         sodipodi:role="line"
+         style="font-family:Gill Sans">The Open Source Collaborative Software</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
+       x="594.11224"
+       y="156.15544"
+       id="text3666"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0211148,0.9793218)"><tspan
+         sodipodi:role="line"
+         id="tspan3668"
+         x="594.11224"
+         y="156.15544"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">... be creative ...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
+       x="564.23914"
+       y="376.90433"
+       id="text3670"
+       sodipodi:linespacing="125%"
+       transform="scale(1.0211148,0.9793218)"><tspan
+         sodipodi:role="line"
+         id="tspan3672"
+         x="564.23914"
+         y="376.90433"
+         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;font-family:Gill Sans">... enjoy teamwork</tspan></text>
   </g>
 </svg>
