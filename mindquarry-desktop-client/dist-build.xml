@@ -153,7 +153,7 @@
 			mainclass="org.eclipse.swt.MindClient"
 			icon="../mindquarry-mac/Resources/DesktopClientAppIcon.icns"
 			version="${version}"
-			vmoptions=""
+			vmoptions="-Dapple.laf.useScreenMenuBar=true -Dorg.eclipse.swt.internal.carbon.smallFonts -Dorg.eclipse.swt.internal.carbon.noFocusRing"
 			jvmversion="1.5+"
 			swt="true"
 			workingdirectory="$APP_PACKAGE/Contents/Resources/Java"
