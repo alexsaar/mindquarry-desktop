@@ -92,6 +92,19 @@
 			<artifactId>spring-context</artifactId>
 			<version>2.0.1</version>
 		</dependency>
+
+		<!-- dependencies for ant plugin (they are only fetched if they are
+			 mentioned here) -->		
+		<dependency>
+			<groupId>net.sourceforge</groupId>
+			<artifactId>jarbundler</artifactId>
+			<version>1.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ant-contrib</groupId>
+			<artifactId>ant-contrib</artifactId>
+			<version>1.0b3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -163,11 +176,9 @@
 								<phase>install</phase>
 								<configuration>
 									<tasks>
-										<ant antfile="${basedir}/dist-build.xml"
-										inheritRefs="true">
-										<target name="standalone"/>
-										<property name="user.home"
-										value="${user.home}"/>
+										<ant antfile="${basedir}/dist-build.xml" inheritRefs="true">
+											<property name="user.home" value="${user.home}"/>
+											<target name="standalone"/>
 										</ant>
 									</tasks>
 								</configuration>
@@ -215,11 +226,9 @@
 								<phase>install</phase>
 								<configuration>
 									<tasks>
-										<ant antfile="${basedir}/dist-build.xml"
-										inheritRefs="true">
-										<target name="webstart"/>
-										<property name="user.home"
-										value="${user.home}"/>
+										<ant antfile="${basedir}/dist-build.xml" inheritRefs="true">
+											<property name="user.home" value="${user.home}"/>
+											<target name="webstart"/>
 										</ant>
 									</tasks>
 								</configuration>

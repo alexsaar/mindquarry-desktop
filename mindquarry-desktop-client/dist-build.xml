@@ -23,6 +23,17 @@
 
 	<property name="client.version" value="1.2-SNAPSHOT" />
 	<property name="icons.version" value="0.9-SNAPSHOT" />
+	
+	<property name="mac.bundle.name" value="Mindquarry Desktop Client" />
+	<property name="mac.build.source" value="src/mac" />
+	<property name="mac.dmg.imagename" value="Mindquarry Desktop Client" />
+	
+	<condition property="buildingOnMacOSX">
+		<and>
+			<os family="mac" />
+			<os family="unix" />
+		</and>
+	</condition>
 
 	<!-- common classpath shared by all distributions -->
 	<patternset id="generic-jars-in-local-maven-repo">
@@ -119,9 +130,13 @@
 		</copy>
 	</target>
 
-	<target name="package-linux" depends="standalone-linux" description="Creates a ZIP package containing the Linux distribution of the client">
-		<tar tarfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar" basedir="${maven.build.directory}/standalone/linux" />
-		<gzip zipfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar.gz" src="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar" />
+	<target name="package-linux" depends="standalone-linux"
+		description="Creates a ZIP package containing the Linux distribution of the client">
+		
+		<tar tarfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar"
+			basedir="${maven.build.directory}/standalone/linux" />
+		<gzip zipfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar.gz"
+			src="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar" />
 		<delete file="${maven.build.directory}/mindquarry-desktop-client-${client.version}-linux_x86_32.tar" />
 	</target>
 
@@ -142,34 +157,38 @@
 		</copy>
 	</target>
 
-	<target name="package-macosx" depends="standalone-macosx" description="Creates a ZIP package containing the Max OX X distribution of the client">
-		<tar tarfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar" basedir="${maven.build.directory}/standalone/macosx" />
-		<gzip zipfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar.gz" src="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar" />
+	<target name="package-macosx" depends="standalone-macosx"
+		description="Creates a ZIP package containing the Mac OS X distribution of the client">
+		
+		<tar tarfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar"
+			basedir="${maven.build.directory}/standalone/macosx" />
+		<gzip zipfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar.gz"
+			src="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar" />
 		<delete file="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.tar" />
 	</target>
 
-	<target name="macosx-app" depends="standalone-macosx">
-		<taskdef name="jarbundler" classname="net.sourceforge.jarbundler.JarBundler">
-			<classpath>
-				<pathelement location="${maven.repo.local}/net/sourceforge/jarbundler/1.9.1/jarbundler-1.9.1.jar" />
-			</classpath>
-		</taskdef>
+	<target name="macosx-app-bundle" depends="standalone-macosx"
+		description="Creates a standard Mac OSX application bundle">
+		
+		<taskdef name="jarbundler"
+			classname="net.sourceforge.jarbundler.JarBundler"
+			classpath="${maven.repo.local}/net/sourceforge/jarbundler/1.9.1/jarbundler-1.9.1.jar" />
 
 		<jarbundler
-            dir="target"
-            verbose="true"
-            showPlist="true"
-            shortname="Mindquarry"
-            name="Mindquarry Desktop Client ${client.version}"
-            bundleid="com.mindquarry.desktop"
-            mainclass="org.eclipse.swt.MindClient"
-            icon="../mindquarry-mac/Resources/DesktopClientAppIcon.icns"
-            version="${client.version}"
-            vmoptions="-Dapple.laf.useScreenMenuBar=true -Dorg.eclipse.swt.internal.carbon.smallFonts -Dorg.eclipse.swt.internal.carbon.noFocusRing"
-            jvmversion="1.5+"
-            swt="true"
-            workingdirectory="$APP_PACKAGE/Contents/Resources/Java"
-            stubfile="src/mac/JavaApplicationStub">
+			dir="${maven.build.directory}"
+			verbose="true"
+			showPlist="true"
+			shortname="Mindquarry"
+			name="${mac.bundle.name}"
+			bundleid="com.mindquarry.desktop"
+			mainclass="org.eclipse.swt.MindClient"
+			icon="${mac.build.source}/DesktopClientAppIcon.icns"
+			version="${client.version}"
+			vmoptions="-Dapple.laf.useScreenMenuBar=true -Dorg.eclipse.swt.internal.carbon.smallFonts -Dorg.eclipse.swt.internal.carbon.noFocusRing"
+			jvmversion="1.5+"
+			swt="true"
+			workingdirectory="$APP_PACKAGE/Contents/Resources/Java"
+			stubfile="${mac.build.source}/JavaApplicationStub">
 
 			<jarfileset dir="${standalone.dist.target}/macosx/">
 				<include name="*.jar" />
@@ -177,10 +196,69 @@
 			</jarfileset>
 		</jarbundler>
 	</target>
+	
+	<target name="macosx-dmg" depends="macosx-app-bundle" if="buildingOnMacOSX"
+		description="Creates a DMG image with the Mac application bundle and an installation guide as dmg background image (Note: this only runs on a mac)">
+		
+		<property name="mac.dmg.folder" value="${maven.build.directory}/${mac.dmg.imagename}" />
+		
+		<mkdir dir="${mac.dmg.folder}"/>
+		
+		<delete file="${mac.build.source}/AppHardLink"/>
+		<!-- this zip contains a hard link to /Applications for mac-style
+		     drag'n'drop install inside the dmg folder (this only works on MacOSX) -->
+		<exec executable="open">
+			<arg value="${mac.build.source}/AppHardLink.zip"/>
+		</exec>
+		<sleep seconds="1"/> <!-- wait for extraction (open is asynchronous) -->
+		<exec executable="cp">
+			<arg value="${mac.build.source}/AppHardLink"/>
+			<arg value="${mac.dmg.folder}/Applications"/>
+		</exec>
+		<delete file="${mac.build.source}/AppHardLink"/>
+		
+		<!-- finally the app bundle itself -->
+		<copy todir="${mac.dmg.folder}/${mac.bundle.name}.app">
+			<fileset dir="${maven.build.directory}/${mac.bundle.name}.app"/>
+		</copy>
+		
+		<!-- a folder background image as install guide -->
+		<copy file="${mac.build.source}/background.png" tofile="${mac.dmg.folder}/background.png" />
+		<!-- hide the file (this only works on MacOSX) -->
+		<exec executable="/Developer/Tools/SetFile">
+			<arg value="-a"/>
+			<arg value="V"/>
+			<arg value="${mac.dmg.folder}/background.png"/>
+		</exec>
+		<!-- copy a pre-built mac finder folder settings file -->
+		<copy file="${mac.build.source}/template_DS_Store" tofile="${mac.dmg.folder}/.DS_Store" />
+		
+		<!-- create a dmg from a folder (this only works on MacOSX) -->
+		<exec executable="hdiutil">
+			<arg value="create" />
+			<arg value="-srcdir" />
+			<arg value="${mac.dmg.folder}" />
+			<arg value="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.dmg" />
+		</exec>
+		
+		<!--<delete dir="${mac.dmg.folder}" />-->
+	</target>
 
+	<target name="macosx-zip" depends="macosx-app-bundle"
+		description="Creates a zipped version of the mac app bundle, works on all operating systems">
+		
+		<zip destfile="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx-appbundle.zip">
+			<zipfileset dir="${maven.build.directory}/${mac.bundle.name}.app" prefix="${mac.bundle.name}.app"/>
+			<!-- ensure that the JavaApplicationStub binary has executable permissions -->
+			<zipfileset file="${maven.build.directory}/${mac.bundle.name}.app/Contents/MacOS/JavaApplicationStub"
+				filemode="755" prefix="${mac.bundle.name}.app/Contents/MacOS/"/>
+		</zip>
+	</target>
+	
 	<!-- package all target platforms -->
-	<target name="standalone" depends="package-windows, package-linux, package-macosx, macosx-app" 
+	<target name="standalone" depends="package-windows, package-linux, package-macosx, macosx-dmg, macosx-zip" 
 		description="Convenience target for packaging standalone distributions for all target platforms">
+		
 		<delete dir="${maven.build.directory}/standalone" />
 	</target>
 
