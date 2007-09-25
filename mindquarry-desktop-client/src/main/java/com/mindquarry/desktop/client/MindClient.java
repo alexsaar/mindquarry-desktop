@@ -63,6 +63,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
 import org.springframework.beans.factory.BeanFactory;
@@ -794,9 +795,17 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         trayItem = new TrayItem(tray, SWT.NONE);
         trayItem.setImage(JFaceResources.getImage(CLIENT_TRAY_IMG_KEY));
+        
+        // show tooltip that indicates successful startup of the client
+        final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
+        tip.setText("hallo");
+        tip.setMessage("Here is a message for the user");
+        trayItem.setToolTip(tip);
+        tip.setLocation(0, 0);
+        tip.setVisible(true);
 
+        // create tray item menu
         trayMenu = new Menu(shell, SWT.POP_UP);
-
         if (SVNFileUtil.isOSX) {
             // no right click on tray icons in OSX, do the menu on left click
             trayItem.addSelectionListener(new SelectionListener() {
