@@ -798,10 +798,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
         
         // show tooltip that indicates successful startup of the client
         final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
-        tip.setText("hallo");
-        tip.setMessage("Here is a message for the user");
+        tip.setText(Messages.getString("Mindquarry Desktop Client"));
+        tip.setMessage(Messages.getString("Select this icon to open the Mindquarry Desktop Client"));
         trayItem.setToolTip(tip);
-        tip.setLocation(0, 0);
         tip.setVisible(true);
 
         // create tray item menu
