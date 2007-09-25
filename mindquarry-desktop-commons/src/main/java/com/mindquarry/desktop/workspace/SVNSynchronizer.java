@@ -104,6 +104,8 @@ public class SVNSynchronizer {
 	public SVNSynchronizer(String repositoryURL, String localPath,
 			String username, String password,
 			ConflictHandler handler) {
+	    log.debug("Creating SVNSynchronizer for " + repositoryURL + 
+	            ", local path: " + localPath);
 		this.repositoryURL = repositoryURL;
 		this.localPath = localPath;
 		this.username = username;
@@ -146,6 +148,7 @@ public class SVNSynchronizer {
 	 */
 	public void synchronizeOrCheckout() throws SynchronizeException {
         File localDir = new File(localPath);
+        log.debug("synchronizeOrCheckout on " + localDir.getAbsolutePath());
         
         // if directory doesn't exist, create it:
         if (!localDir.exists()) {
@@ -190,9 +193,10 @@ public class SVNSynchronizer {
             client.info(path);
         } catch (ClientException e) {
             // probably not a checkout directory:
-            log.info("Got exception on " + localPath + ": " + e);
+            log.info("Not a checkout dir, got exception on " + path + ": " + e);
             return false;
         }	    
+        log.debug("Is a checkout dir:" + path);
         return true;
 	}
 	
@@ -207,6 +211,7 @@ public class SVNSynchronizer {
 	 */
 	public void synchronize() throws SynchronizeException {
 		try {
+		    log.debug("synchronizing...");
 		    cleanup();
 			
 			// local checks only: conflicted and obstructed
@@ -224,6 +229,7 @@ public class SVNSynchronizer {
 			List<Conflict> conflicts = analyzeChangesAndAskUser();
 			
 			handleConflictsBeforeUpdate(conflicts);
+			log.info("updating " + localPath + " to HEAD");
 			client.update(localPath, Revision.HEAD, true);
 			handleConflictsAfterUpdate(conflicts);
 			
@@ -231,6 +237,7 @@ public class SVNSynchronizer {
 			handleConflictsBeforeCommit(localConflicts);
 			
 			// we use the CommitMessage interface as callback
+			log.info("committing " + localPath);
 			client.commit(new String[] { localPath }, null, true);
 
         } catch (CancelException e) {
@@ -239,7 +246,7 @@ public class SVNSynchronizer {
                     +e.toString(), e);
 		} catch (Exception e) {
 			// TODO think about exception handling
-			e.printStackTrace();
+			log.error(e);
 			if (e.getCause() != null) {
 			    e.getCause().printStackTrace();
 			}
@@ -429,6 +436,7 @@ public class SVNSynchronizer {
      * @throws ClientException
      */
     public void cleanup() throws ClientException {
+        log.debug("cleaning up " + localPath);
         client.cleanup(localPath);
     }
     
@@ -513,7 +521,7 @@ public class SVNSynchronizer {
      * Looks for local conflicted files and obstructed files. This only does a
      * local status call, because obstructed files can break a remote status.
      */
-    private List<Conflict> analyzeConflictedAndObstructed() throws ClientException, CancelException {
+    private List<Conflict> analyzeConflictedAndObstructed() throws ClientException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
 
         List<Status> localChanges = getLocalChanges();
@@ -533,7 +541,7 @@ public class SVNSynchronizer {
      * Looks for local conflicted files. This only does a local status call as
      * it happens after the update.
      */
-    private List<Conflict> analyzeConflicted() throws ClientException, CancelException {
+    private List<Conflict> analyzeConflicted() throws ClientException {
         List<Conflict> conflicts = new ArrayList<Conflict>();
 
         List<Status> localChanges = getLocalChanges();
@@ -647,7 +655,7 @@ public class SVNSynchronizer {
      * If the user cancels during the conflict resolving, a CancelException is
      * thrown.
      */
-	private List<Conflict> analyzeChangesAndAskUser() throws CancelException, ClientException {
+	private List<Conflict> analyzeChangesAndAskUser() throws ClientException {
         List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
 
 		List<Conflict> conflicts = new ArrayList<Conflict>();
