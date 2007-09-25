@@ -24,8 +24,8 @@
 	<property name="client.version" value="1.2-SNAPSHOT" />
 	<property name="icons.version" value="0.9-SNAPSHOT" />
 	
-	<property name="mac.bundle.name" value="Mindquarry Desktop Client" />
 	<property name="mac.build.source" value="src/mac" />
+	<property name="mac.bundle.name" value="Mindquarry Desktop Client" />
 	<property name="mac.dmg.imagename" value="Mindquarry Desktop Client" />
 	
 	<condition property="buildingOnMacOSX">
@@ -221,6 +221,8 @@
 		<copy todir="${mac.dmg.folder}/${mac.bundle.name}.app">
 			<fileset dir="${maven.build.directory}/${mac.bundle.name}.app"/>
 		</copy>
+		<!-- ensure that the JavaApplicationStub binary has executable permissions -->
+		<chmod perm="755" file="${mac.dmg.folder}/${mac.bundle.name}.app/Contents/MacOS/JavaApplicationStub"/>
 		
 		<!-- a folder background image as install guide -->
 		<copy file="${mac.build.source}/background.png" tofile="${mac.dmg.folder}/background.png" />
@@ -241,7 +243,7 @@
 			<arg value="${maven.build.directory}/mindquarry-desktop-client-${client.version}-macosx.dmg" />
 		</exec>
 		
-		<!--<delete dir="${mac.dmg.folder}" />-->
+		<delete dir="${mac.dmg.folder}" />
 	</target>
 
 	<target name="macosx-zip" depends="macosx-app-bundle"
