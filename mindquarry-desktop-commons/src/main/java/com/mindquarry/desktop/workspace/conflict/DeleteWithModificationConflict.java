@@ -26,6 +26,7 @@ import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Revision.Number;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -94,13 +95,15 @@ public class DeleteWithModificationConflict extends Conflict {
 	 * @throws IOException
 	 *            If creation of the temporary directory fails.
 	 */
-	public static File createTempDir(String prefix, String suffix, File directory)
-	throws IOException {
-        // prefix must be at least 3 characters
+	private static File createTempDir(String prefix, String suffix, File directory)
+	        throws IOException {
+	    log.debug("createTempDir, directory: " + directory.getAbsolutePath());
+        // add prefix, as name must be at least 3 characters
         prefix = "backup_"+prefix;
 
 		// create and immediately delete temporary file using library function
 		File file = File.createTempFile(prefix, suffix, directory);
+        log.debug("created file, will delete it again: " + file.getAbsolutePath());
 		FileHelper.delete(file);
 		
         // create directory with the same unique name
@@ -121,10 +124,11 @@ public class DeleteWithModificationConflict extends Conflict {
 	    if (action == Action.REVERTDELETE) {	 
 	    	if (localDelete) {   	
 		    	// revert local delete
+	    	    log.info("beforeUpdate (localDelete), reverting " + status.getPath());
 	    		client.revert(status.getPath(), true);
 	    	} else {
 	    		// make a local copy of the file/dir
-	    		File source      = new File(status.getPath());
+	    		File source = new File(status.getPath());
 	    		
 				if (source.isFile()) {
 	    			tempCopy = File.createTempFile(source.getName(), null, source.getParentFile());
@@ -138,6 +142,7 @@ public class DeleteWithModificationConflict extends Conflict {
 				removeDotSVNDirectories(tempCopy.getPath());
 	    		
 	    		// revert all local changes to file/dir
+				log.info("beforeUpdate, reverting " + status.getPath());
 				client.revert(status.getPath(), true);
 	    		
 	    		// Delete complete file/dir as the update operation will leave
@@ -237,6 +242,8 @@ public class DeleteWithModificationConflict extends Conflict {
 				
 				// Restore deleted version with version history
 				if(restoreRev != null) {
+				    log.debug("copy " + repositoryURL+delFile + " to " + status.getPath() +
+				            ", restoreRev " + restoreRev);
 					client.copy(repositoryURL+delFile, status.getPath(), null, restoreRev);
 				} else {
 					log.error("Failed to restore deleted verion.");
@@ -245,9 +252,11 @@ public class DeleteWithModificationConflict extends Conflict {
 	    		// 2. Redo changes by replacing with local files (move B => A)
 	    		File destination = new File(status.getPath());
     			if (tempCopy.isFile()) {
+    			    log.debug("copy file from " + tempCopy + " to " + destination);
     				FileUtils.copyFile(tempCopy, destination);
     				tempCopy.delete();
     			} else {
+                    log.debug("copy dir from " + tempCopy + " to " + destination);
     				FileUtils.copyDirectory(tempCopy, destination);
     				FileUtils.deleteDirectory(tempCopy);
     			}
@@ -259,8 +268,10 @@ public class DeleteWithModificationConflict extends Conflict {
 				// locally.
 	    		if(otherMods != null) {
 	    			for(Status s : otherMods) {
-	    				if(s.getTextStatus() == StatusKind.added)
+	    				if(s.getTextStatus() == StatusKind.added) {
+	    				    log.debug("re-adding " + s.getPath());
 	    					client.add(s.getPath(), false);
+	    				}
 	    			}
 	    		}
 	    	}
@@ -337,19 +348,19 @@ public class DeleteWithModificationConflict extends Conflict {
     public String getLongDescription() {
         if (otherMods == null) { // only single files involved
             if (localDelete) { // local DELETED, remote MODIFIED
-                return "This remotely modified file was deleted locally. "
-                        + "You will need to resolve the conflict.";
+                return Messages.getString("This remotely modified file was deleted locally. " +
+                        "You will need to resolve the conflict.");
             } else { // local MODIFIED, remote DELETED
-                return "This remotely deleted file was modified locally. "
-                        + "You will need to resolve the conflict.";
+                return Messages.getString("This remotely deleted file was modified locally. " +
+                        "You will need to resolve the conflict.");
             }
         } else { // directories involved
             if (localDelete) { // local dir DELETED, remote MODIFIED
-                return "This locally deleted directory contains remote changes. "
-                        + "You will need to resolve the conflict.";
+                return Messages.getString("This locally deleted directory contains remote changes. " +
+                        "You will need to resolve the conflict.");
             } else { // local MODIFIED, remote dir DELETED
-                return "This remotely deleted directory contains local changes. "
-                        + "You will need to resolve the conflict.";
+                return Messages.getString("This remotely deleted directory contains local changes. " +
+                        "You will need to resolve the conflict.");
             }
         }
     }

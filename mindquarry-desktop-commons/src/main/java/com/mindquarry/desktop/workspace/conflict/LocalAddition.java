@@ -17,6 +17,8 @@ import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * Describes changes that add a file or directory locally.
  * 
@@ -41,14 +43,14 @@ public class LocalAddition extends Change {
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "This new directory will be uploaded to the server.";
+            return Messages.getString("This new directory will be uploaded to the server.");
         else
-            return "This new file will be uploaded to the server.";
+            return Messages.getString("This new file will be uploaded to the server.");
     }
 
     @Override
     public String getShortDescription() {
-        return "Added locally";
+        return Messages.getString("Added locally");
     }
 
     @Override

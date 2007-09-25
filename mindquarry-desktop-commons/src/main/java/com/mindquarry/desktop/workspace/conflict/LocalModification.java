@@ -17,6 +17,8 @@ import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * Describes changes that modify a file or directory locally.
  * 
@@ -41,14 +43,14 @@ public class LocalModification extends Change {
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "Files or directories in this directory have been added or deleted locally.";
+            return Messages.getString("Files or directories in this directory have been added or deleted locally.");
         else
-            return "Your changes to this file will be uploaded to the server.";
+            return Messages.getString("Your changes to this file will be uploaded to the server.");
     }
 
     @Override
     public String getShortDescription() {
-        return "Modified locally";
+        return Messages.getString("Modified locally");
     }
 
     @Override

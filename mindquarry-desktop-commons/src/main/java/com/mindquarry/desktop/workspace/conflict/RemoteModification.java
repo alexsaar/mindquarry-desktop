@@ -17,6 +17,8 @@ import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
+
 /**
  * Describes changes that modify a file or directory remotely.
  * 
@@ -44,15 +46,15 @@ public class RemoteModification extends Change {
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return "Files or directories in this directory have been added or deleted on the server. " +
-                    "These updated will be downloaded from the server.";
+            return Messages.getString("Files or directories in this directory have been added or deleted on the server. " +
+                    "These updated will be downloaded from the server.");
         else
-            return "This remotely modified file will be downloaded from the server.";
+            return Messages.getString("This remotely modified file will be downloaded from the server.");
     }
 
     @Override
     public String getShortDescription() {
-        return "Modified remotely";
+        return Messages.getString("Modified remotely");
     }
 
     @Override

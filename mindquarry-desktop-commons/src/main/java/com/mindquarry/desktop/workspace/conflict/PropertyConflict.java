@@ -89,7 +89,8 @@ public class PropertyConflict extends Conflict {
         StringBuffer buffer = new StringBuffer();
         
         for(String value : mergedValues) {
-            buffer.append(value + "\n");
+            buffer.append(value);
+            buffer.append("\n");
         }
         
         log.info("merged value: " + buffer.toString());

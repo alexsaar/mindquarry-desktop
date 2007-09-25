@@ -21,6 +21,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -69,7 +70,7 @@ public class ObstructedConflict extends RenamingConflict {
             break;
             
         case RENAME:
-            log.info("renaming to " + newName);
+            log.info("renaming " + file.getAbsolutePath() + " to " + newName);
 
             File destination = new File(file.getParentFile(), newName);
             FileHelper.renameTo(file, destination);
@@ -122,11 +123,11 @@ public class ObstructedConflict extends RenamingConflict {
 
     @Override
     public String getLongDescription() {
-        return "This file is obstructed."; // TODO: need better description
+        return Messages.getString("This file is obstructed."); // TODO: need better description
     }
 
     @Override
     public String getShortDescription() {
-        return "Obstructed";
+        return Messages.getString("Obstructed");
     }
 }

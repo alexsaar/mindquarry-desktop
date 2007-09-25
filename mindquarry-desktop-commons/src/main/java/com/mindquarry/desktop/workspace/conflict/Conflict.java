@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -89,6 +90,7 @@ public abstract class Conflict extends Change {
     }
     
 	protected void removeDotSVNDirectories(String path) {
+	    log.info("removeDotSVNDirectories in " + path);
 		File[] allDirs = new File(path).listFiles(new FileFilter() {
 			public boolean accept(File arg0) {
 				return arg0.isDirectory();
@@ -101,6 +103,7 @@ public abstract class Conflict extends Change {
 					try {
 	                    FileUtils.forceDelete(dir);
 					} catch (IOException e) {
+					    log.error(e);
 						// Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -124,7 +127,7 @@ public abstract class Conflict extends Change {
 
     @Override
     public String getShortDescription() {
-        return "Conflict";
+        return Messages.getString("Conflict");
     }
     
 }

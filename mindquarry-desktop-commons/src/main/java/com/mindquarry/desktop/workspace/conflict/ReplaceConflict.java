@@ -22,6 +22,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -69,7 +70,7 @@ public class ReplaceConflict extends RenamingConflict {
 			break;
 			
 		case RENAME:
-			log.info("renaming to " + newName);
+			log.info("renaming " +file.getAbsolutePath()+ " to " + newName);
 			
             File source      = new File(status.getPath());
             File destination = new File(source.getParent(), newName);
@@ -144,7 +145,7 @@ public class ReplaceConflict extends RenamingConflict {
     
     @Override
     public String getLongDescription() {
-        return "This item has been replaced locally or remotely. "
-                + "You will need to resolve the conflict.";
+        return Messages.getString("This item has been replaced locally or remotely. " +
+                "You will need to resolve the conflict.");
     }
 }

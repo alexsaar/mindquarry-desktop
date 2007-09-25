@@ -22,6 +22,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -61,6 +62,7 @@ public class AddConflict extends RenamingConflict {
 	}
 
 	public void beforeUpdate() throws ClientException, IOException {
+	    log.info("beforeUpdate: " + file.getAbsolutePath());
 		File file = new File(status.getPath());
 		
 		switch (action) {
@@ -70,7 +72,7 @@ public class AddConflict extends RenamingConflict {
 			break;
 			
 		case RENAME:
-			log.info("renaming to " + newName);
+			log.info("renaming " + file.getAbsolutePath() + " to " + newName);
 
 			if (status.getTextStatus() != StatusKind.unversioned) {
     			// the file is added, but in order to rename it without breaking
@@ -123,6 +125,7 @@ public class AddConflict extends RenamingConflict {
      *                filename but not a full path name.
      */
 	public void doRename(String newName) {
+	    log.info("doRename: " + newName);
 		this.action = Action.RENAME;
 		this.newName = newName;
 	}
@@ -160,10 +163,10 @@ public class AddConflict extends RenamingConflict {
     @Override
     public String getLongDescription() {
         if (file.isDirectory())
-            return "This new directory has also been added on the server. "
-                    + "You will need to resolve the conflict.";
+            return Messages.getString("This new directory has also been added on the server. " +
+                    "You will need to resolve the conflict.");
         else
-            return "This new file has also been added on the server. "
-                    + "You will need to resolve the conflict.";
+            return Messages.getString("This new file has also been added on the server. " +
+                    "You will need to resolve the conflict.");
     }
 }

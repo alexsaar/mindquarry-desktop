@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeDirection;
 import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeStatus;
@@ -83,6 +84,8 @@ public class ContentConflict extends RenamingConflict {
         // rename conflicts files
         conflictServerFile = renameConflictFile(getConflictServerFile());
         conflictLocalFile = renameConflictFile(getConflictLocalFile());
+        log.info("ContentConflict.accept server/local: " + conflictServerFile + "/" +
+                conflictLocalFile);
         
         try {
             handler.handle(this);
@@ -130,6 +133,7 @@ public class ContentConflict extends RenamingConflict {
         return newFile;
     }
 
+    @SuppressWarnings("fallthrough")
     private void resolveConflict() throws ClientException, IOException {
         // rename conflicts files
         conflictServerFile = renameConflictFile(getConflictServerFile());
@@ -205,7 +209,7 @@ public class ContentConflict extends RenamingConflict {
     public void beforeUpdate() throws ClientException, IOException {        
         switch (action) {
         case RENAME:
-            log.info("renaming to " + newName);
+            log.info("renaming " + conflictLocalFile.getAbsolutePath() + " to " + newName);
 
             File destination = new File(conflictLocalFile.getParentFile(), newName);
             FileHelper.renameTo(conflictLocalFile, destination);
@@ -281,6 +285,8 @@ public class ContentConflict extends RenamingConflict {
         // rename conflicts files
         conflictServerFile = renameConflictFile(getConflictServerFile());
         conflictLocalFile = renameConflictFile(getConflictLocalFile());      
+        log.info("doCancel server/local: " + conflictServerFile + "/"
+                + conflictLocalFile);
     }
 
     @Override
@@ -290,7 +296,7 @@ public class ContentConflict extends RenamingConflict {
 
     @Override
     public String getLongDescription() {
-        return "This file has been modified both on the server "
-                + "and locally. You will need to merge the changes.";
+        return Messages.getString("This file has been modified both on the server " +
+                "and locally. You will need to merge the changes.");
     }
 }
