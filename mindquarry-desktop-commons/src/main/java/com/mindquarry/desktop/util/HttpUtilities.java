@@ -128,7 +128,7 @@ public class HttpUtilities {
 
     public enum CheckResult {
         AUTH_REFUSED, NOT_AVAILABLE, OK
-    };
+    }
 
     public static CheckResult checkServerExistence(String login, String pwd,
             String address) throws MalformedURLException {
