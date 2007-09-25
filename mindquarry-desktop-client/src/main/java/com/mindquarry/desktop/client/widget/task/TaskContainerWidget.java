@@ -24,7 +24,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -200,7 +199,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             refreshing = false;
             return;
         }
-        showRefreshMessage(Messages.getString("Updating task list") + " ..."); //$NON-NLS-1$ //$NON-NLS-2$
+        showRefreshMessage(Messages.getString("Updating task list...")); //$NON-NLS-1$
         log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
         // cleanup current task list
