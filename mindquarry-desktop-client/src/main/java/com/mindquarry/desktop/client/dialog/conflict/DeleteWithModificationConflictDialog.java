@@ -70,13 +70,13 @@ public class DeleteWithModificationConflictDialog extends
                             + "will be downloaded.")));
             /*
              * makeRadioButton(composite,
-             * Messages.getString(Messages.getString("Do not delete " + "the
+             * M.getString("Do not delete " + "the
              * file, and download the version from the server.")),
              * Action.REVERTDELETE);
              */
             /*
              * makeRadioButton(composite,
-             * Messages.getString(Messages.getString("Ignore the " +
+             * M.getString("Ignore the " +
              * "modification and delete the file on the server anyway")),
              * Action.DELETE);
              */
@@ -86,13 +86,13 @@ public class DeleteWithModificationConflictDialog extends
                             + "to the server.")));
             /*
              * makeRadioButton(composite,
-             * Messages.getString(Messages.getString("Ignore the " + "deletion
+             * M.getString("Ignore the " + "deletion
              * on the server and upload your local file")),
              * Action.REVERTDELETE);
              */
             /*
              * makeRadioButton(composite,
-             * Messages.getString(Messages.getString("Ignore your " + "local
+             * M.getString("Ignore your " + "local
              * modification and delete your file")), Action.DELETE);
              */
         }

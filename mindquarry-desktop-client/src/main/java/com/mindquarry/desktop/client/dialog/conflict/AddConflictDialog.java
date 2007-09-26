@@ -85,9 +85,9 @@ public class AddConflictDialog extends RenamingConflictDialog {
         // no replace available because it is a dangerous, unrecoverable action
         /*
          * Button button2 = makeRadioButton(subComposite,
-         * //Messages.getString("Overwrite the file on the server with your
+         * //M.getString("Overwrite the file on the server with your
          * local version"), //$NON-NLS-1$ //Action.REPLACE);
-         * Messages.getString("Overwrite your local file with the one from the
+         * M.getString("Overwrite your local file with the one from the
          * server"), //$NON-NLS-1$ Action.REPLACE);
          * button2.addListener(SWT.Selection, new Listener() { public void
          * handleEvent(Event event) { newNameField.setEnabled(false);
