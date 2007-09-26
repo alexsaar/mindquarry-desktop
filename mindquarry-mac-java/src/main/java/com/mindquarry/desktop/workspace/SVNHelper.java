@@ -11,7 +11,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  */
-package com.mindquarry.desktop.workspace.deprecated;
+package com.mindquarry.desktop.workspace;
 
 import java.io.File;
 import java.util.ArrayList;

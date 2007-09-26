@@ -4,7 +4,6 @@ package com.mindquarry.desktop.workspace;
 import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.workspace.deprecated.SVNHelper;
 
 /**
  * Specilization of the {@link SVNHelper} for Mac OS related clients.
