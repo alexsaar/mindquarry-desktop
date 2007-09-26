@@ -317,7 +317,7 @@ public class SVNSynchronizer {
                         // left behind will confuse the user, so we need to make
                         // sure it's really gone. We can reconstruct it later
                         // using our shallow working copy.
-                        if(dir.exists()) {
+                        if (dir.exists()) {
                             FileUtils.deleteDirectory(dir);
                         }
                     } else {
