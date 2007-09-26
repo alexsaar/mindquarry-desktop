@@ -353,7 +353,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setServerURL(url.getText());
-                    //performValidation();
+                    performValidation();
                 }
             }
         });
@@ -378,7 +378,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setLogin(login.getText());
-                    //performValidation();
+                    performValidation();
                 }
             }
         });
@@ -403,7 +403,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 if (selection.length > 0) {
                     Profile profile = findByName(selection[0]);
                     profile.setPassword(pwd.getText());
-                    //performValidation();
+                    performValidation();
                 }
             }
         });
