@@ -21,6 +21,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.model.ModelBase;
 import com.mindquarry.desktop.util.NotAuthorizedException;
@@ -30,7 +31,7 @@ import com.mindquarry.desktop.util.NotAuthorizedException;
  *         Trieloff</a>
  */
 public class Task extends ModelBase implements Cloneable {
-    public static final String NO_TITLE_PLACEHOLDER = "<No title>";
+    public static final String NO_TITLE_PLACEHOLDER = Messages.getString("<No title>");
 
     public static final String STATUS_NEW = "new"; //$NON-NLS-1$
     public static final String STATUS_RUNNING = "running"; //$NON-NLS-1$

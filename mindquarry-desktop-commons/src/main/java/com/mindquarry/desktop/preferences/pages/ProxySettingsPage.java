@@ -103,7 +103,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
         proxyGroup.setLayout(new GridLayout(1, true));
         
         CLabel label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy URL") + ":");
+        label.setText(Messages.getString("Proxy URL:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Composite errorComp = createErrorBorderComposite(proxyGroup);
@@ -123,7 +123,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
         });
         
         label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy Login") + ":");
+        label.setText(Messages.getString("Proxy Login:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         login = new Text(proxyGroup, SWT.SINGLE | SWT.BORDER);
@@ -140,7 +140,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
             }
         });
         label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy Password") + ":");
+        label.setText(Messages.getString("Proxy Password:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         pwd = new Text(proxyGroup, SWT.PASSWORD | SWT.BORDER);
