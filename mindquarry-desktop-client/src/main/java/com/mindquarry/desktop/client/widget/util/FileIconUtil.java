@@ -60,7 +60,7 @@ public class FileIconUtil {
     private static final Image STATUS_DELETED_IMAGE = new Image(
             Display.getCurrent(),
             FileIconUtil.class
-                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-delete.png")); //$NON-NLS-1$
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-deleted.png")); //$NON-NLS-1$
     
     private static final Image STATUS_MODIFIED_IMAGE = new Image(
             Display.getCurrent(),
