@@ -355,8 +355,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     public void onEvent(Event event) {
         if (event instanceof NewTaskFromUrlEvent) {
             setMessage(updateMessage
-                    + Messages.getString("Task {0} of {1}", taskDownloadCount
-                            + "", tasksInCurrentTeamCount + ""));
+                    + Messages.getString("Task {0} of {1}", Integer.toString(taskDownloadCount),
+                            Integer.toString(tasksInCurrentTeamCount)));
             taskDownloadCount++;
         }
     }
