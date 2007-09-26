@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.client.widget.app;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -95,14 +94,7 @@ public class CategoryWidget extends WidgetBase {
 
             public void widgetSelected(SelectionEvent e) {
                 if (tabFolder.getSelection().getText().equals(TAB_TASKS_TEXT)) {
-                    if (MindClient.isTasksActive()) {
-                        client.setTasksActive();
-                    } else {
-                        tabFolder.setSelection(0);
-                        MessageDialog.openInformation(getShell(),
-                            Messages.getString("Deactivated"),
-                            Messages.getString("Tracking tasks has been deactivated for this installation."));
-                    }
+                    client.setTasksActive();
                 } else if (tabFolder.getSelection().getText().equals(
                         TAB_FILES_TEXT)) {
                     client.setFilesActive();
@@ -110,7 +102,9 @@ public class CategoryWidget extends WidgetBase {
             }
         });
         createWorkspaceCategory(tabFolder);
-        createTasksCategory(tabFolder);
+        if (MindClient.isTasksActive()) {
+            createTasksCategory(tabFolder);
+        }
     }
 
     private void createTasksCategory(final CTabFolder tabFolder) {
