@@ -30,6 +30,7 @@ import org.tigris.subversion.javahl.Status;
 public class FileIconUtil {
     static ImageRegistry imageRegistry;
 
+    // common file/folder images
     private static final Image FOLDER_IMAGE = new Image(
             Display.getCurrent(),
             FileIconUtil.class
@@ -44,6 +45,27 @@ public class FileIconUtil {
             Display.getCurrent(),
             FileIconUtil.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/16x16/mimetypes/text-x-generic-template.png")); //$NON-NLS-1$
+    
+    // status images
+    private static final Image STATUS_ADDED_IMAGE = new Image(
+            Display.getCurrent(),
+            FileIconUtil.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-added.png")); //$NON-NLS-1$
+    
+    private static final Image STATUS_CONFLICT_IMAGE = new Image(
+            Display.getCurrent(),
+            FileIconUtil.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-conflict.png")); //$NON-NLS-1$
+    
+    private static final Image STATUS_DELETED_IMAGE = new Image(
+            Display.getCurrent(),
+            FileIconUtil.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-delete.png")); //$NON-NLS-1$
+    
+    private static final Image STATUS_MODIFIED_IMAGE = new Image(
+            Display.getCurrent(),
+            FileIconUtil.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-modified.png")); //$NON-NLS-1$
 
     /**
      * Returns an icon representing the specified file.
@@ -56,8 +78,9 @@ public class FileIconUtil {
             return FOLDER_IMAGE;
 
         int lastDotPos = file.getName().indexOf('.');
-        if (lastDotPos == -1)
+        if (lastDotPos == -1) {
             return FILE_IMAGE;
+        }
 
         Image image = getIcon(file.getName().substring(lastDotPos + 1));
         return image == null ? FILE_IMAGE : image;
@@ -79,14 +102,12 @@ public class FileIconUtil {
             } else if (status.getReposKind() == NodeKind.file) {
                 return getIconBasedOnFilename(file.getName());
             }
-            
             return UNKNOWN_FILE_IMAGE;
         }
         
         if (file.isDirectory()) {
             return FOLDER_IMAGE;
         }
-        
         return getIconBasedOnFilename(file.getName());
     }
     
@@ -100,7 +121,6 @@ public class FileIconUtil {
         if (lastDotPos == -1) {
             return FILE_IMAGE;
         }
-
         return getIcon(name.substring(lastDotPos + 1));
     }
     
@@ -114,12 +134,10 @@ public class FileIconUtil {
         if (imageRegistry == null) {
             imageRegistry = new ImageRegistry();
         }
-        
         Image image = imageRegistry.get(extension);
         if (image != null) {
             return image;
         }
-
         Program program = Program.findProgram(extension);
         ImageData imageData = (program == null ? null : program.getImageData());
         if (imageData != null) {
@@ -128,7 +146,6 @@ public class FileIconUtil {
         } else {
             image = FILE_IMAGE;
         }
-
         return image;
     }
 }
