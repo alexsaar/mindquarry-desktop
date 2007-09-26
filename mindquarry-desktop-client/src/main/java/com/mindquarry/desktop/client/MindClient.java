@@ -798,11 +798,15 @@ public class MindClient extends ApplicationWindow implements EventListener {
         trayItem.setImage(JFaceResources.getImage(CLIENT_TRAY_IMG_KEY));
         
         // show tooltip that indicates successful startup of the client
-        final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
-        tip.setText(Messages.getString("Mindquarry Desktop Client"));
-        tip.setMessage(Messages.getString("Select this icon to open the Mindquarry Desktop Client"));
-        trayItem.setToolTip(tip);
-        tip.setVisible(true);
+        // TODO: tooltip placement is buggy under both Linux and Mac (SWT 3.3),
+        // so disable it for now:
+        if (SVNFileUtil.isWindows) {
+            final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
+            tip.setText(Messages.getString("Mindquarry Desktop Client"));
+            tip.setMessage(Messages.getString("Select this icon to open the Mindquarry Desktop Client"));
+            trayItem.setToolTip(tip);
+            tip.setVisible(true);
+        }
 
         // create tray item menu
         trayMenu = new Menu(shell, SWT.POP_UP);
