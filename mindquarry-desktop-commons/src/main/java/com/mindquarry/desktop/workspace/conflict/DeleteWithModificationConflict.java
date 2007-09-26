@@ -234,14 +234,18 @@ public class DeleteWithModificationConflict extends Conflict {
 				// Look for revision in which the file/dir was (last) deleted
 				for (LogMessage logMessage : logMessages) {
 					for (ChangePath changePath : logMessage.getChangedPaths()) {
-						// check for deletion of expected file name
-						File thisFile = new File(localPath + changePath.getPath()).getAbsoluteFile();
-						if (targetFile.compareTo(thisFile) == 0	&& changePath.getAction() == 'D') {							
+						// check for deletion of expected file name;
+					    // changePath.getPath() contains e.g. "trunk/" while status.getPath()
+					    // does not, so we need to cut that off to compare the files:
+					    int secondSlashPos = changePath.getPath().indexOf('/', 1);     // find '/' but ignore slash at position 0
+					    // cut off the first part, typically "trunk":
+                        String cleanPath = changePath.getPath().substring(secondSlashPos);
+                        File thisFile = new File(localPath + cleanPath).getAbsoluteFile();
+						if (targetFile.compareTo(thisFile) == 0 && changePath.getAction() == 'D') {							
 							// want to restore last revision before deletion
 							restoreRev = new Number(logMessage.getRevision().getNumber()-1);
-							delFile    = changePath.getPath();
-							log.debug("found revision of deletion: '"
-									+ changePath.getPath()
+							delFile    = cleanPath;
+							log.debug("found revision of deletion: '" + changePath.getPath()
 									+ "' was deleted in revision "
 									+ logMessage.getRevision().toString());
 						}
@@ -254,7 +258,7 @@ public class DeleteWithModificationConflict extends Conflict {
 				            ", restoreRev " + restoreRev);
 					client.copy(repositoryURL+delFile, status.getPath(), null, restoreRev);
 				} else {
-					log.error("Failed to restore deleted verion.");
+					log.error("Failed to restore deleted version of " + status.getPath());
 				}
 
 	    		// 2. Redo changes by replacing with local files (move B => A)
