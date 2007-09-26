@@ -19,11 +19,11 @@
     </message>
     <message>
         <source>Files or directories in this directory have been added or deleted on the server. They will be downloaded from the server.</source>
-        <translation>Dateien oder Verzeichnisse in diesem Verzeichnis wurden lokal hinzugefügt oder gelöscht.</translation>
+        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
     </message>
     <message>
         <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
-        <translation>Dieses auf dem Server gelöschte Verzeichnis enthält lokal Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation>Dieser auf dem Server gelöschte Ordner enthält lokal Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>This new file has also been added on the server. You will need to resolve the conflict.</source>
@@ -31,7 +31,7 @@
     </message>
     <message>
         <source>This directory will be deleted on the server.</source>
-        <translation>Dieses Verzeichnis wird auf dem Server gelöscht.</translation>
+        <translation>Dieser Ordner wird auf dem Server gelöscht.</translation>
     </message>
     <message>
         <source>Server could not be found.</source>
@@ -63,7 +63,7 @@
     </message>
     <message>
         <source>Workspace folder does not exist.</source>
-        <translation>Verzeichnis mit Arbeitsbereich exisitiert nicht.</translation>
+        <translation>Ordner mit Arbeitsbereich exisitiert nicht.</translation>
     </message>
     <message>
         <source>Password can not be empty.</source>
@@ -71,11 +71,11 @@
     </message>
     <message>
         <source>This new directory was added on the server and will be downloaded.</source>
-        <translation>Dieses Verzeichnis ist neu auf dem Server und wird herunterladen.</translation>
+        <translation>Dieser Ordner ist neu auf dem Server und wird herunterladen.</translation>
     </message>
     <message>
         <source>This new directory will be uploaded to the server.</source>
-        <translation>Dieses neuen Verzeichnis wird auf den Server übertragen.</translation>
+        <translation>Dieser neue Ordner wird auf den Server übertragen.</translation>
     </message>
     <message>
         <source>Deleted remotely</source>
@@ -99,7 +99,7 @@
     </message>
     <message>
         <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
-        <translation>Ein Verzeichnis dieses Namens wurde lokal auf auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation>Ein Ordner dieses Namens wurde lokal auf auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Login ID must not be empty.</source>
@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
-        <translation>Dieses lokal gelöschte Verzeichnis enthält auf dem Server Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation>Dieser lokal gelöschte Ordner enthält auf dem Server Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Verify server settings</source>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
-        <translation>Diese Datei/Verzeichnis wurde lokal oder auf dem Server ersetzt. Sie müssen den Konflikt auflösen.</translation>
+        <translation>Diese Datei/Ordner wurde lokal oder auf dem Server ersetzt. Sie müssen den Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Username and/or password not correct for &apos;{0}&apos;</source>
@@ -219,7 +219,7 @@
     </message>
     <message>
         <source>This directory was deleted on the server and will hence be deleted locally.</source>
-        <translation>Dieses Verzeichnis wurde auf dem Server gelöscht und wird daher auch lokal gelsöcht.</translation>
+        <translation>Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelsöcht.</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -291,7 +291,7 @@
     </message>
     <message>
         <source>Files or directories in this directory have been added or deleted locally.</source>
-        <translation>Dateien oder Verzeichnisse in diesem Verzeichnis wurden lokal hinzugefügt oder gelöscht.</translation>
+        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
     </message>
     <message>
         <source>Your login ID or password is incorrect.</source>
@@ -303,7 +303,7 @@
     </message>
     <message>
         <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
-        <translation type="obsolete">Dateien oder Verzeichnisse in diesem Verzeichnis wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden heruntergeladen.</translation>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden heruntergeladen.</translation>
     </message>
     <message>
         <source>My Mindquarry Server Profile</source>
@@ -335,7 +335,7 @@
     </message>
     <message>
         <source>Workspace folder must be set.</source>
-        <translation>Verzeichnis für Arbeitsbereiche muss gesetzt sein.</translation>
+        <translation>Ordner für Arbeitsbereiche muss gesetzt sein.</translation>
     </message>
     <message>
         <source>Username and/or password not correct for \&quot;</source>

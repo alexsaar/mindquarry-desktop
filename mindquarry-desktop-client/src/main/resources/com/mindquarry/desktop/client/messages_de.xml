@@ -15,7 +15,7 @@
     </message>
     <message>
         <source>A locally replaced file or directory (svn delete + svn add) was also replaced by someone else on the server.</source>
-        <translation>Eine lokal ersetzte Datei/Verzeichnis (svn delete + svn add) wurde auch auf dem Server von jemandem ersetzt.</translation>
+        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde auch auf dem Server von jemandem ersetzt.</translation>
     </message>
     <message>
         <source>This file is obstructed.</source>
@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieses auf dem Server gelöschte Verzeichnis enthält lokale Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation type="obsolete">Dieser auf dem Server gelöschte Ordner enthält lokale Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Please do not modify, copy, or move files in your workspace during the synchronization.</source>
@@ -79,7 +79,7 @@
     </message>
     <message>
         <source>This new directory will be uploaded to the server.</source>
-        <translation type="obsolete">Dieses neue Verzeichnis wird auf den Server hochgeladen.</translation>
+        <translation type="obsolete">Dieser neue Ordner wird auf den Server hochgeladen.</translation>
     </message>
     <message>
         <source>A new task could not be added because one of the following issues has occurred:\n\n(1) You are not a member of any team.\n(2) Currently you have no teams selected.\n(3) The Mindquarry server settings are incorrectly configured.</source>
@@ -91,11 +91,11 @@
     </message>
     <message>
         <source>You are trying to delete a file or directory which someone else modified on the server.</source>
-        <translation>Sie wollen eine Datei oder ein Verzeichnis löschen, das auf dem Server geändert wurde.</translation>
+        <translation>Sie wollen eine Datei oder einen Ordner löschen, das auf dem Server geändert wurde.</translation>
     </message>
     <message>
         <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieses lokal gelöschte Verzeichnis enthält Änderungen auf dem Server. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation type="obsolete">Dieser lokal gelöschte Ordner enthält Änderungen auf dem Server. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>local</source>
@@ -235,7 +235,7 @@
     </message>
     <message>
         <source>One of the local files was deleted and replaced with a directory of the same name. This structural change must be resolved before synchronization.</source>
-        <translation>Eine lokale Datei wurde gelöscht und mit einem Verzeichnis gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
+        <translation>Eine lokale Datei wurde gelöscht und mit einem Ordner gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
     </message>
     <message>
         <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
@@ -303,7 +303,7 @@
     </message>
     <message>
         <source>Affected file/directory:</source>
-        <translation>Betroffene Datei/Verzeichnis:</translation>
+        <translation>Betroffene Datei/Ordner:</translation>
     </message>
     <message>
         <source>This file was deleted on the server and will hence be deleted locally.</source>
@@ -375,7 +375,7 @@
     </message>
     <message>
         <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieses neue Verzeichnis wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+        <translation type="obsolete">Dieser neue Ordner wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
         <source>Cancel Synchronization</source>
@@ -443,7 +443,7 @@
     </message>
     <message>
         <source>This directory will be deleted on the server.</source>
-        <translation type="obsolete">Dieses Verzeichnis wird auf dem Server gelöscht.</translation>
+        <translation type="obsolete">Dieser Ordner wird auf dem Server gelöscht.</translation>
     </message>
     <message>
         <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
@@ -463,11 +463,11 @@
     </message>
     <message>
         <source>Cannot create settings folder</source>
-        <translation>Konnte Verzeichnis zum Speichern der Einstellungen nicht erstellen</translation>
+        <translation>Konnte Ordner zum Speichern der Einstellungen nicht erstellen</translation>
     </message>
     <message>
         <source>Files or directories in this directory have been added or deleted locally.</source>
-        <translation type="obsolete">Dateien oder Verzeichnisse in diesem Verzeichnis wurden lokal hinzugefügt oder gelöscht.</translation>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
     </message>
     <message>
         <source>Use the property from the server</source>
@@ -499,7 +499,7 @@
     </message>
     <message>
         <source>This new directory was added on the server and will be downloaded.</source>
-        <translation type="obsolete">Dieses Verzeichnis wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+        <translation type="obsolete">Dieser Ordner wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
     </message>
     <message>
         <source>Title must not be empty.</source>
@@ -548,11 +548,11 @@
     </message>
     <message>
         <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
-        <translation type="obsolete">Dateien oder Verzeichnisse in diesem Verzeichnis wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden vom Server heruntergeladen.</translation>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden vom Server heruntergeladen.</translation>
     </message>
     <message>
         <source>A locally replaced file or directory (svn delete + svn add) was modified by someone else on the server.</source>
-        <translation>Eine lokal ersetzte Datei/Verzeichnis (svn delete + svn add) wurde von jemand anderem auf dem Server geändert.</translation>
+        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server geändert.</translation>
     </message>
     <message>
         <source>This item has been modified on the server, the new version will be downloaded.</source>
@@ -568,7 +568,7 @@
     </message>
     <message>
         <source>The Mindquarry Desktop Client cannot create its settings folder at\n\n&apos;{0}&apos;\n\nMaybe you don&apos;t have permissions to access it?\n\nIf you continue, the program won&apos;t work properly, so it is strongly recommended to ensure write-access to that folder and restart the client.</source>
-        <translation>Der Mindquarry Desktop-Client konnte sein Verzeichnis zum Speichern der Einstellungen unter\n\n{0} nicht erstellen\n\nStellen Sie sicher, dass Sie dort Schreibzugriff haben und starten Sie dieses Programm neu, andernfalls kann es nicht korrekt funktionieren.</translation>
+        <translation>Der Mindquarry Desktop-Client konnte seinen Ordner zum Speichern der Einstellungen unter\n\n{0} nicht erstellen\n\nStellen Sie sicher, dass Sie dort Schreibzugriff haben und starten Sie dieses Programm neu, andernfalls kann es nicht korrekt funktionieren.</translation>
     </message>
     <message>
         <source>Updating list of teams</source>
@@ -612,7 +612,7 @@
     </message>
     <message>
         <source>A locally modified file was replaced (svn delete + svn add) by someone else on the server.</source>
-        <translation>Eine lokal geänderte Datei/Verzeichnis (svn delete + svn add) wurde von jemand anderem auf dem Server ersetzt.</translation>
+        <translation>Eine lokal geänderte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server ersetzt.</translation>
     </message>
     <message>
         <source>Somebody else modified the property you are trying to synchronize. Please select the version that should be treated as the current version.</source>
@@ -716,7 +716,7 @@
     </message>
     <message>
         <source>This directory was deleted on the server and will hence be deleted locally.</source>
-        <translation type="obsolete">Dieses Verzeichnis wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+        <translation type="obsolete">Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
     </message>
     <message>
         <source>Your changes of this item will be uploaded to the server.</source>
@@ -760,7 +760,7 @@
     </message>
     <message>
         <source>One of the local directories was deleted and replaced with a file of the same name. This structural change must be resolved before synchronization.</source>
-        <translation>Eines Ihrer lokalen Verzeichnisse wurde gelöscht und mit einer Datei gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
+        <translation>Einer Ihrer lokalen Ordner wurde gelöscht und mit einer Datei gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
     </message>
     <message>
         <source>This remotely modified file will be downloaded from the server.</source>
