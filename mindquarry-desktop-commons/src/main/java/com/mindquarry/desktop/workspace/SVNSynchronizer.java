@@ -178,6 +178,7 @@ public class SVNSynchronizer {
                         localPath + "' because it seems not empty.");
             } else {
                 try {
+                    log.debug("checkout " + repositoryURL + " to " + localPath);
                     client.checkout(repositoryURL, localPath, Revision.HEAD, true);
                 } catch (ClientException e) {
                     throw new RuntimeException("Checkout of " +repositoryURL +
@@ -295,7 +296,8 @@ public class SVNSynchronizer {
                     // locally added -> undo add
                     client.revert(s.getPath(), true);
                 } else {
-                    log.debug("missing item that is already versioned (delete now): " + s.getPath());
+                    log.debug("missing item that is already versioned (delete now): " + s.getPath() +
+                            ", nodeKind: " + s.getNodeKind());
                     
                     // already versioned -> delete
                     if (s.getNodeKind() == NodeKind.dir) {
@@ -383,6 +385,7 @@ public class SVNSynchronizer {
                         // value to populate the Content-type: HTTP header when
                         // responding to GET requests.
                         String mimeType = MimeTypeUtilities.guessMimetype(s.getPath());
+                        log.debug("Setting mime type for " + s.getPath() + ": " + mimeType);
                         client.propertyCreate(s.getPath(), "svn:mime-type", mimeType, false);
                         if(mimeType.startsWith("text/")) {
                             // Causes the file to contain the EOL markers that
