@@ -391,7 +391,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         teamList.clear();
         categoryWidget.getWorkspaceBrowser().showErrorMessage(message);
-        categoryWidget.getTaskContainer().showErrorMessage(message);
+        if (isTasksActive()) {
+            categoryWidget.getTaskContainer().showErrorMessage(message);
+        }
     }
 
     /**
