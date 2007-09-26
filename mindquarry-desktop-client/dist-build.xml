@@ -210,7 +210,7 @@
 		<exec executable="open">
 			<arg value="${mac.build.source}/AppHardLink.zip"/>
 		</exec>
-		<sleep seconds="1"/> <!-- wait for extraction (open is asynchronous) -->
+		<sleep seconds="3"/> <!-- wait for extraction (open is asynchronous) -->
 		<exec executable="cp">
 			<arg value="${mac.build.source}/AppHardLink"/>
 			<arg value="${mac.dmg.folder}/Applications"/>
