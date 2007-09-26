@@ -40,7 +40,13 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
  * @author <a href="mailto:klimetschek@mindquarry.com">Alexander Klimetschek</a>
  */
 public class DeleteWithModificationConflict extends Conflict {
-	private Action action = Action.UNKNOWN;
+
+    // Some prefix to make sure the file prefix isn't too short for
+    // File.createTempFile(). Use "mindquarry_" so we can easily spot
+    // the files created by ourselfes:
+	private static final String TEMP_FILE_PREFIX = "mindquarry_";
+	
+    private Action action = Action.UNKNOWN;
 	
 	public enum Action {
 	    /**
@@ -99,7 +105,7 @@ public class DeleteWithModificationConflict extends Conflict {
 	        throws IOException {
 	    log.debug("createTempDir, directory: " + directory.getAbsolutePath());
         // add prefix, as name must be at least 3 characters
-        prefix = "backup_"+prefix;
+        prefix = TEMP_FILE_PREFIX + prefix;
 
 		// create and immediately delete temporary file using library function
 		File file = File.createTempFile(prefix, suffix, directory);
@@ -130,11 +136,13 @@ public class DeleteWithModificationConflict extends Conflict {
 	    		// make a local copy of the file/dir
 	    		File source = new File(status.getPath());
 	    		
+	    		// temp file prefix is required to be at least 3 chars long, so add another prefix:
+	    		String tmpPrefix = TEMP_FILE_PREFIX + source.getName();
 				if (source.isFile()) {
-	    			tempCopy = File.createTempFile(source.getName(), null, source.getParentFile());
+	    			tempCopy = File.createTempFile(tmpPrefix, null, source.getParentFile());
 					FileUtils.copyFile(source, tempCopy);
 				} else {
-	    			tempCopy = createTempDir(source.getName(), null, source.getParentFile());
+	    			tempCopy = createTempDir(tmpPrefix, null, source.getParentFile());
 					FileUtils.copyDirectory(source, tempCopy);
 				}
 				
