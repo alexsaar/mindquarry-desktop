@@ -21,7 +21,7 @@
 	<property name="standalone.dist.target.lib" value="${standalone.dist.target}/lib" />
 	<property name="web.dist.target" value="${maven.build.directory}/webstart" />
 
-	<property name="client.version" value="1.2-SNAPSHOT" />
+	<property name="client.version" value="1.2-beta-SNAPSHOT" />
 	<property name="icons.version" value="0.9-SNAPSHOT" />
 	
 	<property name="mac.build.source" value="src/mac" />
