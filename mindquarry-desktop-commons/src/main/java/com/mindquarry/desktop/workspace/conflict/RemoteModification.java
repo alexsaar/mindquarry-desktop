@@ -47,7 +47,7 @@ public class RemoteModification extends Change {
     public String getLongDescription() {
         if(file.isDirectory())
             return Messages.getString("Files or directories in this directory have been added or deleted on the server. " +
-                    "These updated will be downloaded from the server.");
+                    "They will be downloaded from the server.");
         else
             return Messages.getString("This remotely modified file will be downloaded from the server.");
     }
