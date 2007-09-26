@@ -301,7 +301,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
     }
     
     public static boolean isTasksActive() {
-        return true;//MindClient.class.getResourceAsStream("disable.tasks")==null;
+        return MindClient.class.getResourceAsStream("disable.tasks")==null;
     }
 
     // #########################################################################
