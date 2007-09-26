@@ -59,8 +59,7 @@ public class AutomaticConflictHandler implements ConflictHandler {
         conflict.doRename(newName);
     }
     
-    public void handle(DeleteWithModificationConflict conflict)
-            throws CancelException {
+    public void handle(DeleteWithModificationConflict conflict) {
         printer.printConflict(conflict);
 
         conflict.doOnlyKeepModified();
@@ -94,13 +93,12 @@ public class AutomaticConflictHandler implements ConflictHandler {
         conflict.doUseRemoteValue();
     }
 
-    public void handle(ContentConflict conflict) throws CancelException {
+    public void handle(ContentConflict conflict) {
         printer.printConflict(conflict);
         
     }
 
-    public void handle(ObstructedConflict conflict)
-            throws CancelException {
+    public void handle(ObstructedConflict conflict) {
         printer.printConflict(conflict);
         
     }

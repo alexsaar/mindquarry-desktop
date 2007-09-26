@@ -22,8 +22,6 @@ import org.tigris.subversion.javahl.Status;
 
 import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
-import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeDirection;
-import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeStatus;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**

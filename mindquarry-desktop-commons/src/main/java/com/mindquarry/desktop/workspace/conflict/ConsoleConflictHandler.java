@@ -28,7 +28,7 @@ public class ConsoleConflictHandler implements ConflictHandler {
         this.printer = new ConflictPrinter(workingCopyPath);
     }
 
-    public void handle(AddConflict conflict) throws CancelException {
+    public void handle(AddConflict conflict) {
         printer.printConflict(conflict);
 
         System.out.println("Following options for local '" + printer.wcPath(conflict.getStatus()) + "': re(N)ame, (R)eplace: ");
@@ -36,14 +36,13 @@ public class ConsoleConflictHandler implements ConflictHandler {
         System.out.println("Rename locally added file/folder to: ");
     }
 
-    public void handle(DeleteWithModificationConflict conflict)
-            throws CancelException {
+    public void handle(DeleteWithModificationConflict conflict) {
         printer.printConflict(conflict);
         
         System.out.println("Following options (K)eep modified, (D)elete, (R)evert delete: ");
     }
 
-    public void handle(ReplaceConflict conflict) throws CancelException {
+    public void handle(ReplaceConflict conflict) {
         printer.printConflict(conflict);
         
     }
@@ -52,13 +51,12 @@ public class ConsoleConflictHandler implements ConflictHandler {
 //        printer.printConflict(conflict);
     }
 
-    public void handle(ContentConflict contentConflict) throws CancelException {
+    public void handle(ContentConflict contentConflict) {
         // TODO Auto-generated method stub
         
     }
 
-    public void handle(ObstructedConflict obstructedConflict)
-            throws CancelException {
+    public void handle(ObstructedConflict obstructedConflict) {
         // TODO Auto-generated method stub
         
     }
