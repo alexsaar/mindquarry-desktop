@@ -487,9 +487,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 getShell(),
                 Messages.getString("Error"), //$NON-NLS-1$
                 null,
-                ("Invalid server URL given." + "\n\n" //$NON-NLS-1$
-                + Messages
-                        .getString("Please check your server settings in the preferences dialog.")), //$NON-NLS-1$
+                Messages.getString("Invalid server URL given.\n\nPlease check your server settings in the preferences dialog."),
                 MessageDialog.ERROR, new String[] {
                         Messages.getString("Go to preferences"), //$NON-NLS-1$
                         Messages.getString("Cancel") //$NON-NLS-1$
@@ -680,7 +678,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             profile.setWorkspaceFolder(wsFolder.getAbsolutePath() + "/"
                     + url.getHost());
         } catch (MalformedURLException e) {
-            MessageDialog.openError(getShell(), "Error", e
+            MessageDialog.openError(getShell(), Messages.getString("Error"), e
                     .getLocalizedMessage());
             // FIXME: what should be done here???
             // profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
