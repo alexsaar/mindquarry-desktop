@@ -219,14 +219,8 @@ public class SVNSynchronizer {
 			List<Conflict> localConflicts = analyzeConflictedAndObstructed();
 			handleConflictsBeforeRemoteStatus(localConflicts);
 			
-			// TODO: implement selective update (for skipping) => later feature
-			
             deleteMissingAndAddUnversioned(localPath);
             
-			// TODO: enable repo locking (also unlock in finally below)
-			// client.lock(new String[] {localPath}, "locking for
-			// synchronization", false);
-
 			List<Conflict> conflicts = analyzeChangesAndAskUser();
 			
 			handleConflictsBeforeUpdate(conflicts);
@@ -253,12 +247,6 @@ public class SVNSynchronizer {
 			}
 			throw new SynchronizeException("synchronize() failed: "
 			        +e.toString(), e);
-		} finally {
-			// try {
-			// client.unlock(new String[] {localPath}, false);
-			// } catch (ClientException e) {
-			// e.printStackTrace();
-			// }
 		}
 	}
 	
@@ -300,15 +288,14 @@ public class SVNSynchronizer {
                             ", nodeKind: " + s.getNodeKind());
                     
                     // already versioned -> delete
+                    
+                    // if the first parameter would be an URL, it would do a commit
+                    // (and use the second parameter as commit message) - but we
+                    // use a local filesystem path here and thus we only schedule
+                    // for a deletion
+                    client.remove(new String[] { s.getPath() }, null, true);
+                    
                     if (s.getNodeKind() == NodeKind.dir) {
-                        // remove on a missing directory does not work;
-                        // simply recreate the directory and then delete it
-                        
-                        // FIXME: recreate subdirectories as well!
-                        File dir = new File(s.getPath());
-                        FileHelper.mkdirs(dir);
-                        client.remove(new String[] { s.getPath() }, null, true);
-                        
                         // NOTE:
                         // Normally, client.remove doesn't delete the directory,
                         // but leaves the empty directory structure behind.
@@ -317,17 +304,10 @@ public class SVNSynchronizer {
                         // left behind will confuse the user, so we need to make
                         // sure it's really gone. We can reconstruct it later
                         // using our shallow working copy.
+                        File dir = new File(s.getPath());
                         if (dir.exists()) {
                             FileUtils.deleteDirectory(dir);
                         }
-                    } else {
-                        // a file can be simply removed when it's not present anymore
-                        
-                        // if the first parameter would be an URL, it would do a commit
-                        // (and use the second parameter as commit message) - but we
-                        // use a local filesystem path here and thus we only schedule
-                        // for a deletion
-                        client.remove(new String[] { s.getPath() }, null, true);
                     }
                     
                 }
