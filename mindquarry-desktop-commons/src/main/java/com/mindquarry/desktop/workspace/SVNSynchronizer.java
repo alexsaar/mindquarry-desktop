@@ -961,7 +961,8 @@ public class SVNSynchronizer {
 
                 // find all children (extended, using log)
                 Map<String, String> modifiedFiles = new HashMap<String, String>();
-                LogMessage[] messages = client.logMessages(status.getPath(), Revision.BASE, Revision.HEAD, false, true);
+                log.debug("logMessages '" + conflictParent.getPath() + "'...");
+                LogMessage[] messages = client.logMessages(conflictParent.getPath(), Revision.BASE, Revision.HEAD, false, true);
                 for (LogMessage message : messages) {
                     for (ChangePath changePath : message.getChangedPaths()) {
                         log.debug("SVN Log R"+message.getRevisionNumber()+"> "
