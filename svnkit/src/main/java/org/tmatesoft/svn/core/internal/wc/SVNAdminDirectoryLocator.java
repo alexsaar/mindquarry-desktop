@@ -461,8 +461,9 @@ public class SVNAdminDirectoryLocator {
             result.wcRelativePath = dir.getName() + "/" + result.wcRelativePath;
             dir = dir.getParentFile();
             
-            // check if the directory exists
-            if (dir == null || !dir.exists()) {
+            // check if there is a parent (Note: do not check dir.exists() since
+            // we want to get the svn admin directory even for deleted dirs!)
+            if (dir == null) {
                 // we have reached the filesystem root without finding a .svnref
                 return new SVNAdminDirectoryLocator().new WCRootInfo();
             }
