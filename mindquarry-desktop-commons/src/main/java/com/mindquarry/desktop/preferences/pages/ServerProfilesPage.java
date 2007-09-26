@@ -211,6 +211,10 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 if (!currentlyDisplayed) return false;
                 setInvalid(Messages.getString("Workspace folder does not exist."), folder);
                 return false;
+            } else if (!file.isDirectory()) {
+                if (!currentlyDisplayed) return false;
+                setInvalid(Messages.getString("Workspace folder is a file, not a directory."), folder);
+                return false;
             }
         }
         return true;
