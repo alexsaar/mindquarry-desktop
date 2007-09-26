@@ -487,7 +487,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 getShell(),
                 Messages.getString("Error"), //$NON-NLS-1$
                 null,
-                Messages.getString("Invalid server URL given.\n\nPlease check your server settings in the preferences dialog."),
+                Messages.getString("Invalid server URL given: {0}\n\nPlease check your server settings in the preferences dialog.",
+                        exception.getLocalizedMessage()),
                 MessageDialog.ERROR, new String[] {
                         Messages.getString("Go to preferences"), //$NON-NLS-1$
                         Messages.getString("Cancel") //$NON-NLS-1$
