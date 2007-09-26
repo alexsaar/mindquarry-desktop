@@ -82,8 +82,8 @@ public class DeleteWithModificationConflictDialog extends
              */
         } else {
             makeLabel(composite, Messages
-                    .getString(Messages.getString("Your file will be uploaded "
-                            + "to the server.")));
+                    .getString("Your file will be uploaded "
+                            + "to the server."));
             /*
              * makeRadioButton(composite,
              * M.getString("Ignore the " + "deletion
