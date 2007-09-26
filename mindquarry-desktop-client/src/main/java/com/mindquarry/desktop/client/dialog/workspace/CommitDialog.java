@@ -48,25 +48,20 @@ public class CommitDialog extends DialogBase {
 
     private String commitMessage = "";
 
-//    private ChangeSet changeSet;
     private String teamName;
     private ChangeTree changeTree;
-    private File workspaceRoot;
     private File teamDir;
 
     public CommitDialog(Shell shell, String teamName, ChangeTree changeTree, File workspaceRoot) {
         super(shell);
-//        this.changeSet = changeSet;
         this.teamName = teamName;
         this.changeTree = changeTree;
-        this.workspaceRoot = workspaceRoot;
         this.teamDir = new File(workspaceRoot, teamName);
         setShellStyle(SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.RESIZE);
     }
 
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
-//        String teamName = changeSet.getTeam().getName();
         String title = Messages.getString("Commit message for team '{0}'",  //$NON-NLS-1$ 
                 teamName); 
         setTitle(title);
