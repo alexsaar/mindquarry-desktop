@@ -5,7 +5,7 @@
 
 	<groupId>com.mindquarry.tools</groupId>
 	<artifactId>mindquarry-desktop-tools</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2-beta-SNAPSHOT</version>
 
 	<name>Mindquarry Desktop Tools</name>
 	<url>http://www.mindquarry.org/mindquarry/</url>
