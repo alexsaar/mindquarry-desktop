@@ -2,172 +2,28 @@
 <context>
     <name>java</name>
     <message>
-        <source>Profile Settings</source>
-        <translation>Profil-Einstellungen</translation>
-    </message>
-    <message>
-        <source>Password must be set.</source>
-        <translation>Das Passwort kann nicht leer sein.</translation>
-    </message>
-    <message>
-        <source>Your Password</source>
-        <translation>Ihr Passwort</translation>
-    </message>
-    <message>
-        <source>Proxy Settings</source>
-        <translation>Proxy-Einstellungen</translation>
-    </message>
-    <message>
-        <source>Files or directories in this directory have been added or deleted on the server. They will be downloaded from the server.</source>
-        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
-    </message>
-    <message>
-        <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
-        <translation>Dieser auf dem Server gelöschte Ordner enthält lokal Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>This new file has also been added on the server. You will need to resolve the conflict.</source>
-        <translation>Eine Datei mit diesem Namen wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>This directory will be deleted on the server.</source>
-        <translation>Dieser Ordner wird auf dem Server gelöscht.</translation>
-    </message>
-    <message>
-        <source>Server could not be found.</source>
-        <translation>Server konnte nicht gefunden werden.</translation>
-    </message>
-    <message>
-        <source>This file will be deleted on the server.</source>
-        <translation>Diese Datei wird auf dem Server gelöscht.</translation>
-    </message>
-    <message>
-        <source>Shortcuts</source>
-        <translation>Tastaturkürzel</translation>
-    </message>
-    <message>
-        <source>Deleted locally</source>
-        <translation>Lokal gelöscht</translation>
-    </message>
-    <message>
-        <source>This new file will be uploaded to the server.</source>
-        <translation>Diese neue Datei wird auf den Server übertragen.</translation>
-    </message>
-    <message>
-        <source>Added locally</source>
-        <translation>Lokal hinzugefügt</translation>
-    </message>
-    <message>
-        <source>URL of the Mindquarry Server</source>
-        <translation>URL des Mindquarry-Servers</translation>
-    </message>
-    <message>
-        <source>Workspace folder does not exist.</source>
-        <translation>Ordner mit Arbeitsbereich exisitiert nicht.</translation>
-    </message>
-    <message>
-        <source>Password can not be empty.</source>
-        <translation>Passwort kann nicht leer sein.</translation>
+        <source>Proxy URL:</source>
+        <translation>Proxy-URL:</translation>
     </message>
     <message>
         <source>This new directory was added on the server and will be downloaded.</source>
         <translation>Dieser Ordner ist neu auf dem Server und wird herunterladen.</translation>
     </message>
     <message>
-        <source>This new directory will be uploaded to the server.</source>
-        <translation>Dieser neue Ordner wird auf den Server übertragen.</translation>
+        <source>Authorization has been refused. Please check your login name and password.</source>
+        <translation>Zugriff verweigert. Bitte prüfen Sie Ihren Benutzernamen und Ihr Passwort.</translation>
     </message>
     <message>
-        <source>Deleted remotely</source>
-        <translation>Auf dem Server gelöscht</translation>
-    </message>
-    <message>
-        <source>There is a problem in profile &apos;{0}&apos;. Please check before you proceed.</source>
-        <translation>Es besteht ein Problem mit dem Profil &apos;{0}&apos;. Bitte prüfen Sie Ihre Einstellungen.</translation>
-    </message>
-    <message>
-        <source>Manage your task settings.</source>
-        <translation>Einstellungen zu Aufgaben.</translation>
-    </message>
-    <message>
-        <source>This new file was added on the server and will be downloaded.</source>
-        <translation>Diese Datei ist neu auf dem Server und wird heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>Your changes to this file will be uploaded to the server.</source>
-        <translation>Ihre Änderungen an dieser Datei werden an den Server übertragen.</translation>
-    </message>
-    <message>
-        <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
-        <translation>Ein Ordner dieses Namens wurde lokal auf auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Login ID must not be empty.</source>
-        <translation>Login-ID kann nicht leer sein.</translation>
-    </message>
-    <message>
-        <source>Added remotely</source>
-        <translation>Neu auf dem Server</translation>
-    </message>
-    <message>
-        <source>Server URL must be set.</source>
-        <translation>Server-URL muss gesetzt sein.</translation>
-    </message>
-    <message>
-        <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
-        <translation>Diese auf dem Server gelöschte Datei wurde lokal geändert. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Delete Profile</source>
-        <translation>Profil entfernen</translation>
-    </message>
-    <message>
-        <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
-        <translation>Dieser lokal gelöschte Ordner enthält auf dem Server Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Verify server settings</source>
-        <translation>Prüfen der Server-Einstellungen</translation>
-    </message>
-    <message>
-        <source>Folder for Workspaces</source>
-        <translation>Ordner für Arbeitsbereiche</translation>
-    </message>
-    <message>
-        <source>Modified remotely</source>
-        <translation>Auf dem Server geändert</translation>
-    </message>
-    <message>
-        <source>Enable proxy support</source>
-        <translation>Proxy-Einstellungen benutzen</translation>
-    </message>
-    <message>
-        <source>Common Settings</source>
-        <translation>Allgemein</translation>
-    </message>
-    <message>
-        <source>Unknown connection error. Status code </source>
-        <translation>Verbindungsfehler. Fehlernummer </translation>
-    </message>
-    <message>
-        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
-        <translation>Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen die Konflikte auflösen.</translation>
-    </message>
-    <message>
-        <source>This file is obstructed.</source>
-        <translation>Diese Datei ist versperrt.</translation>
+        <source>Replaced locally</source>
+        <translation>Lokal ersetzt</translation>
     </message>
     <message>
         <source>This file was deleted on the server and will hence be deleted locally.</source>
         <translation>Diesen Datei wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
     </message>
     <message>
-        <source>Server URL is not a valid URL ({0})</source>
-        <translation>Server-URL ist ungültig ({0})</translation>
-    </message>
-    <message>
-        <source>Rename server profile</source>
-        <translation>Server-Profil umbenennen</translation>
+        <source>Manage common settings of the application.</source>
+        <translation>Verwalten Sie allgemeine Anwendungseinstellungen.</translation>
     </message>
     <message>
         <source>Profile name must contain at least one character.</source>
@@ -178,180 +34,368 @@
         <translation>Login-ID kann nicht leer sein.</translation>
     </message>
     <message>
-        <source>Conflict</source>
-        <translation>Konflikt</translation>
+        <source>Added remotely</source>
+        <translation>Neu auf dem Server</translation>
     </message>
     <message>
-        <source>Run at system startup (Windows only)</source>
-        <translation>Starte Desktop-Client wenn Computer startet (nur Windows)</translation>
+        <source>Common Settings</source>
+        <translation>Allgemein</translation>
     </message>
     <message>
-        <source>Proxy Login:</source>
-        <translation>Proxy-Login:</translation>
+        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
+        <translation>Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen die Konflikte auflösen.</translation>
     </message>
     <message>
-        <source>Shortcut</source>
-        <translation>Tastaturkürzel</translation>
+        <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
+        <translation>Diese auf dem Server gelöschte Datei wurde lokal geändert. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
-        <source>&lt;No title&gt;</source>
-        <translation>&lt;Kein Titel&gt;</translation>
-    </message>
-    <message>
-        <source>Manage shortcuts of the application.</source>
-        <translation>Tastaturkürzel einstellen.</translation>
-    </message>
-    <message>
-        <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
-        <translation>Diese Datei/Ordner wurde lokal oder auf dem Server ersetzt. Sie müssen den Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Username and/or password not correct for &apos;{0}&apos;</source>
-        <translation>Login-ID und/oder Passwort für &apos;{0}&apos; sind nicht korrekt</translation>
-    </message>
-    <message>
-        <source>Obstructed</source>
-        <translation>Versperrt</translation>
-    </message>
-    <message>
-        <source>Proxy Password:</source>
-        <translation>Proxy-Passwort:</translation>
-    </message>
-    <message>
-        <source>This directory was deleted on the server and will hence be deleted locally.</source>
-        <translation>Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelsöcht.</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation>Durchsuchen</translation>
-    </message>
-    <message>
-        <source>Username and/or password not correct for</source>
-        <translation type="obsolete">Benutzername und/oder Passwort nicht korrekt für</translation>
-    </message>
-    <message>
-        <source>Rename Profile</source>
-        <translation>Profil umbenennen</translation>
-    </message>
-    <message>
-        <source>Proxy URL:</source>
-        <translation>Proxy-URL:</translation>
-    </message>
-    <message>
-        <source>Please enter the new profile name:</source>
-        <translation>Bitte geben Sie einen neuen Namen für das Profil ein:</translation>
-    </message>
-    <message>
-        <source>Manage proxy settings of the application.</source>
-        <translation>Proxy-Einstellungen bearbeiten.</translation>
-    </message>
-    <message>
-        <source>This remotely modified file will be downloaded from the server.</source>
-        <translation>Diese auf dem Server geänderte Datei wird heruntergeladen.</translation>
+        <source>URL of the Mindquarry Server</source>
+        <translation>URL des Mindquarry-Servers</translation>
     </message>
     <message>
         <source>Your Login ID</source>
         <translation>Ihre Login-ID</translation>
     </message>
     <message>
-        <source>A profile with the same name already exists. Each profile must have a unique name.</source>
-        <translation>Ein Profil mit demselben Namen existiert bereits. Jedes Profil muss einen eindeutigen Namen haben.</translation>
-    </message>
-    <message>
-        <source>Proxy URL is not a valid URL ({0})</source>
-        <translation>Proxy-URL ist keine gültige URL ({0})</translation>
-    </message>
-    <message>
-        <source>Please enter your profile name</source>
-        <translation type="obsolete">Bitte geben Sie einen Namen für das Profil ein</translation>
-    </message>
-    <message>
-        <source>Manage common settings of the application.</source>
-        <translation>Verwalten Sie allgemeine Anwendungseinstellungen.</translation>
-    </message>
-    <message>
-        <source>Your server settings are correct.</source>
-        <translation>Ihre Server-Einstellungen sind korrekt.</translation>
-    </message>
-    <message>
-        <source>Category</source>
-        <translation>Kategorie</translation>
-    </message>
-    <message>
-        <source>List finished tasks</source>
-        <translation>Auch beendete Aufgaben anzeigen</translation>
-    </message>
-    <message>
         <source>Modified locally</source>
         <translation>Lokal geändert</translation>
-    </message>
-    <message>
-        <source>Authorization has been refused. Please check your login name and password.</source>
-        <translation>Zugriff verweigert. Bitte prüfen Sie Ihren Benutzernamen und Ihr Passwort.</translation>
-    </message>
-    <message>
-        <source>Files or directories in this directory have been added or deleted locally.</source>
-        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
-    </message>
-    <message>
-        <source>Your login ID or password is incorrect.</source>
-        <translation>Ihre Login-ID und/oder Ihr Passwort ist nicht korrekt.</translation>
-    </message>
-    <message>
-        <source>Create new server profile</source>
-        <translation>Neues Server Profil anlegen</translation>
-    </message>
-    <message>
-        <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
-        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>My Mindquarry Server Profile</source>
-        <translation>Mein Mindquarry Server-Profil</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation>Aktion</translation>
-    </message>
-    <message>
-        <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
-        <translation>Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Task Settings</source>
-        <translation>Einstellungen zu Aufgaben</translation>
-    </message>
-    <message>
-        <source>Server Profiles</source>
-        <translation>Server Profile</translation>
-    </message>
-    <message>
-        <source>Select folder for workspaces.</source>
-        <translation>Bitte wählen Sie einen Ordner für Arbeitsplätze aus.</translation>
-    </message>
-    <message>
-        <source>Please enter the profile name:</source>
-        <translation>Bitte geben Sie einen Namen für das Profil ein:</translation>
-    </message>
-    <message>
-        <source>Workspace folder must be set.</source>
-        <translation>Ordner für Arbeitsbereiche muss gesetzt sein.</translation>
-    </message>
-    <message>
-        <source>Username and/or password not correct for \&quot;</source>
-        <translation type="obsolete">Benutzername und/oder Passwort nicht korrekt für \&quot;</translation>
     </message>
     <message>
         <source>Manage different Mindquarry installations by using Mindquarry server profiles.</source>
         <translation>Verwalten Sie verschiedene Mindquarry Server-Profile.</translation>
     </message>
     <message>
-        <source>Add Profile</source>
-        <translation>Profil hinzufügen</translation>
+        <source>Shortcut</source>
+        <translation>Tastaturkürzel</translation>
+    </message>
+    <message>
+        <source>Category</source>
+        <translation>Kategorie</translation>
+    </message>
+    <message>
+        <source>Username and/or password not correct for &apos;{0}&apos;</source>
+        <translation>Login-ID und/oder Passwort für &apos;{0}&apos; sind nicht korrekt</translation>
+    </message>
+    <message>
+        <source>Your changes to this file will be uploaded to the server.</source>
+        <translation>Ihre Änderungen an dieser Datei werden an den Server übertragen.</translation>
+    </message>
+    <message>
+        <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
+        <translation>Ein Ordner dieses Namens wurde lokal auf auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Create new server profile</source>
+        <translation>Neues Server Profil anlegen</translation>
+    </message>
+    <message>
+        <source>Unknown connection error. Status code </source>
+        <translation>Verbindungsfehler. Fehlernummer </translation>
+    </message>
+    <message>
+        <source>Proxy URL is not a valid URL ({0})</source>
+        <translation>Proxy-URL ist keine gültige URL ({0})</translation>
+    </message>
+    <message>
+        <source>Your Password</source>
+        <translation>Ihr Passwort</translation>
+    </message>
+    <message>
+        <source>This is a new directory, but on the server there still exists a file of the same name.</source>
+        <translation>Zu diesem neuen Ordner besteht auf dem Server noch eine Datei gleichen Namens.</translation>
+    </message>
+    <message>
+        <source>Workspace folder must be set.</source>
+        <translation>Ordner für Arbeitsbereiche muss gesetzt sein.</translation>
+    </message>
+    <message>
+        <source>Please enter the profile name:</source>
+        <translation>Bitte geben Sie einen Namen für das Profil ein:</translation>
+    </message>
+    <message>
+        <source>Modified remotely</source>
+        <translation>Auf dem Server geändert</translation>
+    </message>
+    <message>
+        <source>Username and/or password not correct for \&quot;</source>
+        <translation type="obsolete">Benutzername und/oder Passwort nicht korrekt für \&quot;</translation>
+    </message>
+    <message>
+        <source>Please enter your profile name</source>
+        <translation type="obsolete">Bitte geben Sie einen Namen für das Profil ein</translation>
+    </message>
+    <message>
+        <source>Username and/or password not correct for</source>
+        <translation type="obsolete">Benutzername und/oder Passwort nicht korrekt für</translation>
+    </message>
+    <message>
+        <source>Manage shortcuts of the application.</source>
+        <translation>Tastaturkürzel einstellen.</translation>
+    </message>
+    <message>
+        <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
+        <translation>Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Password can not be empty.</source>
+        <translation>Passwort kann nicht leer sein.</translation>
+    </message>
+    <message>
+        <source>My Mindquarry Server Profile</source>
+        <translation>Mein Mindquarry Server-Profil</translation>
+    </message>
+    <message>
+        <source>Enable proxy support</source>
+        <translation>Proxy-Einstellungen benutzen</translation>
+    </message>
+    <message>
+        <source>Server URL must be set.</source>
+        <translation>Server-URL muss gesetzt sein.</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation>Durchsuchen</translation>
+    </message>
+    <message>
+        <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
+        <translation>Diese Datei/Ordner wurde lokal oder auf dem Server ersetzt. Sie müssen den Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Delete Profile</source>
+        <translation>Profil entfernen</translation>
+    </message>
+    <message>
+        <source>This directory&apos;s properties have been modified locally and on the server.</source>
+        <translation>Die Datei-Eigenschaften wurden lokal und auf dem Server geändert.</translation>
     </message>
     <message>
         <source>Notification Message Delay (in seconds)</source>
         <translation type="obsolete">Anzeigedauer für Nachrichten (in Sekunden)</translation>
+    </message>
+    <message>
+        <source>This file was deleted and re-added, it will be uploaded to the server.</source>
+        <translation>Diese Datei wurde gelöscht und dann neu angelegt, sie wird auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>There is a problem in profile &apos;{0}&apos;. Please check before you proceed.</source>
+        <translation>Es besteht ein Problem mit dem Profil &apos;{0}&apos;. Bitte prüfen Sie Ihre Einstellungen.</translation>
+    </message>
+    <message>
+        <source>Add Profile</source>
+        <translation>Profil hinzufügen</translation>
+    </message>
+    <message>
+        <source>Obstructed</source>
+        <translation type="obsolete">Versperrt</translation>
+    </message>
+    <message>
+        <source>Please enter the new profile name:</source>
+        <translation>Bitte geben Sie einen neuen Namen für das Profil ein:</translation>
+    </message>
+    <message>
+        <source>This directory was deleted and re-added, it will be uploaded to the server.</source>
+        <translation>Dieser Ordner wurde lokal gelöscht und dann neu angelegt, es wird auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>Shortcuts</source>
+        <translation>Tastaturkürzel</translation>
+    </message>
+    <message>
+        <source>Select folder for workspaces.</source>
+        <translation>Bitte wählen Sie einen Ordner für Arbeitsplätze aus.</translation>
+    </message>
+    <message>
+        <source>Server URL is not a valid URL ({0})</source>
+        <translation>Server-URL ist ungültig ({0})</translation>
+    </message>
+    <message>
+        <source>This new file will be uploaded to the server.</source>
+        <translation>Diese neue Datei wird auf den Server übertragen.</translation>
+    </message>
+    <message>
+        <source>Login ID must not be empty.</source>
+        <translation>Login-ID kann nicht leer sein.</translation>
+    </message>
+    <message>
+        <source>Folder for Workspaces</source>
+        <translation>Ordner für Arbeitsbereiche</translation>
+    </message>
+    <message>
+        <source>Deleted remotely</source>
+        <translation>Auf dem Server gelöscht</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation>Aktion</translation>
+    </message>
+    <message>
+        <source>Task Settings</source>
+        <translation>Einstellungen zu Aufgaben</translation>
+    </message>
+    <message>
+        <source>Password must be set.</source>
+        <translation>Das Passwort kann nicht leer sein.</translation>
+    </message>
+    <message>
+        <source>Added locally</source>
+        <translation>Lokal hinzugefügt</translation>
+    </message>
+    <message>
+        <source>Deleted locally</source>
+        <translation>Lokal gelöscht</translation>
+    </message>
+    <message>
+        <source>This file is obstructed.</source>
+        <translation type="obsolete">Diese Datei ist versperrt.</translation>
+    </message>
+    <message>
+        <source>Files or directories in this directory have been added or deleted on the server. They will be downloaded from the server.</source>
+        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
+    </message>
+    <message>
+        <source>Replaced remotely</source>
+        <translation>Auf dem Server ersetzt</translation>
+    </message>
+    <message>
+        <source>Proxy Password:</source>
+        <translation>Proxy-Passwort:</translation>
+    </message>
+    <message>
+        <source>Your server settings are correct.</source>
+        <translation>Ihre Server-Einstellungen sind korrekt.</translation>
+    </message>
+    <message>
+        <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
+        <translation>Dieser auf dem Server gelöschte Ordner enthält lokal Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This file was replaced on the server and will be downloaded.</source>
+        <translation>Diese Datei wurde auf dem Server ersetzt und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Workspace folder does not exist.</source>
+        <translation>Ordner mit Arbeitsbereich exisitiert nicht.</translation>
+    </message>
+    <message>
+        <source>Proxy Login:</source>
+        <translation>Proxy-Login:</translation>
+    </message>
+    <message>
+        <source>Proxy Settings</source>
+        <translation>Proxy-Einstellungen</translation>
+    </message>
+    <message>
+        <source>Rename server profile</source>
+        <translation>Server-Profil umbenennen</translation>
+    </message>
+    <message>
+        <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Server Profiles</source>
+        <translation>Server Profile</translation>
+    </message>
+    <message>
+        <source>Your login ID or password is incorrect.</source>
+        <translation>Ihre Login-ID und/oder Ihr Passwort ist nicht korrekt.</translation>
+    </message>
+    <message>
+        <source>This new directory will be uploaded to the server.</source>
+        <translation>Dieser neue Ordner wird auf den Server übertragen.</translation>
+    </message>
+    <message>
+        <source>This new file was added on the server and will be downloaded.</source>
+        <translation>Diese Datei ist neu auf dem Server und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>This file will be deleted on the server.</source>
+        <translation>Diese Datei wird auf dem Server gelöscht.</translation>
+    </message>
+    <message>
+        <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
+        <translation>Dieser lokal gelöschte Ordner enthält auf dem Server Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>&lt;No title&gt;</source>
+        <translation>&lt;Kein Titel&gt;</translation>
+    </message>
+    <message>
+        <source>This directory was deleted on the server and will hence be deleted locally.</source>
+        <translation>Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelsöcht.</translation>
+    </message>
+    <message>
+        <source>A profile with the same name already exists. Each profile must have a unique name.</source>
+        <translation>Ein Profil mit demselben Namen existiert bereits. Jedes Profil muss einen eindeutigen Namen haben.</translation>
+    </message>
+    <message>
+        <source>Manage proxy settings of the application.</source>
+        <translation>Proxy-Einstellungen bearbeiten.</translation>
+    </message>
+    <message>
+        <source>Profile Settings</source>
+        <translation>Profil-Einstellungen</translation>
+    </message>
+    <message>
+        <source>This directory will be deleted on the server.</source>
+        <translation>Dieser Ordner wird auf dem Server gelöscht.</translation>
+    </message>
+    <message>
+        <source>Run at system startup (Windows only)</source>
+        <translation>Starte Desktop-Client wenn Computer startet (nur Windows)</translation>
+    </message>
+    <message>
+        <source>This files&apos;s properties have been modified locally and on the server.</source>
+        <translation>Die Datei-Eigenschaften dieser Datei wurden lokal und auf dem Server geändert.</translation>
+    </message>
+    <message>
+        <source>Manage your task settings.</source>
+        <translation>Einstellungen zu Aufgaben.</translation>
+    </message>
+    <message>
+        <source>Files or directories in this directory have been added or deleted locally.</source>
+        <translation>Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
+    </message>
+    <message>
+        <source>This directory was replaced on the server and will be downloaded.</source>
+        <translation>Dieser Ordern wurde auf dem Server ersetzt und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Conflict</source>
+        <translation>Konflikt</translation>
+    </message>
+    <message>
+        <source>This new file has also been added on the server. You will need to resolve the conflict.</source>
+        <translation>Eine Datei mit diesem Namen wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Rename Profile</source>
+        <translation>Profil umbenennen</translation>
+    </message>
+    <message>
+        <source>Verify server settings</source>
+        <translation>Prüfen der Server-Einstellungen</translation>
+    </message>
+    <message>
+        <source>This is a new file, but on the server there still exists a directory of the same name.</source>
+        <translation>Diese Datei ist neu, aber auf dem Server exisitiert noch ein Ordner gleichen Namens.</translation>
+    </message>
+    <message>
+        <source>This remotely modified file will be downloaded from the server.</source>
+        <translation>Diese auf dem Server geänderte Datei wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Server could not be found.</source>
+        <translation>Server konnte nicht gefunden werden.</translation>
+    </message>
+    <message>
+        <source>List finished tasks</source>
+        <translation>Auch beendete Aufgaben anzeigen</translation>
+    </message>
+    <message>
+        <source>Workspace folder is a file, not a directory.</source>
+        <translation>Ordner für Arbeitsbereiche ist eine Datei, kein Ordner.</translation>
     </message>
 </context>
 </TS>
