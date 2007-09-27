@@ -44,9 +44,11 @@ public class LocalDeletion extends Change {
     @Override
     public String getLongDescription() {
         if(status.getNodeKind() == NodeKind.dir)
-            return Messages.getString("This directory will be deleted on the server.");
+            return Messages.getString("This directory has been deleted (or moved) locally, " +
+                "it will also be deleted on the server.");
         else
-            return Messages.getString("This file will be deleted on the server.");
+            return Messages.getString("This file has been deleted (or moved) locally, " +
+            	"it will also be deleted on the server.");
     }
 
     @Override
