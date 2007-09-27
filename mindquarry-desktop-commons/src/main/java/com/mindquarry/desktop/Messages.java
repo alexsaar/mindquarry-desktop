@@ -70,8 +70,11 @@ public class Messages {
             InputStream is = Messages.class.getResourceAsStream(transFile);
             if (is == null) {
                 // no translation available for this language
+                log.debug("No translation file available for language: " + 
+                        Locale.getDefault().getLanguage());
                 return new HashMap<String, String>();
             }
+            log.debug("Loading translation file " + transFile + " from JAR");
             reader.parse(new InputSource(is));
             return translationParser.getMap();
         } catch (Exception e) {
