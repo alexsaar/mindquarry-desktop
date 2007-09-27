@@ -123,11 +123,13 @@ public class ObstructedConflict extends RenamingConflict {
 
     @Override
     public String getLongDescription() {
-        return Messages.getString("This file is obstructed."); // TODO: need better description
+        if (file.isDirectory()) {
+            return Messages.getString("This is a new directory, but on the " +
+            	    "server there still exists a file of the same name.");
+        } else {
+            return Messages.getString("This is a new file, but on the " +
+                    "server there still exists a directory of the same name.");
+        }
     }
 
-    @Override
-    public String getShortDescription() {
-        return Messages.getString("Obstructed");
-    }
 }

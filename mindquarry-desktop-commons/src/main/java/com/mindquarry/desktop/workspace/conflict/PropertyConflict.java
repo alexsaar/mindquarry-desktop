@@ -22,6 +22,7 @@ import org.tigris.subversion.javahl.PropertyData;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
+import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -174,4 +175,15 @@ public class PropertyConflict extends Conflict {
     public PropertyData getRemoteProperty() {
         return remoteProp;
     }
+
+    public String getLongDescription() {
+        if (file.isDirectory()) {
+            return Messages.getString("This directory's properties have been " +
+            		"modified locally and on the server.");
+        } else {
+            return Messages.getString("This files's properties have been " +
+                    "modified locally and on the server.");
+        }
+    }
+   
 }
