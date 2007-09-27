@@ -257,8 +257,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                 } else {
                     // show "sucessfully synchronized"
                     workspaceWidget.showEmptyMessage(Messages.getString(
-                            "Synchronized successfully at ") //$NON-NLS-1$
-                            + DateFormat.getTimeInstance().format(new Date()) + "."); //$NON-NLS-1$
+                            "Synchronized successfully at {0}.", 
+                            DateFormat.getTimeInstance().format(new Date()))); //$NON-NLS-1$
                 }
             }
             client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);

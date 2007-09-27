@@ -2,532 +2,156 @@
 <context>
     <name>java</name>
     <message>
-        <source>Refresh the list of teams.</source>
-        <translation>Liste der Teams aktualisieren.</translation>
+        <source>This new item will be uploaded to the server.</source>
+        <translation type="obsolete">Dieses neue Objekt wird auf den Server hochgeladen.</translation>
     </message>
     <message>
-        <source>Manually merge both files (recommended)</source>
-        <translation>Beide Dateien manuell zusammenführen (empfohlen)</translation>
-    </message>
-    <message>
-        <source>Modified files:</source>
-        <translation type="obsolete">Veränderte Dateien:</translation>
-    </message>
-    <message>
-        <source>A locally replaced file or directory (svn delete + svn add) was also replaced by someone else on the server.</source>
-        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde auch auf dem Server von jemandem ersetzt.</translation>
-    </message>
-    <message>
-        <source>This file is obstructed.</source>
-        <translation type="obsolete">Diese Datei ist versperrt.</translation>
-    </message>
-    <message>
-        <source>This file will be deleted on the server.</source>
-        <translation type="obsolete">Diese Datei wird auf dem Server gelöscht.</translation>
-    </message>
-    <message>
-        <source>Specify a new value for this property</source>
-        <translation>Neuer Wert für diese Datei-Eigenschaft</translation>
-    </message>
-    <message>
-        <source>Ignore the deletion on the server and upload your local file</source>
-        <translation type="obsolete">Löschen ignorieren und Ihre lokale Datei zum Server hochladen</translation>
-    </message>
-    <message>
-        <source>Refresh the list of file changes</source>
-        <translation>Liste der Dateiänderungen aktualisieren</translation>
-    </message>
-    <message>
-        <source>There are currently no workspace changes to synchronize,\ni.e. there are no local changes and there are no changes on the server.\nLast refresh: </source>
-        <translation>Derzeit gibt es keine Änderungen, d.h. Sie haben keine\nlokalen Änderungen und auf dem Server sind ebenfalls keine Änderungen.\nLetzte Aktualisierung: </translation>
-    </message>
-    <message>
-        <source>Start MS Word</source>
-        <translation>MS-Word starten</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation>Suchen</translation>
-    </message>
-    <message>
-        <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieser auf dem Server gelöschte Ordner enthält lokale Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Please do not modify, copy, or move files in your workspace during the synchronization.</source>
-        <translation>Bitte verschieben, kopieren und ändern Sie keine Dateien im Arbeitsbereich während der Synchronisierung.</translation>
-    </message>
-    <message>
-        <source>No description available for this task</source>
-        <translation>Keine Beschreibung für diese Aufgabe</translation>
-    </message>
-    <message>
-        <source>File Changes</source>
-        <translation>Dateiänderungen</translation>
-    </message>
-    <message>
-        <source>Updating task list for team &quot;{0}&quot; (team {1} of {2}) ...</source>
-        <translation type="obsolete">Aktualisiere Aufgabenliste für Team &quot;{0}&quot; (Team {1} von {2}) ...</translation>
+        <source>Refresh cancelled.</source>
+        <translation>Aktualisierung abgebrochen.</translation>
     </message>
     <message>
         <source>Updating task list</source>
         <translation type="obsolete">Aktualisiere Aufgabenliste</translation>
     </message>
     <message>
-        <source>Refresh list of teams</source>
-        <translation>Liste der Teams aktualisieren</translation>
-    </message>
-    <message>
-        <source>This new directory will be uploaded to the server.</source>
-        <translation type="obsolete">Dieser neue Ordner wird auf den Server hochgeladen.</translation>
-    </message>
-    <message>
-        <source>A new task could not be added because one of the following issues has occurred:\n\n(1) You are not a member of any team.\n(2) Currently you have no teams selected.\n(3) The Mindquarry server settings are incorrectly configured.</source>
-        <translation type="obsolete">Es konnte keine neue Aufgabe hinzugefügt werden. Dies könnte folgende Ursachen haben:\n\n(1) Sie sind in keinem Team Mitglied.\n(2) Sie haben momentan keine Teams ausgewählt.\n(3) Die Mindquarry-Servereinstellungen sind inkorrekt.</translation>
-    </message>
-    <message>
-        <source>The last change on the server was by {0} ({1}).</source>
-        <translation>Die Letzte Änderung auf dem Server stammt von {0} ({1}).</translation>
-    </message>
-    <message>
-        <source>You are trying to delete a file or directory which someone else modified on the server.</source>
-        <translation>Sie wollen eine Datei oder einen Ordner löschen, das auf dem Server geändert wurde.</translation>
-    </message>
-    <message>
-        <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieser lokal gelöschte Ordner enthält Änderungen auf dem Server. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>local</source>
-        <translation>lokal</translation>
-    </message>
-    <message>
-        <source>Could not update the task</source>
-        <translation>Aufgabe konnte nicht aktualisiert werden</translation>
-    </message>
-    <message>
-        <source>Unknown server: &quot;{0}&quot;</source>
-        <translation type="obsolete">Unbekannter Server: &quot;{0}&quot;</translation>
-    </message>
-    <message>
-        <source>Please resolve the conflict using one of the following options:</source>
-        <translation>Bitte wählen Sie eine der folgenden Optionen, um den Konflikt aufzulösen:</translation>
-    </message>
-    <message>
-        <source>Please select a resolution method.</source>
-        <translation type="obsolete">Bitte wählen Sie eine Konfliktlösung.</translation>
-    </message>
-    <message>
-        <source>Merge manually, continue only if done</source>
-        <translation type="obsolete">Manuell zusammenführen; nur fortfahren, wenn fertig</translation>
-    </message>
-    <message>
-        <source>Remove obstructing file and download original from server</source>
-        <translation>Gesperrte Datei löschen und Version vom Server herunterladen</translation>
-    </message>
-    <message>
-        <source>Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile.</source>
-        <translation>Es wurde kein Profil ausgewählt. Bitte wählen Sie das Profil des Servers, mit dem Sie arbeiten wollen oder legen Sie ein neues Profil an.</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation>Beenden</translation>
-    </message>
-    <message>
-        <source>Go to preferences</source>
-        <translation>Einstellungen anzeigen</translation>
-    </message>
-    <message>
-        <source>The script used to merge documents using MS Word could not be started. The exit code was </source>
-        <translation>Das Script zum Zusammenführen von MS-Word-Dateien konnte nicht gestartet werden. Fehlercode </translation>
-    </message>
-    <message>
-        <source>Modified files in &apos;{0}&apos;:</source>
-        <translation>Geänderte Dateien in &apos;{0}&apos;:</translation>
-    </message>
-    <message>
-        <source>Task {0} of {1}</source>
-        <translation type="obsolete">Aufgabe {0} von {1}</translation>
-    </message>
-    <message>
-        <source>Task refresh cancelled.</source>
-        <translation>Aufgabenaktualisierung abgebrochen.</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Abbrechen</translation>
+        <source>Synchronisation stopped.</source>
+        <translation>Synchronisierung abgebrochen.</translation>
     </message>
     <message>
         <source>Please select one of your teams.</source>
         <translation>Bitte wählen Sie eines Ihrer Teams aus.</translation>
     </message>
     <message>
-        <source>Please use the various file version at the top to merge the changes into the target file. Click &apos;Finished Merging&apos; and then &apos;OK&apos; when done.</source>
-        <translation>Bitte verwenden Sie die verschiedenen Dateiversionen oben, um Änderungen in der Zieldatei zusammenzuführen. Klicken Sie anschließend &apos;Fertig zusammengeführt&apos; und dann &apos;OK&apos;.</translation>
-    </message>
-    <message>
-        <source>Go to webpage</source>
-        <translation>Öffne Webseite</translation>
-    </message>
-    <message>
-        <source>Mindquarry Client already running</source>
-        <translation>Mindquarry-Client läuft bereits</translation>
-    </message>
-    <message>
-        <source>Edit the contents of a task</source>
-        <translation>Editieren Sie eine Aufgabe</translation>
-    </message>
-    <message>
-        <source>Please check your username and password settings in the preferences dialog.</source>
-        <translation>Bitte prüfen Sie Ihren Benutzernamen und Ihr Passwort im Einstellungs-Dialog.</translation>
-    </message>
-    <message>
-        <source>Refresh the list of tasks.</source>
-        <translation type="obsolete">Aktualisieren der Aufgabenliste.</translation>
-    </message>
-    <message>
-        <source>new task</source>
-        <translation>Neue Aufgabe</translation>
-    </message>
-    <message>
-        <source>Please check your Mindquarry server URL in the preferences dialog.</source>
-        <translation>Bitte überprüfen Sie die URL des Mindquarry-Server im Einstellungs-Dialog.</translation>
-    </message>
-    <message>
-        <source>The file you are trying to synchronize already exists on the server</source>
-        <translation>Die Datei, die Sie synchronisieren wollen, existiert bereits auf dem Server</translation>
-    </message>
-    <message>
-        <source>No task matches the selected filter</source>
-        <translation>Keine Aufgabe mehr gefunden nach der Filterung</translation>
-    </message>
-    <message>
-        <source>The file you are trying to synchronize was modified on the server</source>
-        <translation>Die zu synchronisierende Datei wurde auf dem Server geändert</translation>
-    </message>
-    <message>
-        <source>Rename local file and upload it using a new name:</source>
-        <translation>Lokale Datei umbenennen und unter neuem Namen hochladen:</translation>
-    </message>
-    <message>
-        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
-        <translation type="obsolete">Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen beide Versionen manuell zusammenführen.</translation>
-    </message>
-    <message>
-        <source>Refreshing workspaces changes for team \&quot;{0}\&quot; (team {1} of {2}) ...</source>
-        <translation>Aktualisiere Liste der Arbeitsbereichs-Änderungen für Team \&quot;{0}\&quot; (Team {1} von {2}) ...</translation>
-    </message>
-    <message>
-        <source>Your Mindquarry Server Profile</source>
-        <translation>Ihr Mindquarry Server-Profil</translation>
-    </message>
-    <message>
-        <source>summary of the task</source>
-        <translation>Zusammenfassung der Aufgabe</translation>
-    </message>
-    <message>
-        <source>Synchronized successfully at </source>
-        <translation>Erfolgreich synchronisiert um </translation>
-    </message>
-    <message>
-        <source>Use your local version of the file</source>
-        <translation>Ihre lokale Version der Datei benutzen</translation>
-    </message>
-    <message>
-        <source>One of the local files was deleted and replaced with a directory of the same name. This structural change must be resolved before synchronization.</source>
-        <translation>Eine lokale Datei wurde gelöscht und mit einem Ordner gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
-    </message>
-    <message>
-        <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Diese auf dem Server gelöschte Datei wurde lokal geändert. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Edit target file</source>
-        <translation>Zieldatei bearbeiten</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-    <message>
-        <source>Tasks</source>
-        <translation>Aufgaben</translation>
-    </message>
-    <message>
-        <source>Use the file from the server</source>
-        <translation>Die Datei vom Server benutzen</translation>
-    </message>
-    <message>
-        <source>Refreshes the task list</source>
-        <translation>Aufgabenliste aktualisieren</translation>
-    </message>
-    <message>
-        <source>The file &apos;{0}&apos; already exists, please choose a different filename</source>
-        <translation type="obsolete">Die Datei &apos;{0}&apos; existiert bereits, bitte wählen Sie einen anderen Dateinamen</translation>
-    </message>
-    <message>
         <source>Ignore the modification and delete the file on the server anyway</source>
         <translation type="obsolete">Die Änderung ignorieren und die Datei auf dem Server löschen</translation>
     </message>
     <message>
-        <source>You are trying to upload a file to the server which someone else has already deleted on the server.</source>
-        <translation>Sie versuchen eine Datei auf den Server hochzuladen, die zwischenzeitlich jemand auf dem Server gelöscht hat.</translation>
+        <source>You have not synchronized yet.\nClick the &apos;Synchronize&apos; button to download files from the server.</source>
+        <translation>Sie haben noch nicht synchronisiert.\nKlicken Sie &quot;Synchronisieren&quot; um die Dateien erstmalig vom Server herunterzuladen.</translation>
     </message>
     <message>
-        <source>Synchronize</source>
-        <translation>Synchronisieren</translation>
+        <source>The Mindquarry Desktop Client cannot create its settings folder at\n\n&apos;{0}&apos;\n\nMaybe you don&apos;t have permissions to access it?\n\nIf you continue, the program won&apos;t work properly, so it is strongly recommended to ensure write-access to that folder and restart the client.</source>
+        <translation>Der Mindquarry Desktop-Client konnte seinen Ordner zum Speichern der Einstellungen unter\n\n{0} nicht erstellen\n\nStellen Sie sicher, dass Sie dort Schreibzugriff haben und starten Sie dieses Programm neu, andernfalls kann es nicht korrekt funktionieren.</translation>
     </message>
     <message>
-        <source>Filename(s)</source>
-        <translation>Dateiname(n)</translation>
-    </message>
-    <message>
-        <source>The file &apos;{0}&apos; already exists, please choose a different filename.</source>
-        <translation>Die Datei &apos;{0}&apos; exisitiert bereits, bitte wählen Sie einen anderen Namen.</translation>
-    </message>
-    <message>
-        <source>Priority</source>
-        <translation>Priorität</translation>
-    </message>
-    <message>
-        <source>The list of changes is not up to date. It will be updated now. \nPlease check the list of changes and press synchronize again.</source>
-        <translation>Die Änderungsliste ist nicht aktuell, sie wird jetzt aktualisiert.\nBitte prüfen Sie die Liste und synchronieren Sie danach erneut.</translation>
-    </message>
-    <message>
-        <source>Ignore your local modification and delete your file</source>
-        <translation type="obsolete">Ihre lokalen Änderungen ignorieren und Ihre Datei löschen</translation>
-    </message>
-    <message>
-        <source>Resolving conflicts</source>
-        <translation>Konflikte auflösen</translation>
-    </message>
-    <message>
-        <source>Affected file/directory:</source>
-        <translation>Betroffene Datei/Ordner:</translation>
-    </message>
-    <message>
-        <source>This file was deleted on the server and will hence be deleted locally.</source>
-        <translation type="obsolete">Diese Datei wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
-    </message>
-    <message>
-        <source>This item has been deleted or moved locally. It will be deleted on the server.</source>
-        <translation type="obsolete">Dieses Objekt wurde lokal gelöscht oder verschoben. Es wird auch auf dem Server gelöscht bzw. verschoben.</translation>
-    </message>
-    <message>
-        <source>View my local file</source>
-        <translation>Meine lokale Datei anzeigen</translation>
-    </message>
-    <message>
-        <source>This new file will be uploaded to the server.</source>
-        <translation type="obsolete">Diese neue Datei wird auf den Server hochgeladen.</translation>
-    </message>
-    <message>
-        <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieses Object wurde lokal oder auf dem Server ersetzt. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Exit the desktop client application.</source>
-        <translation>Beendet die Desktop-Client Anwendung.</translation>
-    </message>
-    <message>
-        <source>Stop</source>
-        <translation>Abbrechen</translation>
-    </message>
-    <message>
-        <source>Error executing MS Word</source>
-        <translation>Fehler beim Starten von MS-Word</translation>
-    </message>
-    <message>
-        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to connect.</source>
-        <translation>Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um eine Verbindung herzustellen.</translation>
-    </message>
-    <message>
-        <source>This item is new on the server, it will be downloaded.</source>
-        <translation type="obsolete">Dieses Objekt ist auf dem Server neu, es wird heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>Stop the currently running actions</source>
-        <translation>Aktuell laufende Aktionen abbrechen</translation>
-    </message>
-    <message>
-        <source>Network error</source>
-        <translation>Netzwerkfehler</translation>
-    </message>
-    <message>
-        <source>Do not delete the file, and download the version from the server.</source>
-        <translation type="obsolete">Datei nicht löschen und Version vom Server herunterladen.</translation>
-    </message>
-    <message>
-        <source>Open local file</source>
-        <translation>Lokal öffnen</translation>
-    </message>
-    <message>
-        <source>List of tasks could not be updated</source>
-        <translation>Aufgabenliste konnte nicht aktualisiert werden</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>Keine auswählen</translation>
-    </message>
-    <message>
-        <source>Overwrite your local file with the one from the server</source>
-        <translation type="obsolete">Ihre lokale Datei mt der vom Server überschreiben</translation>
-    </message>
-    <message>
-        <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Dieser neue Ordner wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Cancel Synchronization</source>
-        <translation>Synchronisierung abbrechen</translation>
+        <source>Unknown server: &quot;{0}&quot;</source>
+        <translation type="obsolete">Unbekannter Server: &quot;{0}&quot;</translation>
     </message>
     <message>
         <source>This new file has also been added on the server. You will need to resolve the conflict.</source>
         <translation type="obsolete">Diese neue Datei wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
-        <source>Due Date</source>
-        <translation>Fälligkeitsdatum</translation>
-    </message>
-    <message>
-        <source>Select a Team</source>
-        <translation>Wählen Sie ein Team</translation>
-    </message>
-    <message>
-        <source>Could not update team list: </source>
-        <translation type="obsolete">Liste der Teams konnte nicht aktualisiert werden: </translation>
-    </message>
-    <message>
-        <source>Your file will be uploaded to the server.</source>
-        <translation>Ihre Datei wird auf den Server hochgeladen.</translation>
-    </message>
-    <message>
-        <source>Could not update team list from {0}: </source>
-        <translation>Konnte Liste der Teams nicht von {0} holen: </translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Zurücksetzen</translation>
-    </message>
-    <message>
-        <source>The file from the server will be downloaded.</source>
-        <translation>Die Datei vom Server wird heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation>Titel</translation>
-    </message>
-    <message>
-        <source>The Mindquarry Desktop Client seems to be running already. Only one instance of the Desktop Client can be running at a time. If you are sure that the Desktop Client isn&apos;t running, select &apos;Start anyway&apos;.</source>
-        <translation>Der Mindquarry Desktop-Client scheint bereits zu laufen. Es kann jedoch nur eine Instanz des Desktop-Clients gleichzeitig laufen. Wenn Sie sicher sind, dass der Desktop-Client nicht läuft, wählen Sie bitte &apos;Trotzdem starten&apos;</translation>
-    </message>
-    <message>
-        <source>Obstructed</source>
-        <translation type="obsolete">Versperrt</translation>
-    </message>
-    <message>
-        <source>Information about the Mindquarry desktop client.</source>
-        <translation>Informationen über den Mindquarry Desktop Client.</translation>
-    </message>
-    <message>
-        <source>The specified URL \&quot;{0}\&quot; does belong to a running Mindquarry server. No team information found at {1}</source>
-        <translation>Die angebene URL \&quot;{0}\&quot; ist kein Mindquarry-Server, es wurden unter {1} keine Informationen über Teams gefunden</translation>
-    </message>
-    <message>
-        <source>Summary</source>
-        <translation>Zusammenfassung</translation>
-    </message>
-    <message>
-        <source>This item has been deleted or moved on the server. It will be deleted locally.</source>
-        <translation type="obsolete">Dieses Objekt wurde auf dem Server gelöscht oder verschoben. Es wird auch lokal gelöscht bzw. verschoben.</translation>
-    </message>
-    <message>
-        <source>This directory will be deleted on the server.</source>
-        <translation type="obsolete">Dieser Ordner wird auf dem Server gelöscht.</translation>
-    </message>
-    <message>
-        <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
-        <translation type="obsolete">Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
-    </message>
-    <message>
-        <source>Open the web interface of the current profiles server.</source>
-        <translation>Öffne die Webseite des ausgewählten Servers.</translation>
-    </message>
-    <message>
-        <source>Open preferences dialog including server profile settings</source>
-        <translation>Öffnet den Einstellungsdialog inklusive der Konfiguration von Serverprofilen</translation>
-    </message>
-    <message>
-        <source>Open original file</source>
-        <translation type="obsolete">Originale Datei</translation>
-    </message>
-    <message>
-        <source>Cannot create settings folder</source>
-        <translation>Konnte Ordner zum Speichern der Einstellungen nicht erstellen</translation>
-    </message>
-    <message>
-        <source>Files or directories in this directory have been added or deleted locally.</source>
-        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
-    </message>
-    <message>
-        <source>Use the property from the server</source>
-        <translation>Datei-Eigenschaft vom Server benutzen</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation>Beschreibung</translation>
-    </message>
-    <message>
-        <source>This new file was added on the server and will be downloaded.</source>
-        <translation type="obsolete">Diese Datei wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>Currently no action is running.</source>
-        <translation>Zur Zeit wird keine Aktion ausgeführt.</translation>
-    </message>
-    <message>
-        <source>Refresh</source>
-        <translation>Aktualisieren</translation>
-    </message>
-    <message>
-        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to reconnect.</source>
-        <translation type="obsolete">Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um erneut zu verbinden.</translation>
+        <source>Open local file</source>
+        <translation>Lokale Datei öffnen</translation>
     </message>
     <message>
         <source>Currently no tasks are active.</source>
         <translation>Zur Zeit sind keine Aufgaben verfügbar.</translation>
     </message>
     <message>
-        <source>This new directory was added on the server and will be downloaded.</source>
-        <translation type="obsolete">Dieser Ordner wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+        <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden vom Server heruntergeladen.</translation>
     </message>
     <message>
-        <source>Title must not be empty.</source>
-        <translation>Der Titel darf nicht leer sein.</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
     <message>
-        <source>After starting MS Word, merge both versions and save the result. Then click the &apos;Done&apos; button that will appear and click &apos;OK&apos;.</source>
-        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen und speichern Sie das Ergebnis. Wählen Sie dann den &apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
+        <source>This locally deleted directory contains remote changes. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Dieser lokal gelöschte Ordner enthält Änderungen auf dem Server. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Authorization Error</source>
+        <translation type="obsolete">Autorisierungsfehler</translation>
+    </message>
+    <message>
+        <source>Modified files:</source>
+        <translation type="obsolete">Veränderte Dateien:</translation>
+    </message>
+    <message>
+        <source>Your changes to this file will be uploaded to the server.</source>
+        <translation type="obsolete">Ihre Änderungen an dieser Datei werden auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>This item has been modified on the server, the new version will be downloaded.</source>
+        <translation type="obsolete">Dieses Objekt wurde auf dem Server geändert, die neue Version wird heruntergeladen.</translation>
     </message>
     <message>
         <source>About ...</source>
         <translation>Über ...</translation>
     </message>
     <message>
-        <source>Refreshing workspaces changes for team &quot;{0}&quot; (team {1} of {2}) ...</source>
-        <translation type="obsolete">Aktualisiere Änderungsliste für Team &quot;{0}&quot; (Team {1} von {2}) ...</translation>
+        <source>Refresh</source>
+        <translation>Aktualisieren</translation>
     </message>
     <message>
-        <source>Could not load Desktop Client settings</source>
-        <translation>Desktop-Client-Einstellungen konnten nicht geladen werden</translation>
+        <source>Unknown server: \&quot;{0}\&quot;</source>
+        <translation>Unbekanneter Server: \&quot;{0}\&quot;</translation>
     </message>
     <message>
-        <source>Commit message for team &apos;{0}&apos;</source>
-        <translation>Änderungsbeschreibung für Team &apos;{0}&apos;</translation>
+        <source>Name</source>
+        <translation>Name</translation>
     </message>
     <message>
-        <source>Your message:</source>
-        <translation>Ihre Beschreibung:</translation>
+        <source>List of tasks could not be updated</source>
+        <translation>Aufgabenliste konnte nicht aktualisiert werden</translation>
+    </message>
+    <message>
+        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to connect.</source>
+        <translation>Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um eine Verbindung herzustellen.</translation>
+    </message>
+    <message>
+        <source>summary of the task</source>
+        <translation>Zusammenfassung der Aufgabe</translation>
+    </message>
+    <message>
+        <source>After starting MS Word, merge both versions and save the result. Then click the &apos;Done&apos; button that will appear and click &apos;OK&apos;.</source>
+        <translation>Führen Sie beide Versionen der Datei nach dem Starten von MS Word zusammen und speichern Sie das Ergebnis. Wählen Sie dann den &apos;Fertig&apos;-Knopf, der erscheinen wird und klicken Sie &apos;OK&apos;.</translation>
+    </message>
+    <message>
+        <source>Displays the Mindquarry Desktop Client main window</source>
+        <translation>Zeigt das Mindquarry Desktop-Client Hauptfenster an</translation>
+    </message>
+    <message>
+        <source>This new directory was added on the server and will be downloaded.</source>
+        <translation type="obsolete">Dieser Ordner wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>View updated file from server</source>
+        <translation>Datei vom Server anzeigen</translation>
+    </message>
+    <message>
+        <source>Open selected file locally</source>
+        <translation>Ausgewählte Datei lokal öffnen</translation>
+    </message>
+    <message>
+        <source>Information about the Mindquarry desktop client.</source>
+        <translation>Informationen über den Mindquarry Desktop Client.</translation>
+    </message>
+    <message>
+        <source>Updating task list for team &quot;{0}&quot; (team {1} of {2}) ...</source>
+        <translation type="obsolete">Aktualisiere Aufgabenliste für Team &quot;{0}&quot; (Team {1} von {2}) ...</translation>
+    </message>
+    <message>
+        <source>About Mindquarry Desktop Client</source>
+        <translation>Über Mindquarry Desktop Client</translation>
+    </message>
+    <message>
+        <source>This file was deleted on the server and will hence be deleted locally.</source>
+        <translation type="obsolete">Diese Datei wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+    </message>
+    <message>
+        <source>Updating task list for team \&quot;{0}\&quot; (team {1} of {2}): </source>
+        <translation>Aktualisiere Aufgabenliste für Team \&quot;{0}\&quot; (Team {1} von {2}): </translation>
+    </message>
+    <message>
+        <source>Please describe your changes for team </source>
+        <translation type="obsolete">Bitte beschreiben Sie Ihre Änderungen für das Team </translation>
+    </message>
+    <message>
+        <source>Your Mindquarry Server Profile</source>
+        <translation>Ihr Mindquarry Server-Profil</translation>
     </message>
     <message>
         <source>Task {0} of {1}&quot;, taskDownloadCount
@@ -535,272 +159,652 @@
         <translation type="obsolete">fixme</translation>
     </message>
     <message>
-        <source>Preferences</source>
-        <translation>Einstellungen</translation>
+        <source>Creates a new task.</source>
+        <translation>Legt eine neue Aufgabe an.</translation>
     </message>
     <message>
-        <source>View updated file from server</source>
-        <translation>Datei vom Server anzeigen</translation>
+        <source>The file you are trying to synchronize was modified on the server</source>
+        <translation>Die zu synchronisierende Datei wurde auf dem Server geändert</translation>
     </message>
     <message>
-        <source>About Mindquarry Desktop Client</source>
-        <translation>Über Mindquarry Desktop Client</translation>
+        <source>Network error</source>
+        <translation>Netzwerkfehler</translation>
     </message>
     <message>
-        <source>Files or directories in this directory have been added or deleted on the server. These updated will be downloaded from the server.</source>
-        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden auf dem Server hinzugefügt oder gelöscht. Diese Änderungen werden vom Server heruntergeladen.</translation>
+        <source>Mindquarry Desktop Client</source>
+        <translation>Mindquarry Desktop Client</translation>
     </message>
     <message>
-        <source>A locally replaced file or directory (svn delete + svn add) was modified by someone else on the server.</source>
-        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server geändert.</translation>
+        <source>Your message:</source>
+        <translation>Ihre Beschreibung:</translation>
     </message>
     <message>
-        <source>This item has been modified on the server, the new version will be downloaded.</source>
-        <translation type="obsolete">Dieses Objekt wurde auf dem Server geändert, die neue Version wird heruntergeladen.</translation>
+        <source>Commit message for team &apos;{0}&apos;</source>
+        <translation>Änderungsbeschreibung für Team &apos;{0}&apos;</translation>
     </message>
     <message>
-        <source>Invalid server URL given: {0}\n\nPlease check your server settings in the preferences dialog.</source>
-        <translation>Ungültige Server-URL: {0}\n\nBitte prüfen Sie Ihre Einstellungen.</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <source>The Mindquarry Desktop Client cannot create its settings folder at\n\n&apos;{0}&apos;\n\nMaybe you don&apos;t have permissions to access it?\n\nIf you continue, the program won&apos;t work properly, so it is strongly recommended to ensure write-access to that folder and restart the client.</source>
-        <translation>Der Mindquarry Desktop-Client konnte seinen Ordner zum Speichern der Einstellungen unter\n\n{0} nicht erstellen\n\nStellen Sie sicher, dass Sie dort Schreibzugriff haben und starten Sie dieses Programm neu, andernfalls kann es nicht korrekt funktionieren.</translation>
-    </message>
-    <message>
-        <source>Updating list of teams</source>
-        <translation>Aktualisiere Teamliste</translation>
-    </message>
-    <message>
-        <source>Deactivated</source>
-        <translation>Deaktiviert</translation>
-    </message>
-    <message>
-        <source>Finished Merging</source>
-        <translation>Fertig zusammengeführt</translation>
-    </message>
-    <message>
-        <source>Select this icon to open the Mindquarry Desktop Client</source>
-        <translation>Klicken Sie dieses Icon an, um den Mindquarry Desktop Client zu öffnen</translation>
-    </message>
-    <message>
-        <source>Show Window</source>
-        <translation>Fenster anzeigen</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Alle auswählen</translation>
-    </message>
-    <message>
-        <source>Displays the Mindquarry Desktop Client main window</source>
-        <translation>Zeigt das Mindquarry Desktop-Client Hauptfenster an</translation>
-    </message>
-    <message>
-        <source>Authorization Error</source>
-        <translation type="obsolete">Autorisierungsfehler</translation>
-    </message>
-    <message>
-        <source>Please describe the changes you have made to the following files in team &apos;{0}&apos;</source>
-        <translation>Bitte beschreiben Sie die Änderungen, die Sie in den folgenen Dateien des Teams &apos;{0}&apos; vorgenommen haben</translation>
-    </message>
-    <message>
-        <source>Server Profiles</source>
-        <translation>Server-Profile</translation>
-    </message>
-    <message>
-        <source>A locally modified file was replaced (svn delete + svn add) by someone else on the server.</source>
-        <translation>Eine lokal geänderte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server ersetzt.</translation>
-    </message>
-    <message>
-        <source>Somebody else modified the property you are trying to synchronize. Please select the version that should be treated as the current version.</source>
-        <translation>Jemand hat die Datei-Eigenschaften der Datei, die Sie hochladen wollen, auf dem Server geändert. Bitte wählen Sie die Version, mit der weitergearbeitet werden soll.</translation>
-    </message>
-    <message>
-        <source>Synchronize workspaces with your desktop.</source>
-        <translation>Synchronisierung der Arbeitplätze mit dem Desktop.</translation>
-    </message>
-    <message>
-        <source>An error occured during synchronization: </source>
-        <translation>Während der Synchronisierung ist ein Fehler aufgetreten: </translation>
-    </message>
-    <message>
-        <source>Overwrite the file on the server with your local version</source>
-        <translation type="obsolete">Datei auf dem Server mit Ihrer lokalen Version überschreiben</translation>
-    </message>
-    <message>
-        <source>Could not create the task.</source>
-        <translation>Aufgabe konnte nicht angelegt werden.</translation>
-    </message>
-    <message>
-        <source>This case can occur if you created a file or renamed an existing file and someone else created a file with the same name.</source>
-        <translation>Dieser Fall kann auftreten, wenn Sie eine Datei erstellt oder umbenannt haben, und jemand hat zwischenzeitlich eine Datei gleichen Namens auf dem Server erstellt.</translation>
-    </message>
-    <message>
-        <source>http://your.mindquarry.server</source>
-        <translation>http://your.mindquarry.server</translation>
-    </message>
-    <message>
-        <source>Conflict</source>
-        <translation type="obsolete">Konflikt</translation>
-    </message>
-    <message>
-        <source>Refresh cancelled.</source>
-        <translation>Aktualisierung abgebrochen.</translation>
-    </message>
-    <message>
-        <source>New Task</source>
-        <translation>Neue Aufgabe</translation>
-    </message>
-    <message>
-        <source>Tracking tasks has been deactivated for this installation.</source>
-        <translation>Die Liste der Aufgaben wurde in dieser Installation deaktiviert.</translation>
-    </message>
-    <message>
-        <source>Use your local version of the property</source>
-        <translation>Ihre lokale Version der Datei-Eigenschaft benutzen</translation>
-    </message>
-    <message>
-        <source>Synchronizing tasks</source>
-        <translation>Synchronisiere Aufgaben</translation>
+        <source>Open original file</source>
+        <translation type="obsolete">Originale Datei</translation>
     </message>
     <message>
         <source>Synchronizing workspaces</source>
         <translation>Synchronisiere Arbeitsbereich</translation>
     </message>
     <message>
-        <source>Updating task list...</source>
-        <translation>Aktualisiere Liste der Aufgaben...</translation>
+        <source>Summary</source>
+        <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <source>About</source>
-        <translation>Über</translation>
+        <source>Select this icon to open the Mindquarry Desktop Client</source>
+        <translation>Klicken Sie dieses Icon an, um den Mindquarry Desktop Client zu öffnen</translation>
     </message>
     <message>
-        <source>Edit Task</source>
-        <translation>Aufgabe bearbeiten</translation>
+        <source>Start MS Word</source>
+        <translation>MS-Word starten</translation>
     </message>
     <message>
-        <source>Creates a new task.</source>
-        <translation>Legt eine neue Aufgabe an.</translation>
+        <source>A locally modified file was replaced (svn delete + svn add) by someone else on the server.</source>
+        <translation>Eine lokal geänderte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server ersetzt.</translation>
     </message>
     <message>
-        <source>Commit message</source>
-        <translation type="obsolete">Änderungsbeschreibung</translation>
+        <source>This remotely deleted directory contains local changes. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Dieser auf dem Server gelöschte Ordner enthält lokale Änderungen. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
+        <source>A locally replaced file or directory (svn delete + svn add) was modified by someone else on the server.</source>
+        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde von jemand anderem auf dem Server geändert.</translation>
     </message>
     <message>
-        <source>Updating task list for team \&quot;{0}\&quot; (team {1} of {2}): </source>
-        <translation>Aktualisiere Aufgabenliste für Team \&quot;{0}\&quot; (Team {1} von {2}): </translation>
+        <source>Cancel Synchronization</source>
+        <translation>Synchronisierung abbrechen</translation>
     </message>
     <message>
-        <source>Invalid server URL given.\n\nPlease check your server settings in the preferences dialog.</source>
-        <translation type="obsolete">Ungültige Server URL.\n\nBitte prüfen Sie Ihre Einstellungen.</translation>
+        <source>Description</source>
+        <translation>Beschreibung</translation>
     </message>
     <message>
-        <source>This new item will be uploaded to the server.</source>
-        <translation type="obsolete">Dieses neue Objekt wird auf den Server hochgeladen.</translation>
+        <source>This remotely modified file was deleted locally. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
-        <source>Unknown server: \&quot;{0}\&quot;</source>
-        <translation>Unbekanneter Server: \&quot;{0}\&quot;</translation>
+        <source>Title</source>
+        <translation>Titel</translation>
     </message>
     <message>
-        <source>You have not synchronized yet.\nClick the &apos;Synchronize&apos; button to download files from the server.</source>
-        <translation>Sie haben noch nicht synchronisiert.\nKlicken Sie &quot;Synchronisieren&quot; um die Dateien erstmalig vom Server herunterzuladen.</translation>
+        <source>Due Date</source>
+        <translation>Fälligkeitsdatum</translation>
     </message>
     <message>
-        <source>This directory was deleted on the server and will hence be deleted locally.</source>
-        <translation type="obsolete">Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+        <source>The specified URL \&quot;{0}\&quot; does belong to a running Mindquarry server. No team information found at {1}</source>
+        <translation>Die angebene URL \&quot;{0}\&quot; ist kein Mindquarry-Server, es wurden unter {1} keine Informationen über Teams gefunden</translation>
     </message>
     <message>
-        <source>Your changes of this item will be uploaded to the server.</source>
-        <translation type="obsolete">Ihre Änderungen dieses Objekts werden auf den Server hochgeladen.</translation>
+        <source>This new file will be uploaded to the server.</source>
+        <translation type="obsolete">Diese neue Datei wird auf den Server hochgeladen.</translation>
     </message>
     <message>
-        <source>Please enter the tasks data and press OK for adding/changing the task.</source>
-        <translation>Bitte gegeben Sie die Daten der Aufgabe ein und drücken Sie OK zum Ändern/Anlegen der Aufgabe.</translation>
+        <source>Manually merge both files (recommended)</source>
+        <translation>Beide Dateien manuell zusammenführen (empfohlen)</translation>
     </message>
     <message>
-        <source>Open selected file locally</source>
-        <translation>Ausgewählte Datei lokal öffnen</translation>
-    </message>
-    <message>
-        <source>Resolve conflicts</source>
-        <translation>Konflikte auflösen</translation>
-    </message>
-    <message>
-        <source>Please describe your changes for team </source>
-        <translation type="obsolete">Bitte beschreiben Sie Ihre Änderungen für das Team </translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation>Fertig</translation>
-    </message>
-    <message>
-        <source>Could not save Desktop Client settings</source>
-        <translation>Desktop-Client-Einstellungen konnten nicht gespeichert werden</translation>
+        <source>Could not update team list from {0}: </source>
+        <translation>Konnte Liste der Teams nicht von {0} holen: </translation>
     </message>
     <message>
         <source>Unknown. Status is null.</source>
         <translation type="obsolete">Unbekannt. Status ist null.</translation>
     </message>
     <message>
-        <source>Running actions:</source>
-        <translation>Laufende Aktionen:</translation>
-    </message>
-    <message>
-        <source>Property</source>
-        <translation>Datei-Eigenschaft</translation>
-    </message>
-    <message>
-        <source>One of the local directories was deleted and replaced with a file of the same name. This structural change must be resolved before synchronization.</source>
-        <translation>Einer Ihrer lokalen Ordner wurde gelöscht und mit einer Datei gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
-    </message>
-    <message>
-        <source>This remotely modified file will be downloaded from the server.</source>
-        <translation type="obsolete">Diese auf dem Server geänderte Datei wird heruntergeladen.</translation>
-    </message>
-    <message>
-        <source>LoginID</source>
-        <translation>Benutzername</translation>
-    </message>
-    <message>
-        <source>Synchronisation stopped.</source>
-        <translation>Synchronisierung abgebrochen.</translation>
+        <source>This file is obstructed.</source>
+        <translation type="obsolete">Diese Datei ist versperrt.</translation>
     </message>
     <message>
         <source>Currently working on: </source>
         <translation>Aktuell bearbeitet: </translation>
     </message>
     <message>
-        <source>Your changes to this file will be uploaded to the server.</source>
-        <translation type="obsolete">Ihre Änderungen an dieser Datei werden auf den Server hochgeladen.</translation>
+        <source>Updating task list...</source>
+        <translation>Aktualisiere Liste der Aufgaben...</translation>
     </message>
     <message>
-        <source>Start anyway</source>
-        <translation>Trotzdem starten</translation>
+        <source>Overwrite your local file with the one from the server</source>
+        <translation type="obsolete">Ihre lokale Datei mt der vom Server überschreiben</translation>
     </message>
     <message>
-        <source>Status</source>
-        <translation>Status</translation>
-    </message>
-    <message>
-        <source>Rename file and upload it using a new name:</source>
-        <translation>Datei umbenennen und unter neuem Namen hochladen:</translation>
+        <source>Conflict</source>
+        <translation type="obsolete">Konflikt</translation>
     </message>
     <message>
         <source>Refreshing workspaces changes</source>
         <translation>Aktualisiere Änderungsliste</translation>
     </message>
     <message>
-        <source>Mindquarry Desktop Client</source>
-        <translation>Mindquarry Desktop Client</translation>
+        <source>File Changes</source>
+        <translation>Dateiänderungen</translation>
+    </message>
+    <message>
+        <source>The file from the server will be downloaded.</source>
+        <translation>Die Datei vom Server wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>A locally replaced file or directory (svn delete + svn add) was also replaced by someone else on the server.</source>
+        <translation>Eine lokal ersetzte Datei/Ordner (svn delete + svn add) wurde auch auf dem Server von jemandem ersetzt.</translation>
+    </message>
+    <message>
+        <source>Affected file/directory:</source>
+        <translation>Betroffene Datei/Ordner:</translation>
+    </message>
+    <message>
+        <source>Invalid server URL given.\n\nPlease check your server settings in the preferences dialog.</source>
+        <translation type="obsolete">Ungültige Server URL.\n\nBitte prüfen Sie Ihre Einstellungen.</translation>
+    </message>
+    <message>
+        <source>Refresh list of teams</source>
+        <translation>Liste der Teams aktualisieren</translation>
+    </message>
+    <message>
+        <source>This remotely deleted file was modified locally. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Diese auf dem Server gelöschte Datei wurde lokal geändert. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>This item has been deleted or moved on the server. It will be deleted locally.</source>
+        <translation type="obsolete">Dieses Objekt wurde auf dem Server gelöscht oder verschoben. Es wird auch lokal gelöscht bzw. verschoben.</translation>
+    </message>
+    <message>
+        <source>Refresh the list of teams.</source>
+        <translation>Liste der Teams aktualisieren.</translation>
+    </message>
+    <message>
+        <source>Select a Team</source>
+        <translation>Wählen Sie ein Team</translation>
+    </message>
+    <message>
+        <source>Ignore the deletion on the server and upload your local file</source>
+        <translation type="obsolete">Löschen ignorieren und Ihre lokale Datei zum Server hochladen</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <source>Somebody else modified the property you are trying to synchronize. Please select the version that should be treated as the current version.</source>
+        <translation>Jemand hat die Datei-Eigenschaften der Datei, die Sie hochladen wollen, auf dem Server geändert. Bitte wählen Sie die Version, mit der weitergearbeitet werden soll.</translation>
+    </message>
+    <message>
+        <source>Refresh the list of tasks.</source>
+        <translation type="obsolete">Aktualisieren der Aufgabenliste.</translation>
+    </message>
+    <message>
+        <source>Property</source>
+        <translation>Datei-Eigenschaft</translation>
+    </message>
+    <message>
+        <source>This directory will be deleted on the server.</source>
+        <translation type="obsolete">Dieser Ordner wird auf dem Server gelöscht.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>Zurücksetzen</translation>
+    </message>
+    <message>
+        <source>Please check your username and password settings in the preferences dialog.</source>
+        <translation>Bitte prüfen Sie Ihren Benutzernamen und Ihr Passwort im Einstellungs-Dialog.</translation>
+    </message>
+    <message>
+        <source>This remotely modified file will be downloaded from the server.</source>
+        <translation type="obsolete">Diese auf dem Server geänderte Datei wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Resolve conflicts</source>
+        <translation>Konflikte auflösen</translation>
+    </message>
+    <message>
+        <source>New Task</source>
+        <translation>Neue Aufgabe</translation>
+    </message>
+    <message>
+        <source>Rename file and upload it using a new name:</source>
+        <translation>Datei umbenennen und unter neuem Namen hochladen:</translation>
+    </message>
+    <message>
+        <source>Use your local version of the file</source>
+        <translation>Ihre lokale Version der Datei benutzen</translation>
+    </message>
+    <message>
+        <source>Do not delete the file, and download the version from the server.</source>
+        <translation type="obsolete">Datei nicht löschen und Version vom Server herunterladen.</translation>
+    </message>
+    <message>
+        <source>Could not save Desktop Client settings</source>
+        <translation>Desktop-Client-Einstellungen konnten nicht gespeichert werden</translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation>Priorität</translation>
+    </message>
+    <message>
+        <source>Currently no action is running.</source>
+        <translation>Zur Zeit wird keine Aktion ausgeführt.</translation>
+    </message>
+    <message>
+        <source>Mindquarry Client already running</source>
+        <translation>Mindquarry-Client läuft bereits</translation>
+    </message>
+    <message>
+        <source>http://your.mindquarry.server</source>
+        <translation>http://your.mindquarry.server</translation>
+    </message>
+    <message>
+        <source>Could not load Desktop Client settings</source>
+        <translation>Desktop-Client-Einstellungen konnten nicht geladen werden</translation>
+    </message>
+    <message>
+        <source>Edit the contents of a task</source>
+        <translation>Editieren Sie eine Aufgabe</translation>
+    </message>
+    <message>
+        <source>Commit message</source>
+        <translation type="obsolete">Änderungsbeschreibung</translation>
+    </message>
+    <message>
+        <source>Modified files in &apos;{0}&apos;:</source>
+        <translation>Geänderte Dateien in &apos;{0}&apos;:</translation>
+    </message>
+    <message>
+        <source>Open the web interface of the current profiles server.</source>
+        <translation>Öffne die Webseite des ausgewählten Servers.</translation>
+    </message>
+    <message>
+        <source>Task refresh cancelled.</source>
+        <translation>Aufgabenaktualisierung abgebrochen.</translation>
+    </message>
+    <message>
+        <source>Please select a resolution method.</source>
+        <translation type="obsolete">Bitte wählen Sie eine Konfliktlösung.</translation>
+    </message>
+    <message>
+        <source>Could not update team list: </source>
+        <translation type="obsolete">Liste der Teams konnte nicht aktualisiert werden: </translation>
+    </message>
+    <message>
+        <source>No description available for this task</source>
+        <translation>Keine Beschreibung für diese Aufgabe</translation>
+    </message>
+    <message>
+        <source>Server Profiles</source>
+        <translation>Server-Profile</translation>
+    </message>
+    <message>
+        <source>The file &apos;{0}&apos; already exists, please choose a different filename.</source>
+        <translation>Die Datei &apos;{0}&apos; exisitiert bereits, bitte wählen Sie einen anderen Namen.</translation>
+    </message>
+    <message>
+        <source>This item is new on the server, it will be downloaded.</source>
+        <translation type="obsolete">Dieses Objekt ist auf dem Server neu, es wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>Please check your Mindquarry server URL in the preferences dialog.</source>
+        <translation>Bitte überprüfen Sie die URL des Mindquarry-Server im Einstellungs-Dialog.</translation>
+    </message>
+    <message>
+        <source>Synchronize</source>
+        <translation>Synchronisieren</translation>
+    </message>
+    <message>
+        <source>Rename local file and upload it using a new name:</source>
+        <translation>Lokale Datei umbenennen und unter neuem Namen hochladen:</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>Keine auswählen</translation>
+    </message>
+    <message>
+        <source>local</source>
+        <translation>lokal</translation>
+    </message>
+    <message>
+        <source>Resolving conflicts</source>
+        <translation>Konflikte auflösen</translation>
+    </message>
+    <message>
+        <source>Finished Merging</source>
+        <translation>Fertig zusammengeführt</translation>
+    </message>
+    <message>
+        <source>Edit Task</source>
+        <translation>Aufgabe bearbeiten</translation>
+    </message>
+    <message>
+        <source>Task {0} of {1}</source>
+        <translation type="obsolete">Aufgabe {0} von {1}</translation>
+    </message>
+    <message>
+        <source>Your changes of this item will be uploaded to the server.</source>
+        <translation type="obsolete">Ihre Änderungen dieses Objekts werden auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>Refreshes the task list</source>
+        <translation>Aufgabenliste aktualisieren</translation>
+    </message>
+    <message>
+        <source>Overwrite the file on the server with your local version</source>
+        <translation type="obsolete">Datei auf dem Server mit Ihrer lokalen Version überschreiben</translation>
+    </message>
+    <message>
+        <source>This new directory has also been added on the server. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Dieser neue Ordner wurde auch auf dem Server hinzugefügt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>Tracking tasks has been deactivated for this installation.</source>
+        <translation type="obsolete">Die Liste der Aufgaben wurde in dieser Installation deaktiviert.</translation>
+    </message>
+    <message>
+        <source>Error executing MS Word</source>
+        <translation>Fehler beim Starten von MS-Word</translation>
+    </message>
+    <message>
+        <source>Please describe the changes you have made to the following files in team &apos;{0}&apos;</source>
+        <translation>Bitte beschreiben Sie die Änderungen, die Sie in den folgenen Dateien des Teams &apos;{0}&apos; vorgenommen haben</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Use your local version of the property</source>
+        <translation>Ihre lokale Version der Datei-Eigenschaft benutzen</translation>
+    </message>
+    <message>
+        <source>Go to preferences</source>
+        <translation>Einstellungen anzeigen</translation>
+    </message>
+    <message>
+        <source>The file &apos;{0}&apos; already exists, please choose a different filename</source>
+        <translation type="obsolete">Die Datei &apos;{0}&apos; existiert bereits, bitte wählen Sie einen anderen Dateinamen</translation>
+    </message>
+    <message>
+        <source>Obstructed</source>
+        <translation type="obsolete">Versperrt</translation>
+    </message>
+    <message>
+        <source>Title must not be empty.</source>
+        <translation>Der Titel darf nicht leer sein.</translation>
+    </message>
+    <message>
+        <source>No task matches the selected filter</source>
+        <translation>Keine Aufgabe mehr gefunden nach der Filterung</translation>
+    </message>
+    <message>
+        <source>View my local file</source>
+        <translation>Meine lokale Datei anzeigen</translation>
+    </message>
+    <message>
+        <source>Invalid server URL given: {0}\n\nPlease check your server settings in the preferences dialog.</source>
+        <translation>Ungültige Server-URL: {0}\n\nBitte prüfen Sie Ihre Einstellungen.</translation>
+    </message>
+    <message>
+        <source>The script used to merge documents using MS Word could not be started. The exit code was </source>
+        <translation>Das Script zum Zusammenführen von MS-Word-Dateien konnte nicht gestartet werden. Fehlercode </translation>
+    </message>
+    <message>
+        <source>You are trying to delete a file or directory which someone else modified on the server.</source>
+        <translation>Sie wollen eine Datei oder einen Ordner löschen, das auf dem Server geändert wurde.</translation>
+    </message>
+    <message>
+        <source>Please resolve the conflict using one of the following options:</source>
+        <translation>Bitte wählen Sie eine der folgenden Optionen, um den Konflikt aufzulösen:</translation>
+    </message>
+    <message>
+        <source>Open preferences dialog including server profile settings</source>
+        <translation>Öffnet den Einstellungsdialog inklusive der Konfiguration von Serverprofilen</translation>
+    </message>
+    <message>
+        <source>Running actions:</source>
+        <translation>Laufende Aktionen:</translation>
+    </message>
+    <message>
+        <source>Updating list of teams</source>
+        <translation>Aktualisiere Teamliste</translation>
+    </message>
+    <message>
+        <source>Merge manually, continue only if done</source>
+        <translation type="obsolete">Manuell zusammenführen; nur fortfahren, wenn fertig</translation>
+    </message>
+    <message>
+        <source>Start anyway</source>
+        <translation>Trotzdem starten</translation>
+    </message>
+    <message>
+        <source>Files or directories in this directory have been added or deleted locally.</source>
+        <translation type="obsolete">Dateien oder Ordner in diesem Ordner wurden lokal hinzugefügt oder gelöscht.</translation>
+    </message>
+    <message>
+        <source>Not connected.\nPlease click the &apos;Refresh&apos; button to reconnect.</source>
+        <translation type="obsolete">Nicht verbunden.\nBitte klicken Sie auf &apos;Aktualisieren&apos;, um erneut zu verbinden.</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>Über</translation>
+    </message>
+    <message>
+        <source>LoginID</source>
+        <translation>Benutzername</translation>
+    </message>
+    <message>
+        <source>Refreshing workspaces changes for team &quot;{0}&quot; (team {1} of {2}) ...</source>
+        <translation type="obsolete">Aktualisiere Änderungsliste für Team &quot;{0}&quot; (Team {1} von {2}) ...</translation>
+    </message>
+    <message>
+        <source>Stop the currently running actions</source>
+        <translation>Aktuell laufende Aktionen abbrechen</translation>
+    </message>
+    <message>
+        <source>This file has been modified both on the server and locally. You will need to merge the changes.</source>
+        <translation type="obsolete">Diese Datei wurde sowohl lokal als auch auf dem Server geändert. Sie müssen beide Versionen manuell zusammenführen.</translation>
+    </message>
+    <message>
+        <source>This new file was added on the server and will be downloaded.</source>
+        <translation type="obsolete">Diese Datei wurde auf dem Server hinzugefügt und wird heruntergeladen.</translation>
+    </message>
+    <message>
+        <source>One of the local files was deleted and replaced with a directory of the same name. This structural change must be resolved before synchronization.</source>
+        <translation>Eine lokale Datei wurde gelöscht und mit einem Ordner gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
+    </message>
+    <message>
+        <source>Synchronized successfully at {0}.</source>
+        <translation>Erfolgreich synchronisiert um {0} Uhr.</translation>
+    </message>
+    <message>
+        <source>One of the local directories was deleted and replaced with a file of the same name. This structural change must be resolved before synchronization.</source>
+        <translation>Einer Ihrer lokalen Ordner wurde gelöscht und mit einer Datei gleichen Namens ersetzt. Dieser Konflikt muss vor der Synchronisierung aufgelöst werden.</translation>
+    </message>
+    <message>
+        <source>This directory was deleted on the server and will hence be deleted locally.</source>
+        <translation type="obsolete">Dieser Ordner wurde auf dem Server gelöscht und wird daher auch lokal gelöscht.</translation>
+    </message>
+    <message>
+        <source>Exit the desktop client application.</source>
+        <translation>Beendet die Desktop-Client Anwendung.</translation>
+    </message>
+    <message>
+        <source>Please use the various file version at the top to merge the changes into the target file. Click &apos;Finished Merging&apos; and then &apos;OK&apos; when done.</source>
+        <translation>Bitte verwenden Sie die verschiedenen Dateiversionen oben, um Änderungen in der Zieldatei zusammenzuführen. Klicken Sie anschließend &apos;Fertig zusammengeführt&apos; und dann &apos;OK&apos;.</translation>
+    </message>
+    <message>
+        <source>Could not create the task.</source>
+        <translation>Aufgabe konnte nicht angelegt werden.</translation>
+    </message>
+    <message>
+        <source>Could not update the task</source>
+        <translation>Aufgabe konnte nicht aktualisiert werden</translation>
+    </message>
+    <message>
+        <source>Exit</source>
+        <translation>Beenden</translation>
+    </message>
+    <message>
+        <source>This case can occur if you created a file or renamed an existing file and someone else created a file with the same name.</source>
+        <translation>Dieser Fall kann auftreten, wenn Sie eine Datei erstellt oder umbenannt haben, und jemand hat zwischenzeitlich eine Datei gleichen Namens auf dem Server erstellt.</translation>
+    </message>
+    <message>
+        <source>This new directory will be uploaded to the server.</source>
+        <translation type="obsolete">Dieser neue Ordner wird auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>Synchronize workspaces with your desktop.</source>
+        <translation>Synchronisierung der Arbeitplätze mit dem Desktop.</translation>
+    </message>
+    <message>
+        <source>This item has been deleted or moved locally. It will be deleted on the server.</source>
+        <translation type="obsolete">Dieses Objekt wurde lokal gelöscht oder verschoben. Es wird auch auf dem Server gelöscht bzw. verschoben.</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>Alle auswählen</translation>
+    </message>
+    <message>
+        <source>Please do not modify, copy, or move files in your workspace during the synchronization.</source>
+        <translation>Bitte verschieben, kopieren und ändern Sie keine Dateien im Arbeitsbereich während der Synchronisierung.</translation>
+    </message>
+    <message>
+        <source>Preferences</source>
+        <translation>Einstellungen</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Suchen</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+    <message>
+        <source>Your file will be uploaded to the server.</source>
+        <translation>Ihre Datei wird auf den Server hochgeladen.</translation>
+    </message>
+    <message>
+        <source>You are trying to upload a file to the server which someone else has already deleted on the server.</source>
+        <translation>Sie versuchen eine Datei auf den Server hochzuladen, die zwischenzeitlich jemand auf dem Server gelöscht hat.</translation>
+    </message>
+    <message>
+        <source>Refreshing workspaces changes for team \&quot;{0}\&quot; (team {1} of {2}) ...</source>
+        <translation>Aktualisiere Liste der Arbeitsbereichs-Änderungen für Team \&quot;{0}\&quot; (Team {1} von {2}) ...</translation>
+    </message>
+    <message>
+        <source>This file will be deleted on the server.</source>
+        <translation type="obsolete">Diese Datei wird auf dem Server gelöscht.</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Fertig</translation>
+    </message>
+    <message>
+        <source>Synchronizing tasks</source>
+        <translation>Synchronisiere Aufgaben</translation>
+    </message>
+    <message>
+        <source>new task</source>
+        <translation>Neue Aufgabe</translation>
+    </message>
+    <message>
+        <source>Go to webpage</source>
+        <translation>Öffne Webseite</translation>
+    </message>
+    <message>
+        <source>Please enter the tasks data and press OK for adding/changing the task.</source>
+        <translation>Bitte gegeben Sie die Daten der Aufgabe ein und drücken Sie OK zum Ändern/Anlegen der Aufgabe.</translation>
+    </message>
+    <message>
+        <source>Ignore your local modification and delete your file</source>
+        <translation type="obsolete">Ihre lokalen Änderungen ignorieren und Ihre Datei löschen</translation>
+    </message>
+    <message>
+        <source>This item has been replaced locally or remotely. You will need to resolve the conflict.</source>
+        <translation type="obsolete">Dieses Object wurde lokal oder auf dem Server ersetzt. Sie müssen diesen Konflikt auflösen.</translation>
+    </message>
+    <message>
+        <source>The last change on the server was by {0} ({1}).</source>
+        <translation>Die Letzte Änderung auf dem Server stammt von {0} ({1}).</translation>
+    </message>
+    <message>
+        <source>There are currently no workspace changes to synchronize,\ni.e. there are no local changes and there are no changes on the server.\nLast refresh: </source>
+        <translation>Derzeit gibt es keine Änderungen, d.h. Sie haben keine\nlokalen Änderungen und auf dem Server sind ebenfalls keine Änderungen.\nLetzte Aktualisierung: </translation>
+    </message>
+    <message>
+        <source>Remove obstructing file and download original from server</source>
+        <translation>Gesperrte Datei löschen und Version vom Server herunterladen</translation>
+    </message>
+    <message>
+        <source>The file you are trying to synchronize already exists on the server</source>
+        <translation>Die Datei, die Sie synchronisieren wollen, existiert bereits auf dem Server</translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation>Aufgaben</translation>
+    </message>
+    <message>
+        <source>Show Window</source>
+        <translation>Fenster anzeigen</translation>
+    </message>
+    <message>
+        <source>The Mindquarry Desktop Client seems to be running already. Only one instance of the Desktop Client can be running at a time. If you are sure that the Desktop Client isn&apos;t running, select &apos;Start anyway&apos;.</source>
+        <translation>Der Mindquarry Desktop-Client scheint bereits zu laufen. Es kann jedoch nur eine Instanz des Desktop-Clients gleichzeitig laufen. Wenn Sie sicher sind, dass der Desktop-Client nicht läuft, wählen Sie bitte &apos;Trotzdem starten&apos;</translation>
+    </message>
+    <message>
+        <source>An error occured during synchronization: </source>
+        <translation>Während der Synchronisierung ist ein Fehler aufgetreten: </translation>
+    </message>
+    <message>
+        <source>Deactivated</source>
+        <translation type="obsolete">Deaktiviert</translation>
+    </message>
+    <message>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>The list of changes is not up to date. It will be updated now. \nPlease check the list of changes and press synchronize again.</source>
+        <translation>Die Änderungsliste ist nicht aktuell, sie wird jetzt aktualisiert.\nBitte prüfen Sie die Liste und synchronieren Sie danach erneut.</translation>
+    </message>
+    <message>
+        <source>Specify a new value for this property</source>
+        <translation>Neuer Wert für diese Datei-Eigenschaft</translation>
+    </message>
+    <message>
+        <source>Synchronized successfully at </source>
+        <translation type="obsolete">Erfolgreich synchronisiert um </translation>
+    </message>
+    <message>
+        <source>Cannot create settings folder</source>
+        <translation>Konnte Ordner zum Speichern der Einstellungen nicht erstellen</translation>
+    </message>
+    <message>
+        <source>Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile.</source>
+        <translation>Es wurde kein Profil ausgewählt. Bitte wählen Sie das Profil des Servers, mit dem Sie arbeiten wollen oder legen Sie ein neues Profil an.</translation>
+    </message>
+    <message>
+        <source>Use the property from the server</source>
+        <translation>Datei-Eigenschaft vom Server benutzen</translation>
+    </message>
+    <message>
+        <source>A new task could not be added because one of the following issues has occurred:\n\n(1) You are not a member of any team.\n(2) Currently you have no teams selected.\n(3) The Mindquarry server settings are incorrectly configured.</source>
+        <translation type="obsolete">Es konnte keine neue Aufgabe hinzugefügt werden. Dies könnte folgende Ursachen haben:\n\n(1) Sie sind in keinem Team Mitglied.\n(2) Sie haben momentan keine Teams ausgewählt.\n(3) Die Mindquarry-Servereinstellungen sind inkorrekt.</translation>
+    </message>
+    <message>
+        <source>Edit target file</source>
+        <translation>Zieldatei bearbeiten</translation>
+    </message>
+    <message>
+        <source>Refresh the list of file changes</source>
+        <translation>Liste der Dateiänderungen aktualisieren</translation>
+    </message>
+    <message>
+        <source>Filename(s)</source>
+        <translation>Dateiname(n)</translation>
+    </message>
+    <message>
+        <source>Use the file from the server</source>
+        <translation>Die Datei vom Server benutzen</translation>
     </message>
 </context>
 </TS>
