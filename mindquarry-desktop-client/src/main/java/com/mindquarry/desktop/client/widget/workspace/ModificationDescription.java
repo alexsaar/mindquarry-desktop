@@ -39,15 +39,15 @@ public class ModificationDescription {
 
     // Direction icons:
     
-    private static final Image downloadImage = new Image(
+    private static final Image DOWNLOAD_IMAGE = new Image(
             Display.getCurrent(), ModificationDescription.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
 
-    private static final Image uploadImage = new Image(
+    private static final Image UPLOAD_IMAGE = new Image(
             Display.getCurrent(), ModificationDescription.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-up.png")); //$NON-NLS-1$
 
-    private static final Image conflictImage = new Image(
+    private static final Image CONFLICT_IMAGE = new Image(
             Display.getCurrent(), ModificationDescription.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
 
@@ -66,7 +66,7 @@ public class ModificationDescription {
                     .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-deleted.png")); //$NON-NLS-1$
 
     private Image directionImage;
-    private Image statusOverlayImage;
+    private Image statusImage;
     private String longDescription;
     private String shortDescription;
 
@@ -77,9 +77,9 @@ public class ModificationDescription {
         directionImageMap = new HashMap<ChangeDirection, Image>();
         directionImageMap.put(ChangeDirection.UNKNOWN, null);
         directionImageMap.put(ChangeDirection.NONE, null);
-        directionImageMap.put(ChangeDirection.CONFLICT, conflictImage);
-        directionImageMap.put(ChangeDirection.TO_SERVER, uploadImage);
-        directionImageMap.put(ChangeDirection.FROM_SERVER, downloadImage);
+        directionImageMap.put(ChangeDirection.CONFLICT, CONFLICT_IMAGE);
+        directionImageMap.put(ChangeDirection.TO_SERVER, UPLOAD_IMAGE);
+        directionImageMap.put(ChangeDirection.FROM_SERVER, DOWNLOAD_IMAGE);
 
         statusImageMap = new HashMap<ChangeStatus, Image>();
         statusImageMap.put(ChangeStatus.UNKNOWN, null);
@@ -94,7 +94,7 @@ public class ModificationDescription {
     protected ModificationDescription(Image directionImage, Image statusOverlayImage,
             String longDescription, String shortDescription) {
         this.directionImage = directionImage;
-        this.statusOverlayImage = statusOverlayImage;
+        this.statusImage = statusOverlayImage;
         this.longDescription = longDescription;
         this.shortDescription = shortDescription;
     }
@@ -113,10 +113,10 @@ public class ModificationDescription {
         if (directionImageMap.containsKey(changeDirection))
             directionImage = directionImageMap.get(changeDirection);
 
-        // use change status for choosing status overlay icon
+        // use change status for choosing status icon
         ChangeStatus changeStatus = change.getChangeStatus();
         if (statusImageMap.containsKey(changeStatus))
-            statusOverlayImage = statusImageMap.get(changeStatus);
+            statusImage = statusImageMap.get(changeStatus);
 
         this.longDescription = change.getLongDescription();
         this.shortDescription = change.getShortDescription();
@@ -127,7 +127,7 @@ public class ModificationDescription {
     }
     
     public Image getStatusImage() {
-        return statusOverlayImage;
+        return statusImage;
     }
 
     public String getLongDescription() {
