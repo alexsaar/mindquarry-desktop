@@ -237,6 +237,8 @@ public class DeleteWithModificationConflict extends Conflict {
 						// check for deletion of expected file name;
 					    // changePath.getPath() contains e.g. "trunk/" while status.getPath()
 					    // does not, so we need to cut that off to compare the files:
+					    // TODO: this will only work if top-level is checked out, make it
+					    // work for partial checkouts, too:
 					    int secondSlashPos = changePath.getPath().indexOf('/', 1);     // find '/' but ignore slash at position 0
 					    // cut off the first part, typically "trunk":
                         String cleanPath = changePath.getPath();
