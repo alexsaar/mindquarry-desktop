@@ -23,7 +23,7 @@ import org.tmatesoft.svn.core.javahl.SVNClientImpl;
 
 public class Change implements ChangeDescriptor {
 
-    protected static Log log;
+    protected static Log log = LogFactory.getLog(Change.class);
     protected SVNClientImpl client;
     protected Status status;
     protected File file;
@@ -33,7 +33,6 @@ public class Change implements ChangeDescriptor {
     }
 
     protected Change(Status status, File file) {
-        log = LogFactory.getLog(getClass());
         this.status = status;
         this.file = file;
     }
