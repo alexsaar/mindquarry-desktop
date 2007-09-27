@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
 import com.mindquarry.desktop.workspace.conflict.Change;
 import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeDirection;
 import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeStatus;
@@ -119,9 +118,8 @@ public class ModificationDescription {
         if (statusImageMap.containsKey(changeStatus))
             statusOverlayImage = statusImageMap.get(changeStatus);
 
-        this.longDescription = Messages.getString(change.getLongDescription());
-        this.shortDescription = Messages
-                .getString(change.getShortDescription());
+        this.longDescription = change.getLongDescription();
+        this.shortDescription = change.getShortDescription();
     }
     
     public Image getDirectionImage() {
