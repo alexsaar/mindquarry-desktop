@@ -42,7 +42,8 @@ public interface ChangeDescriptor {
         ADDED,      // added file/dir either locally or remotely
         MODIFIED,   // modified file/dir either locally or remotely
         DELETED,    // deleted file/dir either locally or remotely
-        CONFLICTED  // file/dir is in conflict locally
+        CONFLICTED,  // file/dir is in conflict locally
+        REPLACED    // file/dir deleted and re-added in one step
     }
     
     /**

@@ -57,11 +57,13 @@ import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.LocalAddition;
 import com.mindquarry.desktop.workspace.conflict.LocalDeletion;
 import com.mindquarry.desktop.workspace.conflict.LocalModification;
+import com.mindquarry.desktop.workspace.conflict.LocalReplace;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 import com.mindquarry.desktop.workspace.conflict.RemoteAddition;
 import com.mindquarry.desktop.workspace.conflict.RemoteDeletion;
 import com.mindquarry.desktop.workspace.conflict.RemoteModification;
+import com.mindquarry.desktop.workspace.conflict.RemoteReplace;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 import com.mindquarry.desktop.workspace.exception.SynchronizeException;
@@ -780,6 +782,8 @@ public class SVNSynchronizer {
         while (iter.hasNext()) {
             Status status = iter.next();
             
+            // ----- local -----
+            
             // local addition of files/dirs
             if (status.getTextStatus() == StatusKind.added) {
                 iter.remove();
@@ -800,6 +804,15 @@ public class SVNSynchronizer {
                 changes.add(new LocalModification(status));
                 continue;
             }
+
+            // local replace of files/dirs
+            if (status.getTextStatus() == StatusKind.replaced) {
+                iter.remove();
+                changes.add(new LocalReplace(new File(status.getPath()), status));
+                continue;
+            }
+
+            // ----- remote -----
             
             // remote addition of files/dirs
             if (status.getRepositoryTextStatus() == StatusKind.added) {
@@ -821,6 +834,14 @@ public class SVNSynchronizer {
                 changes.add(new RemoteModification(status));
                 continue;
             }
+
+            // remote replace of files/dirs
+            if (status.getRepositoryTextStatus() == StatusKind.replaced) {
+                iter.remove();
+                changes.add(new RemoteReplace(status));
+                continue;
+            }
+        
         }
 
         // add normal changes
