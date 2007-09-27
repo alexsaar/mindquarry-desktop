@@ -239,7 +239,10 @@ public class DeleteWithModificationConflict extends Conflict {
 					    // does not, so we need to cut that off to compare the files:
 					    int secondSlashPos = changePath.getPath().indexOf('/', 1);     // find '/' but ignore slash at position 0
 					    // cut off the first part, typically "trunk":
-                        String cleanPath = changePath.getPath().substring(secondSlashPos);
+                        String cleanPath = changePath.getPath();
+                        if (secondSlashPos != -1) {
+                            cleanPath = cleanPath.substring(secondSlashPos);
+                        }
                         File thisFile = new File(localPath + cleanPath).getAbsoluteFile();
 						if (targetFile.compareTo(thisFile) == 0 && changePath.getAction() == 'D') {							
 							// want to restore last revision before deletion
