@@ -1024,7 +1024,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
                     SVNProxyHandler.removeProxySettings();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
