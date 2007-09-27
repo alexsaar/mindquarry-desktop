@@ -157,33 +157,20 @@
        ry="0" />
     <text
        xml:space="preserve"
-       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
-       x="255.31818"
-       y="130.49904"
-       id="text8526"
-       sodipodi:linespacing="125%"
-       transform="scale(1.0211148,0.9793218)"><tspan
-         sodipodi:role="line"
-         id="tspan8528"
-         x="255.31818"
-         y="130.49904"
-         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">Share knowledge ...</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
-       x="247.96936"
-       y="398.34726"
+       style="font-size:15.08174896px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
+       x="248.32959"
+       y="394.94916"
        id="text8530"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         x="247.96936"
-         y="398.34726"
+         x="248.32959"
+         y="394.94916"
          id="tspan8534"
-         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">Mindquarry Desktop Client </tspan><tspan
+         style="font-size:15.08174896px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">Mindquarry Desktop Client </tspan><tspan
          sodipodi:role="line"
-         x="247.96936"
-         y="423.34726"
-         style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans"
+         x="248.32959"
+         y="413.80134"
+         style="font-size:15.08174896px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans"
          id="tspan2197">1.2 Beta</tspan></text>
     <rect
        style="fill:none;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;display:inline"
@@ -331,19 +318,6 @@
          id="tspan9534"
          sodipodi:role="line"
          style="font-family:Gill Sans">The Open Source Collaborative Software</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
-       x="594.11224"
-       y="156.15544"
-       id="text3666"
-       sodipodi:linespacing="125%"
-       transform="scale(1.0211148,0.9793218)"><tspan
-         sodipodi:role="line"
-         id="tspan3668"
-         x="594.11224"
-         y="156.15544"
-         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#282828;fill-opacity:1;font-family:Gill Sans">... be creative ...</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Gill Sans"
