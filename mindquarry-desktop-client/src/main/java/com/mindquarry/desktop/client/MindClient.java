@@ -181,6 +181,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     private FileLock fileLock;
 
+    private com.mindquarry.desktop.event.Event storedEvent;
+
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
     // #########################################################################
@@ -582,6 +584,10 @@ public class MindClient extends ApplicationWindow implements EventListener {
         getShell().setSize(800, 600);
 
         createTrayIconAndMenu(Display.getDefault());
+        
+        if (storedEvent != null) {
+            EventBus.send(storedEvent);
+        }
         return parent;
     }
 
@@ -1005,6 +1011,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
     public void onEvent(com.mindquarry.desktop.event.Event event) {
         if (event instanceof ProfileActivatedEvent) {
             try {
+                // On the very first startup, when there's no configuration
+                // file yet, we first show the config dialog. It will then
+                // send an event which we cannot handle yet as nothing is
+                // set up, so store the event and re-send it later:
+                if (teamList == null) {
+                    storedEvent = event;
+                    return;
+                }
                 displayNotConnected();
                 teamList.refresh();
                 teamList.loadSelection();
