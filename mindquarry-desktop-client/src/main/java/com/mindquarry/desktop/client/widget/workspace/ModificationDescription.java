@@ -74,6 +74,7 @@ public class ModificationDescription {
         statusOverlayImageMap.put(ChangeStatus.MODIFIED, null);
         statusOverlayImageMap.put(ChangeStatus.DELETED, null);
         statusOverlayImageMap.put(ChangeStatus.CONFLICTED, null);
+        statusOverlayImageMap.put(ChangeStatus.REPLACED, null);
     }
 
     protected ModificationDescription(Image directionImage, Image statusOverlayImage,
