@@ -38,6 +38,8 @@ public class ModificationDescription {
     private static Log log = LogFactory
         .getLog(ModificationDescription.class);
 
+    // Direction icons:
+    
     private static final Image downloadImage = new Image(
             Display.getCurrent(), ModificationDescription.class
                     .getResourceAsStream("/com/mindquarry/icons/32x32/actions/synchronize-down.png")); //$NON-NLS-1$
@@ -50,13 +52,27 @@ public class ModificationDescription {
             Display.getCurrent(), ModificationDescription.class
                     .getResourceAsStream("/org/tango-project/tango-icon-theme/32x32/status/dialog-warning.png")); //$NON-NLS-1$
 
+    // Status icons:
+    
+    private static final Image ADDED_IMAGE = new Image(
+            Display.getCurrent(), ModificationDescription.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-added.png")); //$NON-NLS-1$
+
+    private static final Image MODIFIED_IMAGE = new Image(
+            Display.getCurrent(), ModificationDescription.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-modified.png")); //$NON-NLS-1$
+
+    private static final Image DELETED_IMAGE = new Image(
+            Display.getCurrent(), ModificationDescription.class
+                    .getResourceAsStream("/com/mindquarry/icons/32x32/status/status-deleted.png")); //$NON-NLS-1$
+
     private Image directionImage;
     private Image statusOverlayImage;
     private String longDescription;
     private String shortDescription;
 
     private static Map<ChangeDirection,Image> directionImageMap = null;
-    private static Map<ChangeStatus,Image> statusOverlayImageMap = null;
+    private static Map<ChangeStatus,Image> statusImageMap = null;
     
     static {
         directionImageMap = new HashMap<ChangeDirection, Image>();
@@ -66,15 +82,14 @@ public class ModificationDescription {
         directionImageMap.put(ChangeDirection.TO_SERVER, uploadImage);
         directionImageMap.put(ChangeDirection.FROM_SERVER, downloadImage);
 
-        // TODO: add real overlay icons
-        statusOverlayImageMap = new HashMap<ChangeStatus, Image>();
-        statusOverlayImageMap.put(ChangeStatus.UNKNOWN, null);
-        statusOverlayImageMap.put(ChangeStatus.NONE, null);
-        statusOverlayImageMap.put(ChangeStatus.ADDED, null);
-        statusOverlayImageMap.put(ChangeStatus.MODIFIED, null);
-        statusOverlayImageMap.put(ChangeStatus.DELETED, null);
-        statusOverlayImageMap.put(ChangeStatus.CONFLICTED, null);
-        statusOverlayImageMap.put(ChangeStatus.REPLACED, null);
+        statusImageMap = new HashMap<ChangeStatus, Image>();
+        statusImageMap.put(ChangeStatus.UNKNOWN, null);
+        statusImageMap.put(ChangeStatus.NONE, null);
+        statusImageMap.put(ChangeStatus.ADDED, ADDED_IMAGE);
+        statusImageMap.put(ChangeStatus.MODIFIED, MODIFIED_IMAGE);
+        statusImageMap.put(ChangeStatus.DELETED, DELETED_IMAGE);
+        statusImageMap.put(ChangeStatus.CONFLICTED, null);  // shown in direction already
+        statusImageMap.put(ChangeStatus.REPLACED, null);
     }
 
     protected ModificationDescription(Image directionImage, Image statusOverlayImage,
@@ -101,8 +116,8 @@ public class ModificationDescription {
 
         // use change status for choosing status overlay icon
         ChangeStatus changeStatus = change.getChangeStatus();
-        if (statusOverlayImageMap.containsKey(changeStatus))
-            statusOverlayImage = statusOverlayImageMap.get(changeStatus);
+        if (statusImageMap.containsKey(changeStatus))
+            statusOverlayImage = statusImageMap.get(changeStatus);
 
         this.longDescription = Messages.getString(change.getLongDescription());
         this.shortDescription = Messages
@@ -113,7 +128,7 @@ public class ModificationDescription {
         return directionImage;
     }
     
-    public Image getStatusOverlayImage() {
+    public Image getStatusImage() {
         return statusOverlayImage;
     }
 

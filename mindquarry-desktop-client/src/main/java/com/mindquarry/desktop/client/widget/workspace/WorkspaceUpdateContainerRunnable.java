@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TreeItem;
+import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
@@ -160,6 +161,8 @@ public class WorkspaceUpdateContainerRunnable extends
                         }
                     }
                 });
+        
+        // first column: file/directory name
         TreeViewerColumn col = new TreeViewerColumn(
                 containerWidget.getViewer(), SWT.LEFT);
         col.getColumn().setText("Name");
@@ -182,6 +185,8 @@ public class WorkspaceUpdateContainerRunnable extends
                 return ((File) element).getName();
             }
         });
+
+        // second column: direction information (up/down/conflict)
         col = new TreeViewerColumn(containerWidget.getViewer(), SWT.CENTER);
         col.getColumn().setResizable(false);
         col.getColumn().setWidth(32);
@@ -196,7 +201,6 @@ public class WorkspaceUpdateContainerRunnable extends
                         && widget.changeSets.getFiles().contains(file)) {
                     descr = new ModificationDescription(widget.changeSets.getChange(file));
                 }
-              
                 return descr.getDirectionImage();
             }
 
@@ -204,6 +208,36 @@ public class WorkspaceUpdateContainerRunnable extends
                 return "";
             }
         });
+
+        // third column: status information (modified, added, ...)
+        col = new TreeViewerColumn(containerWidget.getViewer(), SWT.CENTER);
+        col.getColumn().setResizable(false);
+        col.getColumn().setWidth(32);
+        col.setLabelProvider(new ColumnLabelProvider() {
+            public Image getImage(Object element) {
+                File file = (File) element;
+                // lookup the status via the File -> Status maps
+                WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
+                Change change = widget.changeSets.getChange(file);
+                if (change.getStatus().getNodeKind() == NodeKind.dir) {
+                    // "modified" etc on directory is too confusing
+                    return null;
+                }
+
+                ModificationDescription descr = new ModificationDescription(null);
+                if (widget.changeSets != null
+                        && widget.changeSets.getFiles().contains(file)) {
+                    descr = new ModificationDescription(widget.changeSets.getChange(file));
+                }
+              
+                return descr.getStatusImage();
+            }
+
+            public String getText(Object element) {
+                return "";
+            }
+        });
+
         // add auto resizing of tree columns
         containerWidget.getShell().addListener(SWT.Resize, new Listener() {
             public void handleEvent(Event event) {
@@ -280,9 +314,9 @@ public class WorkspaceUpdateContainerRunnable extends
 
     private int getColumnSpace() {
         if (SVNFileUtil.isOSX) {
-            return 136;
+            return 32+136;
         }
-        return 36;
+        return 32+36;
     }
 
     /**
