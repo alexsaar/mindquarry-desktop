@@ -272,6 +272,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
      *            the command line arguments
      */
     public static void main(String[] args) {
+        Display.setAppName(APPLICATION_NAME);
+
         // show splash
         SplashScreen splash = SplashScreen.newInstance(5);
         splash.show();
