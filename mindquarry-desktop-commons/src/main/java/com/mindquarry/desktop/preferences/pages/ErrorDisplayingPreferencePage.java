@@ -68,10 +68,6 @@ public abstract class ErrorDisplayingPreferencePage extends PreferencePage {
         super(title);
     }
 
-    /**
-     * @param title
-     * @param image
-     */
     public ErrorDisplayingPreferencePage(String title, ImageDescriptor image) {
         super(title, image);
     }
@@ -82,7 +78,8 @@ public abstract class ErrorDisplayingPreferencePage extends PreferencePage {
     
     public Composite createErrorBorderComposite(Composite parent, int border) {
         Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL|
+                GridData.FILL_VERTICAL));
         GridLayout layout = new GridLayout(1, true);
         layout.marginHeight = border;
         layout.marginWidth = border;
