@@ -266,8 +266,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
 
         Button renameButton = new Button(buttonArea, SWT.PUSH);
         renameButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        renameButton.setText(Messages.getString("Rename Profile") //$NON-NLS-1$
-                + " ..."); //$NON-NLS-1$
+        renameButton.setText(Messages.getString("Rename Profile ...")); //$NON-NLS-1$
         renameButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 renameProfile();
@@ -342,8 +341,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         // initialize server URL section
         CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
         quarryEndpointLabel.setText(Messages
-                .getString("URL of the Mindquarry Server") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+                .getString("URL of the Mindquarry Server:")); //$NON-NLS-1$
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
@@ -368,8 +366,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         });
         // initialize login section
         CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
-        loginLabel.setText(Messages.getString("Your Login ID") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+        loginLabel.setText(Messages.getString("Your Login ID:")); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         errorComp = createErrorBorderComposite(settingsGroup, 1);
@@ -393,8 +390,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         });
         // initialize password section
         CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
-        pwdLabel.setText(Messages.getString("Your Password") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+        pwdLabel.setText(Messages.getString("Your Password:")); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         errorComp = createErrorBorderComposite(settingsGroup, 1);
@@ -471,8 +467,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         
         // initialize workspace folder section
         CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
-        locationLabel.setText(Messages.getString("Folder for Workspaces") //$NON-NLS-1$
-                + ":"); //$NON-NLS-1$
+        locationLabel.setText(Messages.getString("Folder for Workspaces:")); //$NON-NLS-1$
         locationLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Composite locationArea = new Composite(settingsGroup, SWT.NONE);
