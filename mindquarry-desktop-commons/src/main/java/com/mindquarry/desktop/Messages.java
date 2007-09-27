@@ -83,8 +83,10 @@ public class Messages {
             Map<String, String> translationMap, String... args) {
         String translation = translationMap.get(key);
         if (translation == null) {
+            // quotes are as >>\"<< in the map, but as >>"<< in the key:
+            key = key.replaceAll("\"", "\\\\\"");
             // line breaks are entered as "\n" (literally) but we get them as a line
-            // break form the parser:
+            // break from the parser:
             translation = translationMap.get(key.replace("\n", "\\n"));
             if (translation == null) { 
                 if (!"en".equals(Locale.getDefault().getLanguage())) {
@@ -94,6 +96,7 @@ public class Messages {
                 translation = key;
             }
             translation = translation.replace("\\n", "\n");
+            translation = translation.replace("\\\"", "\"");
         }
         int i = 0;
         // "{n}" can be used as a placeholder in the message, it refers
