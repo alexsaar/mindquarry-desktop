@@ -219,7 +219,8 @@ public class WorkspaceUpdateContainerRunnable extends
                 // lookup the status via the File -> Status maps
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
                 Change change = widget.changeSets.getChange(file);
-                if (change.getStatus().getNodeKind() == NodeKind.dir) {
+                if (change != null && change.getStatus() != null &&
+                        change.getStatus().getNodeKind() == NodeKind.dir) {
                     // "modified" etc on directory is too confusing
                     return null;
                 }
