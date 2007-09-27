@@ -57,6 +57,7 @@ import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.workspace.conflict.Change;
+import com.mindquarry.desktop.workspace.conflict.ChangeDescriptor.ChangeStatus;
 
 /**
  * Class that creates the workspace widget.
@@ -220,8 +221,9 @@ public class WorkspaceUpdateContainerRunnable extends
                 WorkspaceBrowserWidget widget = (WorkspaceBrowserWidget) containerWidget;
                 Change change = widget.changeSets.getChange(file);
                 if (change != null && change.getStatus() != null &&
-                        change.getStatus().getNodeKind() == NodeKind.dir) {
-                    // "modified" etc on directory is too confusing
+                        change.getStatus().getNodeKind() == NodeKind.dir &&
+                        change.getChangeStatus() == ChangeStatus.MODIFIED) {
+                    // "modified" on directory is too confusing
                     return null;
                 }
 
