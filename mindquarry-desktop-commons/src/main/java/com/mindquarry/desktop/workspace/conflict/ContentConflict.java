@@ -205,8 +205,7 @@ public class ContentConflict extends RenamingConflict {
     }
 
     public void beforeUpdate() throws ClientException, IOException {        
-        switch (action) {
-        case RENAME:
+        if (action == Action.RENAME) {
             log.info("renaming " + conflictLocalFile.getAbsolutePath() + " to " + newName);
 
             File destination = new File(conflictLocalFile.getParentFile(), newName);
@@ -218,8 +217,6 @@ public class ContentConflict extends RenamingConflict {
             // this is very seldom and can simply be given as error messages
             
             client.add(destination.getPath(), true, true);
-            
-            break;
         }
     }
 

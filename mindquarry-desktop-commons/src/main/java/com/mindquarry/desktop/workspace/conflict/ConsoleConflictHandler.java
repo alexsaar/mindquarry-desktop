@@ -13,7 +13,6 @@
  */
 package com.mindquarry.desktop.workspace.conflict;
 
-import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
  * @author <a href="mailto:alexander(dot)klimetschek(at)mindquarry(dot)com">
