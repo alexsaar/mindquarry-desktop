@@ -1011,7 +1011,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    conflicts.add(new DeleteWithModificationConflict(true, conflictParent, remoteModList, localPath, repositoryURL));
+                    conflicts.add(new DeleteWithModificationConflict(true, conflictParent, remoteModList));
                 }
                 
                 // reset global iterator for next conflict search
@@ -1070,7 +1070,7 @@ public class SVNSynchronizer {
                     // also remove the deleted folder status object
                     remoteAndLocalChanges.remove(conflictParent);
                     
-                    conflicts.add(new DeleteWithModificationConflict(false, conflictParent, localModList, localPath, repositoryURL));
+                    conflicts.add(new DeleteWithModificationConflict(false, conflictParent, localModList));
                 }
                 
                 // reset global iterator for next conflict search
@@ -1101,7 +1101,7 @@ public class SVNSynchronizer {
                 if (status.getRepositoryTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    conflicts.add(new DeleteWithModificationConflict(true, status, null, localPath, repositoryURL));
+                    conflicts.add(new DeleteWithModificationConflict(true, status, null));
                 }
             }
         }
@@ -1129,7 +1129,7 @@ public class SVNSynchronizer {
                 if (status.getTextStatus() == StatusKind.modified) {
                     iter.remove();
                     
-                    conflicts.add(new DeleteWithModificationConflict(false, status, null, localPath, repositoryURL));
+                    conflicts.add(new DeleteWithModificationConflict(false, status, null));
                 }
             }
         }

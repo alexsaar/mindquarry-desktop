@@ -20,11 +20,14 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ChangePath;
 import org.tigris.subversion.javahl.ClientException;
+import org.tigris.subversion.javahl.Info;
 import org.tigris.subversion.javahl.LogMessage;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 import org.tigris.subversion.javahl.Revision.Number;
+import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
+import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 
 import com.mindquarry.desktop.Messages;
 import com.mindquarry.desktop.util.FileHelper;
@@ -69,16 +72,12 @@ public class DeleteWithModificationConflict extends Conflict {
 	
 	private List<Status> otherMods;
     private boolean localDelete;
-    private String localPath;
-    private String repositoryURL;
 	private File tempCopy;
 	
-	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods, String localPath, String repositoryURL) {
+	public DeleteWithModificationConflict(boolean localDelete, Status status, List<Status> otherMods) {
 		super(status);
 		this.localDelete = localDelete;
 		this.otherMods = otherMods;
-		this.localPath = localPath;
-		this.repositoryURL = repositoryURL;
 	}
 	
 	/**
@@ -230,38 +229,59 @@ public class DeleteWithModificationConflict extends Conflict {
 				// Get all log messages since last update
 				LogMessage[] logMessages = client.logMessages(parent,
 						Revision.BASE, Revision.HEAD, false, true);
-
+				
+				// need to translate svn URLs from ChangePath to wc paths, so we
+				// have to find out about the working copy root to see what the
+				// URL prefix of the checkout is
+				File wcDir = new File(status.getPath());
+				if (tempCopy.isFile()) {
+				    wcDir = wcDir.getParentFile();
+				}
+				File wcRoot = SVNAdminDirectoryLocator.findWCRoot(wcDir);
+				Info info = client.info(wcRoot.getPath());
+                
+                // eg. http://svn.server.com/team1/trunk/my%20path
+                String wcRootURL = info.getUrl();
+                // eg. http://svn.server.com/team1
+                String repoRootURL = info.getRepository();
+                // eg. /trunk/my%20path
+                String checkoutPrefixURL = wcRootURL.substring(repoRootURL.length());
+                // eg. /trunk/my path
+                String checkoutPrefix = SVNEncodingUtil.uriDecode(checkoutPrefixURL);
+                
+                // eg. /home/peter/checkout/team1
+                String wcRootPath = wcRoot.getPath();
+                // eg. /home/peter/checkout/team1/dir/file.txt
+                String currentPath = status.getPath();
+                // eg. /dir/file.txt (the one to look for in the ChangePaths below)
+                String relativePath = currentPath.substring(wcRootPath.length());
+                
 				// Look for revision in which the file/dir was (last) deleted
 				for (LogMessage logMessage : logMessages) {
 					for (ChangePath changePath : logMessage.getChangedPaths()) {
-						// check for deletion of expected file name;
-					    // changePath.getPath() contains e.g. "trunk/" while status.getPath()
-					    // does not, so we need to cut that off to compare the files:
-					    // TODO: this will only work if top-level is checked out, make it
-					    // work for partial checkouts, too:
-					    int secondSlashPos = changePath.getPath().indexOf('/', 1);     // find '/' but ignore slash at position 0
-					    // cut off the first part, typically "trunk":
-                        String cleanPath = changePath.getPath();
-                        if (secondSlashPos != -1) {
-                            cleanPath = cleanPath.substring(secondSlashPos);
-                        }
-                        File thisFile = new File(localPath + cleanPath).getAbsoluteFile();
-						if (targetFile.compareTo(thisFile) == 0 && changePath.getAction() == 'D') {							
-							// want to restore last revision before deletion
-							restoreRev = new Number(logMessage.getRevision().getNumber()-1);
-							delFile    = cleanPath;
-							log.debug("found revision of deletion: '" + changePath.getPath()
-									+ "' was deleted in revision "
-									+ logMessage.getRevision().toString());
-						}
+					    
+					    // eg. /trunk/my path/dir/file.txt
+					    String cp = changePath.getPath();
+                        // eg. /dir/file.txt
+					    String relativeChangePath = cp.substring(checkoutPrefix.length());
+					    
+					    if (relativePath.equals(relativeChangePath) && changePath.getAction() == 'D') {
+                            // want to restore last revision before deletion
+                            restoreRev = new Number(logMessage.getRevision().getNumber()-1);
+                            delFile    = cp;
+                            log.debug("found revision of deletion: '" + changePath.getPath()
+                                    + "' was deleted in revision "
+                                    + logMessage.getRevision().toString());
+					    }
 					}
 				}
 				
 				// Restore deleted version with version history
 				if(restoreRev != null) {
-				    log.debug("copy " + repositoryURL+delFile + " to " + status.getPath() +
+				    log.debug("copy " + repoRootURL + delFile + " to " + status.getPath() +
 				            ", restoreRev " + restoreRev);
-					client.copy(repositoryURL+delFile, status.getPath(), null, restoreRev);
+				    
+					client.copy(repoRootURL + delFile, status.getPath(), null, restoreRev);
 				} else {
 					log.error("Failed to restore deleted version of " + status.getPath());
 				}
