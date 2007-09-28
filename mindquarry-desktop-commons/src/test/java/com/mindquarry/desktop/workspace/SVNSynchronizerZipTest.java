@@ -51,6 +51,8 @@ public class SVNSynchronizerZipTest implements Notify2 {
     private String wcPath;
     
     private String repoUrl;
+
+    private String wcPathRemote;
 	
 	private void extractZip(String zipName, String destinationPath) throws IOException {
 	    File dest = new File(destinationPath);
@@ -148,19 +150,33 @@ public class SVNSynchronizerZipTest implements Notify2 {
     }
     
     /**
-     * Creates a fresh new repository without the need for a zip file.
+     * Creates a fresh new repository without the need for a zip file and checks
+     * out a working copy under "wc".
      */
     public void setupRepo(String name) throws SVNException, ClientException, IOException {
-        System.out.println("Testing " + name + " ============================================================");
+        System.out.println("Testing " + name + " ("
+                + SVNAdminDirectoryLocator.SHALLOW_DIR_REF_FILENAME
+                + ") ============================================================");
         String targetPath = "target/" + name + "/";
+        
         File repo = new File(targetPath + "/repo").getAbsoluteFile();
         FileUtils.deleteDirectory(repo);
         this.repoUrl = "file://" + repo.toURI().getPath();
         SVNRepositoryFactory.createLocalRepository(repo, null, false, false, false);
-
+        
         this.wcPath = targetPath + "wc";
         FileUtils.deleteDirectory(new File(wcPath));
         client.checkout(repoUrl, wcPath, Revision.HEAD, true);
+    }
+    
+    /**
+     * Checks out another working copy under "remote".
+     */
+    public void checkoutRemote(String name) throws SVNException, ClientException, IOException {
+        String targetPath = "target/" + name + "/";
+        this.wcPathRemote = targetPath + "remote";
+        FileUtils.deleteDirectory(new File(wcPathRemote));
+        client.checkout(repoUrl, wcPathRemote, Revision.HEAD, true);
     }
     
     public SVNSynchronizer setupSynchronizer(ConflictHandler conflictHandler) {
@@ -176,7 +192,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	 * @param relative	relative path including filename (e.g. dir/file.ext)
 	 */
 	protected void assertFileExists(String relative) {
-		File file = new File(wcPath+relative);
+		File file = new File(wcPath + "/" + relative);
 		assertTrue("'" + relative + "' is expected to exist", file.exists());
 	}
 	
@@ -186,7 +202,7 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	 * @param relative	relative path including filename (e.g. dir/file.ext)
 	 */
 	protected void assertFileMissing(String relative) {
-		File file = new File(wcPath+relative);
+		File file = new File(wcPath + "/" + relative);
 		assertFalse("'" + relative + "' is expected to be missing", file.exists());
 	}
 	
@@ -195,9 +211,9 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	 * @param path		Path to use, can be empty (e.g. /home/user/abc/) 
 	 * @param relative	relative path including filename (e.g. dir/file.ext)
 	 */
-	protected void assertFileContains(String path, String relative,
+	protected void assertFileContains(String relative,
 			String substring) {
-		File file = new File(path+relative);
+		File file = new File(wcPath + "/" + relative);
 		String contents;
 		try {
 			contents = FileUtils.readFileToString(file);
@@ -289,6 +305,9 @@ public class SVNSynchronizerZipTest implements Notify2 {
 
         helper.synchronize();
         
+        assertFileMissing("dir");
+        assertFileExists("moved_dir");
+        
         cleanupTestOnlyRepo("move");
     }
     
@@ -319,6 +338,9 @@ public class SVNSynchronizerZipTest implements Notify2 {
         SVNSynchronizer helper = setupSynchronizer(new EnsureNoConflictsConflictHandler());
 
         helper.synchronize();
+        
+        assertFileMissing("dir");
+        assertFileExists("moved_dir");
         
         cleanupTestOnlyRepo("move");
     }
@@ -369,24 +391,24 @@ public class SVNSynchronizerZipTest implements Notify2 {
 		// class with methods testing the fields of the conflict object
 
 		// Test correct working copy contents
-        assertFileExists("/first");
-        assertFileExists("/first_renamed_0");
-        assertFileExists("/second");
-        assertFileExists("/second_renamed_2/");
-        assertFileExists("/second_renamed_2/file");
-        assertFileExists("/second_renamed_2/another_file");
-        assertFileExists("/third/");
-        assertFileExists("/third/first");
-        assertFileExists("/third/second");
-        assertFileExists("/third/second/first");
-        assertFileExists("/third_renamed_3");
-        assertFileExists("/fourth/");
-        assertFileExists("/fourth/first");
-        assertFileExists("/fourth/second/");
-        assertFileExists("/fourth/second/first");
-        assertFileExists("/fourth_renamed_1/");
-        assertFileExists("/fourth_renamed_1/file");
-        assertFileExists("/fourth_renamed_1/different_file");
+        assertFileExists("first");
+        assertFileExists("first_renamed_0");
+        assertFileExists("second");
+        assertFileExists("second_renamed_2/");
+        assertFileExists("second_renamed_2/file");
+        assertFileExists("second_renamed_2/another_file");
+        assertFileExists("third/");
+        assertFileExists("third/first");
+        assertFileExists("third/second");
+        assertFileExists("third/second/first");
+        assertFileExists("third_renamed_3");
+        assertFileExists("fourth/");
+        assertFileExists("fourth/first");
+        assertFileExists("fourth/second/");
+        assertFileExists("fourth/second/first");
+        assertFileExists("fourth_renamed_1/");
+        assertFileExists("fourth_renamed_1/file");
+        assertFileExists("fourth_renamed_1/different_file");
 		
 		// TODO: here we have to test if the remote/localAdded fields contain
 		// all files/folders of the test zip case
@@ -405,16 +427,16 @@ public class SVNSynchronizerZipTest implements Notify2 {
         // class with methods testing the fields of the conflict object
 
 		// Test correct working copy contents
-        assertFileExists("/first");
-        assertFileExists("/second");
-        assertFileExists("/third/");
-        assertFileExists("/third/first");
-        assertFileExists("/third/second");
-        assertFileExists("/third/second/first");
-        assertFileExists("/fourth/");
-        assertFileExists("/fourth/first");
-        assertFileExists("/fourth/second/");
-        assertFileExists("/fourth/second/first");
+        assertFileExists("first");
+        assertFileExists("second");
+        assertFileExists("third/");
+        assertFileExists("third/first");
+        assertFileExists("third/second");
+        assertFileExists("third/second/first");
+        assertFileExists("fourth/");
+        assertFileExists("fourth/first");
+        assertFileExists("fourth/second/");
+        assertFileExists("fourth/second/first");
         
         // TODO: here we have to test if the remote/localAdded fields contain
         // all files/folders of the test zip case
@@ -426,33 +448,32 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	public void testDeletedModifiedConflictDoRevertDelete() throws IOException, ClientException, SynchronizeException  {
 		setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.REVERTDELETE));
-		String localPath = helper.getLocalPath();
 		
 		// add file here, because having it in the zipped working copy breaks
 		// relocating the directory '2 Two', as it does not exist in the
 		// repository
-		client.add(localPath + "/2 Two/Added.txt", false);
+		add("2 Two/Added.txt");
 
 		helper.synchronize();
 
 		// Test correct working copy contents
-		assertFileExists ("/1 One/");
-		assertFileExists ("/1 One/Added.txt");
-		assertFileExists ("/1 One/Existing.txt");
-		assertFileExists ("/1 One/Modified.txt");
-		assertFileExists ("/2 Two/");
-		assertFileExists ("/2 Two/Added.txt");
-		assertFileExists ("/2 Two/Existing.txt");
-		assertFileExists ("/2 Two/Modified.txt");
-		assertFileExists ("/3 Three.txt");
-		assertFileExists ("/4 Four.txt");
-		assertFileExists ("/Existing.txt");
+		assertFileExists ("1 One/");
+		assertFileExists ("1 One/Added.txt");
+		assertFileExists ("1 One/Existing.txt");
+		assertFileExists ("1 One/Modified.txt");
+		assertFileExists ("2 Two/");
+		assertFileExists ("2 Two/Added.txt");
+		assertFileExists ("2 Two/Existing.txt");
+		assertFileExists ("2 Two/Modified.txt");
+		assertFileExists ("3 Three.txt");
+		assertFileExists ("4 Four.txt");
+		assertFileExists ("Existing.txt");
 
 		// Test correct file contents
-		assertFileContains(localPath, "/1 One/Modified.txt", "Modified\r\nModified");
-		assertFileContains(localPath, "/2 Two/Modified.txt", "Modified\r\nModified");
-		assertFileContains(localPath, "/3 Three.txt", "Modified");
-		assertFileContains(localPath, "/4 Four.txt",  "Modified");
+		assertFileContains("1 One/Modified.txt", "Modified\r\nModified");
+		assertFileContains("2 Two/Modified.txt", "Modified\r\nModified");
+		assertFileContains("3 Three.txt", "Modified");
+		assertFileContains("4 Four.txt",  "Modified");
 		
 		// TODO: check correct SVN state of all files
 
@@ -460,36 +481,68 @@ public class SVNSynchronizerZipTest implements Notify2 {
 	}
 
     @Test
+    public void testDeletedModifiedConflictDoRevertDelete2() throws IOException, ClientException, SynchronizeException, SVNException  {
+        setupRepo("deleted_modified_conflict2");
+        
+        mkdir("2 Two");
+        touch("2 Two/file.txt");
+        mkdir("2 Two/subdir");
+        touch("2 Two/subdir/foobar.txt");
+        
+        add("2 Two");
+        
+        client.commit(new String[] { this.wcPath }, "initial add", true);
+        
+        // TODO: checkout subdir
+        checkoutRemote("deleted_modified_conflict2");
+        
+        // remote setup: delete dir
+        delRemote("2 Two");
+        
+        client.commit(new String[] { this.wcPathRemote }, "remote delete", true);
+        
+        // local setup: modify contents
+        
+        modify("2 Two/file.txt");
+        touch("2 Two/another.txt");
+        add("2 Two/another.txt");
+        
+        SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.REVERTDELETE));
+        helper.synchronize();
+
+        cleanupTestOnlyRepo("deleted_modified_conflict2");
+    }
+    
+    @Test
     public void testDeletedModifiedConflictDoOnlyKeepModified() throws IOException, ClientException, SynchronizeException  {
         setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.ONLYKEEPMODIFIED));
-		String localPath = helper.getLocalPath();
 
 		// add file here, because having it in the zipped working copy breaks
 		// relocating the directory '2 Two', as it does not exist in the
 		// repository
-        client.add(localPath + "/2 Two/Added.txt", false);
+        add("2 Two/Added.txt");
 
         helper.synchronize();
 
 		// Test correct working copy contents
-		assertFileExists ("/1 One/");
-		assertFileExists ("/1 One/Added.txt");
-		assertFileExists ("/1 One/Existing.txt");
-		assertFileExists ("/1 One/Modified.txt");
-		assertFileExists ("/2 Two/");
-		assertFileExists ("/2 Two/Added.txt");
-		assertFileMissing("/2 Two/Existing.txt");
-		assertFileExists ("/2 Two/Modified.txt");
-		assertFileExists ("/3 Three.txt");
-		assertFileExists ("/4 Four.txt");
-		assertFileExists ("/Existing.txt");
+		assertFileExists ("1 One/");
+		assertFileExists ("1 One/Added.txt");
+		assertFileExists ("1 One/Existing.txt");
+		assertFileExists ("1 One/Modified.txt");
+		assertFileExists ("2 Two/");
+		assertFileExists ("2 Two/Added.txt");
+		assertFileMissing("2 Two/Existing.txt");
+		assertFileExists ("2 Two/Modified.txt");
+		assertFileExists ("3 Three.txt");
+		assertFileExists ("4 Four.txt");
+		assertFileExists ("Existing.txt");
 
 		// Test correct file contents
-		assertFileContains(localPath, "/1 One/Modified.txt", "Modified\r\nModified");
-		assertFileContains(localPath, "/2 Two/Modified.txt", "Modified\r\nModified");
-		assertFileContains(localPath, "/3 Three.txt", "Modified");
-		assertFileContains(localPath, "/4 Four.txt",  "Modified");
+		assertFileContains("1 One/Modified.txt", "Modified\r\nModified");
+		assertFileContains("2 Two/Modified.txt", "Modified\r\nModified");
+		assertFileContains("3 Three.txt", "Modified");
+		assertFileContains("4 Four.txt",  "Modified");
 
 		// TODO: check correct SVN state of all files
 
@@ -500,27 +553,26 @@ public class SVNSynchronizerZipTest implements Notify2 {
     public void testDeletedModifiedConflictDoDelete() throws IOException, ClientException, SynchronizeException  {
         setupTest("deleted_modified_conflict");
         SVNSynchronizer helper = setupSynchronizer(new DeleteWithModificationConflictHandlerMock(wcPath, DeleteWithModificationConflict.Action.DELETE));
-		String localPath = helper.getLocalPath();
 
 		// add file here, because having it in the zipped working copy breaks
 		// relocating the directory '2 Two', as it does not exist in the
 		// repository
-        client.add(localPath + "/2 Two/Added.txt", false);
+        add("2 Two/Added.txt");
 
         helper.synchronize();
 
 		// Test correct working copy contents
-		assertFileMissing("/1 One/");
-		assertFileMissing("/1 One/Added.txt");
-		assertFileMissing("/1 One/Existing.txt");
-		assertFileMissing("/1 One/Modified.txt");
-		assertFileMissing("/2 Two/");
-		assertFileMissing("/2 Two/Added.txt");
-		assertFileMissing("/2 Two/Existing.txt");
-		assertFileMissing("/2 Two/Modified.txt");
-		assertFileMissing("/3 Three.txt");
-		assertFileMissing("/4 Four.txt");
-		assertFileExists ("/Existing.txt");
+		assertFileMissing("1 One/");
+		assertFileMissing("1 One/Added.txt");
+		assertFileMissing("1 One/Existing.txt");
+		assertFileMissing("1 One/Modified.txt");
+		assertFileMissing("2 Two/");
+		assertFileMissing("2 Two/Added.txt");
+		assertFileMissing("2 Two/Existing.txt");
+		assertFileMissing("2 Two/Modified.txt");
+		assertFileMissing("3 Three.txt");
+		assertFileMissing("4 Four.txt");
+		assertFileExists ("Existing.txt");
 
 		// TODO: check correct SVN state of all files
 
@@ -531,9 +583,17 @@ public class SVNSynchronizerZipTest implements Notify2 {
         FileUtils.touch(new File(wcPath + "/" + relativePath));
     }
 	
+    private void touchRemote(String relativePath) throws IOException {
+        FileUtils.touch(new File(wcPathRemote + "/" + relativePath));
+    }
+    
 	private void modify(String relativePath) throws IOException {
         FileUtils.writeStringToFile(new File(wcPath + "/" + relativePath), "time " + System.currentTimeMillis());
 	}
+    
+    private void modifyRemote(String relativePath) throws IOException {
+        FileUtils.writeStringToFile(new File(wcPathRemote + "/" + relativePath), "time " + System.currentTimeMillis());
+    }
     
     private void replace(String relativePath, boolean isFile) throws ClientException, IOException {
         String path = wcPath + "/" + relativePath;
@@ -544,8 +604,22 @@ public class SVNSynchronizerZipTest implements Notify2 {
         client.add(path, false);
     }
     
+    private void replaceRemote(String relativePath, boolean isFile) throws ClientException, IOException {
+        String path = wcPathRemote + "/" + relativePath;
+        client.remove(new String[] { path }, null, false);
+        if (isFile) {
+            touchRemote(relativePath);
+        }
+        client.add(path, false);
+    }
+    
     private void add(String relativePath) throws ClientException {
         String path = wcPath + "/" + relativePath;
+        client.add(path, true);
+    }
+    
+    private void addRemote(String relativePath) throws ClientException {
+        String path = wcPathRemote + "/" + relativePath;
         client.add(path, true);
     }
     
@@ -554,9 +628,22 @@ public class SVNSynchronizerZipTest implements Notify2 {
         client.remove(new String[] { path }, null, false);
     }
     
+    private void delRemote(String relativePath) throws ClientException {
+        String path = wcPathRemote + "/" + relativePath;
+        client.remove(new String[] { path }, null, false);
+    }
+    
     private void move(String from, String to) throws IOException {
         File file = new File(wcPath, from);
         File toFile = new File(wcPath, to);
+        if (!file.renameTo(toFile)) {
+            throw new IOException("Could not rename '" + from + "' to '" + to + "'");
+        }
+    }
+    
+    private void moveRemote(String from, String to) throws IOException {
+        File file = new File(wcPathRemote, from);
+        File toFile = new File(wcPathRemote, to);
         if (!file.renameTo(toFile)) {
             throw new IOException("Could not rename '" + from + "' to '" + to + "'");
         }
@@ -574,7 +661,26 @@ public class SVNSynchronizerZipTest implements Notify2 {
         }
     }
     
+    private void removeRemote(String relativePath) throws IOException {
+        String path = wcPathRemote + "/" + relativePath;
+        File file = new File(path);
+        if (file.isDirectory()) {
+            FileUtils.deleteDirectory(file);
+        } else {
+            if (file.exists()) {
+                FileHelper.delete(file);
+            }
+        }
+    }
+    
     private void mkdir(String relativePath) throws IOException {
+        File file = new File(wcPath, relativePath);
+        if (!file.mkdirs()) {
+            throw new IOException("Could not mkdirs '" + file + "'");
+        }
+    }
+
+    private void mkdirRemote(String relativePath) throws IOException {
         File file = new File(wcPath, relativePath);
         if (!file.mkdirs()) {
             throw new IOException("Could not mkdirs '" + file + "'");
