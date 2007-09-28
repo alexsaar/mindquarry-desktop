@@ -143,7 +143,7 @@ public class SVNAdminDirectoryLocator {
         }
         
         // new style .svnref -> shallow admin directory in home dir
-        WCRootInfo wcRootInfo = findWCRoot(dir);
+        WCRootInfo wcRootInfo = findWCRootWithSVNRef(dir);
         File adminSubDir;
         
         if (wcRootInfo.found) {
@@ -197,7 +197,7 @@ public class SVNAdminDirectoryLocator {
         
         // first try to find the "closest versioned dir" by looking for
         // a corresponding shallow working copy dir
-        SVNAdminDirectoryLocator.WCRootInfo wcRoot = findWCRoot(base);
+        SVNAdminDirectoryLocator.WCRootInfo wcRoot = findWCRootWithSVNRef(base);
         if (wcRoot.found) {
             // eg. /home/peter/.svndata/foobar
             final File shallowWCBaseDir = new File(
@@ -428,7 +428,7 @@ public class SVNAdminDirectoryLocator {
      * Helper class for multi-return value containing the information for
      * an .svnref-style working copy root.
      */
-    private class WCRootInfo {
+    private static class WCRootInfo {
         public boolean found = false;
         public String wcRelativePath = "";
         public String shallowWorkingCopyDir = "";
@@ -441,8 +441,8 @@ public class SVNAdminDirectoryLocator {
      * path from the wc root to the dir and the reference contained within
      * the ref file.
      */
-    private static WCRootInfo findWCRoot(File dir) {
-        WCRootInfo result = new SVNAdminDirectoryLocator().new WCRootInfo();
+    private static WCRootInfo findWCRootWithSVNRef(File dir) {
+        WCRootInfo result = new WCRootInfo();
         
         // walk up the parents
         while (true) {
@@ -465,7 +465,7 @@ public class SVNAdminDirectoryLocator {
             // we want to get the svn admin directory even for deleted dirs!)
             if (dir == null) {
                 // we have reached the filesystem root without finding a .svnref
-                return new SVNAdminDirectoryLocator().new WCRootInfo();
+                return new WCRootInfo();
             }
         }
         
@@ -477,26 +477,88 @@ public class SVNAdminDirectoryLocator {
      * Looks for the working copy root of a wc with embedded .svn directories.
      * 
      * @param dir the directory to start
+     * @param allowDeletedDirs if true, allows for deleted dirs inside the
+     *              working copy, ie. it walks up the parent hierarchy
+     *              (virtually, without the need to check for physical
+     *              existence) until it finds the first embedded .svn - from
+     *              then it stops and returns the wc root when no .svn is found
+     *              anymore (because there are normally no .svn dirs above the
+     *              working copy root)
      * @return the working copy root or null if it could not be found
      */
-    private static File findWCRootForEmbeddedAdminDir(File dir) {
-        // if we start in a dir without a .svn, we aren't inside a wc at all
-        if (!hasEmbeddedAdminDirectory(dir)) {
-            return null;
+    private static File findWCRootForEmbeddedAdminDir(File dir, boolean allowDeletedDirs) {
+        // indicates if we found an embedded .svn dir along the parent axis
+        boolean foundAdminArea = false;
+
+        // strict mode
+        if (!allowDeletedDirs) {
+            // if we start in a dir without a .svn, we aren't inside a wc at all
+            if (!hasEmbeddedAdminDirectory(dir)) {
+                return null;
+            }
+            // in strict mode, we have to start with an embedded .svn dir
+            foundAdminArea = true;
         }
+        
+//        // if we start in a dir without a .svn, we aren't inside a wc at all
+//        if (!allowDeletedDirs && !hasEmbeddedAdminDirectory(dir)) {
+//            return null;
+//        }
         
         // walk up the parents until we find a dir without an embedded .svn dir
         while (true) {
-            File parent = dir.getParentFile();
-            // if it is null or does not exist, we are at the root of the file system
-            if (parent == null || !parent.exists() || !hasEmbeddedAdminDirectory(parent)) {
-                // we found it
-                break;
+            if (!foundAdminArea) {
+                if (hasEmbeddedAdminDirectory(dir)) {
+                    foundAdminArea = true;
+                }
             }
+            
+            File parent = dir.getParentFile();
+
+            // already seen embedded .svn dirs
+            if (foundAdminArea) {
+                // if it is null, we are at the root of the file system
+                // (Note: do not check dir.exists() since we want to get the svn
+                // admin directory even for deleted dirs!)
+                if (parent == null || !hasEmbeddedAdminDirectory(parent)) {
+                    // yeah, we found it!
+                    break;
+                }
+            } else {
+                if (parent == null) {
+                    // bad, no working copy at all
+                    return null;
+                }
+            }
+//            // if it is null, we are at the root of the file system
+//            // (Note: do not check dir.exists() since we want to get the svn
+//            // admin directory even for deleted dirs!)
+//            // or if we found the first dir with a missing .svn above folders
+//            // that did contain .svn directories
+//            if (parent == null || (foundAdminArea && !hasEmbeddedAdminDirectory(parent))) {
+//                // we found it
+//                break;
+//            }
             
             dir = parent;
         }
         return dir;
+    }
+    
+    /**
+     * Finds the root of the working copy for both embedded .svn dirs and for
+     * wcs with a shallow working copy.
+     */
+    public static File findWCRoot(File dir) {
+        // make sure we have an absolute file name
+        dir = dir.getAbsoluteFile();
+        
+        WCRootInfo rootInfo = findWCRootWithSVNRef(dir);
+        if (rootInfo.found) {
+            return rootInfo.wcRoot;
+        } else {
+            return findWCRootForEmbeddedAdminDir(dir, true);
+        }
     }
     
     /**
@@ -518,12 +580,12 @@ public class SVNAdminDirectoryLocator {
                 // embedded .svn dirs
                 System.out.println("Found embedded .svn dir, converting to shallow working copy.");
                 
-                File wcRoot = findWCRootForEmbeddedAdminDir(dir);
+                File wcRoot = findWCRootForEmbeddedAdminDir(dir, false);
                 System.out.println("Found wc root at '" + wcRoot.getCanonicalPath() + "'");
                 convertEmbedded2Shallow(wcRoot);
             } else {
                 // try to find wc root
-                WCRootInfo wcRootInfo = findWCRoot(dir);
+                WCRootInfo wcRootInfo = findWCRootWithSVNRef(dir);
                 if (!wcRootInfo.found) {
                     // TODO: throw SVNException
                     System.out.println("Cannot convert, '" + dir + "' is not a working copy.");
@@ -534,7 +596,8 @@ public class SVNAdminDirectoryLocator {
                 convertShallow2Embedded(wcRootInfo.wcRoot, new File(getShallowWorkingCopyBaseDir(), wcRootInfo.shallowWorkingCopyDir));
             }
         } catch (IOException e) {
-            throw new SVNException(SVNErrorMessage.create(SVNErrorCode.IO_ERROR, "file problem during convert"), e);
+            throw new SVNException(SVNErrorMessage.create(SVNErrorCode.IO_ERROR,
+                    "file problem during convert"), e);
         }
     }
 
