@@ -228,6 +228,12 @@ public class ConflictHelper {
                 // find all children (extended, using log)
                 Map<String, String> modifiedFiles = new HashMap<String, String>();
                 log.debug("logMessages '" + conflictParent.getPath() + "'...");
+                // FIXME: this may return "M" for files which are not below
+                // conflictParent and thus display a conflict although
+                // there isn't any. (sorry, don't know how exactly to reproduce 
+                // this, try: modify a file on the remote side in the toplevel
+                // directory, then move a non-toplevel directory locally
+                // and display changes):
                 LogMessage[] messages = client.logMessages(conflictParent
                         .getPath(), Revision.BASE, Revision.HEAD, false, true);
                 for (LogMessage message : messages) {
