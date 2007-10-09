@@ -561,25 +561,22 @@ public class SVNSynchronizer {
                 }
                 if (remoteRev < 0) {
                     log.debug("missing item that was locally added: "
-                            + s.getPath());
+                                + s.getPath());
 
                     // locally added -> undo add
                     client.revert(s.getPath(), true);
                 } else {
-                    log
-                            .debug("missing item that is already versioned (delete now): "
-                                    + s.getPath()
-                                    + ", nodeKind: "
-                                    + s.getNodeKind());
+                    log.debug("missing item that is already versioned (delete now): "
+                                + s.getPath()
+                                + ", nodeKind: "
+                                + s.getNodeKind());
 
                     // already versioned -> delete
 
                     // if the first parameter would be an URL, it would do a
-                    // commit
-                    // (and use the second parameter as commit message) - but we
-                    // use a local filesystem path here and thus we only
-                    // schedule
-                    // for a deletion
+                    // commit (and use the second parameter as commit message) -
+                    // but we use a local filesystem path here and thus we only
+                    // schedule for a deletion
                     client.remove(new String[] { s.getPath() }, null, true);
 
                     if (s.getNodeKind() == NodeKind.dir) {
