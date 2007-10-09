@@ -225,7 +225,7 @@ public class SVNSynchronizer {
         List<Status> remoteAndLocalChanges = getRemoteAndLocalChanges();
         List<Status> remoteAndLocalChanges2 = new ArrayList<Status>(
                 remoteAndLocalChanges);
-        log.debug("Analyzing changes and clonflicts ...");
+        log.debug("Analyzing changes and conflicts ...");
 
         for (Status s : remoteAndLocalChanges) {
             log.debug("analyzing "
@@ -289,8 +289,6 @@ public class SVNSynchronizer {
         // property conflicts
         // get up-to-date remote and local changes to get property conflicts of
         // previously removed stati
-        // TODO: use deep copy rather than repeated call to
-        // getRemoteAndLocalChanges()
         changes.addAll(ConflictHelper.findPropertyConflicts(client, remoteAndLocalChanges2));
 
         // categorize normal changes
