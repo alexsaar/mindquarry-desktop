@@ -41,7 +41,8 @@ public class DefaultSVNCommitParameters implements ISVNCommitParameters {
      * @return      {@link ISVNCommitParameters#ERROR ERROR}
      */
     public Action onMissingDirectory(File file) {
-        return ERROR;
+        return SKIP;
+        //return ERROR;
     }
 
 }

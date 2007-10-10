@@ -135,7 +135,7 @@ public class SVNStatusClient extends SVNBasicClient {
      */
     public long doStatus(File path, boolean recursive, boolean remote,
                          boolean reportAll, boolean includeIgnored, ISVNStatusHandler handler) throws SVNException {
-        return doStatus(path, recursive, remote, reportAll, includeIgnored, false, handler);
+        return doStatus(path, recursive, remote, reportAll, includeIgnored, false, handler, false);
     }
     
     /**
@@ -166,12 +166,13 @@ public class SVNStatusClient extends SVNBasicClient {
      * 										client's <code>'svn status'</code> command), otherwise <span class="javakeyword">true</span>
      * @param  handler						a caller's status handler that will be involved
      * 										in processing status information
+     * @param  showMissing                  on local status recursivley show all missing files and directories inside missing directories
      * @return								the revision number the status information was collected
      * 										against
      * @throws SVNException
      */
-    public long doStatus(File path, boolean recursive, boolean remote, boolean reportAll, boolean includeIgnored, boolean collectParentExternals, final ISVNStatusHandler handler) throws SVNException {
-        return doStatus(path, SVNRevision.HEAD, recursive, remote, reportAll, includeIgnored, collectParentExternals, handler);
+    public long doStatus(File path, boolean recursive, boolean remote, boolean reportAll, boolean includeIgnored, boolean collectParentExternals, final ISVNStatusHandler handler, boolean showMissing) throws SVNException {
+        return doStatus(path, SVNRevision.HEAD, recursive, remote, reportAll, includeIgnored, collectParentExternals, handler, showMissing);
     }
     
     /**
@@ -200,11 +201,12 @@ public class SVNStatusClient extends SVNBasicClient {
      *                                      client's <code>'svn status'</code> command), otherwise <span class="javakeyword">true</span>
      * @param  handler                      a caller's status handler that will be involved
      *                                      in processing status information
+     * @param  showMissing                  on local status recursivley show all missing files and directories inside missing directories
      * @return                              the revision number the status information was collected
      *                                      against
      * @throws SVNException
      */
-    public long doStatus(File path, SVNRevision revision, boolean recursive, boolean remote, boolean reportAll, boolean includeIgnored, boolean collectParentExternals, final ISVNStatusHandler handler) throws SVNException {
+    public long doStatus(File path, SVNRevision revision, boolean recursive, boolean remote, boolean reportAll, boolean includeIgnored, boolean collectParentExternals, final ISVNStatusHandler handler, boolean showMissing) throws SVNException {
         if (handler == null) {
             return -1;
         }
@@ -250,7 +252,7 @@ public class SVNStatusClient extends SVNBasicClient {
                     if (!entry.isScheduledForAddition()) {
                         deletedInRepository[0] = true;
                     }
-                    editor = new SVNStatusEditor(getOptions(), wcAccess, info, includeIgnored, reportAll, recursive, realHandler);
+                    editor = new SVNStatusEditor(getOptions(), wcAccess, info, includeIgnored, reportAll, recursive, realHandler, showMissing);
                     editor.setExternals(externals);
                     checkCancelled();
                     editor.closeEdit();
@@ -269,7 +271,7 @@ public class SVNStatusClient extends SVNBasicClient {
                     getEventDispatcher().handleEvent(event, ISVNEventHandler.UNKNOWN);
                 }
             } else {
-                editor = new SVNStatusEditor(getOptions(), wcAccess, info, includeIgnored, reportAll, recursive, handler);
+                editor = new SVNStatusEditor(getOptions(), wcAccess, info, includeIgnored, reportAll, recursive, handler, showMissing);
                 editor.setExternals(externals);
                 editor.closeEdit();
             }         
@@ -293,7 +295,7 @@ public class SVNStatusClient extends SVNBasicClient {
                     handleEvent(SVNEventFactory.createStatusExternalEvent(info, externalPath), ISVNEventHandler.UNKNOWN);
                     setEventPathPrefix(externalPath);
                     try {
-                        doStatus(externalFile, recursive, remote, reportAll, includeIgnored, false, handler);
+                        doStatus(externalFile, recursive, remote, reportAll, includeIgnored, false, handler, showMissing);
                     } catch (SVNException e) {
                         if (e instanceof SVNCancelException) {
                             throw e;
@@ -322,7 +324,7 @@ public class SVNStatusClient extends SVNBasicClient {
      * @throws SVNException
      */
     public SVNStatus doStatus(final File path, boolean remote) throws SVNException {
-        return doStatus(path, remote, false);
+        return doStatus(path, remote, false, false);
     }
     
     /**
@@ -336,11 +338,12 @@ public class SVNStatusClient extends SVNBasicClient {
      * @param  collectParentExternals	<span class="javakeyword">false</span> to make the operation ignore information
      * 									on externals definitions (like <i>'--ignore-externals'</i> option in the SVN
      * 									client's <code>'svn status'</code> command), otherwise <span class="javakeyword">false</span>
+     * @param  showMissing                  on local status recursivley show all missing files and directories inside missing directories
      * @return							an <b>SVNStatus</b> object representing status information 
      * 									for the item
      * @throws SVNException
      */
-    public SVNStatus doStatus(File path, boolean remote, boolean collectParentExternals) throws SVNException {
+    public SVNStatus doStatus(File path, boolean remote, boolean collectParentExternals, boolean showMissing) throws SVNException {
         final SVNStatus[] result = new SVNStatus[] { null };
         final File absPath = path.getAbsoluteFile();
         ISVNStatusHandler handler = new ISVNStatusHandler() {
@@ -357,7 +360,7 @@ public class SVNStatusClient extends SVNBasicClient {
                 }
             }
         };
-        doStatus(path, false, remote, true, true, collectParentExternals, handler);
+        doStatus(path, false, remote, true, true, collectParentExternals, handler, showMissing);
         return result[0];
     }
 

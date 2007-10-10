@@ -154,6 +154,10 @@ public class SVNClientImpl implements SVNClientInterface {
     }
 
     public Status[] status(final String path, boolean descend, boolean onServer, boolean getAll, boolean noIgnore, boolean ignoreExternals) throws ClientException {
+        return status(path, descend, onServer, getAll, noIgnore, ignoreExternals, false);
+    }
+    
+    public Status[] status(final String path, boolean descend, boolean onServer, boolean getAll, boolean noIgnore, boolean ignoreExternals, boolean showMissing) throws ClientException {
         if (path == null) {
             return null;
         }
@@ -166,7 +170,7 @@ public class SVNClientImpl implements SVNClientInterface {
                 public void handleStatus(SVNStatus status) {
                     statuses.add(JavaHLObjectFactory.createStatus(status.getFile().getPath(), status));
                 }
-            });
+            }, showMissing);
         } catch (SVNException e) {
             throwException(e);
         } finally {

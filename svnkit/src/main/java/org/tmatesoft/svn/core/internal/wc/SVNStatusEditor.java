@@ -65,9 +65,10 @@ public class SVNStatusEditor {
     private Map myRepositoryLocks;
     private long myTargetRevision;
     private Map myExternalsInfo;
+    private boolean myShowMissing;
     
     public SVNStatusEditor(ISVNOptions options, SVNWCAccess wcAccess, SVNAdminAreaInfo info, boolean noIgnore, boolean reportAll, boolean descend,
-            ISVNStatusHandler handler) {
+            ISVNStatusHandler handler, boolean showMissing) {
         myWCAccess = wcAccess;
         myAdminInfo = info;
         myIsNoIgnore = noIgnore;
@@ -78,6 +79,7 @@ public class SVNStatusEditor {
         myExternalsInfo = new HashMap();
         myGlobalIgnores = getGlobalIgnores(options);
         myTargetRevision = -1;
+        myShowMissing = showMissing;
     }
     
     public void setExternals(Map externals) {
@@ -103,22 +105,22 @@ public class SVNStatusEditor {
             if (hasTarget()) {
                 File path = myAdminInfo.getAnchor().getFile(myAdminInfo.getTargetName());
                 SVNFileType type = SVNFileType.getType(path);
-                if (type == SVNFileType.DIRECTORY) {
+                if (type == SVNFileType.DIRECTORY || myShowMissing) {
                     SVNEntry entry = myWCAccess.getEntry(path, false);
                     if (entry == null) {
                         getDirStatus(null, myAdminInfo.getAnchor(), myAdminInfo.getTargetName(), 
-                                false, myIsReportAll, true, null, true, myStatusHandler);
+                                false, myIsReportAll, true, null, true, myStatusHandler, myShowMissing);
                     } else {
                         SVNAdminArea target = myWCAccess.retrieve(path);
                         getDirStatus(null, target, null, 
-                                myIsDescend, myIsReportAll, myIsNoIgnore, null, false, myStatusHandler);
+                                myIsDescend, myIsReportAll, myIsNoIgnore, null, false, myStatusHandler, myShowMissing);
                     }
                 } else {
-                    getDirStatus(null, myAdminInfo.getAnchor(), myAdminInfo.getTargetName(), false, myIsReportAll, true, null, true, myStatusHandler);
+                    getDirStatus(null, myAdminInfo.getAnchor(), myAdminInfo.getTargetName(), false, myIsReportAll, true, null, true, myStatusHandler, myShowMissing);
                 }
             } else {
                 getDirStatus(null, myAdminInfo.getAnchor(), null, 
-                        myIsDescend, myIsReportAll, myIsNoIgnore, null, false, myStatusHandler);
+                        myIsDescend, myIsReportAll, myIsNoIgnore, null, false, myStatusHandler, myShowMissing);
             }
         } finally {
             if (hasTarget() && myExternalsInfo.containsKey(myAdminInfo.getAnchor())) {
@@ -139,7 +141,7 @@ public class SVNStatusEditor {
     
     protected void getDirStatus(SVNEntry parentEntry, SVNAdminArea dir, String entryName, 
             boolean descend, boolean getAll, boolean noIgnore, Collection ignorePatterns, boolean skipThisDir,
-            ISVNStatusHandler handler) throws SVNException {
+            ISVNStatusHandler handler, boolean showMissing) throws SVNException {
         myWCAccess.checkCancelled();
         
         Map childrenFiles = getChildrenFiles(dir.getRoot());
@@ -162,7 +164,7 @@ public class SVNStatusEditor {
                 boolean special = fileType == SVNFileType.SYMLINK;
                 SVNNodeKind fileKind = SVNFileType.getNodeKind(fileType);
                 handleDirEntry(dir, entryName, dirEntry, entry, 
-                        fileKind, special, descend, getAll, noIgnore, handler);
+                        fileKind, special, descend, getAll, noIgnore, handler, showMissing);
             } else {
                 if (ignorePatterns == null) {
                     ignorePatterns = getIgnorePatterns(dir, myGlobalIgnores);
@@ -204,7 +206,7 @@ public class SVNStatusEditor {
             boolean special = fileType == SVNFileType.SYMLINK;
             SVNNodeKind fileKind = SVNFileType.getNodeKind(fileType);
             handleDirEntry(dir, entry.getName(), dirEntry, entry, 
-                    fileKind, special, descend, getAll, noIgnore, handler);
+                    fileKind, special, descend, getAll, noIgnore, handler, myShowMissing);
         }
     }
 
@@ -263,12 +265,12 @@ public class SVNStatusEditor {
     }
 
     private void handleDirEntry(SVNAdminArea dir, String entryName, SVNEntry dirEntry, SVNEntry entry, SVNNodeKind fileKind, boolean special, 
-            boolean descend, boolean getAll, boolean noIgnore, ISVNStatusHandler handler) throws SVNException {
+            boolean descend, boolean getAll, boolean noIgnore, ISVNStatusHandler handler, boolean showMissing) throws SVNException {
         File path = dir.getFile(entryName);
         
-        if (fileKind == SVNNodeKind.DIR) {
+        if (fileKind == SVNNodeKind.DIR || showMissing) {
             SVNEntry fullEntry = entry;
-            if (entry.getKind() == fileKind) {
+            if (entry.getKind() == fileKind || showMissing) {
                 fullEntry = myWCAccess.getEntry(path, false);
                 if (fullEntry == null) {
                     SVNErrorMessage err = SVNErrorMessage.create(SVNErrorCode.UNVERSIONED_RESOURCE, "''{0}'' is not under version control", path);
@@ -277,7 +279,7 @@ public class SVNStatusEditor {
             }
             if (descend && fullEntry != entry) {
                 SVNAdminArea childDir = myWCAccess.retrieve(path);
-                getDirStatus(dirEntry, childDir, null, descend, getAll, noIgnore, null, false, handler);
+                getDirStatus(dirEntry, childDir, null, descend, getAll, noIgnore, null, false, handler, myShowMissing);
             } else if (fullEntry != entry) {
                 // get correct dir.
                 SVNAdminArea childDir = myWCAccess.retrieve(path);

@@ -54,7 +54,7 @@ public class SVNRemoteStatusEditor extends SVNStatusEditor implements ISVNEditor
     private FileInfo myFileInfo;
 
     public SVNRemoteStatusEditor(ISVNOptions options, SVNWCAccess wcAccess, SVNAdminAreaInfo info, boolean noIgnore, boolean reportAll, boolean descend, ISVNStatusHandler handler) throws SVNException {
-        super(options, wcAccess, info, noIgnore, reportAll, descend, handler);
+        super(options, wcAccess, info, noIgnore, reportAll, descend, handler, false);
         myTargetRevision = -1;
         myAnchorStatus = createStatus(info.getAnchor().getRoot());
     }
@@ -156,7 +156,7 @@ public class SVNRemoteStatusEditor extends SVNStatusEditor implements ISVNEditor
                 if (tgtStatus != null) {
                     if (isDescend() && tgtStatus.getKind() == SVNNodeKind.DIR) {
                         SVNAdminArea dir = getWCAccess().retrieve(targetPath);
-                        getDirStatus(null, dir, null, true, isReportAll(), isNoIgnore(), null, true, getDefaultHandler());
+                        getDirStatus(null, dir, null, true, isReportAll(), isNoIgnore(), null, true, getDefaultHandler(), false);
                     }
                     if (isSendableStatus(tgtStatus)) {
                         getDefaultHandler().handleStatus(tgtStatus);
@@ -257,7 +257,7 @@ public class SVNRemoteStatusEditor extends SVNStatusEditor implements ISVNEditor
                 status.setContentsStatus(SVNStatusType.STATUS_MISSING);
             } else if (descend && status.getEntry() != null && status.getKind() == SVNNodeKind.DIR) {
                 SVNAdminArea dir = getWCAccess().retrieve(path);
-                getDirStatus(dirEntry, dir, null, true, isReportAll(), isNoIgnore(), null, true, handler);
+                getDirStatus(dirEntry, dir, null, true, isReportAll(), isNoIgnore(), null, true, handler, false);
             }
             if (deleted) {
                 status.setRemoteStatus(SVNStatusType.STATUS_DELETED, null, null, null);
@@ -397,7 +397,7 @@ public class SVNRemoteStatusEditor extends SVNStatusEditor implements ISVNEditor
                         parentStatus.getKind() == SVNNodeKind.DIR && 
                         (isDescend() || myParent == null)) {
                     SVNAdminArea dir = getWCAccess().retrieve(myPath);
-                    getDirStatus(null, dir, null, false, true, true, null, true, this);
+                    getDirStatus(null, dir, null, false, true, true, null, true, this, false);
                 }
             }       
         }

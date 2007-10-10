@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.CommitMessage;
+import org.tigris.subversion.javahl.DirEntry;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Notify2;
 import org.tigris.subversion.javahl.NotifyAction;
@@ -559,6 +560,7 @@ public class SVNSynchronizer {
                     // with directories:
                     remoteRev = remoteStatus.getLastChangedRevisionNumber();
                 }
+                
                 if (remoteRev < 0) {
                     log.debug("missing item that was locally added: "
                                 + s.getPath());
@@ -572,15 +574,26 @@ public class SVNSynchronizer {
                                 + s.getNodeKind());
 
                     // already versioned -> delete
-
-                    // if the first parameter would be an URL, it would do a
-                    // commit (and use the second parameter as commit message) -
-                    // but we use a local filesystem path here and thus we only
-                    // schedule for a deletion
-                    client.remove(new String[] { s.getPath() }, null, true);
-
+                    
                     if (s.getNodeKind() == NodeKind.dir) {
-                        // NOTE:
+                        // we must remove each single file or folder inside dir
+                        // (and dir itself) because simply deleting the top dir
+                        // will let all subfiles and folders in the 'missing'
+                        // state - and upon update they would be re-added, which
+                        // is not what we want. We want the missing directory
+                        // to be turned into a deleted one without any of the
+                        // real dir or files inside be left over because this
+                        // would confuse the user
+                        
+                        log.debug("deleting all subfiles/folders of directory '" + s.getPath() + "':");
+                        // this is a status() method with a new parameter
+                        // 'showMissing' that will include all subdirs and
+                        // subfiles that are below the missing dir
+                        Status[] localStati = client.status(s.getPath(), true, false, true, false, false, true);
+                        for (Status status : localStati) {
+                            client.remove(new String[] { status.getPath() }, null, true);
+                        }
+                        
                         // Normally, client.remove doesn't delete the directory,
                         // but leaves the empty directory structure behind.
                         // However, since we call this function when refreshing
@@ -592,8 +605,14 @@ public class SVNSynchronizer {
                         if (dir.exists()) {
                             FileUtils.deleteDirectory(dir);
                         }
+                    } else {
+                        
+                        // if the first parameter would be an URL, it would do a
+                        // commit (and use the second parameter as commit message) -
+                        // but we use a local filesystem path here and thus we only
+                        // schedule for a deletion
+                        client.remove(new String[] { s.getPath() }, null, true);
                     }
-
                 }
 
             } else if (s.getTextStatus() == StatusKind.unversioned) {

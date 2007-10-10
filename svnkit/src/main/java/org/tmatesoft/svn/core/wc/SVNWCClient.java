@@ -2011,7 +2011,7 @@ public class SVNWCClient extends SVNBasicClient {
                     wcURL[0] = status.getURL().toString();
                 }
             }
-        });
+        }, false);
         if (!switched[0] && trailURL != null) {
             if (wcURL[0] == null) {
                 switched[0] = true;
