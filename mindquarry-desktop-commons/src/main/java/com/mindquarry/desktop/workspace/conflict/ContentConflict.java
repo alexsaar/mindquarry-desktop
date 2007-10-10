@@ -175,7 +175,7 @@ public class ContentConflict extends RenamingConflict {
             
             break;
             
-        case USE_LOCAL: // FIXME: clean up, use conflictLocalFile
+        case USE_LOCAL:
             // just keep the local file
             conflictFile = new File(status.getPath());
             FileHelper.delete(conflictFile);
