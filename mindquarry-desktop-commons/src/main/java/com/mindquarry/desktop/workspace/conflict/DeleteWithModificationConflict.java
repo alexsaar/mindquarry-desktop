@@ -151,7 +151,24 @@ public class DeleteWithModificationConflict extends Conflict {
 	    		// revert all local changes to file/dir
 				log.info("beforeUpdate, reverting " + status.getPath());
 				client.revert(status.getPath(), true);
+				
+				// TODO: really delete folder before svn copy
+				// We will do a svn copy of an old version into this folder
+				// after the update. To do this, the folder must not exist
+				// anymore locally, and should not be seen as 'missing'.
+				// Otherwise svn is forced to overwrite some existing, versioned
+				// folder, which fails with errors like:
+				// - 'Revision 1 doesn't match existing revision 2'
+				//     if the folder is removed ('missing')
+				// - 'path refers to directory or read access is denied'
+				//     if the folder exists, but is 'unversioned'
+				
+				// it has to be in normal state, so that during the update it
+				// gets deleted through the remote changes - the deletion will
+				// then be reverted through the svn copy from the last version
+				// before the deletion
 	    		
+				// TODO: this is wrong, only delete unversioned files
 	    		// Delete complete file/dir as the update operation will leave
 				// unversioned copies of files that were locally modified.
 				FileUtils.forceDelete(source);
