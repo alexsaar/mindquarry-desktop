@@ -233,7 +233,7 @@ public class SVNSynchronizerTest extends SVNTestBase {
 	}
 
     @Test
-    public void testDeletedModifiedConflictDoRevertDelete2() throws IOException, ClientException, SynchronizeException, SVNException  {
+    public void testDeletedModifiedConflictDoRevertDeleteSvnRef() throws IOException, ClientException, SynchronizeException, SVNException  {
         setupCleanRepoWithFreshCheckout("deleted_modified_conflict2");
         
         mkdir("2 Two");
