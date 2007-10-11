@@ -23,7 +23,7 @@ import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 import com.mindquarry.desktop.workspace.exception.SynchronizeException;
 
-public class SVNSynchronizerZipTest extends SVNTestBase {
+public class SVNSynchronizerTest extends SVNTestBase {
 	@Test
     public void testMove() throws IOException, ClientException, SynchronizeException {
         setupZipTestWithFreshCheckout("move");
