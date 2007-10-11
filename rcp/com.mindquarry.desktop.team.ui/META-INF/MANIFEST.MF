@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mindquarry Team UI Plug-in
+Bundle-SymbolicName: com.mindquarry.desktop.team.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: com.mindquarry.desktop.team/
+Bundle-Activator: com.mindquarry.desktop.team.ui.Activator
+Bundle-Vendor: Mindquarry GmbH
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true
+Export-Package: com.mindquarry.desktop.team.ui.perspective,
+ com.mindquarry.desktop.team.ui.view

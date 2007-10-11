@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mindquarry Workspace UI Plug-in
+Bundle-SymbolicName: com.mindquarry.desktop.workspace.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: com.mindquarry.desktop.workspace/
+Bundle-Activator: com.mindquarry.desktop.workspace.ui.Activator
+Bundle-Vendor: Mindquarry GmbH
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.mindquarry.desktop.team.ui
+Eclipse-LazyStart: true

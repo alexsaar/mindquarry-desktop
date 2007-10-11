@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="com.mindquarry.desktop.team.ui.view.category"
+            name="Team">
+      </category>
+      <view
+            allowMultiple="false"
+            category="com.mindquarry.desktop.team.ui.view.category"
+            class="com.mindquarry.desktop.team.ui.view.TeamlistView"
+            icon="src/main/resources/com/mindquarry/icons/sample3.gif"
+            id="com.mindquarry.desktop.team.ui.view.teamlist"
+            name="Teamlist">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.mindquarry.desktop.team.ui.perspective.TeamManagementPerspective"
+            id="com.mindquarry.desktop.team.ui.perspective.management"
+            name="Team Management">
+      </perspective>
+   </extension>
+
+</plugin>

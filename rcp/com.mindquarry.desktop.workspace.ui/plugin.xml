@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension point="org.eclipse.ui.views">
+      <category
+            id="com.mindquarry.desktop.workspace.ui.view.category"
+            name="Workspace" />
+      
+      <view
+        category="com.mindquarry.desktop.workspace.ui.view.category"
+        id="com.mindquarry.desktop.workspace.ui.view.changes"
+        class="com.mindquarry.desktop.workspace.ui.view.WorkspaceChangesView"
+        name="Workspace Changes" />
+   </extension>
+   
+   <extension point="org.eclipse.ui.perspectives">
+      <perspective
+            class="com.mindquarry.desktop.workspace.ui.perspective.WorkspaceSynchronizationPerspective"
+            fixed="true"
+            id="com.mindquarry.desktop.workspace.ui.perspective.synchronization"
+            name="Workspace Synchronization"/>
+   </extension>
+   
+   <extension point="org.eclipse.ui.commands">
+      <category
+            name="Workspace"
+            id="com.mindquarry.desktop.workspace.ui.command.category" />
+      
+      <command
+            name="Open Mailbox"
+            description="Opens a mailbox"
+            categoryId="com.mindquarry.desktop.workspace.ui.command.category"
+            id="com.mindquarry.desktop.workspace.ui.command.open"/>
+            
+      <command
+            name="Open Message Dialog"
+            description="Open a message dialog"
+            categoryId="com.mindquarry.desktop.workspace.ui.command.category"
+            id="com.mindquarry.desktop.workspace.ui.command.openMessage" />
+   </extension>
+   
+   <extension point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.mindquarry.desktop.workspace.ui.command.open"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+2" />
+      <key
+            commandId="com.mindquarry.desktop.workspace.ui.command.openMessage"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3" />
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X" />
+   </extension>
+</plugin>

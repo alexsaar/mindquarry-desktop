@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mindquarry Desktop Suite
+Bundle-SymbolicName: com.mindquarry.desktop.application;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-ClassPath: com.mindquarry.desktop/
+Bundle-Activator: com.mindquarry.desktop.Activator
+Bundle-Vendor: Mindquarry GmbH
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.intro,
+ org.eclipse.ui.intro.universal,
+ org.eclipse.help,
+ org.eclipse.help.ui,
+ org.eclipse.help.base,
+ org.eclipse.help.webapp,
+ org.eclipse.help.appserver,
+ com.mindquarry.desktop.team.ui,
+ com.mindquarry.desktop.team.help
+Eclipse-LazyStart: true

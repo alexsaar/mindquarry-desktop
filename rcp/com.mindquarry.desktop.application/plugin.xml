@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="com.mindquarry.desktop.application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            visible="true">
+         <run
+               class="com.mindquarry.desktop.application.Application">
+         </run>
+      </application>
+   </extension>
+   
+   <extension
+         id="com.mindquarry.desktop.application.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="com.mindquarry.desktop.application"
+            description="Desktop application for working with the Mindquarry Collaboration Server."
+            name="Mindquarry Desktop Suite">
+         <property
+               name="aboutText"
+               value="Mindquarry Desktop Suite created by Mindquarry GmbH">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample2.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            id="com.mindquarry.desktop.application.intro">
+      </intro>
+      <introProductBinding
+            introId="com.mindquarry.desktop.application.intro"
+            productId="com.mindquarry.desktop.application.product">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.config">
+      <config
+            content="src/main/welcome/introContent.xml"
+            id="com.mindquarry.desktop.application.intro.config"
+            introId="com.mindquarry.desktop.application.intro">
+         <presentation
+               home-page-id="welcome">
+            <implementation
+                  kind="html">
+            </implementation>
+         </presentation>
+      </config>
+   </extension>
+</plugin>

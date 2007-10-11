@@ -1,0 +1,42 @@
+package com.mindquarry.desktop.workspace.ui.action;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+
+public class OpenViewAction extends Action {
+    public static final String ID = "com.mindquarry.desktop.workspace.ui.open";
+
+    private final IWorkbenchWindow window;
+    
+    private int instanceNum = 0;
+    private final String viewId;
+
+    public OpenViewAction(IWorkbenchWindow window, String label, String viewId) {
+        this.window = window;
+        this.viewId = viewId;
+        setText(label);
+
+        // The id is used to refer to the action in a menu or toolbar
+        setId(ID);
+
+        // associate the action with a pre-defined command to allow key bindings
+        setActionDefinitionId(ID);
+    }
+
+    @Override
+    public void run() {
+        if (window != null) {
+            try {
+                window.getActivePage().showView(viewId,
+                        Integer.toString(instanceNum++),
+                        IWorkbenchPage.VIEW_ACTIVATE);
+            } catch (PartInitException e) {
+                MessageDialog.openError(window.getShell(), "Error",
+                        "Error opening view:" + e.getMessage());
+            }
+        }
+    }
+}
