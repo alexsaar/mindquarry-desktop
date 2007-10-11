@@ -245,7 +245,8 @@ public class SVNSynchronizerTest extends SVNTestBase {
         
         client.commit(new String[] { this.wcPath }, "initial add", true);
         
-        // TODO: checkout subdir
+        // TODO: also checkout a subdir for testing DeleteWithModificationConflict
+        // REVERT_DELETE case with LogMessage path matching
         checkoutRemote("deleted_modified_conflict2");
         
         // remote setup: delete dir
