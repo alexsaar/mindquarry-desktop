@@ -404,9 +404,10 @@ public class SVNSynchronizer {
 
             // we use the CommitMessage interface as callback
             log.info("committing " + localPathFile.getAbsolutePath());
-            client.commit(new String[] { localPathFile.getAbsolutePath() },
+            long revision = client.commit(new String[] { localPathFile.getAbsolutePath() },
                     null, true);
-
+            // TODO: what if -1 is returned?
+            log.info("committed to revision " + revision);
         } catch (CancelException e) {
             log.info("Cancelled");
             throw new SynchronizeException("synchronize() cancelled: "
