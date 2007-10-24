@@ -3,7 +3,7 @@
   
   <groupId>org.tigris.subversion</groupId>
   <artifactId>javahl</artifactId>
-  <version>1.4.2-Mindquarry_2</version>
+  <version>1.4.2-Mindquarry_3-SNAPSHOT</version>
   
   <name>JavaHL interface</name>
 
