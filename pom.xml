@@ -105,7 +105,7 @@
 		<dependency>
 			<groupId>com.mindquarry.icons</groupId>
 			<artifactId>mindquarry-icons</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>0.9</version>
 		</dependency>
 		
 		<dependency>
