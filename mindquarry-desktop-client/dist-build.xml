@@ -21,8 +21,12 @@
 	<property name="standalone.dist.target.lib" value="${standalone.dist.target}/lib" />
 	<property name="web.dist.target" value="${maven.build.directory}/webstart" />
 
-	<property name="client.version" value="1.2-beta-SNAPSHOT" />
-	<property name="icons.version" value="0.9-SNAPSHOT" />
+    <!-- NOTE: ALWAYS MANUALLY UPDATE THE DEPENDENCIE VERSIONS LISTED HERE!! -->
+	<!-- see also the patternset with all the deps below -->
+	<property name="client.version" value="1.2-SNAPSHOT" />
+	<property name="icons.version" value="0.9" />
+    <property name="javahl.version" value="1.4.2-Mindquarry_3-SNAPSHOT" />
+    <property name="svnkit.version" value="1.1.0-Mindquarry_8-SNAPSHOT" />
 	
 	<property name="mac.build.source" value="src/mac" />
 	<property name="mac.bundle.name" value="Mindquarry Desktop Client" />
@@ -43,8 +47,8 @@
 		<include name="org/tango-project/tango-icon-theme/0.8.0/tango-icon-theme-0.8.0.jar" />
 
 		<!-- SVN dependencies -->
-		<include name="com/svnkit/svnkit/1.1.0-Mindquarry_7/svnkit-1.1.0-Mindquarry_7.jar" />
-		<include name="org/tigris/subversion/javahl/1.4.2-Mindquarry_2/javahl-1.4.2-Mindquarry_2.jar" />
+        <include name="org/tigris/subversion/javahl/${javahl.version}/javahl-${javahl.version}.jar" />
+		<include name="com/svnkit/svnkit/${svnkit.version}/svnkit-${svnkit.version}.jar" />
 		<include name="ch/ethz/ganymed/ganymed-ssh2/build210/ganymed-ssh2-build210.jar" />
 
 		<!-- Logging dependencies -->

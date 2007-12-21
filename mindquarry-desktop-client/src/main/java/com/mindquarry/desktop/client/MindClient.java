@@ -66,6 +66,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolTip;
 import org.eclipse.swt.widgets.Tray;
 import org.eclipse.swt.widgets.TrayItem;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
@@ -279,10 +280,15 @@ public class MindClient extends ApplicationWindow implements EventListener {
         // show splash
         SplashScreen splash = SplashScreen.newInstance(5);
         splash.show();
-
-        // initialize application context
-        factory = new ClassPathXmlApplicationContext(new String[] {
-                CONTEXT_FILE, ACTIONS_CONTEXT_FILE });
+        
+        try {
+	        // initialize application context
+	        factory = new ClassPathXmlApplicationContext(new String[] {
+	                CONTEXT_FILE, ACTIONS_CONTEXT_FILE });
+        } catch (BeansException e) {
+        	log.error("Cannot load spring beans.", e);
+        	System.exit(-1);
+        }
 
         // run editor
         MindClient client = (MindClient) factory.getBean(MindClient.ID);

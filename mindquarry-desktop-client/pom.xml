@@ -37,12 +37,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>jmimemagic</groupId>
-			<artifactId>jmimemagic</artifactId>
-			<version>0.1.2</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.openoffice</groupId>
 			<artifactId>ridl</artifactId>
 			<version>2.2.1</version>
@@ -79,8 +73,14 @@
 		</dependency>
 
 		<!-- dependencies for ant plugin (they are only fetched if they are
-			 mentioned here) -->		
-		<dependency>
+			 mentioned here) -->
+		<!-- alexkli 21.12.07: If included, fetches xml-apis/xerces into
+		     the final build, which creates problems with certain Java VMs
+		     when an XML parser is needed in the code: it did kill the spring
+		     intial XML parsing with a DocumentBuilderFactoryImpl not found
+		     exception. Hopefully the maven guys fix that problem and fetch
+		     the dependencies listed in the plugin config section below. -->		
+		<!-- <dependency>
 			<groupId>net.sourceforge</groupId>
 			<artifactId>jarbundler</artifactId>
 			<version>1.9.1</version>
@@ -89,7 +89,7 @@
 			<groupId>ant-contrib</groupId>
 			<artifactId>ant-contrib</artifactId>
 			<version>1.0b3</version>
-		</dependency>
+		</dependency> -->
 	</dependencies>
 
 	<dependencyManagement>
@@ -199,10 +199,10 @@
 								<version>1.9.1</version>
 							</dependency>
 							<dependency>
-                                                               <groupId>ant-contrib</groupId>
-                                                               <artifactId>ant-contrib</artifactId>
-                                                               <version>1.0b3</version>
-                                                       </dependency>
+                                <groupId>ant-contrib</groupId>
+                                <artifactId>ant-contrib</artifactId>
+                                <version>1.0b3</version>
+                            </dependency>
 						</dependencies>
 					</plugin>
 				</plugins>
