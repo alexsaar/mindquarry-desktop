@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * This class creates a preference page for shortcuts.
@@ -66,8 +66,8 @@ public class ShortcutsPage extends PreferencePage {
      * ShortcutsPage default constructor
      */
     public ShortcutsPage() {
-        super(Messages.getString("Shortcuts")); //$NON-NLS-1$
-        setDescription(Messages.getString("Manage shortcuts of the application.")); //$NON-NLS-1$
+        super(I18N.get("Shortcuts")); //$NON-NLS-1$
+        setDescription(I18N.get("Manage shortcuts of the application.")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -92,13 +92,13 @@ public class ShortcutsPage extends PreferencePage {
         table.setLinesVisible(true);
 
         TableColumn col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("Category")); //$NON-NLS-1$
+        col.setText(I18N.get("Category")); //$NON-NLS-1$
         col.setWidth(100);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("Action")); //$NON-NLS-1$
+        col.setText(I18N.get("Action")); //$NON-NLS-1$
         col.setWidth(200);
         col = new TableColumn(table, SWT.NONE);
-        col.setText(Messages.getString("Shortcut")); //$NON-NLS-1$
+        col.setText(I18N.get("Shortcut")); //$NON-NLS-1$
         col.setWidth(100);
 
         CellEditor[] editors = new CellEditor[table.getColumnCount()];

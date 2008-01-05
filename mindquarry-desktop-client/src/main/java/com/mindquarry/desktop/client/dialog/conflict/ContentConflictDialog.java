@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.Status;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.conflict.ContentConflict;
 
@@ -55,11 +55,11 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
     private static Log log = LogFactory.getLog(ContentConflictDialog.class);
 
-    private static final String MERGE_USING_WORD_HELP = Messages
+    private static final String MERGE_USING_WORD_HELP = I18N
             .getString("After starting MS Word, merge both versions "
                     + "and save the result. Then click the 'Done' button that "
                     + "will appear and click 'OK'."); //$NON-NLS-1$
-    private static final String MERGE_MANUALLY_HELP = Messages.getString(
+    private static final String MERGE_MANUALLY_HELP = I18N.getString(
             "Please use the various file version at the top to merge the "
             + "changes into the target file. Click 'Finished Merging' and then "
             + "'OK' when done."); //$NON-NLS-1$
@@ -90,7 +90,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
      */
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": "
+        name.setText(I18N.getString("Filename(s)") + ": "
                 + conflict.getStatus().getPath());
         
         Composite fileButtonBar = new Composite(composite, SWT.NONE);
@@ -98,7 +98,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
         // Button 1: target file (automatically merged if file is plain text)
         Button openMergedFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openMergedFileButton.setText(Messages.getString("Edit target file")); //$NON-NLS-1$
+        openMergedFileButton.setText(I18N.getString("Edit target file")); //$NON-NLS-1$
         openMergedFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
                 Program.launch(contentConflict.getConflictTargetFile().getAbsolutePath());
@@ -113,7 +113,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         // Button 2: locally modified version of the file
         Button openMyFileButton = new Button(fileButtonBar, SWT.BUTTON1);
 
-        openMyFileButton.setText(Messages.getString("View my local file")); //$NON-NLS-1$
+        openMyFileButton.setText(I18N.getString("View my local file")); //$NON-NLS-1$
         openMyFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
                 Program.launch(contentConflict.getConflictLocalFile().getAbsolutePath());
@@ -122,7 +122,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         
         // Button 3: new revision from server which contains the remote changes
         Button openServerFileButton = new Button(fileButtonBar, SWT.BUTTON1);
-        openServerFileButton.setText(Messages.getString("View updated file from server")); //$NON-NLS-1$
+        openServerFileButton.setText(I18N.getString("View updated file from server")); //$NON-NLS-1$
         openServerFileButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event arg0) {
                 Program.launch(contentConflict.getConflictServerFile().getAbsolutePath());
@@ -148,7 +148,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         // TODO: move the information about which user made the change to
         // AbstractConflictDialog so (almost) all other dialogs can show it,
         // too:
-        return Messages.getString(
+        return I18N.get(
                         "The last change on the server was by {0} ({1}).",
                         conflict.getStatus().getLastCommitAuthor(), // TODO: show 'User Name' rather than 'user'
                         new SimpleDateFormat().format(conflict.getStatus().getLastChangedDate()));
@@ -156,7 +156,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
     @Override
     protected String getTitle() {
-        return Messages.getString(
+        return I18N.getString(
                 "The file you are trying to synchronize was modified on the server"); //$NON-NLS-1$
     }
 
@@ -185,11 +185,11 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         boolean offerMSWordMerge = isWordDocument && isWindows;
         
         Label chooseOptionLabel = new Label(subComposite,SWT.NONE);
-        chooseOptionLabel.setText(Messages.getString(
+        chooseOptionLabel.setText(I18N.getString(
                 "Please resolve the conflict using one of the following options:"));
 
         // Option 1: use locally modified file
-        Button button1 = makeRadioButton(subComposite, Messages
+        Button button1 = makeRadioButton(subComposite, I18N
                 .getString("Use your local version of the file"), //$NON-NLS-1$
                 ContentConflict.Action.USE_LOCAL, false);
         button1.addListener(SWT.Selection, new Listener() {
@@ -200,7 +200,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         });
 
         // Option 2: use remotely modified file
-        Button button2 = makeRadioButton(subComposite, Messages
+        Button button2 = makeRadioButton(subComposite, I18N
                 .getString("Use the file from the server"), //$NON-NLS-1$
                 ContentConflict.Action.USE_REMOTE, false);
         button2.addListener(SWT.Selection, new Listener() {
@@ -213,7 +213,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
         // Option 3: rename local file and upload to server
         // FIXME: Fix the layout, it's horrible! Need radio buttons to be in a
         // row and equidistant.
-        Button button3 = makeRadioButton(subComposite, Messages
+        Button button3 = makeRadioButton(subComposite, I18N
                 .getString("Rename local file and upload it using a new name:"), //$NON-NLS-1$
                 ContentConflict.Action.RENAME, false);
         button3.addListener(SWT.Selection, new Listener() {
@@ -225,11 +225,11 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
         newNameField = createNewNameField(subComposite,
                 contentConflict.getConflictLocalFile().getName().replaceAll(".mine", ""), //$NON-NLS-1$ //$NON-NLS-2$
-                Messages.getString("local")); //$NON-NLS-1$   
+                I18N.getString("local")); //$NON-NLS-1$   
         newNameField.setEnabled(false);
         
         // Option 4: merge manually (recommended)
-        mergeOptionButton = makeRadioButton(subComposite, Messages
+        mergeOptionButton = makeRadioButton(subComposite, I18N
                 .getString("Manually merge both files (recommended)"), //$NON-NLS-1$
                 ContentConflict.Action.MERGE, true);
 
@@ -250,7 +250,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
             mergeHelpLabel.setText(MERGE_USING_WORD_HELP);
 
-            mergeButton.setText(Messages.getString("Start MS Word")); //$NON-NLS-1$
+            mergeButton.setText(I18N.getString("Start MS Word")); //$NON-NLS-1$
             mergeButton.addListener(SWT.Selection,
                     new MergeButtonListener());
         } else { // manual merge
@@ -263,7 +263,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
 
             mergeHelpLabel.setText(MERGE_MANUALLY_HELP);
 
-            mergeButton.setText(Messages.getString("Finished Merging")); //$NON-NLS-1$
+            mergeButton.setText(I18N.getString("Finished Merging")); //$NON-NLS-1$
             mergeButton.addListener(SWT.Selection, new Listener() {
                 public void handleEvent(Event arg0) {
                     enableButtons(true, false);
@@ -354,8 +354,8 @@ public class ContentConflictDialog extends RenamingConflictDialog {
             mergeOptionButton.setEnabled(false);
             mergeButton.setEnabled(false);
             okButton.setEnabled(true); // let user continue with other option
-            MessageDialog.openError(getShell(), Messages
-                    .getString("Error executing MS Word"), Messages
+            MessageDialog.openError(getShell(), I18N
+                    .getString("Error executing MS Word"), I18N
                     .getString("The script used to merge documents "
                             + "using MS Word could not be started. The exit "
                             + "code was ")
@@ -420,7 +420,7 @@ public class ContentConflictDialog extends RenamingConflictDialog {
             } else {
                 okButton.setEnabled(false);
                 buttonStatusDone = true;
-                mergeButton.setText(Messages.getString("Done")); //$NON-NLS-1$
+                mergeButton.setText(I18N.getString("Done")); //$NON-NLS-1$
                 Status status = conflict.getStatus();
                 String parentDir = new File(status.getPath()).getParent();
                 try {

@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 
@@ -41,8 +41,8 @@ public class PreferencesAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Preferences"));//$NON-NLS-1$
-		setToolTipText(Messages.getString("Open preferences dialog including server profile settings"));//$NON-NLS-1$
+		setText(I18N.getString("Preferences"));//$NON-NLS-1$
+		setToolTipText(I18N.getString("Open preferences dialog including server profile settings"));//$NON-NLS-1$
 //		setAccelerator(SWT.CTRL | 'O');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

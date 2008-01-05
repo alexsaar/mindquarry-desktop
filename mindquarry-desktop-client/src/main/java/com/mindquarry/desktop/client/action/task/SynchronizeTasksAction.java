@@ -18,7 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
@@ -34,7 +34,7 @@ import com.mindquarry.desktop.workspace.exception.CancelException;
 public class SynchronizeTasksAction extends ActionBase {
     public static final String ID = SynchronizeTasksAction.class.getSimpleName();
 
-    private static final String SYNC_MESSAGE = Messages.getString("Synchronizing tasks");
+    private static final String SYNC_MESSAGE = I18N.getString("Synchronizing tasks");
 
     private TeamlistWidget teamList;
 
@@ -53,8 +53,8 @@ public class SynchronizeTasksAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Refresh"));
-		setToolTipText(Messages.getString("Refreshes the task list"));
+		setText(I18N.getString("Refresh"));
+		setToolTipText(I18N.getString("Refreshes the task list"));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
@@ -76,7 +76,7 @@ public class SynchronizeTasksAction extends ActionBase {
 	        log.debug("Killing task update thread");
 	        updateThread.stop();
 	        client.stopAction(SYNC_MESSAGE);
-	        taskContainer.showMessage(Messages.getString("Task refresh cancelled."), "warn"); //$NON-NLS-1$
+	        taskContainer.showMessage(I18N.getString("Task refresh cancelled."), "warn"); //$NON-NLS-1$
 	    }
 	}
 	

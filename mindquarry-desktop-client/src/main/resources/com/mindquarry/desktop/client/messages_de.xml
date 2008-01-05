@@ -436,7 +436,7 @@
     </message>
     <message>
         <source>The file &apos;{0}&apos; already exists, please choose a different filename.</source>
-        <translation>Die Datei &apos;{0}&apos; exisitiert bereits, bitte wählen Sie einen anderen Namen.</translation>
+        <translation>Die Datei &apos;{0}&apos; existiert bereits, bitte wählen Sie einen anderen Namen.</translation>
     </message>
     <message>
         <source>This item is new on the server, it will be downloaded.</source>

@@ -21,7 +21,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Revision;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -124,10 +124,10 @@ public class ObstructedConflict extends RenamingConflict {
     @Override
     public String getLongDescription() {
         if (file.isDirectory()) {
-            return Messages.getString("This is a new directory, but on the " +
+            return I18N.get("This is a new directory, but on the " +
             	    "server there still exists a file of the same name.");
         } else {
-            return Messages.getString("This is a new file, but on the " +
+            return I18N.get("This is a new file, but on the " +
                     "server there still exists a directory of the same name.");
         }
     }

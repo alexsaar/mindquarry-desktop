@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict;
 import com.mindquarry.desktop.workspace.conflict.DeleteWithModificationConflict.Action;
 
@@ -53,11 +53,11 @@ public class DeleteWithModificationConflictDialog extends
     @Override
     protected String getMessage() {
         if (conflict.isLocalDelete()) {
-            return Messages
+            return I18N
                     .getString("You are trying to delete a file or directory "
                             + "which someone else modified on the server.");
         } else {
-            return Messages
+            return I18N
                     .getString("You are trying to upload a file to the "
                             + "server which someone else has already deleted on the server.");
         }
@@ -65,7 +65,7 @@ public class DeleteWithModificationConflictDialog extends
 
     protected void createLowerDialogArea(Composite composite) {
         if (conflict.isLocalDelete()) {
-            makeLabel(composite, Messages.getString(Messages
+            makeLabel(composite, I18N.getString(I18N
                     .getString("The file from the server "
                             + "will be downloaded.")));
             /*
@@ -81,7 +81,7 @@ public class DeleteWithModificationConflictDialog extends
              * Action.DELETE);
              */
         } else {
-            makeLabel(composite, Messages
+            makeLabel(composite, I18N
                     .getString("Your file will be uploaded "
                             + "to the server."));
             /*
@@ -101,7 +101,7 @@ public class DeleteWithModificationConflictDialog extends
     @Override
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Affected file/directory:") + " "
+        name.setText(I18N.getString("Affected file/directory:") + " "
                 + conflict.getStatus().getPath());
     }
 

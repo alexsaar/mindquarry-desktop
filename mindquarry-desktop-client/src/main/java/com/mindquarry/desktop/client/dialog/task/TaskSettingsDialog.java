@@ -42,7 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.dialog.DialogBase;
 import com.mindquarry.desktop.client.widget.util.ImageCombo;
 import com.mindquarry.desktop.model.task.Task;
@@ -85,12 +85,12 @@ public class TaskSettingsDialog extends DialogBase {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString("Edit the contents of a task")); //$NON-NLS-1$
+        setTitle(I18N.getString("Edit the contents of a task")); //$NON-NLS-1$
         setMessage(
-                Messages
+                I18N
                         .getString("Please enter the tasks data and press OK for adding/changing the task."), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
-        getShell().setText(Messages.getString("Edit Task") //$NON-NLS-1$
+        getShell().setText(I18N.getString("Edit Task") //$NON-NLS-1$
                 + ": " //$NON-NLS-1$
                 + task.getTitle());
 
@@ -115,14 +115,14 @@ public class TaskSettingsDialog extends DialogBase {
 
     private void createTaskDataSection(Composite composite) {
         Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("Title") //$NON-NLS-1$
+        label.setText(I18N.getString("Title") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         title = new Text(composite, SWT.BORDER | SWT.SINGLE);
         title.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("Status") //$NON-NLS-1$
+        label.setText(I18N.getString("Status") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         status = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
@@ -141,7 +141,7 @@ public class TaskSettingsDialog extends DialogBase {
         status.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("Priority") //$NON-NLS-1$
+        label.setText(I18N.getString("Priority") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         priority = new ImageCombo(composite, SWT.BORDER | SWT.READ_ONLY
@@ -156,7 +156,7 @@ public class TaskSettingsDialog extends DialogBase {
         priority.select(0);
 
         label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("Summary") //$NON-NLS-1$
+        label.setText(I18N.getString("Summary") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         summary = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL
@@ -165,7 +165,7 @@ public class TaskSettingsDialog extends DialogBase {
             public void focusGained(FocusEvent fe) {
                 // select the default text so user can just type new text
                 // without manually deleting the default text:
-                String defaultText = Messages
+                String defaultText = I18N
                         .getString("Edit the contents of a task");//$NON-NLS-1$
                 if (summary.getText().equals(defaultText)) {
                     summary.selectAll();
@@ -198,7 +198,7 @@ public class TaskSettingsDialog extends DialogBase {
         ((GridData) summary.getLayoutData()).grabExcessVerticalSpace = true;
 
         dueDateCheckbox = new Button(composite, SWT.CHECK);
-        dueDateCheckbox.setText(Messages.getString("Due Date") //$NON-NLS-1$
+        dueDateCheckbox.setText(I18N.getString("Due Date") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
         dueDateCheckbox.addSelectionListener(new DueDateCheckboxListener());
 
@@ -342,7 +342,7 @@ public class TaskSettingsDialog extends DialogBase {
 
     private boolean isValid() {
         if (title.getText().equals("")) {
-            setInvalid(Messages.getString("Title must not be empty."));
+            setInvalid(I18N.getString("Title must not be empty."));
             return false;
         }
         setValid();

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.NodeKind;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
 
 /**
@@ -49,18 +49,18 @@ public class ObstructedConflictDialog extends RenamingConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": "
+        name.setText(I18N.getString("Filename(s)") + ": "
                 + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
         if (conflict.getStatus().getNodeKind() == NodeKind.dir) {
-            return Messages
+            return I18N
                     .getString("One of the local directories was deleted and replaced with a file of the same name. "
                             + "This structural change must be resolved before synchronization.");
         } else {
-            return Messages
+            return I18N
                     .getString("One of the local files was deleted and replaced with a directory of the same name. "
                             + "This structural change must be resolved before synchronization.");
         }
@@ -70,7 +70,7 @@ public class ObstructedConflictDialog extends RenamingConflictDialog {
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite, Messages
+        Button button1 = makeRadioButton(subComposite, I18N
                 .getString("Rename file and upload it using a new name:"), //$NON-NLS-1$
                 ObstructedConflict.Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {
@@ -84,7 +84,7 @@ public class ObstructedConflictDialog extends RenamingConflictDialog {
 
         Button button2 = makeRadioButton(
                 subComposite,
-                Messages
+                I18N
                         .getString("Remove obstructing file and download original from server"), //$NON-NLS-1$
                 ObstructedConflict.Action.REVERT);
         button2.addListener(SWT.Selection, new Listener() {

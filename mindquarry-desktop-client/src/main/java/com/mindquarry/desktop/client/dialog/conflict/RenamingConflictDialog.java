@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.ClientException;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.RenamingConflict;
 
 /**
@@ -54,7 +54,7 @@ public abstract class RenamingConflictDialog extends AbstractConflictDialog {
                     okButton.setEnabled(true);
                 }
             } else {
-                setErrorMessage(Messages.getString(
+                setErrorMessage(I18N.get(
                         "The file '{0}' already exists, please choose a different filename.",
                         name));
                 if (okButton != null) {

@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.util.JarUtilities;
 
@@ -50,7 +50,7 @@ public class AboutAction extends Action {
     this.client = client;
     setId(ID);
     setActionDefinitionId(ID);
-    setText(Messages.getString("About ..."));  //$NON-NLS-1$
+    setText(I18N.getString("About ..."));  //$NON-NLS-1$
   }
 
   public void run() {
@@ -68,9 +68,9 @@ public class AboutAction extends Action {
 
     protected Control createContents(Composite parent) {
       Control contents = super.createContents(parent);
-      getShell().setText(Messages.getString("About Mindquarry Desktop Client")); //$NON-NLS-1$
-      setTitle(Messages.getString("About")); //$NON-NLS-1$
-      setMessage(Messages.getString("Information about the Mindquarry desktop client."), //$NON-NLS-1$
+      getShell().setText(I18N.getString("About Mindquarry Desktop Client")); //$NON-NLS-1$
+      setTitle(I18N.getString("About")); //$NON-NLS-1$
+      setMessage(I18N.getString("Information about the Mindquarry desktop client."), //$NON-NLS-1$
           IMessageProvider.INFORMATION);
       getShell().redraw();
       return contents;
@@ -112,7 +112,7 @@ public class AboutAction extends Action {
     
     protected void createButtonsForButtonBar(Composite parent) {  
       createButton(parent, IDialogConstants.OK_ID,
-                Messages.getString("OK"), true);  
+                I18N.getString("OK"), true);  
     }
     
   }

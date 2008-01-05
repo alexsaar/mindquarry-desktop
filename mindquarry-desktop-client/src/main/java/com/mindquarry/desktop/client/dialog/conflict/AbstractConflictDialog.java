@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.dialog.DialogBase;
 
 /**
@@ -59,7 +59,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
         Control contents = super.createContents(parent);
         setTitle(getTitle());
         setMessage(getMessage(), IMessageProvider.INFORMATION);
-        getShell().setText(Messages.getString("Resolving conflicts")); //$NON-NLS-1$
+        getShell().setText(I18N.getString("Resolving conflicts")); //$NON-NLS-1$
         getShell().setSize(600, getHeightHint());
         getShell().redraw();
         return contents;
@@ -93,9 +93,9 @@ public abstract class AbstractConflictDialog extends DialogBase {
         
     protected void createButtonsForButtonBar(Composite parent) {  
         okButton = createButton(parent, IDialogConstants.OK_ID,
-                Messages.getString("OK"), true);  
+                I18N.getString("OK"), true);  
         cancelButton = createButton(parent, IDialogConstants.CANCEL_ID,  
-            Messages.getString("Cancel Synchronization"), false);  
+            I18N.getString("Cancel Synchronization"), false);  
     }
     
     protected void makeLabel(Composite composite, String text) {
@@ -104,7 +104,7 @@ public abstract class AbstractConflictDialog extends DialogBase {
     }
 
     protected String getTitle() {
-        return Messages.getString("Resolve conflicts"); //$NON-NLS-1$
+        return I18N.getString("Resolve conflicts"); //$NON-NLS-1$
     }
     
     /**

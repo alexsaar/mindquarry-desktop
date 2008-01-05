@@ -18,7 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
@@ -52,13 +52,13 @@ public class UpdateWorkspacesAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Refresh")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("Refresh the list of file changes")); //$NON-NLS-1$
+        setText(I18N.getString("Refresh")); //$NON-NLS-1$
+        setToolTipText(I18N.getString("Refresh the list of file changes")); //$NON-NLS-1$
         setAccelerator(SWT.CTRL + +SWT.SHIFT + 'U');
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }
 
-    private static final String REFRESH_MESSAGE = Messages
+    private static final String REFRESH_MESSAGE = I18N
             .getString("Refreshing workspaces changes"); //$NON-NLS-1$
 
     public void run() {
@@ -87,7 +87,7 @@ public class UpdateWorkspacesAction extends ActionBase {
                         workspaceWidget.isRefreshListEmpty());
             } else {
                 workspaceWidget.showErrorMessage(
-                        Messages.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
+                        I18N.getString("You have not synchronized yet.\n" + //$NON-NLS-1$
                                 "Click the 'Synchronize' button to " + //$NON-NLS-1$
                                 "download files from the server.")); //$NON-NLS-1$
             }
@@ -119,7 +119,7 @@ public class UpdateWorkspacesAction extends ActionBase {
             log.debug("Killing synchronize thread");
             // TODO: use non-deprecated way to stop threads: interrupt(); 
             updateThread.stop();
-            workspaceWidget.showMessage(Messages.getString("Refresh cancelled."), "warn"); //$NON-NLS-1$
+            workspaceWidget.showMessage(I18N.getString("Refresh cancelled."), "warn"); //$NON-NLS-1$
             client.stopAction(REFRESH_MESSAGE);
             client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
             client.enableActions(false, ActionBase.STOP_ACTION_GROUP);

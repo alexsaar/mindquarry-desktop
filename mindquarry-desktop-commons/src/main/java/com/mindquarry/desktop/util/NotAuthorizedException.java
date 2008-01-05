@@ -13,7 +13,7 @@
  */
 package com.mindquarry.desktop.util;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Thrown if HTTP status code 401 is received.
@@ -48,6 +48,6 @@ public class NotAuthorizedException extends Exception {
     }
     
     public String getLocalizedMessage() {
-        return Messages.getString("Username and/or password not correct for '{0}'", url); //$NON-NLS-1$
+        return I18N.get("Username and/or password not correct for '{0}'", url); //$NON-NLS-1$
     }
 }

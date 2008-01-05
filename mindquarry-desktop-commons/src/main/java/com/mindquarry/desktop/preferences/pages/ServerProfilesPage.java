@@ -18,6 +18,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -27,6 +29,7 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
@@ -47,8 +50,10 @@ import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
+import com.mindquarry.desktop.preferences.dialog.SVNRepoEditDialog;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.preferences.profile.Profile.SVNRepoData;
 import com.mindquarry.desktop.util.HttpUtilities;
 
 /**
@@ -58,13 +63,16 @@ import com.mindquarry.desktop.util.HttpUtilities;
  *         Saar</a>
  */
 public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
+	
+	private static Log log = LogFactory.getLog(ServerProfilesPage.class);
+	
     private static final Image OK_IMAGE = new Image(
             Display.getCurrent(),
             ServerProfilesPage.class
                     .getResourceAsStream("/com/mindquarry/icons/16x16/actions/save.png")); //$NON-NLS-1$
     
     public static final String NAME = "profiles";
-    public static final String TITLE = Messages.getString("Server Profiles");
+    public static final String TITLE = I18N.get("Server Profiles");
 
     private Text login;
     private Text pwd;
@@ -75,6 +83,18 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
     private List profileList;
     private java.util.List<Profile> profiles;
 
+	private Button[] typeRadios;
+
+	private Composite mqServerSettings;
+
+	private Composite plainSVNSettings;
+
+	private StackLayout settingsStackLayout;
+
+	private Composite settingsStack;
+
+	private List svnRepoList;
+
     /**
      * ProfilesPage default constructor
      */
@@ -83,8 +103,8 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         profiles = new ArrayList<Profile>();
 
         // initialize preference page
-        setDescription(Messages
-                .getString("Manage different Mindquarry installations by using Mindquarry server profiles.")); //$NON-NLS-1$
+        setDescription(I18N
+                .get("Manage different Mindquarry installations by using Mindquarry server profiles.")); //$NON-NLS-1$
         Image img = new Image(
                 null,
                 getClass()
@@ -152,7 +172,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             for (Profile profile : profiles) {
                 if (!profile.getName().equals(selection[0])) {
                     if (!checkProfileValidity(profile, false)) {
-                        setInvalid(Messages.getString(
+                        setInvalid(I18N.get(
                                 "There is a problem in profile '{0}'. Please check before you proceed.",
                                 profile.getName()),
                                 profileList);
@@ -166,64 +186,66 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
     }
 
     private boolean checkProfileValidity(Profile profile, boolean currentlyDisplayed) {
-        // check login ID
-        if (profile.getLogin() == null) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Login ID must be set."), login);
-            return false;
-        } else if (profile.getLogin().equals("")) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Login ID must not be empty."), login);
-            return false;
-        }
-        // check password
-        if (profile.getPassword() == null) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Password must be set."), pwd);
-            return false;
-        } else if (profile.getPassword().equals("")) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Password can not be empty."), pwd);
-            return false;
-        }
-        // check server endpoint
-        if (profile.getServerURL() == null) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Server URL must be set."), url);
-            return false;
-        } else {
-            try {
-                new URL(profile.getServerURL());
-            } catch (MalformedURLException e) {
-                if (!currentlyDisplayed) return false;
-                setInvalid(Messages.getString("Server URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
-                return false;
-            }
-        }
-        // check workspace folder
-        if (profile.getWorkspaceFolder() == null) {
-            if (!currentlyDisplayed) return false;
-            setInvalid(Messages.getString("Workspace folder must be set."), folder);
-            return false;
-        } else {
-            File file = new File(profile.getWorkspaceFolder());
-            if (!file.exists()) {
-                if (!currentlyDisplayed) return false;
-                setInvalid(Messages.getString("Workspace folder does not exist."), folder);
-                return false;
-            } else if (!file.isDirectory()) {
-                if (!currentlyDisplayed) return false;
-                setInvalid(Messages.getString("Workspace folder is a file, not a directory."), folder);
-                return false;
-            }
-        }
+    	if (profile.getType() == Profile.Type.MindquarryServer) {
+	        // check server endpoint
+	        if (profile.getServerURL() == null) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Server URL must be set."), url);
+	            return false;
+	        } else {
+	            try {
+	                new URL(profile.getServerURL());
+	            } catch (MalformedURLException e) {
+	                if (!currentlyDisplayed) return false;
+	                setInvalid(I18N.get("Server URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
+	                return false;
+	            }
+	        }
+	        // check login ID
+	        if (profile.getLogin() == null) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Login ID must be set."), login);
+	            return false;
+	        } else if (profile.getLogin().equals("")) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Login ID must not be empty."), login);
+	            return false;
+	        }
+	        // check password
+	        if (profile.getPassword() == null) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Password must be set."), pwd);
+	            return false;
+	        } else if (profile.getPassword().equals("")) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Password can not be empty."), pwd);
+	            return false;
+	        }
+	        // check workspace folder
+	        if (profile.getWorkspaceFolder() == null) {
+	            if (!currentlyDisplayed) return false;
+	            setInvalid(I18N.get("Workspace folder must be set."), folder);
+	            return false;
+	        } else {
+	            File file = new File(profile.getWorkspaceFolder());
+	            if (!file.exists()) {
+	                if (!currentlyDisplayed) return false;
+	                setInvalid(I18N.get("Workspace folder does not exist."), folder);
+	                return false;
+	            } else if (!file.isDirectory()) {
+	                if (!currentlyDisplayed) return false;
+	                setInvalid(I18N.get("Workspace folder is a file, not a directory."), folder);
+	                return false;
+	            }
+	        }
+    	}
         return true;
     }
 
     private void createProfileManagementGroup(Composite composite) {
         Group profileGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         profileGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        profileGroup.setText(Messages.getString("Server Profiles")); //$NON-NLS-1$
+        profileGroup.setText(I18N.get("Server Profiles")); //$NON-NLS-1$
         profileGroup.setLayout(new GridLayout(2, false));
 
         // create profile list
@@ -239,14 +261,14 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
 
         Button addButton = new Button(buttonArea, SWT.PUSH);
         addButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        addButton.setText(Messages.getString("Add Profile") //$NON-NLS-1$
+        addButton.setText(I18N.get("Add Profile") //$NON-NLS-1$
                 + " ..."); //$NON-NLS-1$
         addButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
-                InputDialog dlg = new InputDialog(getShell(), Messages
-                        .getString("Create new server profile"), //$NON-NLS-1$
-                        Messages.getString("Please enter the profile name:"), //$NON-NLS-1$
-                        Messages.getString("My Mindquarry Server Profile"), //$NON-NLS-1$
+                InputDialog dlg = new InputDialog(getShell(), I18N
+                        .get("Create new server profile"), //$NON-NLS-1$
+                        I18N.get("Please enter the profile name:"), //$NON-NLS-1$
+                        I18N.get("My Mindquarry Server Profile"), //$NON-NLS-1$
                         new AddProfileInputValidator());
 
                 // open dialog and check results
@@ -266,7 +288,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
 
         Button renameButton = new Button(buttonArea, SWT.PUSH);
         renameButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        renameButton.setText(Messages.getString("Rename Profile ...")); //$NON-NLS-1$
+        renameButton.setText(I18N.get("Rename Profile ...")); //$NON-NLS-1$
         renameButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 renameProfile();
@@ -276,7 +298,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         delButton = new Button(buttonArea, SWT.PUSH);
         delButton.setEnabled(false);
         delButton.setLayoutData(new GridData(GridData.FILL_BOTH));
-        delButton.setText(Messages.getString("Delete Profile")); //$NON-NLS-1$
+        delButton.setText(I18N.get("Delete Profile")); //$NON-NLS-1$
         delButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 Profile profile = findByName(profileList.getSelection()[0]);
@@ -307,9 +329,9 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         String[] selection = profileList.getSelection();
         if (selection.length > 0) {
             Profile profile = findByName(selection[0]);
-            InputDialog dlg = new InputDialog(getShell(), Messages
-                    .getString("Rename server profile"), //$NON-NLS-1$
-                    Messages.getString("Please enter the new profile name:"), //$NON-NLS-1$
+            InputDialog dlg = new InputDialog(getShell(), I18N
+                    .get("Rename server profile"), //$NON-NLS-1$
+                    I18N.get("Please enter the new profile name:"), //$NON-NLS-1$
                     selection[0], new AddProfileInputValidator());
             if (dlg.open() == Window.OK) {
                 profile.setName(dlg.getValue());
@@ -327,6 +349,21 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             pwd.setText(profile.getPassword());
             url.setText(profile.getServerURL());
             folder.setText(profile.getWorkspaceFolder());
+            if (profile.getType() == Profile.Type.MindquarryServer) {
+            	typeRadios[0].setSelection(true);
+            	typeRadios[1].setSelection(false);
+		        settingsStackLayout.topControl = mqServerSettings;
+		        settingsStack.layout();
+            } else {
+            	typeRadios[0].setSelection(false);
+            	typeRadios[1].setSelection(true);            	
+		        settingsStackLayout.topControl = plainSVNSettings;
+		        settingsStack.layout();
+            }
+            svnRepoList.removeAll();
+            for (Profile.SVNRepoData svnRepo : profile.getSvnRepos()) {
+            	svnRepoList.add(svnRepo.id + " - " + svnRepo.svnURL);
+            }
 
             delButton.setEnabled(true);
         }
@@ -335,17 +372,173 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
     private void createProfileSettingsGroup(Composite composite) {
         Group settingsGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         settingsGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        settingsGroup.setText(Messages.getString("Profile Settings")); //$NON-NLS-1$
         settingsGroup.setLayout(new GridLayout(1, true));
+        settingsGroup.setText(I18N.get("Profile Settings")); //$NON-NLS-1$
+        
+        typeRadios = new Button[2];
 
+        typeRadios[0] = new Button(settingsGroup, SWT.RADIO);
+        typeRadios[0].setSelection(true);
+        typeRadios[0].setText(I18N.get("Mindquarry Server"));
+        typeRadios[0].setBounds(10, 5, 75, 30);
+        
+        typeRadios[0].addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+		        settingsStackLayout.topControl = mqServerSettings;
+		        settingsStack.layout();
+		        
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setType(Profile.Type.MindquarryServer);
+                }
+                performValidation();
+			}
+        	
+        });
+
+
+        typeRadios[1] = new Button(settingsGroup, SWT.RADIO);
+        typeRadios[1].setText(I18N.get("Plain SVN"));
+        typeRadios[1].setBounds(10, 30, 75, 30);
+        
+        typeRadios[1].addSelectionListener(new SelectionListener() {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+		        settingsStackLayout.topControl = plainSVNSettings;
+		        settingsStack.layout();
+		        
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.setType(Profile.Type.SVN);
+                }
+                performValidation();
+			}
+        	
+        });
+        
+        settingsStack = new Composite(settingsGroup, SWT.NORMAL);
+        settingsStackLayout = new StackLayout();
+        settingsStack.setLayout(settingsStackLayout);
+        
+        createMindquarryServerSettings(settingsStack);
+        createPlainSVNSettings(settingsStack);
+        settingsStackLayout.topControl = mqServerSettings;
+    }
+    
+    private void createPlainSVNSettings(Composite parent) {
+        plainSVNSettings = new Composite(parent, SWT.NORMAL);
+        plainSVNSettings.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        plainSVNSettings.setLayout(new GridLayout(2, false));
+
+        svnRepoList = new List(plainSVNSettings, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL);
+        svnRepoList.setLayoutData(new GridData(GridData.FILL_BOTH));
+        svnRepoList.addSelectionListener(new SelectionListener() {
+            public void widgetDefaultSelected(SelectionEvent event) {
+            	// double click
+                editSVN();
+            	log.debug("svnrepolist default selected: " + event.item);
+            }
+
+            public void widgetSelected(SelectionEvent event) {
+                // single click, do nothing
+            	log.debug("svnrepolist selected: " + event.item);
+            }
+        });
+
+        Composite buttonArea = new Composite(plainSVNSettings, SWT.NONE);
+        buttonArea.setLayout(new GridLayout(1, true));
+
+        Button addSVNButton = new Button(buttonArea, SWT.PUSH);
+        addSVNButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        addSVNButton.setText(I18N.get("Add SVN Checkout ..."));
+        addSVNButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+            	Profile.SVNRepoData newSVN = new Profile.SVNRepoData("New SVN");
+            	
+                String[] selection = profileList.getSelection();
+                if (selection.length > 0) {
+                    Profile profile = findByName(selection[0]);
+                    profile.getSvnRepos().add(newSVN);
+                }
+                // Note: maintain same order/index in profile svnrepolist and in list widget
+                svnRepoList.add(newSVN.id);
+                // select new element immediately for use in editSVN below
+                svnRepoList.select(svnRepoList.getItemCount()-1);
+                
+            	editSVN();
+            }
+        });
+
+        Button renameSVNButton = new Button(buttonArea, SWT.PUSH);
+        renameSVNButton.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        renameSVNButton.setText(I18N.get("Edit SVN Checkout ..."));
+        renameSVNButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+                editSVN();
+            }
+        });
+
+        final Button delSVNButton = new Button(buttonArea, SWT.PUSH);
+        delSVNButton.setLayoutData(new GridData(GridData.FILL_BOTH));
+        delSVNButton.setText(I18N.get("Delete SVN Checkout"));
+        delSVNButton.addListener(SWT.Selection, new Listener() {
+            public void handleEvent(Event event) {
+        		String[] selection = profileList.getSelection();
+        		if (selection.length > 0) {
+        		    Profile profile = findByName(selection[0]);
+        		    
+        	        int selected = svnRepoList.getSelectionIndex();
+        	        java.util.List<SVNRepoData> repos = profile.getSvnRepos();
+        	        if (selected < repos.size()) {
+        	        	repos.remove(selected);
+        	        	svnRepoList.remove(selected);
+                        delSVNButton.setEnabled(false);
+        	        }
+        		}
+            }
+        });
+    }
+    
+    private void editSVN() {
+		String[] selection = profileList.getSelection();
+		if (selection.length > 0) {
+		    Profile profile = findByName(selection[0]);
+		    
+	        int selected = svnRepoList.getSelectionIndex();
+	        java.util.List<SVNRepoData> repos = profile.getSvnRepos();
+	        if (selected < repos.size()) {
+	        	SVNRepoEditDialog dialog = new SVNRepoEditDialog(getShell(), repos.get(selected).clone());
+	        	if (dialog.open() == Dialog.OK) {
+	        		SVNRepoData data = dialog.getData();
+	        		repos.set(selected, data);
+	        		svnRepoList.setItem(selected, data.id + " - " + data.svnURL);
+	        	}
+	        }
+		}
+    }
+
+    private void createMindquarryServerSettings(Composite parent) {
+        mqServerSettings = new Composite(parent, SWT.NORMAL);
+        mqServerSettings.setLayoutData(new GridData(GridData.FILL_BOTH));
+        mqServerSettings.setLayout(new GridLayout(1, true));
+        
         // initialize server URL section
-        CLabel quarryEndpointLabel = new CLabel(settingsGroup, SWT.LEFT);
-        quarryEndpointLabel.setText(Messages
-                .getString("URL of the Mindquarry Server:")); //$NON-NLS-1$
+        CLabel quarryEndpointLabel = new CLabel(mqServerSettings, SWT.LEFT);
+        quarryEndpointLabel.setText(I18N
+                .get("URL of the Mindquarry Server:")); //$NON-NLS-1$
         quarryEndpointLabel
                 .setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite errorComp = createErrorBorderComposite(settingsGroup, 1);
+        Composite errorComp = createErrorBorderComposite(mqServerSettings, 1);
         url = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
         registerErrorBorderComposite(errorComp, url);
         url.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -365,11 +558,11 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             }
         });
         // initialize login section
-        CLabel loginLabel = new CLabel(settingsGroup, SWT.LEFT);
-        loginLabel.setText(Messages.getString("Your Login ID:")); //$NON-NLS-1$
+        CLabel loginLabel = new CLabel(mqServerSettings, SWT.LEFT);
+        loginLabel.setText(I18N.get("Your Login ID:")); //$NON-NLS-1$
         loginLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        errorComp = createErrorBorderComposite(settingsGroup, 1);
+        errorComp = createErrorBorderComposite(mqServerSettings, 1);
         login = new Text(errorComp, SWT.SINGLE | SWT.BORDER);
         registerErrorBorderComposite(errorComp, login);
         login.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -389,11 +582,11 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             }
         });
         // initialize password section
-        CLabel pwdLabel = new CLabel(settingsGroup, SWT.LEFT);
-        pwdLabel.setText(Messages.getString("Your Password:")); //$NON-NLS-1$
+        CLabel pwdLabel = new CLabel(mqServerSettings, SWT.LEFT);
+        pwdLabel.setText(I18N.get("Your Password:")); //$NON-NLS-1$
         pwdLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        errorComp = createErrorBorderComposite(settingsGroup, 1);
+        errorComp = createErrorBorderComposite(mqServerSettings, 1);
         pwd = new Text(errorComp, SWT.PASSWORD | SWT.BORDER);
         registerErrorBorderComposite(errorComp, pwd);
         pwd.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -413,7 +606,7 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             }
         });
         // init verify server button
-        Composite verifyArea = new Composite(settingsGroup, SWT.NONE);
+        Composite verifyArea = new Composite(mqServerSettings, SWT.NONE);
         verifyArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         GridLayout layout = new GridLayout(2, false);
         layout.marginBottom = 0;
@@ -423,10 +616,8 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         verifyArea.setLayout(layout);
-        Button verifyServerButton = new Button(verifyArea, SWT.LEFT
-                | SWT.PUSH);
-        verifyServerButton
-                .setText(Messages.getString("Verify server settings"));
+        Button verifyServerButton = new Button(verifyArea, SWT.LEFT | SWT.PUSH);
+        verifyServerButton.setText(I18N.get("Verify server settings"));
         
         final CLabel verifiedLabel = new CLabel(verifyArea, SWT.WRAP);
         verifiedLabel.setLayoutData(new GridData(300, 20));
@@ -439,24 +630,24 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                                     url.getText());
                     
                     if (HttpUtilities.CheckResult.AUTH_REFUSED == result) {
-                        String msg = Messages.getString("Your login ID or password is incorrect.");
+                        String msg = I18N.get("Login ID or password is incorrect.");
                         setInvalid(msg, login, pwd);
                         verifiedLabel.setText(msg);
                         verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
                     } else if(HttpUtilities.CheckResult.NOT_AVAILABLE == result) {
-                        String msg = Messages.getString("Server could not be found.");
+                        String msg = I18N.get("Server could not be found.");
                         setInvalid(msg, url);
                         verifiedLabel.setText(msg);
                         verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
                     } else {
                         setValid();
-                        String msg = Messages.getString("Your server settings are correct.");
+                        String msg = I18N.get("Server settings are correct.");
                         setMessage(msg, INFORMATION);
                         verifiedLabel.setText(msg);
                         verifiedLabel.setImage(OK_IMAGE);
                     }
                 } catch (MalformedURLException murle) {
-                    String msg = Messages.getString("Server URL is not a valid URL ({0})", murle.getLocalizedMessage());
+                    String msg = I18N.get("Server URL is not a valid URL ({0})", murle.getLocalizedMessage());
                     setInvalid(msg, url);
                     verifiedLabel.setText(msg);
                     verifiedLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
@@ -466,11 +657,11 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         });
         
         // initialize workspace folder section
-        CLabel locationLabel = new CLabel(settingsGroup, SWT.LEFT);
-        locationLabel.setText(Messages.getString("Folder for Workspaces:")); //$NON-NLS-1$
+        CLabel locationLabel = new CLabel(mqServerSettings, SWT.LEFT);
+        locationLabel.setText(I18N.get("Folder for Workspaces:")); //$NON-NLS-1$
         locationLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite locationArea = new Composite(settingsGroup, SWT.NONE);
+        Composite locationArea = new Composite(mqServerSettings, SWT.NONE);
         locationArea.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         layout = new GridLayout(2, false);
         layout.marginBottom = 0;
@@ -501,11 +692,11 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
             }
         });
         Button selectWSLocationButton = new Button(locationArea, SWT.PUSH);
-        selectWSLocationButton.setText(Messages.getString("Browse")); //$NON-NLS-1$
+        selectWSLocationButton.setText(I18N.get("Browse")); //$NON-NLS-1$
         selectWSLocationButton.addListener(SWT.Selection, new Listener() {
             public void handleEvent(Event event) {
                 DirectoryDialog fd = new DirectoryDialog(getShell(), SWT.OPEN);
-                fd.setText(Messages.getString("Select folder for workspaces.")); //$NON-NLS-1$
+                fd.setText(I18N.get("Select folder for workspaces.")); //$NON-NLS-1$
 
                 String path = fd.open();
                 if (path != null) {
@@ -513,7 +704,6 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
                 }
             }
         });
-
     }
 
     private Profile findByName(String name) {
@@ -546,18 +736,29 @@ public class ServerProfilesPage extends ErrorDisplayingPreferencePage {
         return true;
     }
 
-    class AddProfileInputValidator implements IInputValidator {
+    /**
+	 * Always valid, overwriting the standard behaviour that depends on
+	 * validation errors. But we have errors (like non-selected profile is
+	 * missing a url) that should not keep the user from storing the data. There
+	 * will be an error upon profile usage (eg. server connection) anyway.
+	 */
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	class AddProfileInputValidator implements IInputValidator {
         public String isValid(String text) {
             // check if a name was provided for the profile
             if (text.trim().length() < 1) {
-                return Messages
-                        .getString("Profile name must contain at least one character."); //$NON-NLS-1$
+                return I18N
+                        .get("Profile name must contain at least one character."); //$NON-NLS-1$
             }
             // check if the name does already exist
             for (String profile : profileList.getItems()) {
                 if (text.equals(profile)) {
-                    return Messages
-                            .getString("A profile with the same name already exists. Each profile must have a unique name."); //$NON-NLS-1$
+                    return I18N
+                            .get("A profile with the same name already exists. Each profile must have a unique name."); //$NON-NLS-1$
                 }
             }
             return null;

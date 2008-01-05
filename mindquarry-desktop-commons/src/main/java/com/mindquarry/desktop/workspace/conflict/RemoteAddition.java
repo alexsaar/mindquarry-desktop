@@ -18,7 +18,7 @@ import java.io.File;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Describes changes that add a file or directory remotely.
@@ -44,14 +44,14 @@ public class RemoteAddition extends Change {
     @Override
     public String getLongDescription() {
         if(status.getReposKind() == NodeKind.dir)
-            return Messages.getString("This new directory was added on the server and will be downloaded.");
+            return I18N.get("This new directory was added on the server and will be downloaded.");
         else
-            return Messages.getString("This new file was added on the server and will be downloaded.");
+            return I18N.get("This new file was added on the server and will be downloaded.");
     }
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Added remotely");
+        return I18N.get("Added remotely");
     }
 
     @Override

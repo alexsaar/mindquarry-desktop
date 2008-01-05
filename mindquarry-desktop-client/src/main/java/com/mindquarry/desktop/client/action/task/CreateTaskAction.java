@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
@@ -56,8 +56,8 @@ public class CreateTaskAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("New Task"));
-		setToolTipText(Messages.getString("Creates a new task."));
+		setText(I18N.getString("New Task"));
+		setToolTipText(I18N.getString("Creates a new task."));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'A');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}
@@ -67,14 +67,14 @@ public class CreateTaskAction extends ActionBase {
 		Task task = new Task();
 		task.setStatus("new"); //$NON-NLS-1$
 		task.setPriority("low"); //$NON-NLS-1$
-		task.setTitle(Messages.getString("new task")); //$NON-NLS-1$
-		task.setSummary(Messages.getString("summary of the task")); //$NON-NLS-1$
+		task.setTitle(I18N.getString("new task")); //$NON-NLS-1$
+		task.setSummary(I18N.getString("summary of the task")); //$NON-NLS-1$
 		task.setDate(null); // no due date by default
 
 		List<Team> teams = client.getSelectedTeams();
 		if (teams.size() == 0) {
-			MessageDialog.openError(new Shell(SWT.None), Messages
-					.getString("Error"), Messages //$NON-NLS-1$
+			MessageDialog.openError(new Shell(SWT.None), I18N
+					.getString("Error"), I18N //$NON-NLS-1$
 					.getString("A new task could not be added because one of the following issues has occurred:\n\n" +
                             "(1) You are not a member of any team.\n" +
                             "(2) Currently you have no teams selected.\n" +
@@ -119,9 +119,9 @@ public class CreateTaskAction extends ActionBase {
 		} catch (Exception e) {
 			published = false;
 			MessageDialog.openError(new Shell(SWT.ON_TOP), 
-			        Messages.getString("Network error"),
-			        Messages.getString("Could not create the task."));
-			log.error(Messages.getString("Could not create the task."), e); //$NON-NLS-1$
+			        I18N.getString("Network error"),
+			        I18N.getString("Could not create the task."));
+			log.error(I18N.getString("Could not create the task."), e); //$NON-NLS-1$
 		}
 		return published;
 	}

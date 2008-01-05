@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.preferences.pages.ProxySettingsPage;
 
 /**
@@ -41,10 +41,10 @@ import com.mindquarry.desktop.preferences.pages.ProxySettingsPage;
 public class HttpUtilities {
     private static Log log = LogFactory.getLog(HttpUtilities.class);
 
-    private static final String AUTH_REFUSED = Messages
-            .getString("Authorization has been refused. Please check your login name and password.");
-    private static final String CONNECTION_ERROR = Messages
-            .getString("Unknown connection error. Status code ");
+    private static final String AUTH_REFUSED = I18N
+            .get("Authorization has been refused. Please check your login name and password.");
+    private static final String CONNECTION_ERROR = I18N
+            .get("Unknown connection error. Status code ");
 
     private static final int SOCKET_TIMEOUT = 30 * 1000; // milliseconds
     private static final int CONNECTION_TIMEOUT = 60 * 1000; // milliseconds
@@ -69,8 +69,8 @@ public class HttpUtilities {
                 throw new NotAuthorizedException(AUTH_REFUSED, address, login,
                         pwd);
             } else {
-                throw new HttpException(Messages
-                        .getString("Unknown connection error. Status code ") //$NON-NLS-1$
+                throw new HttpException(I18N
+                        .get("Unknown connection error. Status code ") //$NON-NLS-1$
                         + get.getStatusCode());
             }
             return result;

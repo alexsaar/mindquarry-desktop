@@ -13,11 +13,15 @@
  */
 package com.mindquarry.desktop.model.team;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
 import com.mindquarry.desktop.model.ModelBase;
+import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.util.NotAuthorizedException;
+import com.mindquarry.desktop.workspace.SVNSynchronizer;
+import com.mindquarry.desktop.workspace.conflict.ConflictHandler;
 
 /**
  * @author <a href="mailto:lars(dot)trieloff(at)mindquarry(dot)com">Lars
@@ -41,6 +45,21 @@ public class Team extends ModelBase {
     public Team(String url, String login, String password)
             throws NotAuthorizedException, MalformedURLException {
         super(url, login, password, new TeamTransformer());
+    }
+    
+    public boolean dirExists(Profile profile) {
+    	File teamDir = new File(profile.getWorkspaceFolder() + "/" + getName());
+    	return teamDir.exists();
+    }
+    
+    public SVNSynchronizer createSynchronizer(Profile profile, ConflictHandler handler) {
+    	return new SVNSynchronizer(
+    			getWorkspaceURL(),
+    			profile.getWorkspaceFolder() + "/" + getName(),
+    			profile.getLogin(),
+    			profile.getPassword(),
+    			handler
+    		);
     }
 
     /**

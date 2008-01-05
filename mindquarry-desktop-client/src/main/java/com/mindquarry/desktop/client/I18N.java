@@ -21,7 +21,7 @@ import java.util.Map;
  * 
  * @author dnaber
  */
-public class Messages extends com.mindquarry.desktop.Messages {
+public class I18N extends com.mindquarry.desktop.I18N {
 
     private static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/client/messages_"; //$NON-NLS-1$
     private static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
@@ -29,10 +29,10 @@ public class Messages extends com.mindquarry.desktop.Messages {
     private static Map<String, String> translationMap = null;
 
     public static String getString(String key) {
-        return getString(key, new String[]{});
+        return get(key, new String[]{});
     }
     
-    public static String getString(String key, String... args) {
+    public static String get(String key, String... args) {
         if (translationMap == null) {
             translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }

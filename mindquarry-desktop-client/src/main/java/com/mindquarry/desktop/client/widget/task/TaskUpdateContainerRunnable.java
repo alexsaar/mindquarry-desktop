@@ -21,7 +21,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.UpdateContainerRunnable;
@@ -82,7 +82,7 @@ public class TaskUpdateContainerRunnable extends
         col.setLabelProvider(new TaskLabelProvider());
         col.getColumn().setResizable(false);
         col.getColumn().setWidth(200);
-        col.getColumn().setText(Messages.getString("Description"));//$NON-NLS-1$
+        col.getColumn().setText(I18N.getString("Description"));//$NON-NLS-1$
 
         containerWidget.layout(true);
         doResize();

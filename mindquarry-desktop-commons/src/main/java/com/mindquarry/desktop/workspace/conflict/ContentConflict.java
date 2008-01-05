@@ -20,7 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -291,7 +291,7 @@ public class ContentConflict extends RenamingConflict {
 
     @Override
     public String getLongDescription() {
-        return Messages.getString("This file has been modified both on the server " +
+        return I18N.get("This file has been modified both on the server " +
                 "and locally. You will need to merge the changes.");
     }
 }

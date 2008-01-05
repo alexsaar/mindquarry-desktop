@@ -18,7 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.team.TeamlistWidget;
@@ -46,8 +46,8 @@ public class RefreshTeamlistAction extends ActionBase {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Refresh list of teams"));
-		setToolTipText(Messages.getString("Refresh the list of teams."));
+		setText(I18N.getString("Refresh list of teams"));
+		setToolTipText(I18N.getString("Refresh the list of teams."));
 		setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
 		setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
 	}

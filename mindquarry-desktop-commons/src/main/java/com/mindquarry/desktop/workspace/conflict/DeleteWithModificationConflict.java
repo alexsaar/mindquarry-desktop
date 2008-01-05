@@ -29,7 +29,7 @@ import org.tigris.subversion.javahl.Revision.Number;
 import org.tmatesoft.svn.core.internal.util.SVNEncodingUtil;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminDirectoryLocator;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.util.FileHelper;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
@@ -402,18 +402,18 @@ public class DeleteWithModificationConflict extends Conflict {
     public String getLongDescription() {
         if (otherMods == null) { // only single files involved
             if (localDelete) { // local DELETED, remote MODIFIED
-                return Messages.getString("This remotely modified file was deleted locally. " +
+                return I18N.get("This remotely modified file was deleted locally. " +
                         "You will need to resolve the conflict.");
             } else { // local MODIFIED, remote DELETED
-                return Messages.getString("This remotely deleted file was modified locally. " +
+                return I18N.get("This remotely deleted file was modified locally. " +
                         "You will need to resolve the conflict.");
             }
         } else { // directories involved
             if (localDelete) { // local dir DELETED, remote MODIFIED
-                return Messages.getString("This locally deleted directory contains remote changes. " +
+                return I18N.get("This locally deleted directory contains remote changes. " +
                         "You will need to resolve the conflict.");
             } else { // local MODIFIED, remote dir DELETED
-                return Messages.getString("This remotely deleted directory contains local changes. " +
+                return I18N.get("This remotely deleted directory contains local changes. " +
                         "You will need to resolve the conflict.");
             }
         }

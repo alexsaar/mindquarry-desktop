@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.PropertyConflict;
 
 /**
@@ -51,13 +51,13 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Property") + ": "
+        name.setText(I18N.getString("Property") + ": "
                 + conflict.getLocalProperty().getName());
     }
 
     @Override
     protected String getMessage() {
-        return Messages
+        return I18N
                 .getString("Somebody else modified the property you are trying to synchronize. "
                         + "Please select the version that should be treated as the current version.");
     }
@@ -72,7 +72,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
                 | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
         gridData.minimumHeight = 35;
 
-        Button button1 = makeRadioButton(subComposite, Messages
+        Button button1 = makeRadioButton(subComposite, I18N
                 .getString("Use your local version of the property"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_LOCAL_VALUE);
         button1.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -82,7 +82,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         localPropText.setLayoutData(gridData);
         localPropText.setText(conflict.getLocalProperty().getValue());
 
-        Button button2 = makeRadioButton(subComposite, Messages
+        Button button2 = makeRadioButton(subComposite, I18N
                 .getString("Use the property from the server"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_REMOTE_VALUE);
         button2.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
@@ -92,7 +92,7 @@ public class PropertyConflictDialog extends AbstractConflictDialog {
         remotePropText.setLayoutData(gridData);
         remotePropText.setText(conflict.getRemoteProperty().getValue());
 
-        Button button3 = makeRadioButton(subComposite, Messages
+        Button button3 = makeRadioButton(subComposite, I18N
                 .getString("Specify a new value for this property"), //$NON-NLS-1$
                 PropertyConflict.Action.USE_NEW_VALUE);
         button3.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));

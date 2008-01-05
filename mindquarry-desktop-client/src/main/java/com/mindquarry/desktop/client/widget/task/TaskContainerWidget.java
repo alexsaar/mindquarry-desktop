@@ -24,13 +24,15 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
@@ -70,6 +72,13 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     public TaskContainerWidget(Composite parent, MindClient client) {
         super(parent, SWT.BORDER, client);
         EventBus.registerListener(this);
+        addDisposeListener(new DisposeListener() {
+
+			public void widgetDisposed(DisposeEvent e) {
+				EventBus.unregisterListener(TaskContainerWidget.this);
+			}
+        	
+        });
     }
 
     // #########################################################################
@@ -147,7 +156,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             }
             // update table
             if (content.getTasks().isEmpty()) {
-                showMessage(Messages
+                showMessage(I18N
                         .getString("No task matches the selected filter"),
                         "info");
             } else {
@@ -199,7 +208,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
             refreshing = false;
             return;
         }
-        showRefreshMessage(Messages.getString("Updating task list...")); //$NON-NLS-1$
+        showRefreshMessage(I18N.getString("Updating task list...")); //$NON-NLS-1$
         log.info("Retrieving list of tasks."); //$NON-NLS-1$
 
         // cleanup current task list
@@ -227,8 +236,8 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 // set for use in onEvent():
                 tasksInCurrentTeamCount = taskList.getSize();
                 taskDownloadCount = 1;
-                updateMessage = Messages
-                        .getString(
+                updateMessage = I18N
+                        .get(
                                 "Updating task list for team \"{0}\" (team {1} of {2}): ",
                                 team.getName(), Integer.toString(teams
                                         .indexOf(team) + 1), Integer
@@ -241,8 +250,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
 
             getDisplay().syncExec(new Runnable() {
                 public void run() {
-                    Boolean retry = client.handleNotAuthorizedException(e);
-                    refreshing = retry;
+                    refreshing = client.handleNotAuthorizedException(e);
                 }
             });
 
@@ -259,8 +267,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
 
             getDisplay().syncExec(new Runnable() {
                 public void run() {
-                    Boolean retry = client.handleUnknownHostException(e);
-                    refreshing = retry;
+                    refreshing = client.handleUnknownHostException(e);
                 }
             });
 
@@ -278,13 +285,13 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
                 log.error("Could not update list of tasks for " //$NON-NLS-1$
                         + profile.getServerURL(), e);
 
-                final String errMessage = Messages
+                final String errMessage = I18N
                         .getString("List of tasks could not be updated") //$NON-NLS-1$
                         + " " + e.getLocalizedMessage();
 
                 getDisplay().syncExec(new Runnable() {
                     public void run() {
-                        MessageDialog.openError(getShell(), Messages
+                        MessageDialog.openError(getShell(), I18N
                                 .getString("Error"), errMessage);
                     }
                 });
@@ -318,7 +325,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
 
     public void showEmptyMessage(boolean isEmpty) {
         containerRunnable = new TaskUpdateContainerRunnable(client, this,
-                false, isEmpty, "info", Messages
+                false, isEmpty, "info", I18N
                         .getString("Currently no tasks are active.")); // $NON-NLS-1$
         getDisplay().syncExec(containerRunnable);
     }
@@ -355,7 +362,7 @@ public class TaskContainerWidget extends ContainerWidget<TableViewer> implements
     public void onEvent(Event event) {
         if (event instanceof NewTaskFromUrlEvent) {
             setMessage(updateMessage
-                    + Messages.getString("Task {0} of {1}", Integer.toString(taskDownloadCount),
+                    + I18N.get("Task {0} of {1}", Integer.toString(taskDownloadCount),
                             Integer.toString(tasksInCurrentTeamCount)));
             taskDownloadCount++;
         }

@@ -48,7 +48,7 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tmatesoft.svn.core.internal.wc.SVNFileUtil;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.OpenFileAction;
 import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
@@ -368,7 +368,7 @@ public class WorkspaceUpdateContainerRunnable extends
                         menuItem.dispose();
                     }
                     menuItem = new MenuItem(popupmenu, SWT.NONE);
-                    menuItem.setText(Messages.getString("Open local file"));
+                    menuItem.setText(I18N.getString("Open local file"));
                     menuItem.addListener(SWT.Selection, new Listener() {
                         public void handleEvent(Event e) {
                             EventBus.send(new OpenSelectedFileEvent(this));

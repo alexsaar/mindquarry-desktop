@@ -15,7 +15,7 @@ package com.mindquarry.desktop.client.action.app;
 
 import org.eclipse.jface.action.Action;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 
 /**
@@ -38,8 +38,8 @@ public class ShowMainWindowAction extends Action {
 		setId(ID);
 		setActionDefinitionId(ID);
 
-		setText(Messages.getString("Show Window"));//$NON-NLS-1$
-		setToolTipText(Messages.getString("Displays the Mindquarry Desktop Client main window"));//$NON-NLS-1$
+		setText(I18N.getString("Show Window"));//$NON-NLS-1$
+		setToolTipText(I18N.getString("Displays the Mindquarry Desktop Client main window"));//$NON-NLS-1$
 	}
 
 	public void run() {

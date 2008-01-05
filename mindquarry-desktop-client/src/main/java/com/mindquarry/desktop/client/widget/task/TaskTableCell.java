@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.dialog.task.TaskSettingsDialog;
 import com.mindquarry.desktop.client.widget.WidgetBase;
@@ -56,7 +56,7 @@ public class TaskTableCell extends WidgetBase {
 
         title.setText(task.getTitle());
         description.setText(task.getDescription() != null ? task
-                .getDescription() : Messages
+                .getDescription() : I18N
                 .getString("No description available for this task"));
         
         this.task = task;
@@ -110,9 +110,9 @@ public class TaskTableCell extends WidgetBase {
                             .getContentAsXML().asXML().getBytes("utf-8"));
                 }
             } catch (Exception e) {
-                MessageDialog.openError(new Shell(SWT.ON_TOP), Messages
+                MessageDialog.openError(new Shell(SWT.ON_TOP), I18N
                         .getString("Network error"),//$NON-NLS-1$
-                        Messages.getString("Could not update the task")//$NON-NLS-1$
+                        I18N.getString("Could not update the task")//$NON-NLS-1$
                                 + ": " + e.toString());
                 log.error("Could not update task with id " //$NON-NLS-1$
                         + task.getId(), e);

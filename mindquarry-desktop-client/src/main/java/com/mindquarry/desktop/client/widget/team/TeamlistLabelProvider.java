@@ -16,7 +16,7 @@ package com.mindquarry.desktop.client.widget.team;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.model.team.Team;
 
 /**
@@ -48,7 +48,7 @@ public class TeamlistLabelProvider extends ColumnLabelProvider {
 		} else {
 			name = "-"; //$NON-NLS-1$
 		}
-		text += Messages.getString("Name") //$NON-NLS-1$
+		text += I18N.getString("Name") //$NON-NLS-1$
 				+ ": " + name; //$NON-NLS-1$ 
 		return text;
 	}

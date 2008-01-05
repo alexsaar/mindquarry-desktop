@@ -13,8 +13,8 @@
  */
 package com.mindquarry.desktop.event;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,10 +69,18 @@ public class EventBus {
     }
     
     /**
+     * Unregisters an registered event listener so that it no longer
+     * receives any events sent over this Eventbus. Convenience static method.
+     */
+    public static void unregisterListener(EventListener listener) {
+        get().unregisterEventListener(listener);
+    }
+    
+    /**
      * Private constructor because of singleton pattern.
      */
     private EventBus() {
-        registeredListeners = new ArrayList<EventListener>();
+        registeredListeners = new ConcurrentLinkedQueue<EventListener>();
     }
 
     /**
@@ -82,6 +90,17 @@ public class EventBus {
     public void registerEventListener(EventListener listener) {
         log.info("registerEventListener: listener=" + listener.getClass().getName());
         registeredListeners.add(listener);
+    }
+    
+    /**
+     * Unregisters an registered event listener so that it no longer
+     * receives any events sent over this Eventbus.
+     */
+    public void unregisterEventListener(EventListener listener) {
+        log.info("unregisterEventListener: listener=" + listener.getClass().getName());
+        if (registeredListeners.contains(listener)) {
+        	registeredListeners.remove(listener);
+        }
     }
     
     /**

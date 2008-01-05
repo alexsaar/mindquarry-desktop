@@ -34,8 +34,8 @@
         <translation>Bitte geben Sie einen Namen für das Profil ein:</translation>
     </message>
     <message>
-        <source>Your login ID or password is incorrect.</source>
-        <translation>Ihre Login-ID und/oder Ihr Passwort ist nicht korrekt.</translation>
+        <source>Login ID or password is incorrect.</source>
+        <translation>Login-ID und/oder Passwort ist nicht korrekt.</translation>
     </message>
     <message>
         <source>Username and/or password not correct for</source>
@@ -46,8 +46,8 @@
         <translation>Diese auf dem Server geänderte Datei wurde lokal gelöscht. Sie müssen diesen Konflikt auflösen.</translation>
     </message>
     <message>
-        <source>Your server settings are correct.</source>
-        <translation>Ihre Server-Einstellungen sind korrekt.</translation>
+        <source>Server settings are correct.</source>
+        <translation>Server-Einstellungen sind korrekt.</translation>
     </message>
     <message>
         <source>Proxy Password:</source>
@@ -143,7 +143,7 @@
     </message>
     <message>
         <source>This is a new file, but on the server there still exists a directory of the same name.</source>
-        <translation>Diese Datei ist neu, aber auf dem Server exisitiert noch ein Ordner gleichen Namens.</translation>
+        <translation>Diese Datei ist neu, aber auf dem Server existiert noch ein Ordner gleichen Namens.</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -383,7 +383,7 @@
     </message>
     <message>
         <source>Workspace folder does not exist.</source>
-        <translation>Ordner mit Arbeitsbereich exisitiert nicht.</translation>
+        <translation>Ordner mit Arbeitsbereich existiert nicht.</translation>
     </message>
     <message>
         <source>Deleted remotely</source>

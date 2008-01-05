@@ -33,13 +33,14 @@ import org.tigris.subversion.javahl.NotifyInformation;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.dialog.workspace.CommitDialog;
 import com.mindquarry.desktop.client.widget.workspace.ChangeSet;
 import com.mindquarry.desktop.client.widget.workspace.ChangeSets;
 import com.mindquarry.desktop.client.widget.workspace.WorkspaceBrowserWidget;
+import com.mindquarry.desktop.model.team.SVNRepo;
 import com.mindquarry.desktop.model.team.Team;
 import com.mindquarry.desktop.preferences.profile.Profile;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
@@ -62,15 +63,15 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     .getResourceAsStream("/com/mindquarry/icons/" + ICON_SIZE + "/actions/synchronize-vertical.png")); //$NON-NLS-1$
 
     protected static final String SYNC_WORKSPACE_MESSAGE =
-        Messages.getString("Synchronizing workspaces"); //$NON-NLS-1$
-    protected static final String SYNC_WORKSPACE_NOTE = Messages.getString(
+        I18N.getString("Synchronizing workspaces"); //$NON-NLS-1$
+    protected static final String SYNC_WORKSPACE_NOTE = I18N.getString(
             "Please do not modify, copy, or move files " + //$NON-NLS-1$
             "in your workspace during the synchronization."); //$NON-NLS-1$
 
-    protected static final String SYNC_WORKSPACE_NOTE2 = Messages.getString(
+    protected static final String SYNC_WORKSPACE_NOTE2 = I18N.getString(
             "Currently working on: ");  //$NON-NLS-1$
 
-    private static final String REFRESHING_MESSAGE = Messages
+    private static final String REFRESHING_MESSAGE = I18N
             .getString("Refreshing workspaces changes");
 
     private Thread updateThread;
@@ -81,8 +82,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Synchronize")); //$NON-NLS-1$
-        setToolTipText(Messages
+        setText(I18N.getString("Synchronize")); //$NON-NLS-1$
+        setToolTipText(I18N
                 .getString("Synchronize workspaces with your desktop.")); //$NON-NLS-1$
         setAccelerator(SWT.CTRL + +SWT.SHIFT + 'S');
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
@@ -111,7 +112,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             log.debug("Killing synchronize thread");
             // TODO: use non-deprecated way to stop threads: interrupt(); 
             updateThread.stop();
-            workspaceWidget.showErrorMessage(Messages.getString("Synchronisation stopped."));
+            workspaceWidget.showErrorMessage(I18N.getString("Synchronisation stopped."));
             client.stopAction(REFRESHING_MESSAGE);
             client.stopAction(SYNC_WORKSPACE_MESSAGE);
             client.enableActions(true, ActionBase.WORKSPACE_ACTION_GROUP);
@@ -136,7 +137,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
             client.enableActions(true, ActionBase.STOP_ACTION_GROUP);
 
             workspaceWidget.showRefreshMessage(
-                    Messages.getString("Refreshing workspaces changes") + " ..."); //$NON-NLS-1$ //$NON-NLS-2
+                    I18N.getString("Refreshing workspaces changes") + " ..."); //$NON-NLS-1$ //$NON-NLS-2
 
             client.startAction(REFRESHING_MESSAGE); //$NON-NLS-1$
             boolean refreshNeeded = workspaceWidget.refreshNeeded(true);
@@ -148,7 +149,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                         MessageBox messageBox = new MessageBox(client
                                 .getShell(), SWT.ICON_INFORMATION | SWT.OK);
                         messageBox
-                                .setMessage(Messages
+                                .setMessage(I18N
                                         .getString("The list of changes is not up to date. It will be updated now. " //$NON-NLS-1$
                                                 + "\n" //$NON-NLS-1$
                                                 + "Please check the list of changes and press synchronize again.")); //$NON-NLS-1$
@@ -207,13 +208,8 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     // now actually update and commit for each team:
                     for (Team team : teams) {
                         long startTime = System.currentTimeMillis();
-                        SVNSynchronizer sc = new SVNSynchronizer(team
-                                .getWorkspaceURL(), selected
-                                .getWorkspaceFolder()
-                                + "/" + team.getName(), selected.getLogin(), //$NON-NLS-1$
-                                selected.getPassword(),
-                                new InteractiveConflictHandler(client
-                                        .getShell()));
+                        SVNSynchronizer sc =
+                        	team.createSynchronizer(selected, new InteractiveConflictHandler(client.getShell()));
                         sc.setNotifyListener(new NotifyListener());
                         sc.setCommitMessageHandler(new CommitMessageHandler(commitMessages.get(team)));
                         sc.synchronizeOrCheckout();
@@ -221,6 +217,9 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                                 (System.currentTimeMillis()-startTime) + "ms (incl. user interaction if any)");
                     }
                 } catch (SynchronizeCancelException e) {
+                	// TODO: rename SynchronizeCancelException to UserCancelledException and inherit from
+                	// CancelException to make a difference between user cancelled and synch aborted due
+                	// to some other error
                     log.info("synchronization cancelled (1)"); //$NON-NLS-1$
                     cancelled = true;
                 } catch (final Exception e) {
@@ -241,7 +240,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                             public void run() {
                                 MessageBox messageBox = new MessageBox(client
                                         .getShell(), SWT.ICON_ERROR | SWT.OK);
-                                messageBox.setMessage(Messages
+                                messageBox.setMessage(I18N
                                         .getString("An error occured during synchronization: ") + //$NON-NLS-1$
                                         e.getMessage());
                                 messageBox.open();
@@ -256,7 +255,7 @@ public class SynchronizeWorkspacesAction extends ActionBase {
                     workspaceWidget.showEmptyMessage(false);
                 } else {
                     // show "sucessfully synchronized"
-                    workspaceWidget.showEmptyMessage(Messages.getString(
+                    workspaceWidget.showEmptyMessage(I18N.get(
                             "Synchronized successfully at {0}.", 
                             DateFormat.getTimeInstance().format(new Date()))); //$NON-NLS-1$
                 }

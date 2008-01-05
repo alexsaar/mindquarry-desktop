@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -127,7 +127,7 @@ public abstract class Conflict extends Change {
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Conflict");
+        return I18N.get("Conflict");
     }
     
 }

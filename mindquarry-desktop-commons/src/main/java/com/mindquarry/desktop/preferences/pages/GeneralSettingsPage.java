@@ -18,7 +18,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * This class creates a preference page for shortcuts.
@@ -35,9 +35,9 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
      * ShortcutsPage default constructor
      */
     public GeneralSettingsPage() {
-        super(Messages.getString("Common Settings"), //$NON-NLS-1$
+        super(I18N.get("Common Settings"), //$NON-NLS-1$
                 FieldEditorPreferencePage.GRID);
-        setDescription(Messages.getString("Manage common settings of the application.")); //$NON-NLS-1$
+        setDescription(I18N.get("Manage common settings of the application.")); //$NON-NLS-1$
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -48,7 +48,7 @@ public class GeneralSettingsPage extends FieldEditorPreferencePage {
 
     protected void createFieldEditors() {
         BooleanFieldEditor autostartFlag = new BooleanFieldEditor(AUTOSTART,
-                Messages.getString("Run at system startup (Windows only)"), //$NON-NLS-1$
+                I18N.get("Run at system startup (Windows only)"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(autostartFlag);
     }

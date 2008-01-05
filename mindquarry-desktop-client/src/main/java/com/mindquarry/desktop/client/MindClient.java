@@ -184,6 +184,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
     private com.mindquarry.desktop.event.Event storedEvent;
 
+	private SashForm sashForm;
+
     // #########################################################################
     // ### CONSTRUCTORS & MAIN
     // #########################################################################
@@ -206,15 +208,15 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 log.error("Cannot create settings folder '" + file.getAbsolutePath() + "'");
                 MessageDialog dlg = new MessageDialog(
                         getShell(),
-                        Messages.getString("Cannot create settings folder"), null,
-                        Messages.getString("The Mindquarry Desktop Client cannot create its settings folder at\n\n" +
+                        I18N.getString("Cannot create settings folder"), null,
+                        I18N.get("The Mindquarry Desktop Client cannot create its settings folder at\n\n" +
                                         "'{0}'\n\nMaybe you don't have permissions to access it?\n\n" +
                                         "If you continue, the program won't work properly, so it is strongly " +
                                         "recommended to ensure write-access to that folder and restart the client.",
                                         file.getAbsolutePath()),
                         MessageDialog.ERROR,
-                        new String[] { Messages.getString("Exit"),
-                                Messages.getString("Start anyway") }, 0);
+                        new String[] { I18N.getString("Exit"),
+                                I18N.getString("Start anyway") }, 0);
                 int result = dlg.open();
                 if (result == 0) {
                     System.exit(1);
@@ -245,14 +247,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
             if (fileLock == null) {
                 MessageDialog dlg = new MessageDialog(
                         getShell(),
-                        Messages.getString("Mindquarry Client already running"), null,
-                        Messages.getString("The Mindquarry Desktop Client seems to be running " +
+                        I18N.getString("Mindquarry Client already running"), null,
+                        I18N.getString("The Mindquarry Desktop Client seems to be running " +
                                         "already. Only one instance of the Desktop Client can be " +
                                         "running at a time. If you are sure that the Desktop Client " +
                                         "isn't running, select 'Start anyway'."),
                         MessageDialog.ERROR,
-                        new String[] { Messages.getString("Exit"),
-                                Messages.getString("Start anyway") }, 0);
+                        new String[] { I18N.getString("Exit"),
+                                I18N.getString("Start anyway") }, 0);
                 int result = dlg.open();
                 if (result == 0) {
                     System.exit(1);
@@ -310,8 +312,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
         client.open();
     }
     
-    public static boolean isTasksActive() {
-        return MindClient.class.getResourceAsStream("disable.tasks")==null;
+    public boolean isTasksActive() {
+        return MindClient.class.getResourceAsStream("disable.tasks") == null
+        	&& Profile.getSelectedProfile(getPreferenceStore()).getType() == Profile.Type.MindquarryServer;
     }
 
     // #########################################################################
@@ -325,13 +328,12 @@ public class MindClient extends ApplicationWindow implements EventListener {
         try {
             store.save();
         } catch (Exception e) {
-            MessageDialog
-                    .openError(
-                            getShell(),
-                            Messages.getString("Error"),
-                            Messages
-                                    .getString("Could not save Desktop Client settings")
-                                    + ": " + e.toString());
+            MessageDialog.openError(
+                    getShell(),
+                    I18N.getString("Error"),
+                    I18N.getString("Could not save Desktop Client settings")
+                            + ": " + e.toString()
+            );
         }
         AutostartUtilities.setAutostart(store
                 .getBoolean(GeneralSettingsPage.AUTOSTART), JAR_NAMES); //$NON-NLS-1$
@@ -379,9 +381,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
         return teamList.getSelectedTeams();
     }
 
-    public List<Team> getTeams() {
-        return teamList.getTeams();
-    }
+//    public List<Team> getTeams() {
+//        return teamList.getTeams();
+//    }
 
     public String getMimeType(File file) {
         return mimeMap.getContentType(file);
@@ -396,7 +398,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
      * working connection.
      */
     private void displayNotConnected() {
-        String message = Messages.getString("Not connected.\n" //$NON-NLS-1$
+        String message = I18N.getString("Not connected.\n" //$NON-NLS-1$
                 + "Please click the 'Refresh' button to connect."); //$NON-NLS-1$
 
         teamList.clear();
@@ -415,19 +417,19 @@ public class MindClient extends ApplicationWindow implements EventListener {
      * @return True if and only if preferences dialog was shown to user which
      *         means that the credentials were potentially updated.
      */
-    public Boolean handleNotAuthorizedException(NotAuthorizedException exception) {
+    public boolean handleNotAuthorizedException(NotAuthorizedException exception) {
         // create custom error message with the option to open the preferences
         // dialog
         MessageDialog messageDialog = new MessageDialog(
                 getShell(),
-                Messages.getString("Error"), //$NON-NLS-1$
+                I18N.getString("Error"), //$NON-NLS-1$
                 null,
                 (exception.getLocalizedMessage() + "\n\n" //$NON-NLS-1$
-                + Messages
+                + I18N
                         .getString("Please check your username and password settings in the preferences dialog.")), //$NON-NLS-1$
                 MessageDialog.ERROR, new String[] {
-                        Messages.getString("Go to preferences"), //$NON-NLS-1$
-                        Messages.getString("Cancel") //$NON-NLS-1$
+                        I18N.getString("Go to preferences"), //$NON-NLS-1$
+                        I18N.getString("Cancel") //$NON-NLS-1$
                 }, 0);
 
         int buttonClicked = messageDialog.open();
@@ -452,22 +454,22 @@ public class MindClient extends ApplicationWindow implements EventListener {
      * @return True if and only if preferences dialog was shown to user which
      *         means that the server details were potentially updated.
      */
-    public Boolean handleUnknownHostException(UnknownHostException exception) {
+    public boolean handleUnknownHostException(UnknownHostException exception) {
         // create custom error message with the option to open the preferences
         // dialog
         MessageDialog messageDialog = new MessageDialog(
                 getShell(),
-                Messages.getString("Error"), //$NON-NLS-1$
+                I18N.getString("Error"), //$NON-NLS-1$
                 null,
-                (Messages
-                        .getString(
+                (I18N
+                        .get(
                                 "Unknown server: \"{0}\"", exception.getLocalizedMessage()) //$NON-NLS-1$
                         + "\n\n" //$NON-NLS-1$
-                + Messages
+                + I18N
                         .getString("Please check your Mindquarry server URL in the preferences dialog.")), //$NON-NLS-1$
                 MessageDialog.ERROR, new String[] {
-                        Messages.getString("Go to preferences"), //$NON-NLS-1$
-                        Messages.getString("Cancel") //$NON-NLS-1$
+                        I18N.getString("Go to preferences"), //$NON-NLS-1$
+                        I18N.getString("Cancel") //$NON-NLS-1$
                 }, 0);
 
         int buttonClicked = messageDialog.open();
@@ -492,18 +494,18 @@ public class MindClient extends ApplicationWindow implements EventListener {
      * @return True if and only if preferences dialog was shown to user which
      *         means that the credentials were potentially updated.
      */
-    public Boolean handleMalformedURLException(MalformedURLException exception) {
+    public boolean handleMalformedURLException(MalformedURLException exception) {
         // create custom error message with the option to open the preferences
         // dialog
         MessageDialog messageDialog = new MessageDialog(
                 getShell(),
-                Messages.getString("Error"), //$NON-NLS-1$
+                I18N.getString("Error"), //$NON-NLS-1$
                 null,
-                Messages.getString("Invalid server URL given: {0}\n\nPlease check your server settings in the preferences dialog.",
+                I18N.get("Invalid server URL given: {0}\n\nPlease check your server settings in the preferences dialog.",
                         exception.getLocalizedMessage()),
                 MessageDialog.ERROR, new String[] {
-                        Messages.getString("Go to preferences"), //$NON-NLS-1$
-                        Messages.getString("Cancel") //$NON-NLS-1$
+                        I18N.getString("Go to preferences"), //$NON-NLS-1$
+                        I18N.getString("Cancel") //$NON-NLS-1$
                 }, 0);
 
         int buttonClicked = messageDialog.open();
@@ -552,12 +554,11 @@ public class MindClient extends ApplicationWindow implements EventListener {
     protected Control createContents(Composite parent) {
         initRegistries();
 
-        SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+        sashForm = new SashForm(parent, SWT.HORIZONTAL);
         sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         teamList = new TeamlistWidget(sashForm, SWT.NONE, this);
-        categoryWidget = new CategoryWidget(sashForm, SWT.NONE, this);
-        sashForm.setWeights(new int[] { 1, 3 });
+        createCategoryWidget(sashForm);
 
         ((UpdateWorkspacesAction) getAction(UpdateWorkspacesAction.class
                 .getName())).setTeamList(teamList);
@@ -596,6 +597,14 @@ public class MindClient extends ApplicationWindow implements EventListener {
         }
         return parent;
     }
+
+	private void createCategoryWidget(SashForm parent) {
+		if (categoryWidget != null) {
+			categoryWidget.dispose();
+		}
+		categoryWidget = new CategoryWidget(parent, SWT.NONE, this);
+        sashForm.setWeights(new int[] { 1, 3 });
+	}
 
     private void initMacIfAvailable() {
         // if (SVNFileUtil.isOSX) {
@@ -655,9 +664,9 @@ public class MindClient extends ApplicationWindow implements EventListener {
             addNewProfile(args[0], args[1], args[2]);
             showPreferenceDialog(true);
         } else if (!prefFile.exists()) {
-            addNewProfile(Messages.getString("Your Mindquarry Server Profile"), //$NON-NLS-1$
-                    Messages.getString("http://your.mindquarry.server"), //$NON-NLS-1$
-                    Messages.getString("LoginID")); //$NON-NLS-1$
+            addNewProfile(I18N.getString("Your Mindquarry Server Profile"), //$NON-NLS-1$
+                    I18N.getString("http://your.mindquarry.server"), //$NON-NLS-1$
+                    I18N.getString("LoginID")); //$NON-NLS-1$
             showPreferenceDialog(true);
         } else {
             loadOptions();
@@ -695,7 +704,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
             profile.setWorkspaceFolder(wsFolder.getAbsolutePath() + "/"
                     + url.getHost());
         } catch (MalformedURLException e) {
-            MessageDialog.openError(getShell(), Messages.getString("Error"), e
+            MessageDialog.openError(getShell(), I18N.getString("Error"), e
                     .getLocalizedMessage());
             // FIXME: what should be done here???
             // profile.setWorkspaceFolder(wsFolder.getAbsolutePath());
@@ -728,8 +737,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
             MessageDialog
                     .openError(
                             getShell(),
-                            Messages.getString("Error"),
-                            Messages
+                            I18N.getString("Error"),
+                            I18N
                                     .getString("Could not load Desktop Client settings")
                                     + ": " + e.toString());
         }
@@ -816,8 +825,8 @@ public class MindClient extends ApplicationWindow implements EventListener {
         // so disable it for now:
         if (SVNFileUtil.isWindows) {
             final ToolTip tip = new ToolTip(shell, SWT.BALLOON | SWT.ICON_INFORMATION);
-            tip.setText(Messages.getString("Mindquarry Desktop Client"));
-            tip.setMessage(Messages.getString("Select this icon to open the Mindquarry Desktop Client"));
+            tip.setText(I18N.getString("Mindquarry Desktop Client"));
+            tip.setMessage(I18N.getString("Select this icon to open the Mindquarry Desktop Client"));
             trayItem.setToolTip(tip);
             tip.setVisible(true);
         }
@@ -883,7 +892,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
 
         // profiles sub menu
         menuItem = new MenuItem(trayMenu, SWT.CASCADE);
-        menuItem.setText(Messages.getString("Server Profiles")); //$NON-NLS-1$
+        menuItem.setText(I18N.getString("Server Profiles")); //$NON-NLS-1$
 
         profilesMenu = new Menu(shell, SWT.DROP_DOWN);
         profilesMenu.addListener(SWT.Show, new Listener() {
@@ -936,6 +945,7 @@ public class MindClient extends ApplicationWindow implements EventListener {
         int i = 0;
         boolean hasSelection = false;
         MenuItem firstMenuItem = null;
+        Profile selectedProfile = Profile.getSelectedProfile(getPreferenceStore());
         while (pIt.hasNext()) {
             Profile profile = pIt.next();
             final MenuItem menuItem = new MenuItem(profilesMenu, SWT.RADIO, i);
@@ -956,18 +966,15 @@ public class MindClient extends ApplicationWindow implements EventListener {
                 }
             });
             // activate selected profile in menu
-            if ((Profile.getSelectedProfile(getPreferenceStore()) != null)
-                    && (profile.getName().equals(Profile.getSelectedProfile(
-                            getPreferenceStore()).getName()))) {
+            if (selectedProfile != null
+                    && profile.getName().equals(selectedProfile.getName())) {
                 menuItem.setSelection(true);
                 hasSelection = true;
             }
             profilesInMenu.add(menuItem);
         }
         if (!hasSelection && firstMenuItem != null) {
-            Profile
-                    .selectProfile(getPreferenceStore(), firstMenuItem
-                            .getText());
+            Profile.selectProfile(getPreferenceStore(), firstMenuItem.getText());
             EventBus.send(new ProfileActivatedEvent(Profile.class, Profile
                     .getSelectedProfile(store)));
             saveOptions();
@@ -1025,6 +1032,10 @@ public class MindClient extends ApplicationWindow implements EventListener {
                     storedEvent = event;
                     return;
                 }
+                // we have to fully recreate the tabs if we want to change the
+                // tabs shown (ie. task tab only visible with Mindquarry server profile)
+                createCategoryWidget(sashForm);
+                
                 displayNotConnected();
                 teamList.refresh();
                 teamList.loadSelection();

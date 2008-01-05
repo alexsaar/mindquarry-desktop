@@ -21,7 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * This class creates a preference page for Mindquarry task management.
@@ -38,10 +38,10 @@ public class TaskPage extends FieldEditorPreferencePage {
      * ProfilesPage default constructor
      */
     public TaskPage() {
-        super(Messages.getString("Task Settings"), SWT.FLAT); //$NON-NLS-1$
+        super(I18N.get("Task Settings"), SWT.FLAT); //$NON-NLS-1$
 
         // inital preference page
-        setDescription(Messages.getString("Manage your task settings.")); //$NON-NLS-1$
+        setDescription(I18N.get("Manage your task settings.")); //$NON-NLS-1$
         Image img = new Image(
                 Display.getCurrent(),
                 getClass()
@@ -63,7 +63,7 @@ public class TaskPage extends FieldEditorPreferencePage {
 
         BooleanFieldEditor showFinishedTasks = new BooleanFieldEditor(
                 LIST_FINISHED_TASKS, "&" //$NON-NLS-1$
-                        + Messages.getString("List finished tasks"), //$NON-NLS-1$
+                        + I18N.get("List finished tasks"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(showFinishedTasks);
     }

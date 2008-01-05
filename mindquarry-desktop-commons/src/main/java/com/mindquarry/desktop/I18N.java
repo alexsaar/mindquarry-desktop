@@ -36,20 +36,20 @@ import com.mindquarry.desktop.util.TranslationMessageParser;
  * 
  * @author dnaber
  */
-public class Messages {
+public class I18N {
 
-    private static Log log = LogFactory.getLog(Messages.class);
+    private static Log log = LogFactory.getLog(I18N.class);
 
     private static final String BUNDLE_FILE_BASE = "/com/mindquarry/desktop/messages_"; //$NON-NLS-1$
     private static final String BUNDLE_FILE_SUFFIX = ".xml"; //$NON-NLS-1$
 
     private static Map<String, String> translationMap = null;
 
-    public static String getString(String key) {
-        return getString(key, new String[]{});
+    public static String get(String key) {
+        return get(key, new String[]{});
     }
     
-    public static String getString(String key, String... args) {
+    public static String get(String key, String... args) {
         if (translationMap == null) {
             translationMap = initTranslationMap(BUNDLE_FILE_BASE, BUNDLE_FILE_SUFFIX);
         }
@@ -67,7 +67,7 @@ public class Messages {
             reader.setErrorHandler(translationParser);
             // TODO: use "xx_YY" if available, use "xx" otherwise:
             String transFile = fileBase + Locale.getDefault().getLanguage() + fileSuffix;
-            InputStream is = Messages.class.getResourceAsStream(transFile);
+            InputStream is = I18N.class.getResourceAsStream(transFile);
             if (is == null) {
                 // no translation available for this language
                 log.debug("No translation file available for language: " + 

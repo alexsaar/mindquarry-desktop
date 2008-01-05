@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.dialog.DialogBase;
 import com.mindquarry.desktop.model.team.Team;
 
@@ -56,11 +56,11 @@ public class TeamSelectionDialog extends DialogBase {
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
 
-        setTitle(Messages.getString("Select a Team")); //$NON-NLS-1$
-        setMessage(Messages.getString("Please select one of your teams."), //$NON-NLS-1$
+        setTitle(I18N.getString("Select a Team")); //$NON-NLS-1$
+        setMessage(I18N.getString("Please select one of your teams."), //$NON-NLS-1$
                 IMessageProvider.INFORMATION);
 
-        getShell().setText(Messages.getString("Select a Team")); //$NON-NLS-1$
+        getShell().setText(I18N.getString("Select a Team")); //$NON-NLS-1$
         return contents;
     }
 
@@ -69,7 +69,7 @@ public class TeamSelectionDialog extends DialogBase {
         composite.setLayout(new GridLayout(1, true));
 
         Label label = new Label(composite, SWT.LEFT);
-        label.setText(Messages.getString("Select a Team") //$NON-NLS-1$
+        label.setText(I18N.getString("Select a Team") //$NON-NLS-1$
                 + ":"); //$NON-NLS-1$
 
         teamWidget = new Combo(composite, SWT.READ_ONLY);

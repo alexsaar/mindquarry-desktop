@@ -18,7 +18,7 @@ import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Describes a change where a file/directory has been deleted and re-added
@@ -45,14 +45,14 @@ public class LocalReplace extends Change {
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return Messages.getString("This directory was deleted and re-added, it will be uploaded to the server.");
+            return I18N.get("This directory was deleted and re-added, it will be uploaded to the server.");
         else
-            return Messages.getString("This file was deleted and re-added, it will be uploaded to the server.");
+            return I18N.get("This file was deleted and re-added, it will be uploaded to the server.");
     }
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Replaced locally");
+        return I18N.get("Replaced locally");
     }
 
     @Override

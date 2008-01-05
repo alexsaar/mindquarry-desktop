@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.ReplaceConflict;
 
 /**
@@ -49,7 +49,7 @@ public class ReplaceConflictDialog extends RenamingConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": "
+        name.setText(I18N.getString("Filename(s)") + ": "
                 + conflict.getStatus().getPath());
     }
 
@@ -57,15 +57,15 @@ public class ReplaceConflictDialog extends RenamingConflictDialog {
     protected String getMessage() {
         if (conflict.getStatus().getTextStatus() == StatusKind.replaced
                 && conflict.getStatus().getRepositoryTextStatus() == StatusKind.replaced) {
-            return Messages
+            return I18N
                     .getString("A locally replaced file or directory (svn delete + svn add) "
                             + "was also replaced by someone else on the server.");
         } else if (conflict.getStatus().getTextStatus() == StatusKind.replaced) {
-            return Messages
+            return I18N
                     .getString("A locally replaced file or directory (svn delete + svn add) "
                             + "was modified by someone else on the server.");
         } else {
-            return Messages
+            return I18N
                     .getString("A locally modified file was replaced (svn delete + svn add) "
                             + "by someone else on the server.");
         }
@@ -75,7 +75,7 @@ public class ReplaceConflictDialog extends RenamingConflictDialog {
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite, Messages
+        Button button1 = makeRadioButton(subComposite, I18N
                 .getString("Rename file and upload it using a new name:"), //$NON-NLS-1$
                 ReplaceConflict.Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {

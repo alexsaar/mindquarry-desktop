@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.dialog.DialogBase;
 import com.mindquarry.desktop.client.widget.workspace.ModificationDescription;
 import com.mindquarry.desktop.client.widget.workspace.ChangeTree;
@@ -62,11 +62,11 @@ public class CommitDialog extends DialogBase {
 
     protected Control createContents(Composite parent) {
         Control contents = super.createContents(parent);
-        String title = Messages.getString("Commit message for team '{0}'",  //$NON-NLS-1$ 
+        String title = I18N.get("Commit message for team '{0}'",  //$NON-NLS-1$ 
                 teamName); 
         setTitle(title);
         getShell().setText(title);
-        setMessage(Messages.getString("Please describe the changes you have " +  //$NON-NLS-1$
+        setMessage(I18N.get("Please describe the changes you have " +  //$NON-NLS-1$
         		"made to the following files in team '{0}'", teamName),  //$NON-NLS-1$
         		IMessageProvider.INFORMATION);
         getShell().setSize(600, 350);
@@ -85,7 +85,7 @@ public class CommitDialog extends DialogBase {
         titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Label label = new Label(composite, SWT.READ_ONLY);
-        label.setText(Messages.getString("Modified files in '{0}':", teamDir.getAbsolutePath()));
+        label.setText(I18N.get("Modified files in '{0}':", teamDir.getAbsolutePath()));
 
         GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         gridData.heightHint = 50;
@@ -135,7 +135,7 @@ public class CommitDialog extends DialogBase {
         fileField.setText(sb.toString());
 
         label = new Label(composite, SWT.READ_ONLY);
-        label.setText(Messages.getString("Your message:"));
+        label.setText(I18N.getString("Your message:"));
 
         // the main text field for the commit message:
         final Text textField = new Text(composite, SWT.MULTI | SWT.BORDER | 

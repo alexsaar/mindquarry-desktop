@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.task.CreateTaskAction;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
@@ -54,9 +54,9 @@ public class CategoryWidget extends WidgetBase {
     // add spaces to make the tab a bit wider for better usability
     // (TODO: find a cleaner way):
     private static final String SPACE_HOLDER = "      ";
-    private static final String TAB_TASKS_TEXT = Messages.getString("Tasks")
+    private static final String TAB_TASKS_TEXT = I18N.getString("Tasks")
             + SPACE_HOLDER;
-    private static final String TAB_FILES_TEXT = Messages
+    private static final String TAB_FILES_TEXT = I18N
             .getString("File Changes")
             + SPACE_HOLDER;
 
@@ -74,12 +74,16 @@ public class CategoryWidget extends WidgetBase {
 
     private WorkspaceBrowserWidget workspaceBrowser;
 
+	private CTabItem taskTabItem;
+
+	private CTabFolder tabFolder;
+
     public CategoryWidget(Composite parent, int style, MindClient client) {
         super(parent, style, client);
     }
 
     protected void createContents(Composite parent) {
-        final CTabFolder tabFolder = new CTabFolder(parent, SWT.TOP | SWT.FLAT
+        tabFolder = new CTabFolder(parent, SWT.TOP | SWT.FLAT
                 | SWT.BORDER);
         tabFolder.setSimple(false);
         tabFolder.setUnselectedImageVisible(false);
@@ -102,27 +106,27 @@ public class CategoryWidget extends WidgetBase {
             }
         });
         createWorkspaceCategory(tabFolder);
-        if (MindClient.isTasksActive()) {
+        if (client.isTasksActive()) {
             createTasksCategory(tabFolder);
         }
     }
 
     private void createTasksCategory(final CTabFolder tabFolder) {
-        CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-        tabItem.setText(TAB_TASKS_TEXT);
-        tabItem.setImage(tasksIcon);
-        tabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
+        taskTabItem = new CTabItem(tabFolder, SWT.NULL);
+        taskTabItem.setText(TAB_TASKS_TEXT);
+        taskTabItem.setImage(tasksIcon);
+        taskTabItem.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         Composite taskComposite = new Composite(tabFolder, SWT.NONE);
         taskComposite.setLayout(new GridLayout(7, false));
         taskComposite.setBackground(getShell().getDisplay().getSystemColor(
                 SWT.COLOR_WHITE));
-        tabItem.setControl(taskComposite);
+        taskTabItem.setControl(taskComposite);
 
         Label label = new Label(taskComposite, SWT.LEFT);
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
-        label.setText(Messages.getString("Priority"));
+        label.setText(I18N.getString("Priority"));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         Combo priority = new Combo(taskComposite, SWT.BORDER | SWT.READ_ONLY
@@ -141,7 +145,7 @@ public class CategoryWidget extends WidgetBase {
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
-        label.setText(Messages.getString("Status"));
+        label.setText(I18N.getString("Status"));
 
         Combo status = new Combo(taskComposite, SWT.BORDER | SWT.READ_ONLY
                 | SWT.FLAT);
@@ -158,7 +162,7 @@ public class CategoryWidget extends WidgetBase {
         label = new Label(taskComposite, SWT.LEFT);
         label.setBackground(Display.getCurrent()
                 .getSystemColor(SWT.COLOR_WHITE));
-        label.setText(Messages.getString("Search"));
+        label.setText(I18N.getString("Search"));
         label.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         Text search = new Text(taskComposite, SWT.SINGLE | SWT.LEFT
@@ -167,7 +171,7 @@ public class CategoryWidget extends WidgetBase {
         search.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         Button reset = new Button(taskComposite, SWT.CENTER | SWT.PUSH);
-        reset.setText(Messages.getString("Reset"));
+        reset.setText(I18N.getString("Reset"));
         reset.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
 
         taskContainer = new TaskContainerWidget(taskComposite, client);

@@ -18,7 +18,7 @@ import java.io.File;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Describes changes that delete a file or directory locally.
@@ -44,16 +44,16 @@ public class LocalDeletion extends Change {
     @Override
     public String getLongDescription() {
         if(status.getNodeKind() == NodeKind.dir)
-            return Messages.getString("This directory has been deleted (or moved) locally, " +
+            return I18N.get("This directory has been deleted (or moved) locally, " +
                 "it will also be deleted on the server.");
         else
-            return Messages.getString("This file has been deleted (or moved) locally, " +
+            return I18N.get("This file has been deleted (or moved) locally, " +
             	"it will also be deleted on the server.");
     }
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Deleted locally");
+        return I18N.get("Deleted locally");
     }
 
     @Override

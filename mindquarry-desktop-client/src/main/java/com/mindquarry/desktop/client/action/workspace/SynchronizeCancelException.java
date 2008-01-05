@@ -21,6 +21,9 @@ package com.mindquarry.desktop.client.action.workspace;
  * 
  * @author dnaber
  */
+// TODO: rename SynchronizeCancelException to UserCancelledException and inherit from
+// CancelException to make a difference between user cancelled and synch aborted due
+// to some other error
 public class SynchronizeCancelException extends RuntimeException {
     
     private static final long serialVersionUID = -6547768139798663528L;

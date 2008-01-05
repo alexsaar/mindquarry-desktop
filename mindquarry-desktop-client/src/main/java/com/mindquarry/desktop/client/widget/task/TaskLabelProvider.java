@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.widget.util.ImageAdaptor;
 import com.mindquarry.desktop.client.widget.util.ImageHelper;
 import com.mindquarry.desktop.model.task.Task;
@@ -109,9 +109,9 @@ public class TaskLabelProvider extends ColumnLabelProvider {
         } else {
             title = "-"; //$NON-NLS-1$
         }
-        text += Messages.getString("Title") //$NON-NLS-1$
+        text += I18N.getString("Title") //$NON-NLS-1$
                 + ": " + title; //$NON-NLS-1$ 
-        text += "\n" + Messages.getString("Status") //$NON-NLS-1$//$NON-NLS-2$
+        text += "\n" + I18N.getString("Status") //$NON-NLS-1$//$NON-NLS-2$
                 + ": " + task.getStatus(); //$NON-NLS-1$ 
         String summary = task.getSummary();
         if (summary != null) {
@@ -121,7 +121,7 @@ public class TaskLabelProvider extends ColumnLabelProvider {
         } else {
             summary = "-"; //$NON-NLS-1$
         }
-        text += "\n" + Messages.getString("Summary") //$NON-NLS-1$ //$NON-NLS-2$
+        text += "\n" + I18N.getString("Summary") //$NON-NLS-1$ //$NON-NLS-2$
                 + ": " + summary; //$NON-NLS-1$ 
         return text;
     }

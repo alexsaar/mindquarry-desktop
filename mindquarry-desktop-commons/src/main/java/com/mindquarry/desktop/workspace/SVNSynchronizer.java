@@ -144,6 +144,8 @@ public class SVNSynchronizer {
      * 
      * @throws SynchronizeException
      */
+	// TODO: make a difference between user cancelled and synch aborted due
+	// to some other error
     public void synchronizeOrCheckout() throws SynchronizeException {
         log.debug("synchronizeOrCheckout on "
                         + localPathFile.getAbsolutePath());

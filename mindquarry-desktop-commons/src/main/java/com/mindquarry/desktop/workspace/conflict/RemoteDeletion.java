@@ -17,7 +17,7 @@ import java.io.File;
 
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Describes changes that delete a file or directory remotely.
@@ -43,14 +43,14 @@ public class RemoteDeletion extends Change {
     @Override
     public String getLongDescription() {
         if(file.isDirectory())
-            return Messages.getString("This directory was deleted on the server and will hence be deleted locally.");
+            return I18N.get("This directory was deleted on the server and will hence be deleted locally.");
         else
-            return Messages.getString("This file was deleted on the server and will hence be deleted locally.");
+            return I18N.get("This file was deleted on the server and will hence be deleted locally.");
     }
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Deleted remotely");
+        return I18N.get("Deleted remotely");
     }
 
     @Override

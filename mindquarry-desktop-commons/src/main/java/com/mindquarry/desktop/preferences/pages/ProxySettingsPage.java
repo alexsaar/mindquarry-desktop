@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.event.network.ProxySettingsChangedEvent;
 
@@ -47,7 +47,7 @@ import com.mindquarry.desktop.event.network.ProxySettingsChangedEvent;
  */
 public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
     public static final String NAME = "proxy";
-    public static final String TITLE = Messages.getString("Proxy Settings");
+    public static final String TITLE = I18N.get("Proxy Settings");
 
     public static final String PREF_PROXY_ENABLED = "com.mindquarry.desktop.proxy.enabled";
     public static final String PREF_PROXY_LOGIN = "com.mindquarry.desktop.proxy.login";
@@ -66,8 +66,8 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
         super(TITLE);
 
         // initialize preference page
-        setDescription(Messages
-                .getString("Manage proxy settings of the application."));
+        setDescription(I18N
+                .get("Manage proxy settings of the application."));
         setImageDescriptor(ImageDescriptor
                 .createFromImage(new Image(
                         null,
@@ -88,7 +88,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
         composite.setLayout(new GridLayout(1, true));
 
         enableProxy = new Button(composite, SWT.CHECK);
-        enableProxy.setText(Messages.getString("Enable proxy support"));
+        enableProxy.setText(I18N.get("Enable proxy support"));
         enableProxy.setSelection(store.getBoolean(PREF_PROXY_ENABLED));
         enableProxy.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -99,11 +99,11 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
 
         Group proxyGroup = new Group(composite, SWT.SHADOW_ETCHED_IN);
         proxyGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-        //settingsGroup.setText(Messages.getString("Profile Settings")); //$NON-NLS-1$
+        //settingsGroup.setText(Messages.get("Profile Settings")); //$NON-NLS-1$
         proxyGroup.setLayout(new GridLayout(1, true));
         
         CLabel label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy URL:"));
+        label.setText(I18N.get("Proxy URL:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Composite errorComp = createErrorBorderComposite(proxyGroup);
@@ -123,7 +123,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
         });
         
         label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy Login:"));
+        label.setText(I18N.get("Proxy Login:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         login = new Text(proxyGroup, SWT.SINGLE | SWT.BORDER);
@@ -140,7 +140,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
             }
         });
         label = new CLabel(proxyGroup, SWT.LEFT);
-        label.setText(Messages.getString("Proxy Password:"));
+        label.setText(I18N.get("Proxy Password:"));
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         pwd = new Text(proxyGroup, SWT.PASSWORD | SWT.BORDER);
@@ -190,7 +190,7 @@ public class ProxySettingsPage extends ErrorDisplayingPreferencePage {
             try {
                 new URL(url.getText());
             } catch (MalformedURLException e) {
-                setInvalid(Messages.getString("Proxy URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
+                setInvalid(I18N.get("Proxy URL is not a valid URL ({0})", e.getLocalizedMessage()), url);
                 return;
             }
         }

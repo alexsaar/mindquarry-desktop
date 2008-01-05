@@ -37,7 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.TableItem;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.team.RefreshTeamlistAction;
 import com.mindquarry.desktop.client.widget.WidgetBase;
@@ -116,7 +116,7 @@ public class TeamlistWidget extends WidgetBase {
         // create selection buttons
         Button button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.setText(Messages.getString("Select All"));
+        button.setText(I18N.getString("Select All"));
         button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -125,7 +125,7 @@ public class TeamlistWidget extends WidgetBase {
         });
         button = new Button(parent, SWT.PUSH | SWT.FLAT | SWT.CENTER);
         button.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        button.setText(Messages.getString("Deselect All"));
+        button.setText(I18N.getString("Deselect All"));
         button.setFont(JFaceResources.getFont(MindClient.TEAM_NAME_FONT_KEY));
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
@@ -155,12 +155,18 @@ public class TeamlistWidget extends WidgetBase {
     }
 
     public void refresh() throws CancelException {
-        client.startAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
+        client.startAction(I18N.getString("Updating list of teams")); //$NON-NLS-1$
         // TODO: show progress bar in the widget itself
         try {
-            viewer.setInput(queryTeams());
+            Profile profile = Profile.getSelectedProfile(client
+                    .getPreferenceStore());
+            if (profile.getType() == Profile.Type.MindquarryServer) {
+            	viewer.setInput(queryTeams());
+            } else {
+            	viewer.setInput(profile.getTeamsFromSVNRepos());
+            }
         } finally {
-            client.stopAction(Messages.getString("Updating list of teams")); //$NON-NLS-1$
+            client.stopAction(I18N.getString("Updating list of teams")); //$NON-NLS-1$
         }
     }
 
@@ -226,8 +232,8 @@ public class TeamlistWidget extends WidgetBase {
             MessageDialog
                     .openError(
                             getShell(),
-                            Messages.getString("Error"),
-                            Messages
+                            I18N.getString("Error"),
+                            I18N
                                     .getString("Currently there is no profile selected. Please select the profile of the server you want to work with or create a new profile."));
             return null;
         }
@@ -242,8 +248,7 @@ public class TeamlistWidget extends WidgetBase {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
 
-            Boolean retry = client.handleNotAuthorizedException(e);
-            if (retry) {
+            if (client.handleNotAuthorizedException(e)) {
                 return queryTeams();
             }
 
@@ -253,8 +258,7 @@ public class TeamlistWidget extends WidgetBase {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), uhe);
 
-            Boolean retry = client.handleUnknownHostException(uhe);
-            if (retry) {
+            if (client.handleUnknownHostException(uhe)) {
                 return queryTeams();
             }
 
@@ -264,8 +268,7 @@ public class TeamlistWidget extends WidgetBase {
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), murle);
 
-            Boolean retry = client.handleMalformedURLException(murle);
-            if (retry) {
+            if (client.handleMalformedURLException(murle)) {
                 return queryTeams();
             }
 
@@ -277,20 +280,20 @@ public class TeamlistWidget extends WidgetBase {
             // temporarily not reachable - better text
             log.error("Error while updating team list at " //$NON-NLS-1$
                     + selected.getServerURL(), e);
-            String msg = Messages.getString(
+            String msg = I18N.get(
                     "Could not update team list from {0}: ", //$NON-NLS-1$
                     selected.getServerURL())
                     + e.getLocalizedMessage();
             if (e.getCause() != null
                     && e.getCause().getClass() == DocumentException.class) {
                 // this happens when HTML is returned instead of XML
-                msg = Messages
-                        .getString(
+                msg = I18N
+                        .get(
                                 "The specified URL \"{0}\" does belong to a "
                                         + "running Mindquarry server. No team information found at {1}",
                                 selected.getServerURL(), teamUrl);
             }
-            MessageDialog.openError(getShell(), Messages.getString("Error"), //$NON-NLS-1$
+            MessageDialog.openError(getShell(), I18N.getString("Error"), //$NON-NLS-1$
                     msg);
             return null;
         }

@@ -17,7 +17,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.ActionBase;
 import com.mindquarry.desktop.client.action.task.SynchronizeTasksAction;
@@ -44,8 +44,8 @@ public class StopAction extends ActionBase {
         setId(ID);
         setActionDefinitionId(ID);
 
-        setText(Messages.getString("Stop")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("Stop the currently running actions")); //$NON-NLS-1$
+        setText(I18N.getString("Stop")); //$NON-NLS-1$
+        setToolTipText(I18N.getString("Stop the currently running actions")); //$NON-NLS-1$
         //setAccelerator(SWT.CTRL + SWT.SHIFT + 'S');
         setImageDescriptor(ImageDescriptor.createFromImage(IMAGE));
     }

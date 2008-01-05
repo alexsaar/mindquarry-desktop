@@ -32,6 +32,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -40,15 +42,18 @@ import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.client.MindClient;
 import com.mindquarry.desktop.client.action.workspace.InteractiveConflictHandler;
 import com.mindquarry.desktop.client.action.workspace.OpenSelectedFileEvent;
+import com.mindquarry.desktop.client.widget.task.TaskContainerWidget;
 import com.mindquarry.desktop.client.widget.util.container.ContainerWidget;
 import com.mindquarry.desktop.event.EventBus;
 import com.mindquarry.desktop.event.EventListener;
 import com.mindquarry.desktop.model.team.Team;
+import com.mindquarry.desktop.model.team.SVNRepo;
 import com.mindquarry.desktop.preferences.profile.Profile;
+import com.mindquarry.desktop.preferences.profile.Profile.SVNRepoData;
 import com.mindquarry.desktop.workspace.SVNSynchronizer;
 import com.mindquarry.desktop.workspace.conflict.Change;
 import com.mindquarry.desktop.workspace.conflict.ObstructedConflict;
@@ -75,6 +80,13 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     public WorkspaceBrowserWidget(Composite parent, MindClient client) {
         super(parent, SWT.NONE, client);
         EventBus.registerListener(this);
+        addDisposeListener(new DisposeListener() {
+
+			public void widgetDisposed(DisposeEvent e) {
+				EventBus.unregisterListener(WorkspaceBrowserWidget.this);
+			}
+        	
+        });
     }
 
     // #########################################################################
@@ -244,14 +256,26 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         if (selected == null) {
             return false;
         }
-        File wsFolder = new File(selected.getWorkspaceFolder());
-        if (!wsFolder.exists() || wsFolder.list() == null || 
-                wsFolder.list().length == 0) {
-            log.debug("folder does not contain a checkout : " + 
-                    wsFolder.getAbsolutePath());
-            return false;
+        if (selected.getType() == Profile.Type.MindquarryServer) {
+	        File wsFolder = new File(selected.getWorkspaceFolder());
+	        if (!wsFolder.exists() || wsFolder.list() == null || 
+	                wsFolder.list().length == 0) {
+	            log.debug("folder does not contain a checkout : " + 
+	                    wsFolder.getAbsolutePath());
+	            return false;
+	        }
+	        return true;
+        } else {
+        	for (SVNRepoData svnRepo : selected.getSvnRepos()) {
+        		File folder = new File(svnRepo.localPath);
+    	        if (folder.exists() && folder.list() != null && 
+    	                folder.list().length > 0) {
+    	        	// at least one found
+    	        	return true;
+    	        }
+        	}
+        	return false;
         }
-        return true;
     }
     
     public void showRefreshMessage(String message) {
@@ -261,7 +285,7 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
     }
 
     public void showEmptyMessage(boolean isEmpty) {
-        String emptyMessage = Messages.getString(
+        String emptyMessage = I18N.getString(
                 "There are currently no workspace changes to synchronize,\n" +
                 "i.e. there are no local changes and there are no changes on the server.\n" +
                 "Last refresh: ")
@@ -309,14 +333,8 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
         
         try {
             toIgnore = new HashMap<File, Integer>();
-            for (Team team : selectedTeams) {                
-                String url = team.getWorkspaceURL();
-                String folder = selected.getWorkspaceFolder() + "/"
-                        + team.getName();
-                String login = selected.getLogin();
-                String password = selected.getPassword();
-
-                setMessage(Messages.getString(
+            for (Team team : selectedTeams) {            
+                setMessage(I18N.get(
                         "Refreshing workspaces changes for team \"{0}\" (team {1} of {2}) ...", //$NON-NLS-1$
                         team.getName(),
                         Integer.toString(selectedTeams.indexOf(team)+1),
@@ -324,16 +342,14 @@ public class WorkspaceBrowserWidget extends ContainerWidget<TreeViewer> implemen
 
                 long startTime = System.currentTimeMillis();
         
-                File teamDir = new File(folder);
                 // TODO: also consider the case where the team folder exists
                 // but is not a SVN checkout
-                if (!teamDir.exists()) {
-                    continue;
+                if (!team.dirExists(selected)) {
+                	continue;
                 }
                 
-                SVNSynchronizer sc = new SVNSynchronizer(url, folder, login,
-                        password, new InteractiveConflictHandler(client
-                                .getShell()));
+                SVNSynchronizer sc =
+                	team.createSynchronizer(selected, new InteractiveConflictHandler(client.getShell()));
 
                 ChangeSet changeSet = new ChangeSet(team);
 

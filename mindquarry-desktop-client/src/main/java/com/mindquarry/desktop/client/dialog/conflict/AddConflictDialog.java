@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.mindquarry.desktop.client.Messages;
+import com.mindquarry.desktop.client.I18N;
 import com.mindquarry.desktop.workspace.conflict.AddConflict;
 import com.mindquarry.desktop.workspace.conflict.AddConflict.Action;
 
@@ -49,20 +49,20 @@ public class AddConflictDialog extends RenamingConflictDialog {
 
     protected void showFileInformation(Composite composite) {
         Label name = new Label(composite, SWT.READ_ONLY);
-        name.setText(Messages.getString("Filename(s)") + ": "
+        name.setText(I18N.getString("Filename(s)") + ": "
                 + conflict.getStatus().getPath());
     }
 
     @Override
     protected String getMessage() {
-        return Messages.getString("This case can occur if you created a file " +
+        return I18N.getString("This case can occur if you created a file " +
                 "or renamed an existing file and someone else created a file " +
                 "with the same name.");
     }
     
     @Override
     protected String getTitle() {
-        return Messages.getString(
+        return I18N.getString(
                 "The file you are trying to synchronize already exists on the server"); //$NON-NLS-1$
     }
 
@@ -70,7 +70,7 @@ public class AddConflictDialog extends RenamingConflictDialog {
     protected void createLowerDialogArea(Composite composite) {
         Composite subComposite = new Composite(composite, SWT.NONE);
         subComposite.setLayout(new GridLayout(2, false));
-        Button button1 = makeRadioButton(subComposite, Messages
+        Button button1 = makeRadioButton(subComposite, I18N
                 .getString("Rename file and upload it using a new name:"), //$NON-NLS-1$
                 Action.RENAME);
         button1.addListener(SWT.Selection, new Listener() {

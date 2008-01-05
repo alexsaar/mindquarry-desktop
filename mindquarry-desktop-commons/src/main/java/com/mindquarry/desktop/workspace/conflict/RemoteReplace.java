@@ -19,7 +19,7 @@ import java.io.File;
 import org.tigris.subversion.javahl.NodeKind;
 import org.tigris.subversion.javahl.Status;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 
 /**
  * Describes a change where a file/directory has been deleted and re-added
@@ -46,14 +46,14 @@ public class RemoteReplace extends Change {
     @Override
     public String getLongDescription() {
         if(status.getReposKind() == NodeKind.dir)
-            return Messages.getString("This directory was replaced on the server and will be downloaded.");
+            return I18N.get("This directory was replaced on the server and will be downloaded.");
         else
-            return Messages.getString("This file was replaced on the server and will be downloaded.");
+            return I18N.get("This file was replaced on the server and will be downloaded.");
     }
 
     @Override
     public String getShortDescription() {
-        return Messages.getString("Replaced remotely");
+        return I18N.get("Replaced remotely");
     }
 
     @Override

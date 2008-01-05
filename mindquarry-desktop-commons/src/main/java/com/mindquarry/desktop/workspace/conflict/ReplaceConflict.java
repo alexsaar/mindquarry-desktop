@@ -22,7 +22,7 @@ import org.tigris.subversion.javahl.ClientException;
 import org.tigris.subversion.javahl.Status;
 import org.tigris.subversion.javahl.StatusKind;
 
-import com.mindquarry.desktop.Messages;
+import com.mindquarry.desktop.I18N;
 import com.mindquarry.desktop.workspace.exception.CancelException;
 
 /**
@@ -145,7 +145,7 @@ public class ReplaceConflict extends RenamingConflict {
     
     @Override
     public String getLongDescription() {
-        return Messages.getString("This item has been replaced locally or remotely. " +
+        return I18N.get("This item has been replaced locally or remotely. " +
                 "You will need to resolve the conflict.");
     }
 }
