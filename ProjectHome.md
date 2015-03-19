@@ -1,0 +1,1 @@
+Desktop Client for Mindquarry Collaboration Server. Learn more at: http://code.google.com/p/mindquarry/
